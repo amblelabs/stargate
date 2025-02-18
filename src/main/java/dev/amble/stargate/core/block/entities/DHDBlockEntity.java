@@ -96,6 +96,9 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
             return;
 
         this.killControls();
+
+        if (!this.isLinked()) return;
+
         SymbolArrangement[] controls = DHDControlEntity.getSymbolArrangement();
 
         for (SymbolArrangement control : controls) {
