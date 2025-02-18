@@ -38,9 +38,8 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
         float h = (float) -textRenderer.getWidth(name) / 2;
         float f = livingEntity.getNameLabelHeight() - 0.525f;
 
-        Stargate stargate = livingEntity.getStargate().get();
 
-        if (stargate == null) {
+        if (!livingEntity.hasStargate()) {
             matrixStack.pop();
             return;
         }
