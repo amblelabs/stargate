@@ -3,6 +3,7 @@ package dev.amble.stargate.api;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
+import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -74,6 +75,9 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 			// cannot call self
 			return Optional.empty();
 		}
+
+		StargateMod.LOGGER.info("Dialing address {} from {}. Requires {} energy, has {} energy.", target.address.text(), this.address.text(), this.getRequiredEnergy(target.address), this.getEnergy());
+
 		if (!this.isAvailable() || !this.hasEnoughEnergy(target.address)) {
 			return Optional.empty();
 		}
