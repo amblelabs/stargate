@@ -101,7 +101,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		this.onBreak();
 		this.requiresPlacement = false;
 
-		createRing(StargateBlocks.RING.getDefaultState(), (ServerWorld) world);
+		createRing(StargateBlocks.RING.getDefaultState(), (ServerWorld) world, false);
 
 		Direction facing = world.getBlockState(this.getPos()).get(StargateBlock.FACING);
 		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
@@ -117,23 +117,13 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	 * @param state the state to create the ring with
 	 * @return the positions of the blocks created
 	 */
-	public Set<BlockPos> createRing(BlockState state, ServerWorld world) {
+	public Set<BlockPos> createRing(BlockState state, ServerWorld world, boolean force) {
 		int radius = this.getRingRadius(); // Adjust the radius as needed
 		Set<BlockPos> ringPositions = new HashSet<>();
 		BlockPos center = this.getPos().up(radius);
 		Direction facing = this.getCachedState().get(StargateBlock.FACING);
 
-		String blockPositioning = """
-				___XXX___
-				_XX___XX_
-				_X_____X_/
-				X_______X/
-				X_______X//
-				X_______X///
-				X_______X////
-				_X_____X_
-				__XX_XX__.
-				""";
+		String blockPositioning = this.getRingPositioning();
 
 		List<String> list = blockPositioning.lines().toList();
 
@@ -148,10 +138,26 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		});
 
 		for (BlockPos pos : ringPositions) {
-				world.setBlockState(pos, state);
+			if (!force && !world.getBlockState(pos).isReplaceable()) continue;
+
+			world.setBlockState(pos, state);
 		}
 
 		return ringPositions;
+	}
+
+	protected String getRingPositioning() {
+		return """
+				___XXX___
+				_XX___XX_
+				_X_____X_/
+				X_______X/
+				X_______X//
+				X_______X///
+				X_______X////
+				_X_____X_
+				__XX_XX__.
+				""";
 	}
 
 	public static BlockPos rotate(int x, int y, Direction facing) {
@@ -168,7 +174,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	 * @return the positions of the blocks removed
 	 */
 	public Set<BlockPos> removeRing() {
-		return createRing(Blocks.AIR.getDefaultState(), (ServerWorld) this.getWorld());
+		return createRing(Blocks.AIR.getDefaultState(), (ServerWorld) this.getWorld(), true);
 	}
 
 	@Override
