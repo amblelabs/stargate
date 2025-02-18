@@ -44,9 +44,19 @@ The Spectral Projector is a cheaper way to dial a stargate.
 
 It is a one-time use item that allows you to dial a stargate by linking it to the stargate you want to dial, and then right-clicking it again on another stargate.
 
-### Manual Dialing
+### Manual Dialing ( Only with Tech Energy! )
 
 You can manually input an address by right-clicking the stargate.
 
 Right-click to rotate clockwise, shift right-click to lock in the current chevron.
 
+This drains 250 power per usage.
+
+
+## Power Compatibility
+
+If any Tech Energy power mod is present, then compatability is enabled.
+
+This then requires the stargate to have at least 25000+ power to dial.
+
+You can check its power level by right-clicking it (temp) or the colour of the chevrons.
