@@ -3,6 +3,7 @@ package dev.amble.stargate.mixins.compat.energy;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.compat.energy.StargateRebornEnergy;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,6 +46,6 @@ public class EnergyStargateMixin implements StargateRebornEnergy {
 	}
 	@Inject(method="setEnergy", at=@At("HEAD"))
 	private void stargate$setAmount(long amount, CallbackInfo ci) {
-		energy.amount = amount;
+		energy.amount = (long) MathHelper.clamp(amount, 0, energy.getCapacity());
 	}
 }

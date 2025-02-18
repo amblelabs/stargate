@@ -80,11 +80,18 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		if (!this.hasStargate()) return ActionResult.FAIL;
 		if (world.isClient()) return ActionResult.SUCCESS;
-		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mods
+		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mod
 
 		// rotate and locking
 		Stargate gate = this.getStargate().get();
 		Dialer dialer = gate.getDialer();
+
+		player.sendMessage(Text.literal("ENERGY: " + gate.getEnergy()), true);
+
+		if (gate.getEnergy() < 250) return ActionResult.FAIL;
+
+		// drain power
+		gate.removeEnergy(250);
 
 		if (player.isSneaking()) {
 			dialer.lock();
@@ -92,11 +99,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		}
 
 		dialer.next();
-
-		// drain power
-		gate.removeEnergy(250);
-
-		player.sendMessage(Text.literal("ENERGY: " + gate.getEnergy()), true);
 
 		return ActionResult.SUCCESS;
 	}
