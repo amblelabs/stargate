@@ -21,6 +21,13 @@ public interface StargateEnergy {
 	}
 	void setEnergy(long amount);
 
+	default void addEnergy(long amount) {
+		this.setEnergy(this.getEnergy() + amount);
+	}
+	default void removeEnergy(long amount) {
+		this.addEnergy(-amount);
+	}
+
 	static long getRequiredEnergy(Address source, Address target, long limit) {
 		DistanceInformation distance = source.distanceTo(target);
 		long energy = (long) (limit * Math.exp(-distance.distance() * 0.025f) + 25000);

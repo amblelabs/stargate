@@ -89,7 +89,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 
 		this.subscribers.forEach(s -> s.onCallCreate(this, this.call));
 
-		this.setEnergy(this.getEnergy() - this.getRequiredEnergy(target.address));
+		this.removeEnergy(this.getRequiredEnergy(target.address));
 
 		this.sync();
 

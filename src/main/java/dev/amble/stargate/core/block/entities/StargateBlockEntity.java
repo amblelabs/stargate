@@ -3,6 +3,7 @@ package dev.amble.stargate.core.block.entities;
 import dev.amble.stargate.api.*;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
 import dev.amble.stargate.core.block.StargateBlock;
@@ -24,6 +25,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -78,6 +80,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		if (!this.hasStargate()) return ActionResult.FAIL;
 		if (world.isClient()) return ActionResult.SUCCESS;
+		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mods
 
 		// rotate and locking
 		Stargate gate = this.getStargate().get();
@@ -89,6 +92,11 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		}
 
 		dialer.next();
+
+		// drain power
+		gate.removeEnergy(250);
+
+		player.sendMessage(Text.literal("ENERGY: " + gate.getEnergy()), true);
 
 		return ActionResult.SUCCESS;
 	}
