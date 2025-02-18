@@ -1,8 +1,8 @@
 package dev.amble.stargate.api;
 
-import dev.pavatus.lib.data.DirectedGlobalPos;
-import dev.pavatus.lib.util.ServerLifecycleHooks;
-import dev.pavatus.lib.util.TeleportUtil;
+import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;

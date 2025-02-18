@@ -1,6 +1,6 @@
 package dev.amble.stargate.core;
 
-import dev.pavatus.lib.container.impl.BlockEntityContainer;
+import dev.amble.lib.container.impl.BlockEntityContainer;
 import dev.amble.stargate.core.block.entities.DHDBlockEntity;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;

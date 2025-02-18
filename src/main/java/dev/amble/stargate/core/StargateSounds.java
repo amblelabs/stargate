@@ -1,6 +1,6 @@
 package dev.amble.stargate.core;
 
-import dev.pavatus.lib.container.impl.SoundContainer;
+import dev.amble.lib.container.impl.SoundContainer;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.sound.SoundEvent;
 

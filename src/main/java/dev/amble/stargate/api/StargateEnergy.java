@@ -1,5 +1,7 @@
 package dev.amble.stargate.api;
 
+import dev.amble.lib.data.DistanceInformation;
+
 public interface StargateEnergy {
 	long getEnergy();
 	long getMaxEnergy();

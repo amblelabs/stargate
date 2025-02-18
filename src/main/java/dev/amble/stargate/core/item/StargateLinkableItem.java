@@ -1,7 +1,7 @@
 package dev.amble.stargate.core.item;
 
 import dev.amble.stargate.api.*;
-import dev.pavatus.lib.data.DirectedGlobalPos;
+import dev.amble.lib.data.DirectedGlobalPos;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;

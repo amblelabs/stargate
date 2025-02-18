@@ -1,6 +1,7 @@
 package dev.amble.stargate.api;
 
-import dev.pavatus.lib.data.DirectedGlobalPos;
+import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.data.DistanceInformation;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
@@ -35,10 +36,7 @@ public record Address(String text, DirectedGlobalPos pos) {
 	}
 
 	public DistanceInformation distanceTo(Address other) {
-		double distance = Math.sqrt(pos.getPos().getSquaredDistance(other.pos.getPos()));
-		boolean dimChange = pos.getDimension() != other.pos.getDimension();
-		boolean rotChange = pos.getRotation() != other.pos.getRotation();
-		return new DistanceInformation(distance, dimChange, rotChange);
+		return this.pos.distanceTo(other.pos);
 	}
 
 	public static Text toGlyphs(String text) {

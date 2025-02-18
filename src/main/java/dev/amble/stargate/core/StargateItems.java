@@ -1,9 +1,9 @@
 package dev.amble.stargate.core;
 
-import dev.pavatus.lib.container.impl.ItemContainer;
-import dev.pavatus.lib.container.impl.ItemGroupContainer;
-import dev.pavatus.lib.item.AItemSettings;
-import dev.pavatus.lib.itemgroup.AItemGroup;
+import dev.amble.lib.container.impl.ItemContainer;
+import dev.amble.lib.container.impl.ItemGroupContainer;
+import dev.amble.lib.item.AItemSettings;
+import dev.amble.lib.itemgroup.AItemGroup;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.item.DialerItem;
 import net.minecraft.item.Item;

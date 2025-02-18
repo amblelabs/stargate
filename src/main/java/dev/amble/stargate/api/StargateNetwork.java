@@ -1,6 +1,6 @@
 package dev.amble.stargate.api;
 
-import dev.pavatus.lib.data.DirectedGlobalPos;
+import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

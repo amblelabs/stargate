@@ -1,6 +1,6 @@
 package dev.amble.stargate.core;
 
-import dev.pavatus.lib.container.impl.EntityContainer;
+import dev.amble.lib.container.impl.EntityContainer;
 import dev.amble.stargate.core.entities.DHDControlEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityDimensions;

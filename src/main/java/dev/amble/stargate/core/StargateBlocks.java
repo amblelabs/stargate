@@ -1,12 +1,12 @@
 package dev.amble.stargate.core;
 
-import dev.pavatus.lib.block.ABlockSettings;
-import dev.pavatus.lib.container.impl.BlockContainer;
-import dev.pavatus.lib.container.impl.NoBlockItem;
-import dev.pavatus.lib.datagen.util.AutomaticModel;
-import dev.pavatus.lib.datagen.util.NoEnglish;
-import dev.pavatus.lib.datagen.util.PickaxeMineable;
-import dev.pavatus.lib.item.AItemSettings;
+import dev.amble.lib.block.ABlockSettings;
+import dev.amble.lib.container.impl.BlockContainer;
+import dev.amble.lib.container.impl.NoBlockItem;
+import dev.amble.lib.datagen.util.AutomaticModel;
+import dev.amble.lib.datagen.util.NoEnglish;
+import dev.amble.lib.datagen.util.PickaxeMineable;
+import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.core.block.DHDBlock;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.StargateRingBlock;
@@ -24,6 +24,7 @@ public class StargateBlocks extends BlockContainer {
 			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
 	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
 	@NoEnglish
+	@AutomaticModel(justItem = true)
 	public static final Block DHD = new DHDBlock(ABlockSettings.create().nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(0.5F, 6.0F)
 			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
 	@NoBlockItem

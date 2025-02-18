@@ -1,7 +1,8 @@
 package dev.amble.stargate;
 
+import dev.amble.stargate.api.PointOfOriginRegistry;
 import dev.amble.stargate.core.*;
-import dev.pavatus.lib.container.RegistryContainer;
+import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.core.entities.DHDControlEntity;
 import net.fabricmc.api.ModInitializer;
@@ -30,6 +31,8 @@ public class StargateMod implements ModInitializer {
 		StargateServerData.init();
 
 		entityAttributeRegister();
+
+		PointOfOriginRegistry.getInstance().register();
 	}
 
 	public void entityAttributeRegister() {

@@ -2,7 +2,7 @@ package dev.amble.stargate.api;
 
 import dev.drtheo.scheduler.api.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
-import dev.pavatus.lib.util.ServerLifecycleHooks;
+import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.server.MinecraftServer;

@@ -1,7 +1,7 @@
 package dev.amble.stargate.api;
 
-import dev.pavatus.lib.data.DirectedGlobalPos;
-import dev.pavatus.lib.util.ServerLifecycleHooks;
+import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.ServerLifecycleHooks;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -13,7 +13,7 @@ import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
-// todo - move into sakitus
+// todo - move into Amble
 public class WorldUtil {
 	private static final int SAFE_RADIUS = 3;
 

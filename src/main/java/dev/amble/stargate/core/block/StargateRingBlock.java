@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.block;
 
-import dev.pavatus.lib.api.ICantBreak;
+import dev.amble.lib.api.ICantBreak;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

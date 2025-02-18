@@ -1,7 +1,7 @@
 package dev.amble.stargate.core.block.entities;
 
 import dev.amble.stargate.api.*;
-import dev.pavatus.lib.data.DirectedGlobalPos;
+import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
