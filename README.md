@@ -5,6 +5,11 @@
 ### By [AmbleLabs](https://github.com/amblelabs/)
 ***Fabric 1.20.1***
 
+![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/stargates?link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait%2Fversions)
+
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/stargates?logo=modrinth&link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait)
+
+
 ## What does this add?
 
 This mod adds a new block called the Stargate.
