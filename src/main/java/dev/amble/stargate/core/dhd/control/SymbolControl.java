@@ -1,6 +1,7 @@
 package dev.amble.stargate.core.dhd.control;
 
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -34,7 +35,7 @@ public class SymbolControl {
     }
 
     public SoundEvent getSound() {
-        return SoundEvents.BLOCK_NOTE_BLOCK_BIT.value();
+        return StargateSounds.DHD_PRESS;
     }
 
     @Override
