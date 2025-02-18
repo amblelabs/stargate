@@ -76,7 +76,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 			return Optional.empty();
 		}
 
-		StargateMod.LOGGER.info("Dialing address {} from {}. Requires {} energy, has {} energy.", target.address.text(), this.address.text(), this.getRequiredEnergy(target.address), this.getEnergy());
+		StargateMod.LOGGER.debug("Dialing address {} from {}. Requires {} energy, has {} energy.", target.address.text(), this.address.text(), this.getRequiredEnergy(target.address), this.getEnergy());
 
 		if (!this.isAvailable() || !this.hasEnoughEnergy(target.address)) {
 			return Optional.empty();

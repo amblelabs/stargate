@@ -47,5 +47,7 @@ public class EnergyStargateMixin implements StargateRebornEnergy {
 	@Inject(method="setEnergy", at=@At("HEAD"))
 	private void stargate$setAmount(long amount, CallbackInfo ci) {
 		energy.amount = (long) MathHelper.clamp(amount, 0, energy.getCapacity());
+
+		this.syncMixin();
 	}
 }
