@@ -43,28 +43,8 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public boolean requiresPlacement = false;
 
 
-	static {
-		ClientPlayNetworking.registerGlobalReceiver(StargateBlockEntity.SYNC_GATE_STATE,
-				(client, handler, buf, responseSender) -> {
-					if (client.world == null)
-						return;
-
-					Stargate.GateState state = Stargate.GateState.values()[buf.readInt()];
-					BlockPos stargatePos = buf.readBlockPos();
-
-					if (client.world.getBlockEntity(stargatePos) instanceof StargateBlockEntity stargate)
-						stargate.setGateState(state);
-				});
-	}
-
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
 		super(StargateBlockEntities.STARGATE, pos, state);
-	}
-
-	@Override
-	public void setGateState(Stargate.GateState state) {
-		super.setGateState(state);
-		this.syncGateState();
 	}
 
 	@Nullable @Override
@@ -189,21 +169,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	 */
 	public Set<BlockPos> removeRing() {
 		return createRing(Blocks.AIR.getDefaultState(), (ServerWorld) this.getWorld());
-	}
-
-	private void syncGateState() {
-		if (!hasWorld() || world.isClient())
-			return;
-
-		PacketByteBuf buf = PacketByteBufs.create();
-
-		buf.writeInt(getGateState().ordinal());
-		buf.writeBlockPos(getPos());
-
-		for (PlayerEntity player : world.getPlayers()) {
-			ServerPlayNetworking.send((ServerPlayerEntity) player, SYNC_GATE_STATE, buf); // safe cast as we know its
-			// server
-		}
 	}
 
 	@Override
