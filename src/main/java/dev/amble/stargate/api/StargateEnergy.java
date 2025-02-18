@@ -1,6 +1,7 @@
 package dev.amble.stargate.api;
 
 import dev.amble.lib.data.DistanceInformation;
+import net.minecraft.util.math.MathHelper;
 
 public interface StargateEnergy {
 	long getEnergy();
@@ -37,6 +38,6 @@ public interface StargateEnergy {
 		if (distance.rotChange()) {
 			energy += 500; // Add a set amount if rotChanged
 		}
-		return energy;
+		return (long) MathHelper.clamp(energy, 0, limit);
 	}
 }
