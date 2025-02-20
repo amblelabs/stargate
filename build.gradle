@@ -22,6 +22,9 @@ repositories {
 		}
 	}
 
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/releases/" }
+
 	maven {
 		url "https://cursemaven.com"
 		content {
@@ -57,6 +60,14 @@ dependencies {
 	}
 
 	modCompileOnlyApi ("teamreborn:energy:${project.tech_version}")
+
+	modImplementation "com.github.amblelabs:ait:${project.ait_version}"
+
+	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	modApi("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {
