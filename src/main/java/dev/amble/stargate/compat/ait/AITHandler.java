@@ -1,16 +1,13 @@
-package dev.pavatus.stargate.compat.ait;
+package dev.amble.stargate.compat.ait;
 
-import dev.pavatus.lib.data.DirectedGlobalPos;
-import dev.pavatus.lib.util.ServerLifecycleHooks;
-import dev.pavatus.stargate.api.*;
-import loqor.ait.api.TardisEvents;
-import loqor.ait.core.tardis.ServerTardis;
-import loqor.ait.core.tardis.manager.ServerTardisManager;
-import loqor.ait.data.DirectedBlockPos;
+import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.api.*;
+import dev.amble.ait.api.TardisEvents;
+import dev.amble.ait.core.tardis.ServerTardis;
+import dev.amble.lib.data.DirectedBlockPos;
 
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 
 public class AITHandler {
 	static {
