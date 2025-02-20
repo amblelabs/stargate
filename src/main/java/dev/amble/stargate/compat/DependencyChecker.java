@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class DependencyChecker {
     private static final boolean HAS_TECH_ENERGY = doesModExist("team_reborn_energy");
+    private static final boolean HAS_AIT = doesModExist("ait");
 
     public static boolean doesModExist(String modid) {
         return FabricLoader.getInstance().isModLoaded(modid);
@@ -11,5 +12,8 @@ public class DependencyChecker {
 
     public static boolean hasTechEnergy() {
         return HAS_TECH_ENERGY;
+    }
+    public static boolean hasAIT() {
+        return HAS_AIT;
     }
 }

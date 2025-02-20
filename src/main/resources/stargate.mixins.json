@@ -5,6 +5,7 @@
   "plugin": "dev.amble.stargate.compat.SGMixinPlugin",
   "mixins": [
     "StructureTemplateMixin",
+    "compat.ait.TardisMixin",
     "compat.energy.EnergyStargateMixin"
   ],
   "client": [

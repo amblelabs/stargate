@@ -36,6 +36,9 @@ public class SGMixinPlugin implements IMixinConfigPlugin {
         if (id.equals("energy"))
             return DependencyChecker.hasTechEnergy();
 
+        if (id.equals("ait"))
+            return DependencyChecker.hasAIT();
+
         return true;
     }
 
