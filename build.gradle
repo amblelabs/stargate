@@ -52,6 +52,10 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	include(modImplementation("com.github.DrTheodor:mc-scheduler:${project.scheduler_version}")) {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
 	modCompileOnlyApi ("teamreborn:energy:${project.tech_version}")
 }
 
