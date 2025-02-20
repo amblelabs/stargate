@@ -47,9 +47,7 @@ public class PortalRendering {
         stack.push();
         stack.translate(0, -0.9, 0.05);
         stack.scale(1, 1, 1);
-        if (state != Stargate.GateState.OPEN)
-            mask.render(stack, portalProvider.getBuffer(RenderLayer.getEndPortal()), 0xf000f0, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
-        else {
+        if (state == Stargate.GateState.OPEN) {
             mask.render(stack, portalProvider.getBuffer(RenderLayer.getEntityTranslucentCull(frameTex)), 0xf000f0, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
         }
         portalProvider.draw();
