@@ -9,6 +9,7 @@ import dev.amble.lib.api.Identifiable;
 import dev.amble.lib.register.datapack.SimpleDatapackRegistry;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.World;
@@ -35,6 +36,11 @@ public class PointOfOriginRegistry extends SimpleDatapackRegistry<PointOfOriginR
 	@Override
 	public Symbol get(Identifier id) {
 		return this.REGISTRY.computeIfAbsent(id, key -> new Symbol(key, (char) ('A' + StargateMod.RANDOM.nextInt(Dialer.GLYPHS.length))));
+	}
+
+	@Override
+	public void reload(ResourceManager manager) {
+
 	}
 
 	public record Symbol(Identifier dimension, char glyph) implements Identifiable {

@@ -25,17 +25,23 @@
 		],
 		"client": [
           "dev.amble.stargate.client.StargateModClient"
+		],
+		"amblekit-main": [
+			"dev.amble.stargate.init.AmbleInitializer"
+		],
+		"amblekit-client": [
+			"dev.amble.stargate.init.client.AmbleClientInitializer"
 		]
 	},
 	"mixins": [
 		"stargate.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.10",
+		"fabricloader": ">=${loader_version}",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"amblekit": ">=1.1.5-1.20.1-beta"
+		"amblekit": "*"
 	},
 	"suggests": {
 

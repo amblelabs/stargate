@@ -1,6 +1,8 @@
 package dev.amble.stargate.client;
 
+import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.ClientStargateNetwork;
+import dev.amble.stargate.api.PointOfOriginRegistry;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
@@ -17,6 +19,10 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 public class StargateModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        AmbleRegistries.getInstance().registerAll(
+                PointOfOriginRegistry.getInstance()
+        );
+
         ClientStargateNetwork.getInstance();
         registerBlockEntityRenderers();
         setupBlockRendering();

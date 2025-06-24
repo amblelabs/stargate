@@ -1,9 +1,10 @@
 package dev.amble.stargate.api;
 
-import dev.drtheo.scheduler.api.Scheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.StargateSounds;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -152,7 +153,7 @@ public class Dialer implements NbtSync {
 		}
 
 		int finalI = i;
-		Scheduler.get().runTaskLater(() -> this.internalDial(address, finalI, lock), TimeUnit.TICKS, 1);
+		Scheduler.get().runTaskLater(() -> this.internalDial(address, finalI, lock), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
 	}
 
 	/**

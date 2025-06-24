@@ -1,5 +1,6 @@
 package dev.amble.stargate;
 
+import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.PointOfOriginRegistry;
 import dev.amble.stargate.core.*;
 import dev.amble.lib.container.RegistryContainer;
@@ -21,8 +22,13 @@ public class StargateMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		RegistryContainer.register(StargateItems.class, MOD_ID);
-		RegistryContainer.register(StargateItems.Groups.class, MOD_ID);
+
+		AmbleRegistries.getInstance().registerAll(
+				PointOfOriginRegistry.getInstance()
+		);
+
+		RegistryContainer.register(StargateItemGroups.class, MOD_ID);
+		//RegistryContainer.register(StargateItems.class, MOD_ID);
 		RegistryContainer.register(StargateBlocks.class, MOD_ID);
 		RegistryContainer.register(StargateBlockEntities.class, MOD_ID);
 		RegistryContainer.register(StargateEntities.class, MOD_ID);
@@ -31,8 +37,6 @@ public class StargateMod implements ModInitializer {
 		StargateServerData.init();
 
 		entityAttributeRegister();
-
-		PointOfOriginRegistry.getInstance().register();
 	}
 
 	public void entityAttributeRegister() {

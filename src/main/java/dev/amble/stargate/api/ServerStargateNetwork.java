@@ -1,9 +1,10 @@
 package dev.amble.stargate.api;
 
-import dev.drtheo.scheduler.api.Scheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -68,7 +69,7 @@ public class ServerStargateNetwork extends StargateNetwork {
 	}
 	private void sync() {
 		if (ServerLifecycleHooks.get() == null) {
-			Scheduler.get().runTaskLater(this::sync, TimeUnit.TICKS, 1); // queue the sync when the server exists
+			Scheduler.get().runTaskLater(this::sync, TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1); // queue the sync when the server exists
 			return;
 		}
 
@@ -90,7 +91,7 @@ public class ServerStargateNetwork extends StargateNetwork {
 	}
 	public void sync(Stargate gate) {
 		if (ServerLifecycleHooks.get() == null) {
-			Scheduler.get().runTaskLater(() -> this.sync(gate), TimeUnit.TICKS, 1); // queue the sync when the server exists
+			Scheduler.get().runTaskLater(() -> this.sync(gate), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1); // queue the sync when the server exists
 			return;
 		}
 

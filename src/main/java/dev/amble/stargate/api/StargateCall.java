@@ -1,10 +1,11 @@
 package dev.amble.stargate.api;
 
-import dev.drtheo.scheduler.api.Scheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 
@@ -42,7 +43,7 @@ public class StargateCall {
 
 	public void start() {
 		this.setState(Stargate.GateState.PREOPEN);
-		Scheduler.get().runTaskLater(this::end, ttlUnits, ttl);
+		Scheduler.get().runTaskLater(this::end, TaskStage.END_SERVER_TICK, ttlUnits, ttl);
 
 		for (Wiretap tap : subscribers) {
 			tap.onCallStart(this);
@@ -51,7 +52,7 @@ public class StargateCall {
 		this.to.playSound(StargateSounds.GATE_OPEN, 0.25f, 1f);
 		this.from.playSound(StargateSounds.GATE_OPEN, 0.25f, 1f);
 
-		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.OPEN), TimeUnit.TICKS, (long) (20 * 1.725)); // wait for sfx
+		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.OPEN), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, (long) (20 * 1.725)); // wait for sfx
 	}
 
 	public void end() {
@@ -62,7 +63,7 @@ public class StargateCall {
 		this.to.playSound(StargateSounds.GATE_CLOSE, 0.25f, 1f);
 		this.from.playSound(StargateSounds.GATE_CLOSE, 0.25f, 1f);
 
-		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.CLOSED), TimeUnit.TICKS, (long) (20 * 1.1));
+		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.CLOSED), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, (long) (20 * 1.1));
 	}
 
 	protected void setState(Stargate.GateState state) {
