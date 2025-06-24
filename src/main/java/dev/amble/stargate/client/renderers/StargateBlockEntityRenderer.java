@@ -26,8 +26,8 @@ import net.minecraft.util.math.RotationAxis;
 import java.util.List;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
-    public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargate.png");
-    public static final Identifier EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargate_emission.png");
+    public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
+    public static final Identifier EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way_emission.png");
     private final StargateModel model;
     public StargateBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.model = new StargateModel(StargateModel.getTexturedModelData().createModel());
@@ -37,11 +37,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.push();
         Stargate.GateState state = entity.hasStargate() ? entity.getGateState() : Stargate.GateState.CLOSED;
 
-        matrices.translate(0.5f, 2.65f, 0.5f);
+        matrices.translate(0.5f, 1.5f, 0.5f);
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-        matrices.scale(1.75f, 1.75f, 1.75f);
+        matrices.scale(1, 1, 1);
 
         float power = 1;
 
@@ -52,22 +52,27 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.renderGlyphs(matrices, vertexConsumers, gate);
 
             power = Math.min(gate.getEnergy() / gate.getMaxEnergy(), 1);
+
+            this.model.chev_light7.visible = dialer.isCurrentGlyphBeingLocked();
+            this.model.chev_light7bottom.visible = dialer.isCurrentGlyphBeingLocked();
         }
 
         this.model.animateStargateModel(entity, state, entity.age);
         int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up().up().up().up());
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
         PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
-        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCullZOffset(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
+        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
         this.model.portal.visible = state == Stargate.GateState.OPEN;
 
         matrices.pop();
     }
 
     private void setFromDialer(Dialer dialer, Stargate.GateState state) {
-        List<ModelPart> chevrons = List.of(model.chevron_two, model.chevron_three, model.chevron_four, model.chevron_seven, model.chevron_eight, model.chevron_nine, model.chevron_one, model.chevron_five, model.chevron_six);
+        List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom, model.chev_light8, model.chev_light9);
 
-        chevrons.forEach(chevron -> chevron.visible = state == Stargate.GateState.OPEN);
+        chevrons.forEach(chevron -> {
+            chevron.visible = state == Stargate.GateState.OPEN;
+        });
 
         for (int i = 0; i < dialer.getAmountLocked(); i++) {
             chevrons.get(i).visible = true;
@@ -81,11 +86,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
         int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
         float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;
-        float zOffset = northern ? direction.getOffsetZ() * 0.3f * multiplier : direction.getOffsetX() * 0.3f * multiplier;
+        float zOffset = northern ? direction.getOffsetZ() * 0.25f * multiplier : direction.getOffsetX() * 0.25f * multiplier;
 
         Dialer dialer = gate.getDialer();
         matrices.push();
-        matrices.translate(0, -0.95f, 0);
+        matrices.translate(0, -2.05f, 0);
         matrices.translate(xOffset, 0.05f, zOffset);
         matrices.scale(0.025f, 0.025f, 0.025f);
         // TODO fix the rotation stuff here. - Loqor
@@ -105,13 +110,13 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             if (isInDial) {
                 colour = 0xedc093;
             }
-            if (isSelected) {
+            if (isSelected && dialer.isDialing()) {
                 colour = 0xedb334;
             }
 
             matrices.push();
             double angle = 2 * Math.PI * i / Dialer.GLYPHS.length;
-            matrices.translate(Math.sin(angle) * 88, Math.cos(angle) * 88, 0);
+            matrices.translate(Math.sin(angle) * 118, Math.cos(angle) * 118, 0);
             // TODO fix the rotation stuff here. - Loqor
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rot));
             OrderedText text = Address.toGlyphs(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();

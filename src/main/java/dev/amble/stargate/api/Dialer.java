@@ -153,7 +153,9 @@ public class Dialer implements NbtSync {
 		}
 
 		int finalI = i;
-		Scheduler.get().runTaskLater(() -> this.internalDial(address, finalI, lock), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
+		Scheduler.get().runTaskLater(() -> this.internalDial(address, finalI, lock), TaskStage.END_SERVER_TICK,
+				TimeUnit.TICKS,
+				this.isCurrentGlyphBeingLocked() ? 2 : 1);
 	}
 
 	/**
@@ -219,6 +221,9 @@ public class Dialer implements NbtSync {
 		this.append(this.selected);
 
 		this.parent.playSound(StargateSounds.CHEVRON_LOCK, 0.25f, StargateMod.RANDOM.nextFloat(0.9f, 1.1f));
+
+		Scheduler.get().runTaskLater(() -> this.parent.playSound(StargateSounds.CHEVRON_LOCK, 0.25f, StargateMod.RANDOM.nextFloat(0.9f, 1.1f)),
+				TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 16);
 	}
 	public char getSelected() {
 		return this.selected;
@@ -388,6 +393,10 @@ public class Dialer implements NbtSync {
 	 */
 	public Rotation getRotation() {
 		return this.lastRotation;
+	}
+
+	public boolean isCurrentGlyphBeingLocked() {
+		return !this.target.isEmpty() && this.target.charAt(this.target.length() - 1) == this.selected;
 	}
 
 	public enum Rotation {

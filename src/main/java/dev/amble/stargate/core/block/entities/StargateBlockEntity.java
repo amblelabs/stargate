@@ -38,6 +38,7 @@ import java.util.Set;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
+	public AnimationState CHEVRON_LOCK_STATE = new AnimationState();
 	private static final Identifier SYNC_GATE_STATE = new Identifier(StargateMod.MOD_ID, "sync_gate_state");
 	public int age;
 	public boolean requiresPlacement = false;
@@ -183,8 +184,20 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 			age++;
 
 			ANIM_STATE.startIfNotRunning(age);
+
+			if (this.hasStargate()) {
+				Stargate gate = this.getStargate().get();
+				Dialer dialer = gate.getDialer();
+				// Run if there is a selected glyph and it is being added to the locked amount
+				if (dialer.isCurrentGlyphBeingLocked()) {
+					CHEVRON_LOCK_STATE.startIfNotRunning(this.age);
+				} else {
+					CHEVRON_LOCK_STATE.stop();
+				}
+			}
 			return;
 		}
+
 		if (world.getServer() == null) return;
 
 		if (this.requiresPlacement) {
