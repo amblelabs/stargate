@@ -45,20 +45,27 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         float power = 1;
 
+        int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up().up().up().up());
+
+        float rot = 0;
+
         if (entity.hasStargate()) {
             Stargate gate = entity.getStargate().get();
             Dialer dialer = gate.getDialer();
             this.setFromDialer(dialer, state);
-            this.renderGlyphs(matrices, vertexConsumers, gate);
+            float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
             power = Math.min(gate.getEnergy() / gate.getMaxEnergy(), 1);
 
             this.model.chev_light7.visible = dialer.isCurrentGlyphBeingLocked();
             this.model.chev_light7bottom.visible = dialer.isCurrentGlyphBeingLocked();
+            rot = rotationValue;
         }
 
+
+
         this.model.animateStargateModel(entity, state, entity.age);
-        int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up().up().up().up());
+        this.model.SymbolRing.roll = rot;
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
         PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
@@ -79,14 +86,14 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         }
     }
 
-    private void renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate) {
+    private float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light) {
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
         Direction direction = gate.getAddress().pos().getRotationDirection();
         boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
         int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
         float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;
-        float zOffset = northern ? direction.getOffsetZ() * 0.25f * multiplier : direction.getOffsetX() * 0.25f * multiplier;
+        float zOffset = northern ? direction.getOffsetZ() * 0.24f * multiplier : direction.getOffsetX() * 0.24f * multiplier;
 
         Dialer dialer = gate.getDialer();
         matrices.push();
@@ -95,17 +102,17 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.scale(0.025f, 0.025f, 0.025f);
         // TODO fix the rotation stuff here. - Loqor
         int middleIndex = Dialer.GLYPHS.length / 2;
-        float selectedRot = 180 + (float) (27.7f * (0.5 * dialer.getSelectedIndex()));
+        float selectedRot = 180 + (float) (18.5f * (0.5 * dialer.getSelectedIndex()));
         float rot = dialer.getSelectedIndex() > -1 ? selectedRot :
                 MathHelper.wrapDegrees(MinecraftClient.getInstance().player.age / 100f * 360f);
         if (dialer.isDialing())
-            rot = rot + (dialer.getRotation().equals(Dialer.Rotation.FORWARD) ? 14f : -14f) * dialer.getRotationProgress();
+            rot = rot + (dialer.getRotation().equals(Dialer.Rotation.FORWARD) ? 9 : -9) * dialer.getRotationProgress();
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rot));
         for (int i = 0; i < Dialer.GLYPHS.length; i++) {
             boolean isInDial = dialer.contains(Dialer.GLYPHS[i]);
             boolean isSelected = i == dialer.getSelectedIndex();
 
-            int colour = 0x4f4f4f;
+            int colour = 0x22222b;
 
             if (isInDial) {
                 colour = 0xedc093;
@@ -116,14 +123,15 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
             matrices.push();
             double angle = 2 * Math.PI * i / Dialer.GLYPHS.length;
-            matrices.translate(Math.sin(angle) * 118, Math.cos(angle) * 118, 0);
+            matrices.translate(Math.sin(angle) * 117, Math.cos(angle) * 117, 0);
             // TODO fix the rotation stuff here. - Loqor
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rot));
             OrderedText text = Address.toGlyphs(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 0xF000F0);
+                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
             matrices.pop();
         }
         matrices.pop();
+        return rot;
     }
 }

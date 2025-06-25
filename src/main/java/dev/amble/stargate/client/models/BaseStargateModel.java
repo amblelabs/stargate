@@ -27,7 +27,6 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
     public void animateStargateModel(StargateBlockEntity stargateBlockEntity, Stargate.GateState state, int age) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
 
-
         //this.updateAnimation(stargateBlockEntity.ANIM_STATE, this.getAnimationForState(state), age);
         this.updateAnimation(stargateBlockEntity.CHEVRON_LOCK_STATE, StargateAnimations.LOCK_SYMBOL, age);
     }

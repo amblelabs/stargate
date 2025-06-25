@@ -414,7 +414,8 @@ public class StargateModel extends BaseStargateModel {
 
 	@Override
 	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-		this.getPart().traverse().forEach(ModelPart::resetTransform);
+		//this.getPart().traverse().forEach(ModelPart::resetTransform);
+
 	}
 
 	@Override

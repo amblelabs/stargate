@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * For tracking a dialing sequence in progress
  */
 public class Dialer implements NbtSync {
-	public static final char[] GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+	public static final char[] GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%#?/".toCharArray();
 	private final Stargate parent;
 	private String target;
 	private char selected;

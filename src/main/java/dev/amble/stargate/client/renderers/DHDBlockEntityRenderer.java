@@ -64,7 +64,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
             matrices.push();
             double angle = 2 * Math.PI * j / Dialer.GLYPHS.length;
-            matrices.translate(Math.sin(angle) * 45, Math.cos(angle) * 44, 0);
+            matrices.translate(Math.sin(angle) * 20f, Math.cos(angle) * 20f, 0);
             OrderedText text = Address.toGlyphs(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, 0, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 0xF000F0);

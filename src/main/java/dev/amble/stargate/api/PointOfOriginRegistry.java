@@ -57,7 +57,7 @@ public class PointOfOriginRegistry extends SimpleDatapackRegistry<PointOfOriginR
 		}
 		private static char cleanseChar(char input) {
 			// ensure its an upper case A-Z
-			return (char) ('A' + (input - 'A') % 26);
+			return (char) ('A' + (input - 'A') % 39);
 		}
 
 		public static Symbol fromInputStream(InputStream stream) {

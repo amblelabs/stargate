@@ -17,7 +17,7 @@ import java.util.Objects;
  * @param pos the position of the Stargate
  */
 public record Address(String text, DirectedGlobalPos pos) {
-	private static final Identifier FONT_ID = new Identifier("minecraft", "alt");
+	private static final Identifier FONT_ID = StargateMod.id("stargate");
 	private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
 	/**
