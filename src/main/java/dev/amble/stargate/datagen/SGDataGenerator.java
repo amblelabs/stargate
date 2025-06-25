@@ -50,8 +50,10 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.translateBlocks(StargateBlocks.class);
             provider.addTranslation(StargateBlocks.DHD, "Dial-Home Device");
+            provider.addTranslation(StargateBlocks.STARGATE, "Stargate");
 
             provider.translateItems(StargateItems.class);
+            provider.addTranslation(StargateItems.SPECTRAL_PROJECTOR, "Address Cartouche");
 
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
