@@ -112,14 +112,15 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             boolean isInDial = dialer.contains(Dialer.GLYPHS[i]);
             boolean isSelected = i == dialer.getSelectedIndex();
 
-            int colour = 0x22222b;
+            int colour = 0x17171b;
 
             if (isInDial) {
-                colour = 0xedc093;
+                colour = 0x17171b;
             }
             if (isSelected && dialer.isDialing()) {
-                colour = 0xedb334;
+                colour = 0x17171b;
             }
+
 
             matrices.push();
             double angle = 2 * Math.PI * i / Dialer.GLYPHS.length;
