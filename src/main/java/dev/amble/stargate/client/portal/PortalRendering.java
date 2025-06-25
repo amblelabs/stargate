@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -23,7 +24,7 @@ public class PortalRendering {
         if (MinecraftClient.getInstance().world == null
                 || MinecraftClient.getInstance().player == null) return;
 
-        //Stargate stargate = stargateBlockEntity.getStargate();
+        Stargate stargate = stargateBlockEntity.getStargate().get();
 
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
@@ -72,13 +73,13 @@ public class PortalRendering {
         portalProvider.draw();
         stack.pop();
 
-        /*stack.push();
+        stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         stack.translate(0, 0, 5);
         StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
         model.render(stack, portalProvider.getBuffer(RenderLayer.getWaterMask()), 0xf000f0, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
         portalProvider.draw();
-        stack.pop();*/
+        stack.pop();
 
         MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
 

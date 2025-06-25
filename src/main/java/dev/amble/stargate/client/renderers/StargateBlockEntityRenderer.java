@@ -17,6 +17,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -57,19 +58,18 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
             power = Math.min(gate.getEnergy() / gate.getMaxEnergy(), 1);
 
-            this.model.chev_light7.visible = dialer.isCurrentGlyphBeingLocked();
-            this.model.chev_light7bottom.visible = dialer.isCurrentGlyphBeingLocked();
+            boolean bl = dialer.isCurrentGlyphBeingLocked() || state == Stargate.GateState.OPEN || state == Stargate.GateState.PREOPEN;
+            this.model.chev_light7.visible = bl;
+            this.model.chev_light7bottom.visible = bl;
             rot = rotationValue;
         }
-
-
 
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
-        PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
+        //PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
-        this.model.portal.visible = state == Stargate.GateState.OPEN;
+        this.model.portal.visible = false;
 
         matrices.pop();
     }
@@ -78,7 +78,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom, model.chev_light8, model.chev_light9);
 
         chevrons.forEach(chevron -> {
-            chevron.visible = state == Stargate.GateState.OPEN;
+            chevron.visible = state == Stargate.GateState.OPEN || state == Stargate.GateState.PREOPEN;
         });
 
         for (int i = 0; i < dialer.getAmountLocked(); i++) {

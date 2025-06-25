@@ -23,6 +23,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.particle.DustColorTransitionParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -31,6 +33,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.List;
@@ -193,6 +196,40 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					CHEVRON_LOCK_STATE.startIfNotRunning(this.age);
 				} else {
 					CHEVRON_LOCK_STATE.stop();
+				}
+
+				if (this.getGateState() == Stargate.GateState.OPEN && age % 20 == 0) {
+					double centerX = this.getPos().getX() + 0.5;
+					double centerY = this.getPos().getY() + 3.5;
+					double centerZ = this.getPos().getZ() + 0.5;
+					double radius = 2.5;
+					Direction facing = this.getCachedState().get(StargateBlock.FACING);
+
+					for (double x = -radius; x <= radius; x += 0.2) {
+						for (double y = -radius; y <= radius; y += 0.2) {
+							if (x * x + y * y <= radius * radius) {
+								//BlockPos rotated = rotate((int) Math.round(x * 10), (int) Math.round(y * 10), facing);
+								double rx, rz;
+								switch (facing) {
+                                    case SOUTH -> { rx = centerX - x; rz = centerZ; }
+									case WEST  -> { rx = centerX; rz = centerZ + x; }
+									case EAST  -> { rx = centerX; rz = centerZ - x; }
+									default    -> { rx = centerX + x; rz = centerZ; }
+								}
+								this.getWorld().addParticle(
+										new DustColorTransitionParticleEffect(
+												new Vector3f(0.6F, 0.8F, 1F), // from color (white)
+												new Vector3f(0.0F, 0.6F, 1F), // to color (light blue)
+												3F // scale
+										),
+										rx,
+										centerY + y,
+										rz,
+										0, 0, 0
+								);
+							}
+						}
+					}
 				}
 			}
 			return;
