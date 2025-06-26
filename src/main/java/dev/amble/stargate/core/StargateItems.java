@@ -14,5 +14,5 @@ import net.minecraft.item.ItemGroups;
 public class StargateItems extends ItemContainer {
 
 	@NoEnglish
-	public static final Item SPECTRAL_PROJECTOR = new DialerItem(new AItemSettings().maxCount(1).group(StargateItemGroups.MAIN));
+	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1).group(StargateItemGroups.MAIN));
 }
