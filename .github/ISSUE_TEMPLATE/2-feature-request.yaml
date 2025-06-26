@@ -14,7 +14,7 @@ body:
     description: Tell us, what do you want to be implemented?
     placeholder: Tell us what you want!
     value: |
-      I want to be able to spill the tea on the console.
+      I want the ability to die to the kadoosh.
   validations:
     required: true
 - type: textarea
