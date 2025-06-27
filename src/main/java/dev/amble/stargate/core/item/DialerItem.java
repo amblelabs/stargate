@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.item;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.StargateLinkable;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;

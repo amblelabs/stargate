@@ -2,6 +2,10 @@ package dev.amble.stargate.core.item;
 
 import dev.amble.stargate.api.*;
 import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.stargate.api.network.ClientStargate;
+import dev.amble.stargate.api.network.ClientStargateNetwork;
+import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateNetwork;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -56,7 +60,7 @@ public abstract class StargateLinkableItem extends Item {
 			return;
 		}
 
-		ClientStargate stargate = (ClientStargate) ClientStargateNetwork.getInstance().get(id);
+		ClientStargate stargate = (ClientStargate) ClientStargateNetwork.get().get(id);
 
 		if (stargate != null) {
 			tooltip.add(Text.literal("STARGATE: ").formatted(Formatting.BLUE));
@@ -64,7 +68,7 @@ public abstract class StargateLinkableItem extends Item {
 			Address address = stargate.getAddress();
 			DirectedGlobalPos pos = address.pos();
 
-			tooltip.add(Text.literal("> ").append(address.toGlyphs())
+			tooltip.add(Text.literal("> ").append(address.asText())
 					.formatted(Formatting.DARK_GRAY));
 			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(pos.getDimension())).formatted(Formatting.DARK_GRAY));
 			tooltip.add(Text.literal("> " + pos.getPos().getX() + ", " + pos.getPos().getY() + ", " + pos.getPos().getZ())

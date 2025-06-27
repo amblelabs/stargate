@@ -1,7 +1,6 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.client.models.ControlModel;
 import dev.amble.stargate.core.entities.DHDControlEntity;
 import net.fabricmc.api.EnvType;
@@ -31,7 +30,7 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
                        VertexConsumerProvider vertexConsumerProvider, int light) {
         if (livingEntity.getCustomName() == null) return;
 
-        Text name = Address.toGlyphs(livingEntity.getCustomName().getString());
+        Text name = Address.asText(livingEntity.getCustomName().getString());
         double d = this.dispatcher.getSquaredDistanceToCamera(livingEntity);
 
         TextRenderer textRenderer = this.getTextRenderer();

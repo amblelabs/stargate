@@ -1,5 +1,7 @@
 package dev.amble.stargate.api;
 
+import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateNetwork;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

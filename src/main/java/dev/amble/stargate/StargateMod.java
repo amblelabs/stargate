@@ -1,7 +1,7 @@
 package dev.amble.stargate;
 
 import dev.amble.lib.register.AmbleRegistries;
-import dev.amble.stargate.api.PointOfOriginRegistry;
+import dev.amble.stargate.api.GlyphOriginRegistry;
 import dev.amble.stargate.core.*;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
@@ -18,13 +18,14 @@ import java.util.Random;
 public class StargateMod implements ModInitializer {
 	public static final String MOD_ID = "stargate";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	// FIXME: get rid of this
 	public static final Random RANDOM = new Random();
 
 	@Override
 	public void onInitialize() {
-
 		AmbleRegistries.getInstance().registerAll(
-				PointOfOriginRegistry.getInstance()
+				GlyphOriginRegistry.getInstance()
 		);
 
 		RegistryContainer.register(StargateItemGroups.class, MOD_ID);

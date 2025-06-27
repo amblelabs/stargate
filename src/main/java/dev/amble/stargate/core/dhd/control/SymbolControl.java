@@ -1,11 +1,10 @@
 package dev.amble.stargate.core.dhd.control;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
 public class SymbolControl {

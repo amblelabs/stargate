@@ -1,6 +1,6 @@
 package dev.amble.stargate.mixins.compat.energy;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.compat.energy.StargateRebornEnergy;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.util.math.MathHelper;

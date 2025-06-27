@@ -1,7 +1,9 @@
 package dev.amble.stargate.api;
 
+import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateNetwork;
 import dev.amble.stargate.core.block.StargateBlock;
-import dev.drtheo.scheduler.api.common.Scheduler;;
+import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.StargateSounds;
@@ -17,7 +19,6 @@ import java.util.function.Consumer;
  * For tracking a dialing sequence in progress
  */
 public class Dialer implements NbtSync {
-	public static final char[] GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%#?/".toCharArray();
 	private final Stargate parent;
 	private String target;
 	private char selected;
@@ -171,7 +172,7 @@ public class Dialer implements NbtSync {
 		return this.target.length() == 7;
 	}
 
-	public Optional<Stargate> toStargate(World world) {
+	public Optional<? extends Stargate> toStargate(World world) {
 		if (!this.isComplete()) return Optional.empty();
 
 		Address found = StargateNetwork.getInstance(world).getAddress(this.target).orElse(null);
@@ -179,6 +180,7 @@ public class Dialer implements NbtSync {
 
 		return StargateNetwork.getInstance(world).getOptional(found);
 	}
+
 	public Optional<StargateCall> complete(Stargate source, World world) {
 		Stargate target = this.toStargate(world).orElse(null);
 
@@ -243,28 +245,12 @@ public class Dialer implements NbtSync {
 	 * @return the index of the selected glyph in GLYPHS
 	 */
 	public int getSelectedIndex() {
-		return this.indexOf(this.selected);
-	}
-	public int indexOf(char c) {
-		for (int i = 0; i < GLYPHS.length; i++) {
-			if (GLYPHS[i] == c) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * @return The amount of glyphs (7)
-	 */
-	public int getGlyphCount() {
-		return GLYPHS.length;
+		return Glyph.indexOf(this.selected);
 	}
 
 	private char next(boolean simulate) {
 		int index = this.getSelectedIndex();
-		char next = GLYPHS[(index + 1) % GLYPHS.length];
+		char next = Glyph.ALL[(index + 1) % Glyph.ALL.length];
 
 		if (!simulate) {
 			this.selected = next;
@@ -280,7 +266,7 @@ public class Dialer implements NbtSync {
 	}
 	private char previous(boolean simulate) {
 		int index = this.getSelectedIndex();
-		char previous = GLYPHS[(index + GLYPHS.length - 1) % GLYPHS.length];
+		char previous = Glyph.ALL[(index + GLYPHS.length - 1) % GLYPHS.length];
 
 		if (!simulate) {
 			this.selected = previous;
@@ -323,8 +309,8 @@ public class Dialer implements NbtSync {
 		int currentIndex = this.indexOf(current);
 		int targetIndex = this.indexOf(target);
 
-		int forwardDistance = (targetIndex - currentIndex + GLYPHS.length) % GLYPHS.length;
-		int backwardDistance = (currentIndex - targetIndex + GLYPHS.length) % GLYPHS.length;
+		int forwardDistance = (targetIndex - currentIndex + Glyph.ALL.length) % Glyph.ALL.length;
+		int backwardDistance = (currentIndex - targetIndex + Glyph.ALL.length) % Glyph.ALL.length;
 
 		return forwardDistance <= backwardDistance;
 	}

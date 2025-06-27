@@ -1,7 +1,6 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.client.animations.StargateAnimations;
+import dev.amble.stargate.api.network.Stargate;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.animation.Animation;

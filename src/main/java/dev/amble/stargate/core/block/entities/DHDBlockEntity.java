@@ -1,8 +1,8 @@
 package dev.amble.stargate.core.block.entities;
 
-import dev.amble.stargate.api.ServerStargateNetwork;
-import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.StargateNetwork;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateNetwork;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.block.DHDBlock;
 import dev.amble.stargate.core.dhd.SymbolArrangement;
@@ -39,10 +39,10 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
         if (!this.hasStargate()) return ActionResult.FAIL;
         if (world.isClient()) return ActionResult.SUCCESS;
 
-        StargateNetwork network = ServerStargateNetwork.getInstance();
+        StargateNetwork network = ServerStargateNetwork.get();
         Stargate target = this.getStargate().get();
 
-        player.sendMessage(target.getAddress().toGlyphs(), true);
+        player.sendMessage(target.getAddress().asText(), true);
         target.dial(target);
 
         /*

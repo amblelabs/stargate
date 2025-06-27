@@ -1,7 +1,8 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.network;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.Address;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -21,9 +22,10 @@ import java.util.function.Supplier;
 /**
  * A list of all the known addresses and their corresponding Stargates.
  */
-public abstract class StargateNetwork {
-	public static Identifier PACKET = StargateMod.id("sync_books");
-	protected final HashMap<Address, Stargate> lookup;
+public abstract class StargateNetwork<T extends Stargate> {
+	public static Identifier SYNC = StargateMod.id("sync");
+	public static Identifier SYNC_ALL = StargateMod.id("sync_all");
+	protected final HashMap<Address, T> lookup;
 
 	protected StargateNetwork() {
 		this.lookup = new HashMap<>();
@@ -34,7 +36,7 @@ public abstract class StargateNetwork {
 	 * @param address the address to add
 	 * @param stargate the Stargate to associate with the address
 	 */
-	public boolean add(Address address, Stargate stargate) {
+	public boolean add(Address address, T stargate) {
 		if (this.lookup.containsKey(address)) {
 			StargateMod.LOGGER.warn("Address {} already exists in the phone book!", address);
 			return false;
@@ -47,28 +49,32 @@ public abstract class StargateNetwork {
 	 * Adds a new stargate to the phone book
 	 * @param stargate the Stargate to add
 	 */
-	public void add(Stargate stargate) {
+	public void add(T stargate) {
 		this.add(stargate.getAddress(), stargate);
 	}
 
-	public Stargate get(Address address) {
+	public T get(Address address) {
 		return lookup.get(address);
 	}
-	public Optional<Stargate> getOptional(Address address) {
+
+	public Optional<T> getOptional(Address address) {
 		return Optional.ofNullable(this.get(address));
 	}
-	public Optional<Stargate> get(DirectedGlobalPos pos) {
+
+	public Optional<T> get(DirectedGlobalPos pos) {
 		// find an address that matches
 		return lookup.keySet().stream()
 				.filter(address -> address.pos().equals(pos))
 				.map(this::get)
 				.findFirst();
 	}
+
 	public Optional<Address> getAddress(String text) {
 		return lookup.keySet().stream()
 				.filter(address -> address.text().equals(text))
 				.findFirst();
 	}
+
 	public @Nullable Stargate get(String address) {
 		Address addr = lookup.keySet().stream()
 				.filter(a -> a.text().equals(address))
@@ -78,27 +84,12 @@ public abstract class StargateNetwork {
 	}
 
 	/**
-	 * Gets the Stargate associated with the address, or adds it if it doesn't exist.
-	 * @param address the address to look up
-	 * @param stargate the Stargate to add if the address doesn't exist
-	 * @return the Stargate associated with the address
-	 */
-	public Stargate getOrAdd(Address address, Stargate stargate) {
-		return lookup.computeIfAbsent(address, k -> stargate);
-	}
-
-	/**
 	 * Removes an address from the phone book.
 	 * @param address the address to remove
 	 * @return the Stargate associated with the address
 	 */
 	public Optional<Stargate> remove(Address address) {
 		return Optional.ofNullable(lookup.remove(address));
-	}
-
-	public Stargate getRandom() {
-		int chosen = (int) (Math.random() * lookup.size());
-		return (Stargate) lookup.values().toArray()[chosen];
 	}
 
 	/**
@@ -131,20 +122,21 @@ public abstract class StargateNetwork {
 
 		return nbt;
 	}
-	public StargateNetwork fromNbt(NbtCompound nbt, boolean clear) {
-		if (clear) {
-			this.lookup.clear();
-		}
+
+	public StargateNetwork<T> fromNbt(NbtCompound nbt, boolean clear) {
+		if (clear) this.lookup.clear();
+
 		NbtList list = nbt.getList("Stargates", NbtElement.COMPOUND_TYPE);
+
 		list.forEach(tag -> {
-			Stargate stargate = this.fromNbt((NbtCompound) tag);
+			T stargate = this.fromNbt((NbtCompound) tag);
 			this.lookup.put(stargate.getAddress(), stargate);
 		});
+
 		return this;
 	}
-	protected <T extends Stargate> T fromNbt(NbtCompound nbt) {
-		return (T) new Stargate(nbt);
-	}
+
+	protected abstract T fromNbt(NbtCompound nbt);
 
 	public static <C, R> R with(BlockEntity entity, ContextManager<C, R> consumer) {
 		return StargateNetwork.with(entity.getWorld(), consumer);
@@ -180,14 +172,16 @@ public abstract class StargateNetwork {
 				'}';
 	}
 
-	public static StargateNetwork getInstance(boolean isServer) {
-		return isServer ? ServerStargateNetwork.getInstance() : ClientStargateNetwork.getInstance();
+	public static StargateNetwork<?> getInstance(boolean isServer) {
+		return isServer ? ServerStargateNetwork.get() : ClientStargateNetwork.get();
 	}
-	public static StargateNetwork getInstance(World world) {
+
+	public static StargateNetwork<?> getInstance(World world) {
 		return getInstance(!world.isClient());
 	}
+
 	@FunctionalInterface
 	public interface ContextManager<C, R> {
-		R run(C c, StargateNetwork manager);
+		R run(C c, StargateNetwork<?> manager);
 	}
 }
