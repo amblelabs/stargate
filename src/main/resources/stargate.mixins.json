@@ -7,11 +7,7 @@
     "StructureTemplateMixin",
     "compat.energy.EnergyStargateMixin"
   ],
-  "client": [
-    "client.framebuffer.MixinMainFramebufferTarget",
-    "client.framebuffer.MixinRenderFramebufferTarget"
-  ],
-  "injectors": {
+   "injectors": {
     "defaultRequire": 1
 	}
 }
