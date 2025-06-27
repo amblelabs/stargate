@@ -152,15 +152,15 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	protected String getRingPositioning() {
 		return """
-				___XXX___
-				_XX___XX_
-				_X_____X_/
-				X_______X/
-				X_______X//
-				X_______X///
-				X_______X////
-				_X_____X_
-				__XX_XX__.
+				_________
+				_________
+				___XXX___/
+				__X___X__/
+				_X_____X_//
+				_X_____X_///
+				_X_____X_////
+				__X___X__
+				___X_X___.
 				""";
 	}
 
@@ -198,7 +198,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					CHEVRON_LOCK_STATE.stop();
 				}
 
-				if (this.getGateState() == Stargate.GateState.OPEN && age % 20 == 0) {
+				/*if (this.getGateState() == Stargate.GateState.OPEN && age % 20 == 0) {
 					double centerX = this.getPos().getX() + 0.5;
 					double centerY = this.getPos().getY() + 3.5;
 					double centerZ = this.getPos().getZ() + 0.5;
@@ -230,7 +230,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 							}
 						}
 					}
-				}
+				}*/
 			}
 			return;
 		}

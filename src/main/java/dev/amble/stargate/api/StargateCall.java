@@ -24,7 +24,7 @@ public class StargateCall {
 	private final List<Wiretap> subscribers;
 
 	public StargateCall(Stargate from, Stargate to) {
-		this(from, to, 10, TimeUnit.SECONDS);
+		this(from, to, 20, TimeUnit.SECONDS);
 	}
 	/**
 	 * Represents a call between two Stargates.
@@ -52,7 +52,7 @@ public class StargateCall {
 		this.to.playSound(StargateSounds.GATE_OPEN, 0.25f, 1f);
 		this.from.playSound(StargateSounds.GATE_OPEN, 0.25f, 1f);
 
-		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.OPEN), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, (long) (20 * 1.725)); // wait for sfx
+		Scheduler.get().runTaskLater(() -> this.setState(Stargate.GateState.OPEN), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, (long) (20 * 1.725 + 8)); // wait for sfx
 	}
 
 	public void end() {

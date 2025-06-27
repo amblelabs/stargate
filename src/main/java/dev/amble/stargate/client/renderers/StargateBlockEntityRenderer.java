@@ -66,16 +66,18 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
-        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
-        //PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
-        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
         this.model.portal.visible = false;
-
+        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
+        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
         matrices.pop();
+
+        PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
     }
 
     private void setFromDialer(Dialer dialer, Stargate.GateState state) {
-        List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom, model.chev_light8, model.chev_light9);
+        model.chev_light8.visible = false;
+        model.chev_light9.visible = false;
+        List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom);
 
         chevrons.forEach(chevron -> {
             chevron.visible = state == Stargate.GateState.OPEN || state == Stargate.GateState.PREOPEN;

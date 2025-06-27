@@ -2,6 +2,8 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.Stargate;
+import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
@@ -9,8 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-
-import static net.minecraft.util.math.MathHelper.lerp;
 
 public class PortalUtil {
     public Identifier TEXTURE_LOCATION;
@@ -22,6 +22,7 @@ public class PortalUtil {
     private final float rotationSpeed;
     private final float speed;
     private float time = 0;
+    private float radius = 0.08f;
 
     public PortalUtil(Identifier texture) {
         TEXTURE_LOCATION = texture;
@@ -38,9 +39,9 @@ public class PortalUtil {
         this(StargateMod.id("textures/portal/" + name + ".png"));
     }
 
-    public void renderPortalInterior(MatrixStack matrixStack) {
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate.GateState state) {
 
-        time += MinecraftClient.getInstance().getTickDelta() / 360f;
+        time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
@@ -52,234 +53,193 @@ public class PortalUtil {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
 
-        for (int i = 0; i < 4; ++i) {
-            this.renderSection(buffer, i, (MinecraftClient.getInstance().player.age / 200.0f) * -this.speed, (float) Math.sin(i * Math.PI / 4),
-                    (float) Math.sin((i + 1) * Math.PI / 4), matrixStack.peek().getPositionMatrix());
-        }
-
-        /*StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
-        model.getPart().traverse().forEach(part -> {
-            part.forEachCuboid(matrixStack, (d, g, h, s) -> {
-                Vector3f[] vertices = new Vector3f[8];
-                vertices[0] = new Vector3f(s.minX, s.minY, s.minZ);
-                vertices[1] = new Vector3f(s.maxX, s.minY, s.minZ);
-                vertices[2] = new Vector3f(s.maxX, s.maxY, s.minZ);
-                vertices[3] = new Vector3f(s.minX, s.maxY, s.minZ);
-                vertices[4] = new Vector3f(s.minX, s.minY, s.maxZ);
-                vertices[5] = new Vector3f(s.maxX, s.minY, s.maxZ);
-                vertices[6] = new Vector3f(s.maxX, s.maxY, s.maxZ);
-                vertices[7] = new Vector3f(s.minX, s.maxY, s.maxZ);
-                this.method(vertices);
-
-                List<ModelPart.Cuboid> cuboids = new ArrayList<>();
-
-                for (int i = 0; i < vertices.length; i += 8) {
-                    float[] min = { Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE };
-                    float[] max = { Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE };
-
-                    for (int j = 0; j < 8; j++) {
-                        float x = vertices[i + j].x;
-                        float y = vertices[i + j].y;
-                        float z = vertices[i + j].z;
-
-                        min[0] = Math.min(min[0], x);
-                        min[1] = Math.min(min[1], y);
-                        min[2] = Math.min(min[2], z);
-
-                        max[0] = Math.max(max[0], x);
-                        max[1] = Math.max(max[1], y);
-                        max[2] = Math.max(max[2], z);
-                    }
-
-                    cuboids.add(new ModelPart.Cuboid(12, 12, min[0], min[1], min[2], max[0], max[1], max[2], 0, 0, 0, 0));
-                }
-
-                AtomicReference<ModelPart> vertexedUp = new AtomicReference<>();
-
-                        ModelData modelData = new ModelData();
-                ModelPartData modelPartData = modelData.getRoot();
-
-                ModelPartBuilder partBuilder = ModelPartBuilder.create();
-                cuboids.forEach(cuboid -> {
-                    partBuilder.cuboid(cuboid.minX, cuboid.minY, cuboid.minZ, cuboid.maxX - cuboid.minX, cuboid.maxY - cuboid.minY, cuboid.maxZ - cuboid.minZ);
-                    modelPartData.addChild("nothing", partBuilder, part.getTransform());
-                    vertexedUp.set(TexturedModelData.of(modelData, 0, 0).createModel());
-                });
-
-                vertexedUp.get().render(matrixStack, buffer, 1, 1);
-            });
-        });*/
+        RenderSystem.disableCull();
+        portalTriangles(matrixStack, buffer, state);
 
         tessellator.draw();
+        RenderSystem.enableCull();
         matrixStack.pop();
     }
 
-    public void renderSection(VertexConsumer builder, int zOffset, float textureDistanceOffset, float startScale,
-                              float endScale, Matrix4f matrix4f) {
-        float panel = 3f;//1 / 6f;
-        float sqrt =0f;//(float) Math.sqrt(3) / 2.0f;
-        int vOffset = 1;//(zOffset * panel + textureDistanceOffset > 1.0) ? zOffset - 6 : zOffset;
-        float distortion = 0;//this.computeDistortionFactor(time, zOffset);
-        float distortionPlusOne = 0;//this.computeDistortionFactor(time, zOffset + 1);
-        float panelDistanceOffset = 0;//panel + textureDistanceOffset;
-        float vPanelOffset = 0;//(vOffset * panel) + textureDistanceOffset;
-
-        int uOffset = 0;
-
-        float uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, 0f, -startScale + distortion, -zOffset, uPanelOffset, vPanelOffset);
-
-        addVertex(builder, matrix4f, 0f, -endScale + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, endScale * -sqrt, endScale / -2f + distortionPlusOne, -zOffset - 1,
-                uPanelOffset + panel, vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, startScale * -sqrt, startScale / -2f + distortion, -zOffset, uPanelOffset + panel,
-                vPanelOffset);
-
-        uOffset = 1;
-
-        uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, startScale * -sqrt, startScale / -2f + distortion, -zOffset, uPanelOffset,
-                vPanelOffset);
-
-        addVertex(builder, matrix4f, endScale * -sqrt, endScale / -2f + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, endScale * -sqrt, endScale / 2f + distortionPlusOne, -zOffset - 1,
-                uPanelOffset + panel, vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, startScale * -sqrt, startScale / 2f + distortion, -zOffset, uPanelOffset + panel,
-                vPanelOffset);
-
-        uOffset = 2;
-
-        uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, 0f, endScale + distortionPlusOne, -zOffset - 1, uPanelOffset + panel,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, 0f, startScale + distortion, -zOffset, uPanelOffset + panel, vPanelOffset);
-
-        addVertex(builder, matrix4f, startScale * -sqrt, startScale / 2f + distortion, -zOffset, uPanelOffset,
-                vPanelOffset);
-
-        addVertex(builder, matrix4f, endScale * -sqrt, endScale / 2f + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
-
-        uOffset = 3;
-
-        uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, 0f, startScale + distortion, -zOffset, uPanelOffset, vPanelOffset);
-
-        addVertex(builder, matrix4f, 0f, endScale + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, endScale * sqrt, (endScale / 2f + distortionPlusOne), -zOffset - 1,
-                uPanelOffset + panel, vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, startScale * sqrt, (startScale / 2f + distortion), -zOffset, uPanelOffset + panel,
-                vPanelOffset);
-
-        uOffset = 4;
-
-        uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, startScale * sqrt, (startScale / 2f + distortion), -zOffset, uPanelOffset,
-                vPanelOffset);
-
-        addVertex(builder, matrix4f, endScale * sqrt, endScale / 2f + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, endScale * sqrt, endScale / -2f + distortionPlusOne, -zOffset - 1,
-                uPanelOffset + panel, vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, startScale * sqrt, startScale / -2f + distortion, -zOffset, uPanelOffset + panel,
-                vPanelOffset);
-
-        uOffset = 5;
-
-        uPanelOffset = uOffset * panel;
-
-        addVertex(builder, matrix4f, 0f, -endScale + distortionPlusOne, -zOffset - 1, uPanelOffset + panel,
-                vOffset * panel + panelDistanceOffset);
-
-        addVertex(builder, matrix4f, 0f, -startScale + distortion, -zOffset, uPanelOffset + panel, vPanelOffset);
-
-        addVertex(builder, matrix4f, startScale * sqrt, startScale / -2f + distortion, -zOffset, uPanelOffset,
-                vPanelOffset);
-
-        addVertex(builder, matrix4f, endScale * sqrt, endScale / -2f + distortionPlusOne, -zOffset - 1, uPanelOffset,
-                vOffset * panel + panelDistanceOffset);
+    private void addVertexGlow(VertexConsumer builder, Matrix4f matrix, float x, float y, float z, float u, float v, float r, float g, float b, float a, int light) {
+        builder.vertex(matrix, x, y, z).texture(u, v).color(r, g, b, a).light(light).next();
     }
 
-    private void addVertex(VertexConsumer builder, Matrix4f matrix, float x, float y, float z, float u, float v) {
-        builder.vertex(matrix, x, y, z).texture(u, v).color(0, 0, 0, 0).next();
+    int glow(float x, float y) {
+        float dist = (float)Math.sqrt(x * x + y * y) / radius;
+        // Exponential falloff for a sharper, more concentrated glow
+        return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
     }
 
-    private float computeDistortionFactor(float time, int t) {
-        return (float) (Math.sin(time * this.distortionSpeed * 2.0 * Math.PI + (13 - t) *
-                this.distortionSeparationFactor) * this.distortionFactor) / 8;
-    }
 
-    // Define a noise function (e.g., Perlin noise or Simplex noise)
-    /*public float noise(float x, float y, float z) {
-        int xi = (int) x;
-        int yi = (int) y;
-        int zi = (int) z;
-        float xf = x - xi;
-        float yf = y - yi;
-        float zf = z - zi;
-        float u = fade(xf);
-        float v = fade(yf);
-        int aa = perm[xi + perm[yi + perm[zi]]];
-        int ba = perm[xi + perm[yi + perm[zi + 1]]];
-        int ab = perm[xi + perm[yi + 1 + perm[zi]]];
-        int bb = perm[xi + perm[yi + 1 + perm[zi + 1]]];
-        float x1 = lerp(u, grad(aa, xf, yf, zf), grad(ba, xf, yf, zf - 1));
-        float x2 = lerp(u, grad(ab, xf, yf - 1, zf), grad(bb, xf, yf - 1, zf - 1));
-        return lerp(v, x1, x2);
-    }
+    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, Stargate.GateState state) {
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
+        int sides = 18;
+        int rings = 12;
+        Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
-    // Define a fade function for Perlin noise
-    float fade(float t) {
-        return t * t * t * (t * (t * 6 - 15) + 10);
-    }
+        float minWaveHeight = 0.001f;
+        float maxWaveHeight = 0.006f;
 
-    // Define a gradient function for Perlin noise
-    float grad(int hash, float x, float y, float z) {
-        int h = hash & 15;
-        float u = h < 8 ? x : y;
-        float v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-        return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-    }
-
-    // Define a permutation array for Perlin noise
-    public int[] perm = new int[512];
-
-// Initialize the permutation array
-    public void method(Vector3f[] vertices) {
-        for (int i = 0; i < 256; i++) {
-            perm[i] = i;
-        }
-        for (int i = 256; i < 512; i++) {
-            perm[i] = perm[i - 256];
+        int rippleCount = 24;
+        float[][] rippleCenters = new float[rippleCount][2];
+        float[] rippleRadii = new float[rippleCount];
+        float[] rippleHeights = new float[rippleCount];
+        for (int i = 0; i < rippleCount; i++) {
+            float angle = (float) (2 * Math.PI * i / rippleCount + i * 0.7f);
+            float dist = 0.03f + 0.03f * (i % 2);
+            rippleCenters[i][0] = (float) Math.cos(angle) * dist;
+            rippleCenters[i][1] = (float) Math.sin(angle) * dist;
+            rippleRadii[i] = 0.03f + 0.02f * (i % 2);
+            rippleHeights[i] = minWaveHeight + (maxWaveHeight - minWaveHeight) * ((i + 1) / (float) rippleCount);
         }
 
-    // Manipulate the vertex points to give them a noisy look
-        for (Vector3f vertex : vertices) {
-            float noiseValue = noise(vertex.x, vertex.y, vertex.z);
-            vertex.x += noiseValue * 0.1f;
-            vertex.y += noiseValue * 0.1f;
-            vertex.z += noiseValue * 0.1f;
+        float waveFrequency = 12f;
+        float waveSpeed = 0.1f;
+
+        // Add central big ripple if active
+
+        if (state == Stargate.GateState.PREOPEN)
+            triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
+        CentralRippleParams central = getCentralRipple();
+        boolean hasCentralRipple = central != null;
+
+        float[][][] mesh = new float[rings][sides][3];
+        for (int r = 0; r < rings; r++) {
+            float t = r / (float) (rings - 1);
+            float ringRadius = radius * t;
+            for (int i = 0; i < sides; i++) {
+                float angle = (float) (2 * Math.PI * i / sides);
+                float x = (float) Math.cos(angle) * ringRadius;
+                float y = (float) Math.sin(angle) * ringRadius;
+                float dx = x;
+                float dy = y;
+                float dz = 0f;
+                // Ripples (skip center and outer ring)
+                if (r != 0 && r != rings - 1) {
+                    for (int rc = 0; rc < rippleCount; rc++) {
+                        float cx = rippleCenters[rc][0];
+                        float cy = rippleCenters[rc][1];
+                        float distToCenter = (float) Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+                        float rippleRadius = rippleRadii[rc];
+                        if (distToCenter < rippleRadius) {
+                            float norm = 1f - (distToCenter / rippleRadius);
+                            float phase = time * waveSpeed + rc * 1.3f;
+                            dz += (float) (Math.sin(norm * waveFrequency + phase) * rippleHeights[rc] * norm * t);
+                        }
+                    }
+                }
+// Central big ripple (affect all rings, but only near center)
+                // Central big ripple (affect all rings, including center)
+                if (hasCentralRipple) {
+                    float distToCenter = (float) Math.sqrt(x * x + y * y);
+                    if (distToCenter <= central.radius) {
+                        float norm = 1f - (distToCenter / central.radius);
+                        float bulge = (float) Math.pow(norm, 0.5f); // Skew the bulge towards the front
+                        float phase = time * central.speed + central.phaseOffset;
+                        dz += (float) (Math.sin(bulge * central.frequency + phase) * central.height * bulge * t);
+                        // Move the center point with the ripple
+                        dz += (float) (Math.sin(bulge * central.frequency + phase) * central.height * bulge);
+                    }
+                }
+                mesh[r][i][0] = dx;
+                mesh[r][i][1] = dy;
+                mesh[r][i][2] = dz;
+            }
         }
-    }*/
+
+        for (int r = 0; r < rings - 1; r++) {
+            for (int i = 0; i < sides; i++) {
+                int next = (i + 1) % sides;
+                float[] v0 = mesh[r][i];
+                float[] v1 = mesh[r + 1][i];
+                float[] v2 = mesh[r + 1][next];
+                float u0 = 0.5f + (v0[0] / (2 * radius));
+                float v0t = 0.5f + (v0[1] / (2 * radius));
+                float u1 = 0.5f + (v1[0] / (2 * radius));
+                float v1t = 0.5f + (v1[1] / (2 * radius));
+                float u2 = 0.5f + (v2[0] / (2 * radius));
+                float v2t = 0.5f + (v2[1] / (2 * radius));
+                int glow0 = glow(v0[0], v0[1]);
+                int glow1 = glow(v1[0], v1[1]);
+                int glow2 = glow(v2[0], v2[1]);
+                float intensity0 = 0.2f + 0.8f * glow0;
+                float intensity1 = 0.2f + 0.8f * glow1;
+                float intensity2 = 0.2f + 0.8f * glow2;
+                addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0 + 0.3f, 1.0f, 1.0f, glow0);
+                addVertexGlow(buffer, matrix, v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1 + 0.3f, 1.0f, 1.0f, glow1);
+                addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2 + 0.3f, 1.0f, 1.0f, glow2);
+
+                float[] v3 = mesh[r][next];
+                float u3 = 0.5f + (v3[0] / (2 * radius));
+                float v3t = 0.5f + (v3[1] / (2 * radius));
+                int glow3 = glow(v3[0], v3[1]);
+                float intensity3 = 0.2f + 0.8f * glow3;
+                addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0 + 0.3f, 1.0f, 1.0f, glow0);
+                addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2 + 0.3f, 1.0f, 1.0f, glow2);
+                addVertexGlow(buffer, matrix, v3[0], v3[1], v3[2], u3, v3t, intensity3, intensity3 + 0.3f, 1.0f, 1.0f, glow3);
+            }
+        }
+    }
+
+    /** Parameters for a central ripple. */
+    private static class CentralRippleParams {
+        float radius;
+        float height;
+        float frequency;
+        float speed;
+        float phaseOffset;
+
+        CentralRippleParams(float radius, float height, float frequency, float speed, float phaseOffset) {
+            this.radius = radius;
+            this.height = height;
+            this.frequency = frequency;
+            this.speed = speed;
+            this.phaseOffset = phaseOffset;
+        }
+    }
+
+    private CentralRippleParams centralRipple = null;
+    private float centralRippleTime = 0f;
+    private boolean centralRippleSettling = false;
+
+    /** Call this to trigger a big central ripple. */
+    public void triggerCentralRipple(float radius, float height, float frequency, float speed) {
+        this.centralRipple = new CentralRippleParams(radius, height, frequency, speed, 0f);
+        this.centralRippleTime = 0f;
+        this.centralRippleSettling = false;
+    }
+
+    /** Returns the current central ripple, or null if none. */
+    private CentralRippleParams getCentralRipple() {
+        if (centralRipple == null) return null;
+
+        // Animation timing
+        float mainDuration = 0.7f; // seconds for main ripple
+        float settleDuration = 0.7f; // seconds for settle
+        float dt = 1f / 20f; // assuming 20 TPS, adjust as needed
+
+        centralRippleTime += dt;
+
+        if (!centralRippleSettling && centralRippleTime > mainDuration) {
+            // Start settling phase
+            centralRippleSettling = true;
+            centralRippleTime = 0f;
+            // Water droplet effect: reduce height, increase frequency
+            centralRipple.height *= 0.25f;
+            centralRipple.frequency *= 2.5f;
+            centralRipple.speed *= 1.5f;
+        } else if (centralRippleSettling && centralRippleTime > settleDuration) {
+            // End ripple
+            centralRipple = null;
+            centralRippleSettling = false;
+            centralRippleTime = 0f;
+            return null;
+        }
+        return centralRipple;
+    }
 
 
 }

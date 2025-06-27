@@ -142,6 +142,11 @@ public class Dialer implements NbtSync {
 			} else {
 				if (lock) {
 					this.lock();
+					// Schedule the next glyph after the lock sound delay (16 ticks)
+					int finalI = i + 1;
+					Scheduler.get().runTaskLater(() -> this.internalDial(address, finalI, lock), TaskStage.END_SERVER_TICK,
+							TimeUnit.TICKS, 16);
+					return;
 				}
 				i++;
 				this.setRotationTicks(-this.getMaxRotationTicks());
@@ -317,13 +322,10 @@ public class Dialer implements NbtSync {
 		int currentIndex = this.indexOf(current);
 		int targetIndex = this.indexOf(target);
 
-		int next = (currentIndex + 1) % GLYPHS.length;
-		int previous = (currentIndex + GLYPHS.length - 1) % GLYPHS.length;
+		int forwardDistance = (targetIndex - currentIndex + GLYPHS.length) % GLYPHS.length;
+		int backwardDistance = (currentIndex - targetIndex + GLYPHS.length) % GLYPHS.length;
 
-		int nextDistance = Math.abs(next - targetIndex);
-		int previousDistance = Math.abs(previous - targetIndex);
-
-		return nextDistance < previousDistance;
+		return forwardDistance <= backwardDistance;
 	}
 
 	private boolean simulateRotateTowards(char target) {
@@ -342,6 +344,24 @@ public class Dialer implements NbtSync {
 	}
 	private boolean rotateTowards(char target, boolean simulate) {
 		if (this.selected == target) return false;
+
+		// Prevent oscillation: only allow direction change if not currently dialing
+		if (this.isAutoDialing && this.lastRotation != null) {
+			boolean nextFaster = this.isNextFaster(this.selected, target);
+			Rotation intended = nextFaster ? Rotation.FORWARD : Rotation.BACKWARD;
+			if (this.lastRotation != intended) {
+				// Do not change direction while auto-dialing
+				if (!simulate) {
+					// Still move in the current direction
+					if (this.lastRotation == Rotation.FORWARD) {
+						this.next(false);
+					} else {
+						this.previous(false);
+					}
+				}
+				return false;
+			}
+		}
 
 		if (simulate) {
 			return this.simulateRotateTowards(target);
