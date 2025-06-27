@@ -1,0 +1,16 @@
+{
+    "name": "Gate Types",
+    "icon": "stargate:patchouli_books/stargate_guide/images/error.png",
+    "sortnum":1,
+    "description": "",
+    "category": "stargate:gates_category",
+    "pages": [
+        {
+            "title": "Multiple Images",
+            "text": "In this mod, we have multiple types of gates, each with their own unique look and function. Here you will understand the different types of gates available.",
+            "border": true,
+            "type":"patchouli:image",
+            "images":["stargate:patchouli_books/stargate_guide/images/error.png","stargate:patchouli_books/stargate_guide/images/template.png","stargate:patchouli_books/stargate_guide/images/error.png"]
+        }
+    ]
+}

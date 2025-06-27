@@ -1,0 +1,28 @@
+{
+    "name": "Getting Gate",
+    "icon": "stargate:patchouli_books/stargate_guide/images/error.png",
+    "sortnum":1,
+    "description": "",
+    "category": "stargate:gates_category",
+    "pages": [
+        {
+            "title": "Getting a Gate",
+            "text": "To get a gate, you will need to find the new `plinth` and `buried gate` structures.",
+            "border": true
+        },
+        {
+            "title": "Plinth Structure",
+            "text": "The plinth structure is a new structure that can be found in the; overworld, nether, and end.",
+            "border": true,
+            "type":"patchouli:image",
+            "images":["stargate:patchouli_books/stargate_guide/images/forest.png","stargate:patchouli_books/stargate_guide/images/desert.png","stargate:patchouli_books/stargate_guide/images/nether.png","stargate:patchouli_books/stargate_guide/images/end.png"]
+        },
+        {
+            "title": "Buried Gate Structure",
+            "text": "The buried gate structure is a new structure that can be found in deserts.",
+            "border": true,
+            "type":"patchouli:image",
+            "images":["stargate:patchouli_books/stargate_guide/images/buried_gate.png"]
+        }
+    ]
+}

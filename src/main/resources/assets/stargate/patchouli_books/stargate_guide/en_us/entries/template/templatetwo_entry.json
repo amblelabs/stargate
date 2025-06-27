@@ -2,7 +2,7 @@
     "name": "Template Entry",
     "icon": "minecraft:barrier",
     "sortnum":4,
-    "category": "stargate:pageone_category",
+    "category": "stargate:mechanics_category",
     "pages": [
         {
             "type": "patchouli:spotlight",
@@ -17,14 +17,14 @@
             "text": "Without Borders.",
             "border": false,
             "type":"patchouli:image",
-            "images":["textures/patchouli_books/stargate_guide/images/error.png"]
+            "images":["stargate:patchouli_books/stargate_guide/images/error.png"]
         },
         {
             "title": "Multiple Images",
             "text": "With Borders.",
             "border": true,
             "type":"patchouli:image",
-            "images":["textures/patchouli_books/stargate_guide/images/error.png","textures/patchouli_books/stargate_guide/images/template.png"]
+            "images":["stargate:patchouli_books/stargate_guide/images/error.png","stargate:patchouli_books/stargate_guide/images/template.png"]
         },
         {
             "type": "patchouli:crafting",

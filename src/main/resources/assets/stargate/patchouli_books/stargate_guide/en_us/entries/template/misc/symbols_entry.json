@@ -1,0 +1,16 @@
+{
+    "name": "Symbols",
+    "icon": "stargate:patchouli_books/stargate_guide/images/error.png",
+    "sortnum":4,
+    "description": "In this mod (Unlike In the show) for our stargates, we use the Extended Minecraft Standard Galactic Alphabet. However we still all 39 symbols similar to the series. Don't worry, you wont have to learn them at all!",
+    "category": "stargate:mechanics_category",
+    "pages": [
+        {
+            "title": "Standard Galactic Alphabet",
+            "text": "This is the translations for all symbols in the mod!",
+            "border": false,
+            "type":"patchouli:image",
+            "images":["stargate:patchouli_books/stargate_guide/images/error.png"]
+        }
+    ]
+}
