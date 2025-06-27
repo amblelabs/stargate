@@ -22,7 +22,7 @@ public class Dialer implements NbtSync {
 	private final Stargate parent;
 	private String target;
 	private char selected;
-	private List<Consumer<Dialer>> subscribers;
+	private final List<Consumer<Dialer>> subscribers;
 	private boolean firstMove;
 	private boolean isAutoDialing;
 	private Rotation lastRotation;
@@ -30,7 +30,7 @@ public class Dialer implements NbtSync {
 	private int maxRotationTicks;
 
 	public Dialer(Stargate parent) {
-		this.selected = GLYPHS[0];
+		this.selected = Glyph.ALL[0];
 		this.target = "";
 		this.subscribers = new ArrayList<>();
 		this.parent = parent;
@@ -233,9 +233,6 @@ public class Dialer implements NbtSync {
 		Scheduler.get().runTaskLater(() -> this.parent.playSound(StargateSounds.CHEVRON_LOCK, 0.25f, StargateMod.RANDOM.nextFloat(0.9f, 1.1f)),
 				TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 16);
 	}
-	public char getSelected() {
-		return this.selected;
-	}
 
 	public void setSelected(char glyph) {
 		this.selected = glyph;
@@ -249,8 +246,8 @@ public class Dialer implements NbtSync {
 	}
 
 	private char next(boolean simulate) {
-		int index = this.getSelectedIndex();
-		char next = Glyph.ALL[(index + 1) % Glyph.ALL.length];
+		int index = (this.getSelectedIndex() + 1) % Glyph.ALL.length;
+		char next = Glyph.ALL[index];
 
 		if (!simulate) {
 			this.selected = next;
@@ -259,14 +256,16 @@ public class Dialer implements NbtSync {
 
 		return next;
 	}
+
 	public char next() {
 		char next = this.next(true);
 		this.dial(next, false);
 		return next;
 	}
+
 	private char previous(boolean simulate) {
-		int index = this.getSelectedIndex();
-		char previous = Glyph.ALL[(index + GLYPHS.length - 1) % GLYPHS.length];
+		int index = (this.getSelectedIndex() + Glyph.ALL.length - 1) % Glyph.ALL.length;
+		char previous = Glyph.ALL[index];
 
 		if (!simulate) {
 			this.selected = previous;
@@ -306,8 +305,8 @@ public class Dialer implements NbtSync {
 	 * @return whether it is faster to call next or previous
 	 */
 	private boolean isNextFaster(char current, char target) {
-		int currentIndex = this.indexOf(current);
-		int targetIndex = this.indexOf(target);
+		int currentIndex = Glyph.indexOf(current);
+		int targetIndex = Glyph.indexOf(target);
 
 		int forwardDistance = (targetIndex - currentIndex + Glyph.ALL.length) % Glyph.ALL.length;
 		int backwardDistance = (currentIndex - targetIndex + Glyph.ALL.length) % Glyph.ALL.length;

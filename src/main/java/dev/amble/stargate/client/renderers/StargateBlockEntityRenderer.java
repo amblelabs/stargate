@@ -3,6 +3,7 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Dialer;
+import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
@@ -103,15 +104,15 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.translate(xOffset, 0.05f, zOffset);
         matrices.scale(0.025f, 0.025f, 0.025f);
         // TODO fix the rotation stuff here. - Loqor
-        int middleIndex = Dialer.GLYPHS.length / 2;
+        int middleIndex = Glyph.ALL.length / 2;
         float selectedRot = 180 + (float) (18.5f * (0.5 * dialer.getSelectedIndex()));
         float rot = dialer.getSelectedIndex() > -1 ? selectedRot :
                 MathHelper.wrapDegrees(MinecraftClient.getInstance().player.age / 100f * 360f);
         if (dialer.isDialing())
             rot = rot + (dialer.getRotation().equals(Dialer.Rotation.FORWARD) ? 9 : -9) * dialer.getRotationProgress();
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rot));
-        for (int i = 0; i < Dialer.GLYPHS.length; i++) {
-            boolean isInDial = dialer.contains(Dialer.GLYPHS[i]);
+        for (int i = 0; i < Glyph.ALL.length; i++) {
+            boolean isInDial = dialer.contains(Glyph.ALL[i]);
             boolean isSelected = i == dialer.getSelectedIndex();
 
             int colour = 0x17171b;
@@ -125,11 +126,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
 
             matrices.push();
-            double angle = 2 * Math.PI * i / Dialer.GLYPHS.length;
+            double angle = 2 * Math.PI * i / Glyph.ALL.length;
             matrices.translate(Math.sin(angle) * 117, Math.cos(angle) * 117, 0);
             // TODO fix the rotation stuff here. - Loqor
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rot));
-            OrderedText text = Address.asText(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
+            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
             matrices.pop();
