@@ -234,10 +234,6 @@ public class Dialer implements NbtSync {
 				TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 16);
 	}
 
-	public void setSelected(char glyph) {
-		this.selected = glyph;
-	}
-
 	/**
 	 * @return the index of the selected glyph in GLYPHS
 	 */
