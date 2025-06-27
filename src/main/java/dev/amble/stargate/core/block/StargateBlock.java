@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.block;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import dev.amble.stargate.core.item.StargateLinkableItem;

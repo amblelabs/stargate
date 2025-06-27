@@ -1,22 +1,13 @@
 package dev.amble.stargate.client.portal;
 
-import com.mojang.blaze3d.platform.GlConst;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.client.models.StargateModel;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
-import org.lwjgl.opengl.GL11;
 
 import java.util.LinkedList;
 import java.util.Queue;

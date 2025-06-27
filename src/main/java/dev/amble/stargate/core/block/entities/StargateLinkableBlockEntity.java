@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.block.entities;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.StargateRef;
 import dev.amble.stargate.api.StargateLinkable;
 import net.minecraft.block.BlockState;

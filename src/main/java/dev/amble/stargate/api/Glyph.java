@@ -1,0 +1,63 @@
+package dev.amble.stargate.api;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.amble.lib.api.Identifiable;
+import dev.amble.stargate.StargateMod;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.world.World;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicReference;
+
+public record Glyph(Identifier world, char glyph) implements Identifiable {
+    public static final Codec<Glyph> CODEC = Codecs.exceptionCatching(RecordCodecBuilder.create(instance -> instance.group(
+            Identifier.CODEC.fieldOf("dimension").forGetter(Glyph::world),
+            Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
+    ).apply(instance, Glyph::new)));
+
+    public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%#?/".toCharArray();
+
+    private Glyph(Identifier dimension, String glyph) {
+        this(dimension, glyph.charAt(0));
+    }
+
+    public Glyph(RegistryKey<World> dimension, char glyph) {
+        this(dimension.getValue(), validate(glyph));
+    }
+
+    public static char pickRandom() {
+        // FIXME: don't use java.util.Random
+        return ALL[StargateMod.RANDOM.nextInt()];
+    }
+
+    public static char validate(char input) {
+        return (char) (ALL[0] + (input - ALL[0]) % ALL.length);
+    }
+
+    public static Glyph fromInputStream(InputStream stream) {
+        return fromJson(JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject());
+    }
+
+    public static Glyph fromJson(JsonObject json) {
+        AtomicReference<Glyph> created = new AtomicReference<>();
+
+        CODEC.decode(JsonOps.INSTANCE, json).get().ifLeft(planet -> created.set(planet.getFirst())).ifRight(err -> {
+            created.set(null);
+            StargateMod.LOGGER.error("Error decoding datapack symbol: {}", err);
+        });
+
+        return created.get();
+    }
+
+    @Override
+    public Identifier id() {
+        return world;
+    }
+}

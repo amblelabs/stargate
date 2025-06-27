@@ -1,13 +1,9 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.network;
 
 import net.minecraft.nbt.NbtCompound;
 
 public class ClientStargate extends Stargate {
 	private boolean aged = false;
-
-	protected ClientStargate(Address address) {
-		super(address);
-	}
 
 	public ClientStargate(NbtCompound nbt) {
 		super(nbt);

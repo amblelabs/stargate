@@ -1,7 +1,7 @@
 package dev.amble.stargate.core.block.entities;
 
-import dev.amble.stargate.api.ServerStargateNetwork;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.StargateRef;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -28,7 +28,7 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
 		if (world.isClient()) return;
 
-		Stargate nearest = ServerStargateNetwork.getInstance().getNearTo(GlobalPos.create(world.getRegistryKey(), pos), 64).orElse(null);
+		Stargate nearest = ServerStargateNetwork.get().getNearTo(GlobalPos.create(world.getRegistryKey(), pos), 64).orElse(null);
 		if (nearest == null) return;
 
 		this.setStargate(StargateRef.createAs(world, nearest));

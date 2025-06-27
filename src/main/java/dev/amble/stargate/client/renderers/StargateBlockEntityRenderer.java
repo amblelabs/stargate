@@ -3,7 +3,7 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Dialer;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.core.block.StargateBlock;
@@ -17,7 +17,6 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -130,7 +129,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.translate(Math.sin(angle) * 117, Math.cos(angle) * 117, 0);
             // TODO fix the rotation stuff here. - Loqor
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rot));
-            OrderedText text = Address.toGlyphs(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
+            OrderedText text = Address.asText(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
             matrices.pop();

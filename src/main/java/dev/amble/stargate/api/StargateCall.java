@@ -1,5 +1,6 @@
 package dev.amble.stargate.api;
 
+import dev.amble.stargate.api.network.Stargate;
 import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.lib.util.ServerLifecycleHooks;

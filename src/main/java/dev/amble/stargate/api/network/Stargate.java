@@ -1,13 +1,13 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.network;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.*;
 import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -33,6 +33,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 		this.state = GateState.CLOSED;
 		this.dialer = new Dialer(this).onCompleted(this::handleDialerComplete);
 	}
+
 	public Stargate(NbtCompound nbt) {
 		this(Address.fromNbt(nbt.getCompound("Address")));
 
@@ -43,7 +44,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 	 * @return whether this stargate is available for dialing
 	 */
 	public boolean isAvailable() {
-		return this.call == null;
+		return state == GateState.CLOSED;
 	}
 
 	@Override
@@ -199,23 +200,10 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 		pos = pos.offset(offset.getX(), offset.getY(), offset.getZ());
 		pos = pos.offset(pos.getRotationDirection());
 
-		// dont bother for now
-		// pos = WorldUtil.locateSafe(pos, WorldUtil.GroundSearch.CEILING, true);
-
 		TeleportUtil.teleport(entity, pos);
 
 		this.playSound(StargateSounds.GATE_TELEPORT, 0.25f, 1f);
-
 		return true;
-	}
-
-	/**
-	 * Teleports an entity to this stargate
-	 * @param entity entity to teleport
-	 * @return whether the teleport was successful
-	 */
-	public boolean teleportHere(LivingEntity entity) {
-		return this.teleportHere(entity, BlockPos.ORIGIN);
 	}
 
 	/**
@@ -242,7 +230,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 	}
 
 	public void sync() {
-		ServerStargateNetwork.getInstance().sync(this);
+		ServerStargateNetwork.get().syncPartial(this);
 	}
 
 	public double distanceFrom(BlockPos pos) {
@@ -259,10 +247,6 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 		nbt.putLong("Energy", this.getEnergy());
 
 		return nbt;
-	}
-
-	public static Stargate fromNbt(NbtCompound nbt) {
-		return new Stargate(nbt);
 	}
 
 	@Override
@@ -287,14 +271,6 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 		if (nbt.contains("Energy")) {
 			this.setEnergy(nbt.getLong("Energy"));
 		}
-	}
-
-	public PacketByteBuf writeToPacket(PacketByteBuf buf) {
-		buf.writeNbt(this.toNbt(true));
-		return buf;
-	}
-	public Stargate readFromPacket(PacketByteBuf buf) {
-		return new Stargate(buf.readNbt());
 	}
 
 	@Override

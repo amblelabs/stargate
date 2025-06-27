@@ -2,7 +2,7 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.util.math.RotationAxis;

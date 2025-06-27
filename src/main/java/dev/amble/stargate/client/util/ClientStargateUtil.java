@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.util;
 
-import dev.amble.stargate.api.ClientStargateNetwork;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.ClientStargateNetwork;
+import dev.amble.stargate.api.network.Stargate;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -23,7 +23,7 @@ public class ClientStargateUtil {
 	private static Stargate findNearestStargate() {
 		nearest = null;
 
-		ClientStargateNetwork network = ClientStargateNetwork.getInstance();
+		ClientStargateNetwork network = ClientStargateNetwork.get();
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		if (player == null) return null;
 

@@ -3,7 +3,7 @@ package dev.amble.stargate.core.entities;
 import java.util.List;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.StargateRef;
 import dev.amble.stargate.core.dhd.DHDArrangement;
 import dev.amble.stargate.core.dhd.SymbolArrangement;
