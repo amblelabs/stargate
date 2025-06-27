@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "stargate:plinth_soul",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 50,
+    "separation": 12,
+    "salt": 1646207470
+  }
+}

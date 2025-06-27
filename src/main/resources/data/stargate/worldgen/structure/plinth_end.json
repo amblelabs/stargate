@@ -1,14 +1,10 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": ["minecraft:bamboo_jungle",
-    "minecraft:dark_forest",
-    "minecraft:flower_forest",
-    "minecraft:forest"
-    ],
+  "biomes": "minecraft:end_highlands",
   "step": "surface_structures",
   "spawn_overrides": {},
   "terrain_adaptation": "beard_thin",
-  "start_pool": "stargate:plinth",
+  "start_pool": "stargate:plinth_end",
   "size": 1,
   "start_height": {
     "absolute": 1
