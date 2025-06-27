@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.entities.base;
 
-import dev.amble.stargate.api.StargateRef;
+import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;

@@ -284,7 +284,7 @@ public class Stargate implements StargateCall.Wiretap, Disposable, StargateEnerg
 
 	public static Stargate create(Address address) {
 		Stargate created = new Stargate(address);
-		StargateNetwork.getInstance(true).add(created);
+		ServerStargateNetwork.get().add(created);
 		created.getDialer().setSelected('Q');
 		return created;
 	}
