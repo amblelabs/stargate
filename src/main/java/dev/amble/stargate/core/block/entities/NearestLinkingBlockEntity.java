@@ -2,7 +2,7 @@ package dev.amble.stargate.core.block.entities;
 
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.Stargate;
-import dev.amble.stargate.api.StargateRef;
+import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;

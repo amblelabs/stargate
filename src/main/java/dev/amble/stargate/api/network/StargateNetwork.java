@@ -172,7 +172,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 				'}';
 	}
 
-	public static StargateNetwork<?> getInstance(boolean isServer) {
+	protected static StargateNetwork<?> getInstance(boolean isServer) {
 		return isServer ? ServerStargateNetwork.get() : ClientStargateNetwork.get();
 	}
 

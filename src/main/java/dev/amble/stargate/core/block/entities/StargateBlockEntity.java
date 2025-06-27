@@ -4,6 +4,7 @@ import dev.amble.stargate.api.*;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;

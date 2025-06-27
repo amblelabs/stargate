@@ -4,7 +4,7 @@ import java.util.List;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.network.Stargate;
-import dev.amble.stargate.api.StargateRef;
+import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.core.dhd.DHDArrangement;
 import dev.amble.stargate.core.dhd.SymbolArrangement;
 import dev.amble.stargate.core.dhd.control.SymbolControl;
