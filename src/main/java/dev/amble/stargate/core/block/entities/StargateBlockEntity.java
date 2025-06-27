@@ -4,6 +4,7 @@ import dev.amble.stargate.api.*;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
@@ -128,20 +129,19 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 		List<String> list = blockPositioning.lines().toList();
 
-		list.forEach((line) -> {
-			for (int i = 0; i < line.length(); i++) {
-				char character = line.charAt(i);
-				int lineStuff = list.indexOf(line);
-				if (character == 'X') {
-					ringPositions.add(center.add(rotate(4 - i, 4 -lineStuff, facing)));
-				}
-			}
-		});
+        for (int j = 0; j < list.size(); j++) {
+            String line = list.get(j);
+
+            for (int i = 0; i < line.length(); i++) {
+                if (line.charAt(i) != 'X') continue;
+
+                ringPositions.add(center.add(rotate(4 - i, 4 - j, facing)));
+            }
+        }
 
 		for (BlockPos pos : ringPositions) {
-			if (!force && !world.getBlockState(pos).isReplaceable()) continue;
-
-			world.setBlockState(pos, state);
+			if (force || world.getBlockState(pos).isReplaceable())
+				world.setBlockState(pos, state);
 		}
 
 		return ringPositions;
@@ -231,8 +231,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				}
 			}
 		}
-
-		if (world.getServer() == null) return;
 
 		if (this.requiresPlacement) {
 			this.onPlaced(world, pos, state, null, ItemStack.EMPTY);
