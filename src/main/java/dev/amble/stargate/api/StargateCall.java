@@ -12,7 +12,6 @@ import net.minecraft.server.world.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Represents a call between two Stargates.
@@ -80,24 +79,6 @@ public class StargateCall {
 		if (!(world.getBlockEntity(address.pos().getPos()) instanceof StargateBlockEntity entity)) return;
 
 		entity.setGateState(state);
-	}
-
-	/**
-	 * Subscribe to call events
-	 * @return this
-	 */
-	public StargateCall onEnd(Consumer<StargateCall> consumer) {
-		subscribe(new Wiretap() {
-			@Override
-			public void onCallStart(StargateCall call) {
-			}
-
-			@Override
-			public void onCallEnd(StargateCall call) {
-				consumer.accept(call);
-			}
-		});
-		return this;
 	}
 
 	public StargateCall subscribe(Wiretap tap) {
