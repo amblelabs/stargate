@@ -3,6 +3,7 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Dialer;
+import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.client.models.DHDModel;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.entities.DHDBlockEntity;
@@ -40,17 +41,17 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         Dialer dialer = entity.getStargate().get().getDialer();
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-        int middleIndex = Dialer.GLYPHS.length / 2;
-        for (int i = 0; i < Dialer.GLYPHS.length; i++) {
-            int j = Dialer.GLYPHS.length - i + dialer.getSelectedIndex() - middleIndex;
+        int middleIndex = Glyph.ALL.length / 2;
+        for (int i = 0; i < Glyph.ALL.length; i++) {
+            int j = Glyph.ALL.length - i + dialer.getSelectedIndex() - middleIndex;
 
             if (j < 0) {
-                j += Dialer.GLYPHS.length;
-            } else if (j >= Dialer.GLYPHS.length) {
-                j -= Dialer.GLYPHS.length;
+                j += Glyph.ALL.length;
+            } else if (j >= Glyph.ALL.length) {
+                j -= Glyph.ALL.length;
             }
 
-            boolean isInDial = dialer.contains(Dialer.GLYPHS[i]);
+            boolean isInDial = dialer.contains(Glyph.ALL[i]);
             boolean isSelected = i == dialer.getSelectedIndex();
 
             int colour = 0x4f4f4f;
@@ -63,9 +64,9 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             }
 
             matrices.push();
-            double angle = 2 * Math.PI * j / Dialer.GLYPHS.length;
+            double angle = 2 * Math.PI * j / Glyph.ALL.length;
             matrices.translate(Math.sin(angle) * 20f, Math.cos(angle) * 20f, 0);
-            OrderedText text = Address.asText(String.valueOf(Dialer.GLYPHS[i])).asOrderedText();
+            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, 0, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 0xF000F0);
             matrices.pop();

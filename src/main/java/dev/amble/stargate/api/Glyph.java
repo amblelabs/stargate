@@ -37,8 +37,20 @@ public record Glyph(Identifier world, char glyph) implements Identifiable {
         return ALL[StargateMod.RANDOM.nextInt()];
     }
 
+    // FIXME: the letters don't go in ASCII order, and there are gaps.
     public static char validate(char input) {
         return (char) (ALL[0] + (input - ALL[0]) % ALL.length);
+    }
+
+    // FIXME: this should be done in constant time.
+    public static int indexOf(char input) {
+        input = validate(input);
+
+        for (int i = 0; i < Glyph.ALL.length; i++) {
+            if (Glyph.ALL[i] == input) return i;
+        }
+
+        return -1;
     }
 
     public static Glyph fromInputStream(InputStream stream) {
