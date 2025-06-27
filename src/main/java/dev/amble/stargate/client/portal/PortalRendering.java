@@ -24,7 +24,7 @@ import java.util.Queue;
 public class PortalRendering {
     public static Queue<StargateBlockEntity> PORTAL_RENDER_QUEUE = new LinkedList<>();
 
-    public static void renderPortal(StargateBlockEntity stargateBlockEntity, Stargate.GateState state, MatrixStack stack, Identifier frameTex, ModelPart mask) {
+    public static void renderPortal(StargateBlockEntity stargateBlockEntity, Stargate.GateState state, MatrixStack stack) {
         if (MinecraftClient.getInstance().world == null
                 || MinecraftClient.getInstance().player == null) return;
 

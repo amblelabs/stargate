@@ -6,7 +6,12 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
+import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.StargateBlock;
+import dev.drtheo.scheduler.api.TimeUnit;
+import dev.drtheo.scheduler.api.client.ClientScheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -27,11 +32,13 @@ import net.minecraft.particle.DustColorTransitionParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -42,9 +49,12 @@ import java.util.Set;
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
 	public AnimationState CHEVRON_LOCK_STATE = new AnimationState();
+	public AnimationState IRIS_CLOSE_STATE = new AnimationState();
+	public AnimationState IRIS_OPEN_STATE = new AnimationState();
 	private static final Identifier SYNC_GATE_STATE = new Identifier(StargateMod.MOD_ID, "sync_gate_state");
 	public int age;
 	public boolean requiresPlacement = false;
+	private boolean stopOpening = false;
 
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
@@ -66,7 +76,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (world.isClient()) return ActionResult.SUCCESS;
 		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mod
 
-		// rotate and locking
 		Stargate gate = this.getStargate().get();
 		Dialer dialer = gate.getDialer();
 
@@ -76,11 +85,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 		// drain power
 		gate.removeEnergy(250);
-
-		if (player.isSneaking()) {
-			dialer.lock();
-			return ActionResult.SUCCESS;
-		}
 
 		dialer.next();
 
@@ -193,8 +197,31 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				Dialer dialer = gate.getDialer();
 				// Run if there is a selected glyph and it is being added to the locked amount
 				if (dialer.isCurrentGlyphBeingLocked()) {
-					CHEVRON_LOCK_STATE.startIfNotRunning(this.age);
+					CHEVRON_LOCK_STATE.startIfNotRunning(age);
+					IRIS_CLOSE_STATE.stop();
+					IRIS_OPEN_STATE.stop();
 				} else {
+					CHEVRON_LOCK_STATE.stop();
+				}
+
+				if (this.getCachedState().get(StargateBlock.IRIS)) {
+					world.playSound(null, this.getPos(), StargateSounds.IRIS_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+					IRIS_CLOSE_STATE.startIfNotRunning(age);
+					CHEVRON_LOCK_STATE.stop();
+					IRIS_OPEN_STATE.stop();
+					stopOpening = false;
+				} else {
+					IRIS_CLOSE_STATE.stop();
+					if (!stopOpening) {
+						world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
+						IRIS_OPEN_STATE.startIfNotRunning(age);
+					}
+					if (IRIS_CLOSE_STATE.isRunning()) {
+						ClientScheduler.get().runTaskLater(() -> {
+							IRIS_CLOSE_STATE.stop();
+							stopOpening = true;
+						}, TimeUnit.SECONDS, 3);
+					}
 					CHEVRON_LOCK_STATE.stop();
 				}
 

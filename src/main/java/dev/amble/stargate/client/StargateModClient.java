@@ -79,8 +79,7 @@ public class StargateModClient implements ClientModInitializer {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(painting.getCachedState().get(StargateBlock.FACING).asRotation()));
             stack.translate(0, -2f, 0);
-            ModelPart frame = contents.getPart().getChild("portal");
-            PortalRendering.renderPortal(painting, painting.getGateState(), stack, StargateBlockEntityRenderer.TEXTURE, frame);
+            PortalRendering.renderPortal(painting, painting.getGateState(), stack);
             stack.pop();
         }
         PortalRendering.PORTAL_RENDER_QUEUE.clear();

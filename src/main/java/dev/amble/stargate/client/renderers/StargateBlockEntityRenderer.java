@@ -66,6 +66,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
+        this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
         matrices.pop();

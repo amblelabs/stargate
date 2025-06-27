@@ -389,7 +389,6 @@ public class StargateModel extends BaseStargateModel {
 
 	@Override
 	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-		this.iris.visible = false; // Hide the iris for this model
 		stargate.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
 	}
 
