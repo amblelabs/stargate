@@ -2,7 +2,7 @@ package dev.amble.stargate.core.block.entities;
 
 import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.StargateLinkable;
+import dev.amble.stargate.api.network.StargateLinkable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;

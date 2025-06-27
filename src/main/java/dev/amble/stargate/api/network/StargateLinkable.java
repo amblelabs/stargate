@@ -1,7 +1,5 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.network;
 
-import dev.amble.stargate.api.network.Stargate;
-import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.world.World;
 
 /**
