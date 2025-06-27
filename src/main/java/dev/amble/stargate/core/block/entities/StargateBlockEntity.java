@@ -55,6 +55,8 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public int age;
 	public boolean requiresPlacement = false;
 	private boolean stopOpening = false;
+	private boolean prevIrisState = false;
+	private boolean irisSoundPlayed = false;
 
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
@@ -187,6 +189,20 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	@Override
 	public void tick(World world, BlockPos pos, BlockState state, StargateBlockEntity blockEntity) {
+		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
+
+		if (!world.isClient()) {
+			// Play sound only when IRIS state changes
+			if (irisState != prevIrisState) {
+				if (irisState) {
+					world.playSound(null, this.getPos(), StargateSounds.IRIS_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				} else {
+					world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				}
+				prevIrisState = irisState;
+			}
+		}
+
 		if (world.isClient()) {
 			age++;
 
@@ -204,8 +220,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					CHEVRON_LOCK_STATE.stop();
 				}
 
-				if (this.getCachedState().get(StargateBlock.IRIS)) {
-					world.playSound(null, this.getPos(), StargateSounds.IRIS_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				if (irisState) {
 					IRIS_CLOSE_STATE.startIfNotRunning(age);
 					CHEVRON_LOCK_STATE.stop();
 					IRIS_OPEN_STATE.stop();
@@ -213,7 +228,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				} else {
 					IRIS_CLOSE_STATE.stop();
 					if (!stopOpening) {
-						world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
 						IRIS_OPEN_STATE.startIfNotRunning(age);
 					}
 					if (IRIS_CLOSE_STATE.isRunning()) {
@@ -224,40 +238,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					}
 					CHEVRON_LOCK_STATE.stop();
 				}
-
-				/*if (this.getGateState() == Stargate.GateState.OPEN && age % 20 == 0) {
-					double centerX = this.getPos().getX() + 0.5;
-					double centerY = this.getPos().getY() + 3.5;
-					double centerZ = this.getPos().getZ() + 0.5;
-					double radius = 2.5;
-					Direction facing = this.getCachedState().get(StargateBlock.FACING);
-
-					for (double x = -radius; x <= radius; x += 0.2) {
-						for (double y = -radius; y <= radius; y += 0.2) {
-							if (x * x + y * y <= radius * radius) {
-								//BlockPos rotated = rotate((int) Math.round(x * 10), (int) Math.round(y * 10), facing);
-								double rx, rz;
-								switch (facing) {
-                                    case SOUTH -> { rx = centerX - x; rz = centerZ; }
-									case WEST  -> { rx = centerX; rz = centerZ + x; }
-									case EAST  -> { rx = centerX; rz = centerZ - x; }
-									default    -> { rx = centerX + x; rz = centerZ; }
-								}
-								this.getWorld().addParticle(
-										new DustColorTransitionParticleEffect(
-												new Vector3f(0.6F, 0.8F, 1F), // from color (white)
-												new Vector3f(0.0F, 0.6F, 1F), // to color (light blue)
-												3F // scale
-										),
-										rx,
-										centerY + y,
-										rz,
-										0, 0, 0
-								);
-							}
-						}
-					}
-				}*/
 			}
 			return;
 		}
