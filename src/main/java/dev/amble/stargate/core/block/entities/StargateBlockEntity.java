@@ -6,7 +6,12 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
+import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.StargateBlock;
+import dev.drtheo.scheduler.api.TimeUnit;
+import dev.drtheo.scheduler.api.client.ClientScheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -27,11 +32,13 @@ import net.minecraft.particle.DustColorTransitionParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -42,9 +49,14 @@ import java.util.Set;
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
 	public AnimationState CHEVRON_LOCK_STATE = new AnimationState();
+	public AnimationState IRIS_CLOSE_STATE = new AnimationState();
+	public AnimationState IRIS_OPEN_STATE = new AnimationState();
 	private static final Identifier SYNC_GATE_STATE = new Identifier(StargateMod.MOD_ID, "sync_gate_state");
 	public int age;
 	public boolean requiresPlacement = false;
+	private boolean stopOpening = false;
+	private boolean prevIrisState = false;
+	private boolean irisSoundPlayed = false;
 
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
@@ -66,7 +78,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (world.isClient()) return ActionResult.SUCCESS;
 		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mod
 
-		// rotate and locking
 		Stargate gate = this.getStargate().get();
 		Dialer dialer = gate.getDialer();
 
@@ -76,11 +87,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 		// drain power
 		gate.removeEnergy(250);
-
-		if (player.isSneaking()) {
-			dialer.lock();
-			return ActionResult.SUCCESS;
-		}
 
 		dialer.next();
 
@@ -152,15 +158,15 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	protected String getRingPositioning() {
 		return """
-				___XXX___
-				_XX___XX_
-				_X_____X_/
-				X_______X/
-				X_______X//
-				X_______X///
-				X_______X////
-				_X_____X_
-				__XX_XX__.
+				_________
+				_________
+				___XXX___/
+				__X___X__/
+				_X_____X_//
+				_X_____X_///
+				_X_____X_////
+				__X___X__
+				___X_X___.
 				""";
 	}
 
@@ -183,6 +189,20 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	@Override
 	public void tick(World world, BlockPos pos, BlockState state, StargateBlockEntity blockEntity) {
+		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
+
+		if (!world.isClient()) {
+			// Play sound only when IRIS state changes
+			if (irisState != prevIrisState) {
+				if (irisState) {
+					world.playSound(null, this.getPos(), StargateSounds.IRIS_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				} else {
+					world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				}
+				prevIrisState = irisState;
+			}
+		}
+
 		if (world.isClient()) {
 			age++;
 
@@ -193,46 +213,32 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				Dialer dialer = gate.getDialer();
 				// Run if there is a selected glyph and it is being added to the locked amount
 				if (dialer.isCurrentGlyphBeingLocked()) {
-					CHEVRON_LOCK_STATE.startIfNotRunning(this.age);
+					CHEVRON_LOCK_STATE.startIfNotRunning(age);
+					IRIS_CLOSE_STATE.stop();
+					IRIS_OPEN_STATE.stop();
 				} else {
 					CHEVRON_LOCK_STATE.stop();
 				}
 
-				if (this.getGateState() == Stargate.GateState.OPEN && age % 20 == 0) {
-					double centerX = this.getPos().getX() + 0.5;
-					double centerY = this.getPos().getY() + 3.5;
-					double centerZ = this.getPos().getZ() + 0.5;
-					double radius = 2.5;
-					Direction facing = this.getCachedState().get(StargateBlock.FACING);
-
-					for (double x = -radius; x <= radius; x += 0.2) {
-						for (double y = -radius; y <= radius; y += 0.2) {
-							if (x * x + y * y <= radius * radius) {
-								//BlockPos rotated = rotate((int) Math.round(x * 10), (int) Math.round(y * 10), facing);
-								double rx, rz;
-								switch (facing) {
-                                    case SOUTH -> { rx = centerX - x; rz = centerZ; }
-									case WEST  -> { rx = centerX; rz = centerZ + x; }
-									case EAST  -> { rx = centerX; rz = centerZ - x; }
-									default    -> { rx = centerX + x; rz = centerZ; }
-								}
-								this.getWorld().addParticle(
-										new DustColorTransitionParticleEffect(
-												new Vector3f(0.6F, 0.8F, 1F), // from color (white)
-												new Vector3f(0.0F, 0.6F, 1F), // to color (light blue)
-												3F // scale
-										),
-										rx,
-										centerY + y,
-										rz,
-										0, 0, 0
-								);
-							}
-						}
+				if (irisState) {
+					IRIS_CLOSE_STATE.startIfNotRunning(age);
+					CHEVRON_LOCK_STATE.stop();
+					IRIS_OPEN_STATE.stop();
+					stopOpening = false;
+				} else {
+					if (!stopOpening) {
+						CHEVRON_LOCK_STATE.stop();
+						IRIS_CLOSE_STATE.stop();
+						IRIS_OPEN_STATE.startIfNotRunning(age);
+					}
+					if (IRIS_OPEN_STATE.isRunning()) {
+						ClientScheduler.get().runTaskLater(() -> {
+							IRIS_OPEN_STATE.stop();
+							stopOpening = true;
+						}, TimeUnit.SECONDS, 3);
 					}
 				}
 			}
-			return;
 		}
 
 		if (world.getServer() == null) return;

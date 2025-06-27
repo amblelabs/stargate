@@ -15,6 +15,11 @@ public class StargateSounds implements SoundContainer {
 	public static final SoundEvent RING_START = create("ring_start");
 	public static final SoundEvent DHD_PRESS = create("dhd_press");
 
+	// Iris
+	public static final SoundEvent IRIS_HIT = create("iris_hit");
+	public static final SoundEvent IRIS_CLOSE = create("iris_close");
+	public static final SoundEvent IRIS_OPEN = create("iris_open");
+
 	public static SoundEvent create(String name) {
 		return SoundEvent.of(StargateMod.id(name));
 	}

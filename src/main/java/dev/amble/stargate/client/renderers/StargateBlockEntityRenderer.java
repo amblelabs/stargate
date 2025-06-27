@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
@@ -66,16 +67,18 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
+        this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), lightAbove, overlay, 1, 1, 1, 1);
-        //PortalRendering.renderPortal(entity, state, matrices, EMISSION, this.model.portal);
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(EMISSION)), 0xF000F0, overlay, 1, power, power, 1);
-        this.model.portal.visible = false;
-
         matrices.pop();
+
+        PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
     }
 
     private void setFromDialer(Dialer dialer, Stargate.GateState state) {
-        List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom, model.chev_light8, model.chev_light9);
+        model.chev_light8.visible = false;
+        model.chev_light9.visible = false;
+        List<ModelPart> chevrons = List.of(model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4, model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom);
 
         chevrons.forEach(chevron -> {
             chevron.visible = state == Stargate.GateState.OPEN || state == Stargate.GateState.PREOPEN;
@@ -134,5 +137,20 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         }
         matrices.pop();
         return rot;
+    }
+
+    @Override
+    public boolean rendersOutsideBoundingBox(StargateBlockEntity stargateBlockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getRenderDistance() {
+        return 256;
+    }
+
+    @Override
+    public boolean isInRenderDistance(StargateBlockEntity exteriorBlockEntity, Vec3d vec3d) {
+        return Vec3d.ofCenter(exteriorBlockEntity.getPos()).multiply(1.0, 0.0, 1.0).isInRange(vec3d.multiply(1.0, 0.0, 1.0), this.getRenderDistance());
     }
 }

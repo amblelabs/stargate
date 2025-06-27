@@ -15,6 +15,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -31,10 +32,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class StargateBlock extends HorizontalFacingBlock implements BlockEntityProvider, Waterloggable {
 	public static final BooleanProperty WATERLOGGED;
+	public static final BooleanProperty IRIS;
 	public StargateBlock(Settings settings) {
 		super(settings);
 
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(IRIS, false));
 	}
 
 	@Nullable
@@ -47,7 +49,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING).add(WATERLOGGED);
+		builder.add(FACING).add(WATERLOGGED).add(IRIS);
 	}
 
 	@Override
@@ -87,7 +89,27 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 		if (state.get(WATERLOGGED)) {
 			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
+
+		if (!world.isClient()) {
+			boolean bl = state.get(IRIS);
+			if (bl != world.isReceivingRedstonePower(pos)) {
+				if (bl) {
+					world.scheduleBlockTick(pos, this, 4);
+				} else {
+					world.setBlockState(pos, state.cycle(IRIS), 2);
+				}
+			}
+
+		}
 		return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+	}
+
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if (state.get(IRIS) && !world.isReceivingRedstonePower(pos)) {
+			world.setBlockState(pos, state.cycle(IRIS), 2);
+		}
+
 	}
 
 	@Override
@@ -146,5 +168,6 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	static {
 		WATERLOGGED = Properties.WATERLOGGED;
+		IRIS = Properties.LIT;
 	}
 }

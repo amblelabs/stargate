@@ -29,6 +29,8 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
 
         //this.updateAnimation(stargateBlockEntity.ANIM_STATE, this.getAnimationForState(state), age);
         this.updateAnimation(stargateBlockEntity.CHEVRON_LOCK_STATE, StargateAnimations.LOCK_SYMBOL, age);
+        this.updateAnimation(stargateBlockEntity.IRIS_CLOSE_STATE, StargateAnimations.IRIS_CLOSE, age);
+        this.updateAnimation(stargateBlockEntity.IRIS_OPEN_STATE, StargateAnimations.IRIS_OPEN, age);
     }
 
     @Override
