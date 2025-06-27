@@ -1,0 +1,14 @@
+{
+    "name": "Template Items",
+    "icon": "minecraft:barrier",
+    "category": "stargate:main_category",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "title": "Temporary Title",
+            "item": {
+            "item": "minecraft:barrier"
+        }
+        }
+      ]
+    }

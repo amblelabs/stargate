@@ -1,0 +1,16 @@
+{
+    "name": "Symbols",
+    "icon": "minecraft:barrier",
+    "sortnum":4,
+    "category": "stargate:pageone_category",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "title": "Temporary Title",
+            "item": {
+            "item": "minecraft:barrier"
+        },
+        "text":"In this mod (Unlike In the show) for our stargates, we use the Extended Minecraft Standard Galactic Alphabet. However we still all 39 symbols similar to the series. Don't worry, you wont have to learn them at all!"
+        }
+    ]
+}
