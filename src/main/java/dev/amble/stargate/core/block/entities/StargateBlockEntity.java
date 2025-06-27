@@ -226,20 +226,19 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					IRIS_OPEN_STATE.stop();
 					stopOpening = false;
 				} else {
-					IRIS_CLOSE_STATE.stop();
 					if (!stopOpening) {
+						CHEVRON_LOCK_STATE.stop();
+						IRIS_CLOSE_STATE.stop();
 						IRIS_OPEN_STATE.startIfNotRunning(age);
 					}
-					if (IRIS_CLOSE_STATE.isRunning()) {
+					if (IRIS_OPEN_STATE.isRunning()) {
 						ClientScheduler.get().runTaskLater(() -> {
-							IRIS_CLOSE_STATE.stop();
+							IRIS_OPEN_STATE.stop();
 							stopOpening = true;
 						}, TimeUnit.SECONDS, 3);
 					}
-					CHEVRON_LOCK_STATE.stop();
 				}
 			}
-			return;
 		}
 
 		if (world.getServer() == null) return;

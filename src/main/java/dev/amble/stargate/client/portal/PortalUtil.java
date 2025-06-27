@@ -3,6 +3,8 @@ package dev.amble.stargate.client.portal;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.core.block.StargateBlock;
+import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
@@ -39,7 +41,7 @@ public class PortalUtil {
         this(StargateMod.id("textures/portal/" + name + ".png"));
     }
 
-    public void renderPortalInterior(MatrixStack matrixStack, Stargate.GateState state) {
+    public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, Stargate.GateState state) {
 
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
@@ -56,7 +58,7 @@ public class PortalUtil {
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
 
         RenderSystem.disableCull();
-        portalTriangles(matrixStack, buffer, state);
+        portalTriangles(matrixStack, buffer, stargate, state);
 
         tessellator.draw();
         RenderSystem.enableCull();
@@ -74,14 +76,14 @@ public class PortalUtil {
     }
 
 
-    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, Stargate.GateState state) {
+    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, StargateBlockEntity stargate, Stargate.GateState state) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings = 12;
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
         float minWaveHeight = 0.001f;
-        float maxWaveHeight = 0.006f;
+        float maxWaveHeight = stargate.getCachedState().get(StargateBlock.IRIS) ?  0.001f : 0.006f;
 
         int rippleCount = 24;
         float[][] rippleCenters = new float[rippleCount][2];

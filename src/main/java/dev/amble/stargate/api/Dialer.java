@@ -1,5 +1,6 @@
 package dev.amble.stargate.api;
 
+import dev.amble.stargate.core.block.StargateBlock;
 import dev.drtheo.scheduler.api.common.Scheduler;;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.stargate.StargateMod;
@@ -183,7 +184,7 @@ public class Dialer implements NbtSync {
 
 		this.clear();
 
-		if (target == null) {
+		if (target == null || world.getBlockState(target.getAddress().pos().getPos()).get(StargateBlock.IRIS)) {
 			source.playSound(StargateSounds.GATE_FAIL, 0.25f, 1f);
 			return Optional.empty();
 		}

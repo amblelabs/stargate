@@ -37,7 +37,7 @@ public class PortalRendering {
         PortalUtil util = new PortalUtil("watery");
         if (state == Stargate.GateState.PREOPEN || state == Stargate.GateState.OPEN) {
             RenderSystem.enableDepthTest();
-            util.renderPortalInterior(stack, stargateBlockEntity.getGateState());
+            util.renderPortalInterior(stack, stargateBlockEntity, stargateBlockEntity.getGateState());
             if (state == Stargate.GateState.PREOPEN)
                 util.triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
             RenderSystem.disableDepthTest();
