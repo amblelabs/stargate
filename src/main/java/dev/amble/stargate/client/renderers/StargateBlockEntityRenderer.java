@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
@@ -136,5 +137,20 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         }
         matrices.pop();
         return rot;
+    }
+
+    @Override
+    public boolean rendersOutsideBoundingBox(StargateBlockEntity stargateBlockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getRenderDistance() {
+        return 256;
+    }
+
+    @Override
+    public boolean isInRenderDistance(StargateBlockEntity exteriorBlockEntity, Vec3d vec3d) {
+        return Vec3d.ofCenter(exteriorBlockEntity.getPos()).multiply(1.0, 0.0, 1.0).isInRange(vec3d.multiply(1.0, 0.0, 1.0), this.getRenderDistance());
     }
 }
