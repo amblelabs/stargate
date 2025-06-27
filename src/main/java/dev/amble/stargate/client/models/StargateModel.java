@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 
 public class StargateModel extends BaseStargateModel {
 	public final ModelPart stargate;
-	public final ModelPart portal;
 	public final ModelPart iris;
 	public final ModelPart blade1;
 	public final ModelPart blade2;
@@ -30,6 +29,7 @@ public class StargateModel extends BaseStargateModel {
 	public final ModelPart blade16;
 	public final ModelPart blade17;
 	public final ModelPart blade18;
+	public final ModelPart shield;
 	public final ModelPart OuterRing;
 	public final ModelPart chev;
 	public final ModelPart chev2;
@@ -56,7 +56,6 @@ public class StargateModel extends BaseStargateModel {
 	public final ModelPart InnerRing;
 	public StargateModel(ModelPart root) {
 		this.stargate = root.getChild("stargate");
-		this.portal = this.stargate.getChild("portal");
 		this.iris = this.stargate.getChild("iris");
 		this.blade1 = this.iris.getChild("blade1");
 		this.blade2 = this.iris.getChild("blade2");
@@ -76,6 +75,7 @@ public class StargateModel extends BaseStargateModel {
 		this.blade16 = this.iris.getChild("blade16");
 		this.blade17 = this.iris.getChild("blade17");
 		this.blade18 = this.iris.getChild("blade18");
+		this.shield = this.iris.getChild("shield");
 		this.OuterRing = this.stargate.getChild("OuterRing");
 		this.chev = this.OuterRing.getChild("chev");
 		this.chev2 = this.OuterRing.getChild("chev2");
@@ -106,83 +106,81 @@ public class StargateModel extends BaseStargateModel {
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData stargate = modelPartData.addChild("stargate", ModelPartBuilder.create(), ModelTransform.of(0.0F, -32.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 
-		ModelPartData portal = stargate.addChild("portal", ModelPartBuilder.create().uv(0, 0).cuboid(-41.0F, -97.0F, -1.0F, 82.0F, 82.0F, 2.0F, new Dilation(0.001F)), ModelTransform.pivot(0.0F, 56.0F, 0.0F));
-
 		ModelPartData iris = stargate.addChild("iris", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 0.0F, -2.0F));
 
 		ModelPartData blade1 = iris.addChild("blade1", ModelPartBuilder.create(), ModelTransform.of(-5.0F, 40.0F, 1.0F, 0.0F, 0.0F, 1.5708F));
 
-		ModelPartData cube_r1 = blade1.addChild("cube_r1", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r1 = blade1.addChild("cube_r1", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade2 = iris.addChild("blade2", ModelPartBuilder.create(), ModelTransform.of(5.0F, -40.0F, 1.0F, 0.0F, 0.0F, -1.5708F));
 
-		ModelPartData cube_r2 = blade2.addChild("cube_r2", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r2 = blade2.addChild("cube_r2", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade3 = iris.addChild("blade3", ModelPartBuilder.create(), ModelTransform.of(40.2606F, -2.0219F, 1.0F, 0.0F, 0.0F, -0.1745F));
 
-		ModelPartData cube_r3 = blade3.addChild("cube_r3", ModelPartBuilder.create().uv(0, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r3 = blade3.addChild("cube_r3", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade4 = iris.addChild("blade4", ModelPartBuilder.create(), ModelTransform.of(-40.2606F, 2.0219F, 1.0F, 0.0F, 0.0F, 2.9671F));
 
-		ModelPartData cube_r4 = blade4.addChild("cube_r4", ModelPartBuilder.create().uv(0, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r4 = blade4.addChild("cube_r4", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade5 = iris.addChild("blade5", ModelPartBuilder.create(), ModelTransform.of(8.9823F, 39.2978F, 1.0F, 0.0F, 0.0F, 1.2217F));
 
-		ModelPartData cube_r5 = blade5.addChild("cube_r5", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r5 = blade5.addChild("cube_r5", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade6 = iris.addChild("blade6", ModelPartBuilder.create(), ModelTransform.of(-8.9823F, -39.2978F, 1.0F, 0.0F, 0.0F, -1.9199F));
 
-		ModelPartData cube_r6 = blade6.addChild("cube_r6", ModelPartBuilder.create().uv(0, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r6 = blade6.addChild("cube_r6", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade7 = iris.addChild("blade7", ModelPartBuilder.create(), ModelTransform.of(37.141F, -15.6699F, 1.0F, 0.0F, 0.0F, -0.5236F));
 
-		ModelPartData cube_r7 = blade7.addChild("cube_r7", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r7 = blade7.addChild("cube_r7", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade8 = iris.addChild("blade8", ModelPartBuilder.create(), ModelTransform.of(-37.141F, 15.6699F, 1.0F, 0.0F, 0.0F, 2.618F));
 
-		ModelPartData cube_r8 = blade8.addChild("cube_r8", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r8 = blade8.addChild("cube_r8", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade9 = iris.addChild("blade9", ModelPartBuilder.create(), ModelTransform.of(21.8813F, 33.8557F, 1.0F, 0.0F, 0.0F, 0.8727F));
 
-		ModelPartData cube_r9 = blade9.addChild("cube_r9", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r9 = blade9.addChild("cube_r9", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade10 = iris.addChild("blade10", ModelPartBuilder.create(), ModelTransform.of(-21.8813F, -33.8557F, 1.0F, 0.0F, 0.0F, -2.2689F));
 
-		ModelPartData cube_r10 = blade10.addChild("cube_r10", ModelPartBuilder.create().uv(0, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r10 = blade10.addChild("cube_r10", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade11 = iris.addChild("blade11", ModelPartBuilder.create(), ModelTransform.of(29.5417F, -27.4278F, 1.0F, 0.0F, 0.0F, -0.8727F));
 
-		ModelPartData cube_r11 = blade11.addChild("cube_r11", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r11 = blade11.addChild("cube_r11", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade12 = iris.addChild("blade12", ModelPartBuilder.create(), ModelTransform.of(-29.5417F, 27.4278F, 1.0F, 0.0F, 0.0F, 2.2689F));
 
-		ModelPartData cube_r12 = blade12.addChild("cube_r12", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r12 = blade12.addChild("cube_r12", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade13 = iris.addChild("blade13", ModelPartBuilder.create(), ModelTransform.of(32.141F, 24.3301F, 1.0F, 0.0F, 0.0F, 0.5236F));
 
-		ModelPartData cube_r13 = blade13.addChild("cube_r13", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r13 = blade13.addChild("cube_r13", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade14 = iris.addChild("blade14", ModelPartBuilder.create(), ModelTransform.of(-32.141F, -24.3301F, 1.0F, 0.0F, 0.0F, -2.618F));
 
-		ModelPartData cube_r14 = blade14.addChild("cube_r14", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r14 = blade14.addChild("cube_r14", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade15 = iris.addChild("blade15", ModelPartBuilder.create(), ModelTransform.of(18.3793F, -35.8776F, 1.0F, 0.0F, 0.0F, -1.2217F));
 
-		ModelPartData cube_r15 = blade15.addChild("cube_r15", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r15 = blade15.addChild("cube_r15", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade16 = iris.addChild("blade16", ModelPartBuilder.create(), ModelTransform.of(-18.3793F, 35.8776F, 1.0F, 0.0F, 0.0F, 1.9199F));
 
-		ModelPartData cube_r16 = blade16.addChild("cube_r16", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r16 = blade16.addChild("cube_r16", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade17 = iris.addChild("blade17", ModelPartBuilder.create(), ModelTransform.of(38.5241F, 11.87F, 1.0F, 0.0F, 0.0F, 0.1745F));
 
-		ModelPartData cube_r17 = blade17.addChild("cube_r17", ModelPartBuilder.create().uv(1, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r17 = blade17.addChild("cube_r17", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		ModelPartData blade18 = iris.addChild("blade18", ModelPartBuilder.create(), ModelTransform.of(-38.5241F, -11.87F, 1.0F, 0.0F, 0.0F, -2.9671F));
 
-		ModelPartData cube_r18 = blade18.addChild("cube_r18", ModelPartBuilder.create().uv(0, 88).cuboid(-7.0F, -3.0F, -1.0F, 16.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+		ModelPartData cube_r18 = blade18.addChild("cube_r18", ModelPartBuilder.create().uv(0, 88).cuboid(-9.0F, -3.0F, -1.0F, 18.0F, 46.0F, 0.0F, new Dilation(0.01F)), ModelTransform.of(5.0F, -40.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
-		ModelPartData shield = iris.addChild("shield", ModelPartBuilder.create().uv(0, 174).cuboid(-41.0F, -41.0F, -1.0F, 82.0F, 82.0F, 0.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+		ModelPartData shield = iris.addChild("shield", ModelPartBuilder.create().uv(-2, 174).cuboid(-43.0F, -41.0F, -1.0F, 84.0F, 82.0F, 0.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
 		ModelPartData OuterRing = stargate.addChild("OuterRing", ModelPartBuilder.create().uv(0, 52).cuboid(-10.0F, 50.0F, -4.5F, 20.0F, 6.0F, 9.0F, new Dilation(0.001F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
@@ -351,41 +349,41 @@ public class StargateModel extends BaseStargateModel {
 
 		ModelPartData cube_r74 = SymbolRing.addChild("cube_r74", ModelPartBuilder.create().uv(59, 0).cuboid(-9.5F, 42.0F, -3.5F, 19.0F, 10.0F, 7.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 
-		ModelPartData InnerRing = stargate.addChild("InnerRing", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+		ModelPartData InnerRing = stargate.addChild("InnerRing", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 
-		ModelPartData cube_r75 = InnerRing.addChild("cube_r75", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.7925F));
+		ModelPartData cube_r75 = InnerRing.addChild("cube_r75", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.7925F));
 
-		ModelPartData cube_r76 = InnerRing.addChild("cube_r76", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.4435F));
+		ModelPartData cube_r76 = InnerRing.addChild("cube_r76", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.4435F));
 
-		ModelPartData cube_r77 = InnerRing.addChild("cube_r77", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0944F));
+		ModelPartData cube_r77 = InnerRing.addChild("cube_r77", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0944F));
 
-		ModelPartData cube_r78 = InnerRing.addChild("cube_r78", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.7453F));
+		ModelPartData cube_r78 = InnerRing.addChild("cube_r78", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.7453F));
 
-		ModelPartData cube_r79 = InnerRing.addChild("cube_r79", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.3963F));
+		ModelPartData cube_r79 = InnerRing.addChild("cube_r79", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.3963F));
 
-		ModelPartData cube_r80 = InnerRing.addChild("cube_r80", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0472F));
+		ModelPartData cube_r80 = InnerRing.addChild("cube_r80", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0472F));
 
-		ModelPartData cube_r81 = InnerRing.addChild("cube_r81", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
+		ModelPartData cube_r81 = InnerRing.addChild("cube_r81", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
 
-		ModelPartData cube_r82 = InnerRing.addChild("cube_r82", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.3491F));
+		ModelPartData cube_r82 = InnerRing.addChild("cube_r82", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.3491F));
 
-		ModelPartData cube_r83 = InnerRing.addChild("cube_r83", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.3491F));
+		ModelPartData cube_r83 = InnerRing.addChild("cube_r83", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.3491F));
 
-		ModelPartData cube_r84 = InnerRing.addChild("cube_r84", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.6981F));
+		ModelPartData cube_r84 = InnerRing.addChild("cube_r84", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.6981F));
 
-		ModelPartData cube_r85 = InnerRing.addChild("cube_r85", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.0472F));
+		ModelPartData cube_r85 = InnerRing.addChild("cube_r85", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.0472F));
 
-		ModelPartData cube_r86 = InnerRing.addChild("cube_r86", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.3963F));
+		ModelPartData cube_r86 = InnerRing.addChild("cube_r86", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.3963F));
 
-		ModelPartData cube_r87 = InnerRing.addChild("cube_r87", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.7453F));
+		ModelPartData cube_r87 = InnerRing.addChild("cube_r87", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -1.7453F));
 
-		ModelPartData cube_r88 = InnerRing.addChild("cube_r88", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.0944F));
+		ModelPartData cube_r88 = InnerRing.addChild("cube_r88", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.0944F));
 
-		ModelPartData cube_r89 = InnerRing.addChild("cube_r89", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.4435F));
+		ModelPartData cube_r89 = InnerRing.addChild("cube_r89", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.4435F));
 
-		ModelPartData cube_r90 = InnerRing.addChild("cube_r90", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.7925F));
+		ModelPartData cube_r90 = InnerRing.addChild("cube_r90", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.002F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -2.7925F));
 
-		ModelPartData cube_r91 = InnerRing.addChild("cube_r91", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
+		ModelPartData cube_r91 = InnerRing.addChild("cube_r91", ModelPartBuilder.create().uv(59, 36).cuboid(-8.0F, 40.0F, -4.0F, 16.0F, 4.0F, 8.0F, new Dilation(0.001F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 		return TexturedModelData.of(modelData, 256, 256);
 	}
 
@@ -401,10 +399,7 @@ public class StargateModel extends BaseStargateModel {
 	}
 
 	@Override
-	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-		//this.getPart().traverse().forEach(ModelPart::resetTransform);
-
-	}
+	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {}
 
 	@Override
 	public Animation getAnimationForState(Stargate.GateState state) {
