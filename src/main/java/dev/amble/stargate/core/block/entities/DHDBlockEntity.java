@@ -43,7 +43,9 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
         Stargate target = this.gate().get();
 
         player.sendMessage(target.address().asText(), true);
-        target.dial(target);
+
+        if (target.state() instanceof GateState.Closed closed)
+            closed.setAddress(target.address().text());
 
         /*
         int counter = 0;
