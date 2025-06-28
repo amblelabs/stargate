@@ -15,4 +15,30 @@ public class StargateItems extends ItemContainer {
 
 	@NoEnglish
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1).group(StargateItemGroups.MAIN));
+
+	//Naquadah
+	@AutomaticModel
+	@NoEnglish
+	public static final Item RAW_NAQUADAH = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item NAQUADAH_INGOT = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item NAQUADAH_NUGGET = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+	// Iris
+	@AutomaticModel
+	@NoEnglish
+	public static final Item IRIS_BLADE = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item IRIS_FRAME = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item IRIS = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
 }
