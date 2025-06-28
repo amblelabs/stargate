@@ -1,6 +1,6 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.client.model.ModelPart;
@@ -23,7 +23,7 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
         super(function);
     }
 
-    public void animateStargateModel(StargateBlockEntity stargateBlockEntity, Stargate.GateState state, int age) {
+    public void animateStargateModel(StargateBlockEntity stargateBlockEntity, GateState state, int age) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
 
         //this.updateAnimation(stargateBlockEntity.ANIM_STATE, this.getAnimationForState(state), age);
@@ -37,5 +37,5 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
                           float headPitch) {
     }
 
-    public abstract Animation getAnimationForState(Stargate.GateState state);
+    public abstract Animation getAnimationForState(GateState state);
 }

@@ -29,12 +29,12 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     }
 
     @Override
-    default StargateRef getStargate() {
+    default StargateRef gate() {
         StargateRef result = this.asRef();
 
         if (result == null) {
             this.link(this.getDataTracker().get(this.getTracked()), this.getWorld());
-            return this.getStargate();
+            return this.gate();
         }
 
         return result;

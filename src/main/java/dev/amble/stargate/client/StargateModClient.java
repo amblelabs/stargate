@@ -8,7 +8,6 @@ import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
-import dev.amble.stargate.client.util.ClientStargateUtil;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
 import dev.amble.stargate.core.StargateEntities;
@@ -19,20 +18,13 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LightType;
 
 public class StargateModClient implements ClientModInitializer {
     @Override
@@ -45,8 +37,6 @@ public class StargateModClient implements ClientModInitializer {
         registerBlockEntityRenderers();
         setupBlockRendering();
         registerEntityRenderers();
-
-        ClientStargateUtil.init();
 
         WorldRenderEvents.AFTER_ENTITIES.register(this::portalBOTI);
     }
@@ -79,7 +69,7 @@ public class StargateModClient implements ClientModInitializer {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(painting.getCachedState().get(StargateBlock.FACING).asRotation()));
             stack.translate(0, -2f, 0);
-            PortalRendering.renderPortal(painting, painting.getGateState(), stack);
+            PortalRendering.renderPortal(painting, painting.gate().get().state(), stack);
             stack.pop();
         }
         PortalRendering.PORTAL_RENDER_QUEUE.clear();

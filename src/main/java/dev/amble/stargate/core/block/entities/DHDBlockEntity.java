@@ -1,7 +1,8 @@
 package dev.amble.stargate.core.block.entities;
 
 import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateNetwork;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.block.DHDBlock;
@@ -39,10 +40,9 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
         if (!this.hasStargate()) return ActionResult.FAIL;
         if (world.isClient()) return ActionResult.SUCCESS;
 
-        StargateNetwork network = ServerStargateNetwork.get();
-        Stargate target = this.getStargate().get();
+        Stargate target = this.gate().get();
 
-        player.sendMessage(target.getAddress().asText(), true);
+        player.sendMessage(target.address().asText(), true);
         target.dial(target);
 
         /*
@@ -67,11 +67,6 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     public NbtCompound toInitialChunkDataNbt() {
         this.markNeedsControl();
         return super.toInitialChunkDataNbt();
-    }
-
-    @Override
-    public void setGateState(Stargate.GateState state) {
-        super.setGateState(state);
     }
 
     @Override
@@ -102,7 +97,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
         SymbolArrangement[] controls = DHDControlEntity.getSymbolArrangement();
 
         for (SymbolArrangement control : controls) {
-            DHDControlEntity controlEntity = DHDControlEntity.create(this.world, this.getStargate().get());
+            DHDControlEntity controlEntity = DHDControlEntity.create(this.world, this.gate().get());
 
             Vector3f position = current.toCenterPos().toVector3f();
             Direction direction = this.world.getBlockState(this.getPos()).get(DHDBlock.FACING);

@@ -1,6 +1,7 @@
 package dev.amble.stargate.core.dhd.control;
 
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.core.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,7 +25,8 @@ public class SymbolControl {
     }
 
     public boolean runServer(Stargate stargate, ServerPlayerEntity player, ServerWorld world, BlockPos console) {
-        stargate.getDialer().dial(this.glyph, true);
+        if (stargate.state() instanceof GateState.Closed closed)
+            closed.appendGlyph(this.glyph);
         return false;
     }
 
@@ -43,7 +45,7 @@ public class SymbolControl {
     }
 
     public boolean canRun(Stargate stargate, ServerPlayerEntity user) {
-        return !stargate.getState().isDialing() && stargate.isAvailable();
+        return stargate.state() instanceof GateState.Closed closed && closed.isDialing();
     }
 
     @Override

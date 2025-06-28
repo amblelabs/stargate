@@ -3,7 +3,8 @@ package dev.amble.stargate.core.entities;
 import java.util.List;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.core.dhd.DHDArrangement;
 import dev.amble.stargate.core.dhd.SymbolArrangement;
@@ -251,7 +252,11 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     public boolean shouldGlow() {
         if (!this.hasStargate()) return false;
-        return this.getStargate().get().getDialer().contains(this.getCustomName().getString().charAt(0));
+
+        GateState state = this.gate().get().state();
+
+        // so dumb.
+        return state instanceof GateState.Closed closed && closed.contains(this.getCustomName().getString().charAt(0));
     }
 
     public void run(PlayerEntity player, World world, boolean leftClick) {
@@ -262,7 +267,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         if (world.isClient())
             return;
 
-        Stargate stargate = this.getStargate().get();
+        Stargate stargate = this.gate().get();
 
         if (stargate == null) {
             StargateMod.LOGGER.warn("Discarding invalid control entity at {}; dhd pos: {}", this.getPos(),

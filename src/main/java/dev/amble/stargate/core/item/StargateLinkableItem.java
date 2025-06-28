@@ -2,10 +2,10 @@ package dev.amble.stargate.core.item;
 
 import dev.amble.stargate.api.*;
 import dev.amble.lib.data.DirectedGlobalPos;
-import dev.amble.stargate.api.network.ClientStargate;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
-import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.network.StargateNetwork;
+import dev.amble.stargate.api.v2.ClientStargate;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// wow i wonder where did that come from
 public abstract class StargateLinkableItem extends Item {
 	private final boolean showTooltip;
 
@@ -28,7 +29,7 @@ public abstract class StargateLinkableItem extends Item {
 	}
 
 	public void link(ItemStack stack, Stargate gate) {
-		this.link(stack, gate.getAddress().text());
+		this.link(stack, gate.address().text());
 	}
 
 	public void link(ItemStack stack, String address) {
@@ -63,9 +64,10 @@ public abstract class StargateLinkableItem extends Item {
 		ClientStargate stargate = (ClientStargate) ClientStargateNetwork.get().get(id);
 
 		if (stargate != null) {
+			// TODO: replace literals with translations
 			tooltip.add(Text.literal("STARGATE: ").formatted(Formatting.BLUE));
 
-			Address address = stargate.getAddress();
+			Address address = stargate.address();
 			DirectedGlobalPos pos = address.pos();
 
 			tooltip.add(Text.literal("> ").append(address.asText())

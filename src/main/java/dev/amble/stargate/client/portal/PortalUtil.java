@@ -2,7 +2,7 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import net.minecraft.util.math.RotationAxis;
@@ -41,8 +41,7 @@ public class PortalUtil {
         this(StargateMod.id("textures/portal/" + name + ".png"));
     }
 
-    public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, Stargate.GateState state) {
-
+    public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
         matrixStack.push();
@@ -75,8 +74,7 @@ public class PortalUtil {
         return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
     }
 
-
-    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, StargateBlockEntity stargate, Stargate.GateState state) {
+    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, StargateBlockEntity stargate, GateState state) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings = 12;
@@ -103,7 +101,7 @@ public class PortalUtil {
 
         // Add central big ripple if active
 
-        if (state == Stargate.GateState.PREOPEN)
+        if (state instanceof GateState.PreOpen)
             triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
         CentralRippleParams central = getCentralRipple();
         boolean hasCentralRipple = central != null;

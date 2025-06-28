@@ -1,0 +1,145 @@
+package dev.amble.stargate.api.v2;
+
+import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.NbtSync;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
+
+public interface StargateKernel extends NbtSync {
+
+    default void onCreate(DirectedGlobalPos pos) { }
+
+    default void tick() { }
+
+    Address address();
+
+    long energy();
+    long maxEnergy();
+
+    long energyToDial(Address address);
+
+    default boolean hasEnoughEnergy(Address address) {
+        return this.energy() >= this.energyToDial(address);
+    }
+
+    GateShape shape();
+    GateState state();
+
+    abstract class Impl implements StargateKernel {
+
+        private final Identifier id;
+        protected final Stargate parent;
+
+        protected GateState state;
+
+        public Impl(Identifier id, Stargate parent) {
+            this.id = id;
+            this.parent = parent;
+        }
+
+        public Identifier id() {
+            return id;
+        }
+
+        @Override
+        public GateState state() {
+            return state;
+        }
+    }
+
+    abstract class Basic extends Impl {
+
+        protected long energy = 0;
+        protected Address address;
+
+        public Basic(Identifier id, Stargate parent) {
+            super(id, parent);
+        }
+
+        @Override
+        public void onCreate(DirectedGlobalPos pos) {
+            this.address = new Address(pos);
+        }
+
+        private int ticksPerGlyph = 2 * 20;
+
+        private int timer;
+
+        @Override
+        public void tick() {
+            if (!(this.parent instanceof ServerStargate))
+                return;
+
+            switch (state) {
+                case GateState.Closed closed -> {
+                    int length = closed.addressBuilder().length();
+
+                    if (length == 0 || length <= closed.locked()) {
+                        if (closed.locking()) {
+                            closed.setLocking(false);
+                            this.parent.sync();
+                        }
+
+                        return;
+                    }
+
+                    if (timer >= ticksPerGlyph) {
+                        timer = 0;
+
+                        closed.lock();
+
+                        if (closed.locked() == Address.LENGTH)
+                            state = new GateState.PreOpen(closed.addressBuilder());
+
+                        this.parent.sync();
+                        return;
+                    }
+
+                    if (!closed.locking()) {
+                        closed.setLocking(true);
+                        this.parent.sync();
+                    }
+
+                    timer++;
+                }
+                case GateState.PreOpen preOpen -> {
+                    // FIXME: NPE, handle missing gates by address
+                    // FIXME: this operation is O(N^2). bad.
+                    state = new GateState.Open(ServerStargateNetwork.get().get(preOpen.address()));
+                    this.parent.sync();
+                }
+                default -> {}
+            }
+        }
+
+        @Override
+        public Address address() {
+            return address;
+        }
+
+        @Override
+        public long energy() {
+            return energy;
+        }
+
+        @Override
+        public void loadNbt(NbtCompound nbt, boolean isSync) {
+            this.address = Address.fromNbt(nbt.getCompound("address"));
+            this.energy = nbt.getInt("energy");
+
+            this.state = GateState.fromNbt(nbt.getCompound("State"));
+        }
+
+        @Override
+        public NbtCompound toNbt() {
+            NbtCompound nbt = new NbtCompound();
+            nbt.put("Address", this.address.toNbt());
+            nbt.putLong("energy", this.energy);
+
+            nbt.put("State", this.state.toNbt());
+            return nbt;
+        }
+    }
+}

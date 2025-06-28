@@ -1,6 +1,6 @@
 package dev.amble.stargate.core.block;
 
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.core.StargateSounds;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
 import dev.amble.stargate.core.item.StargateLinkableItem;
@@ -16,6 +16,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -31,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class StargateBlock extends HorizontalFacingBlock implements BlockEntityProvider, Waterloggable {
-	public static final BooleanProperty WATERLOGGED;
-	public static final BooleanProperty IRIS;
+	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+	public static final BooleanProperty IRIS = Properties.LIT;
 	public StargateBlock(Settings settings) {
 		super(settings);
 
@@ -106,10 +107,8 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (state.get(IRIS) && !world.isReceivingRedstonePower(pos)) {
+		if (state.get(IRIS) && !world.isReceivingRedstonePower(pos))
 			world.setBlockState(pos, state.cycle(IRIS), 2);
-		}
-
 	}
 
 	@Override
@@ -159,15 +158,10 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 		if (!(world.getBlockEntity(pos) instanceof StargateBlockEntity be)) return;
 		if (!be.hasStargate()) return;
-		if (be.getGateState() != Stargate.GateState.OPEN) return;
+		if (!(be.gate().get().state() instanceof GateState.Open)) return;
 
 		if (random.nextInt(100) < 5) {
-			be.getStargate().get().playSound(StargateSounds.WORMHOLE_LOOP, 1.0f, 1.0f);
+			world.playSound(null, pos, StargateSounds.WORMHOLE_LOOP, SoundCategory.BLOCKS, 1.0f, 1.0f);
 		}
-	}
-
-	static {
-		WATERLOGGED = Properties.WATERLOGGED;
-		IRIS = Properties.LIT;
 	}
 }

@@ -1,7 +1,7 @@
 package dev.amble.stargate.core.block.entities;
 
 import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -34,7 +34,8 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 		this.setStargate(StargateRef.createAs(world, nearest));
 
 		if (sendLinkMessage && placer instanceof ServerPlayerEntity player) {
-			player.sendMessage(Text.literal("Linked to " + nearest.getAddress().text()), true);
+			// FIXME: use translations
+			player.sendMessage(Text.literal("Linked to " + nearest.address().text()), true);
 		}
 	}
 }
