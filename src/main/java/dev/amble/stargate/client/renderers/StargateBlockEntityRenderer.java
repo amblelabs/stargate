@@ -115,20 +115,21 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         // TODO fix the rotation stuff here. - Loqor
         int middleIndex = Glyph.ALL.length / 2;
-        float selectedRot = 180 + (float) (18.5f * (0.5 * dialer.getSelectedIndex()));
-        float rot = dialer.getSelectedIndex() > -1 ? selectedRot :
+        int selectedIndex = state instanceof GateState.Closed closed ? closed.locked() : -1;
+        float selectedRot = 180 + (float) (18.5f * (0.5 * selectedIndex));
+        float rot = selectedIndex > -1 ? selectedRot :
                 MathHelper.wrapDegrees(MinecraftClient.getInstance().player.age / 100f * 360f);
 
         boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing();
 
-        if (isDialing)
-            rot = rot + (dialer.getRotation().equals(Dialer.Rotation.FORWARD) ? 9 : -9) * dialer.getRotationProgress();
+        //if (isDialing)
+        //    rot = rot + (dialer.getRotation().equals(Dialer.Rotation.FORWARD) ? 9 : -9) * dialer.getRotationProgress();
 
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rot));
 
         for (int i = 0; i < Glyph.ALL.length; i++) {
             boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
-            boolean isSelected = i == dialer.getSelectedIndex();
+            boolean isSelected = i == selectedIndex;
 
             int colour = 0x17171b;
 

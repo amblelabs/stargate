@@ -45,7 +45,8 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         int middleIndex = Glyph.ALL.length / 2;
         for (int i = 0; i < Glyph.ALL.length; i++) {
-            int j = Glyph.ALL.length - i + dialer.getSelectedIndex() - middleIndex;
+            int selected = state instanceof GateState.Closed closed ? closed.locked() : 0;
+            int j = Glyph.ALL.length - i + selected - middleIndex;
 
             if (j < 0) {
                 j += Glyph.ALL.length;
@@ -54,7 +55,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             }
 
             boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
-            boolean isSelected = i == dialer.getSelectedIndex();
+            boolean isSelected = state instanceof GateState.Closed closed && closed.locked() == i; // funny hack, because the amount of locked is the size but the next index is also equal to the size
 
             int colour = 0x4f4f4f;
 
