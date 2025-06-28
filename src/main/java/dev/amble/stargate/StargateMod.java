@@ -6,6 +6,7 @@ import dev.amble.stargate.core.*;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.core.entities.DHDControlEntity;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.world.gen.StargateWorldGeneration;
 import net.fabricmc.api.ModInitializer;
 
@@ -42,6 +43,7 @@ public class StargateMod implements ModInitializer {
 
 		entityAttributeRegister();
 
+		StargateFluids.register();
 	}
 
 	public void entityAttributeRegister() {

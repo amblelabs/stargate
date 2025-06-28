@@ -29,6 +29,7 @@ public class StargateItems extends ItemContainer {
 	@NoEnglish
 	public static final Item NAQUADAH_NUGGET = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
 
+
 	// Iris
 	@AutomaticModel
 	@NoEnglish
@@ -41,4 +42,6 @@ public class StargateItems extends ItemContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Item IRIS = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
+
 }
