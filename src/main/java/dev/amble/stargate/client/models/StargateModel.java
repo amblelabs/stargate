@@ -1,6 +1,6 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.v2.GateState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.animation.Animation;
@@ -400,10 +400,7 @@ public class StargateModel extends BaseStargateModel {
 	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {}
 
 	@Override
-	public Animation getAnimationForState(Stargate.GateState state) {
-		return switch(state) {
-			//case DIALING, PREOPEN, OPEN -> StargateAnimations.LOCK_SYMBOL;
-			default -> Animation.Builder.create(0).build();
-		};
+	public Animation getAnimationForState(GateState state) {
+		return Animation.Builder.create(0).build();
 	}
 }

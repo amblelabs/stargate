@@ -1,11 +1,14 @@
 package dev.amble.stargate.core.block.entities;
 
-import dev.amble.stargate.api.*;
+import dev.amble.lib.util.TeleportUtil;
 import dev.amble.lib.data.DirectedGlobalPos;
-import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.network.Stargate;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.ServerStargate;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.v2.UniverseGateKernel;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
@@ -14,7 +17,6 @@ import dev.amble.stargate.core.block.StargateBlock;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.Entity;
@@ -25,26 +27,19 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
 	public AnimationState CHEVRON_LOCK_STATE = new AnimationState();
 	public AnimationState IRIS_CLOSE_STATE = new AnimationState();
 	public AnimationState IRIS_OPEN_STATE = new AnimationState();
-	private static final Identifier SYNC_GATE_STATE = new Identifier(StargateMod.MOD_ID, "sync_gate_state");
-	public int age;
+    public int age;
 	public boolean requiresPlacement = false;
 	private boolean stopOpening = false;
 	private boolean prevIrisState = false;
@@ -70,112 +65,60 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (world.isClient()) return ActionResult.SUCCESS;
 		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mod
 
-		Stargate gate = this.getStargate().get();
-		Dialer dialer = gate.getDialer();
+		Stargate gate = this.gate().get();
 
-		player.sendMessage(Text.literal("ENERGY: " + gate.getEnergy()), true);
+		// FIXME: replace literals
+		player.sendMessage(Text.literal("ENERGY: " + gate.energy()), true);
 
-		if (gate.getEnergy() < 250) return ActionResult.FAIL;
+		if (gate.energy() < 250) return ActionResult.FAIL;
 
 		// drain power
-		gate.removeEnergy(250);
+		// TODO: figure this out
+		// gate.removeEnergy(250);
 
-		dialer.next();
+		// TODO whatever the fuck thats supposed to do
+		// dialer.next();
 
 		return ActionResult.SUCCESS;
 	}
 
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity e) {
-		if (!(e instanceof LivingEntity)) return;
+		if (!(e instanceof LivingEntity living)) return;
+
+		if (!this.hasStargate()) return;
+
+		Stargate gate = this.gate().get();
+
+		if (!(gate.state() instanceof GateState.Open open))
+			return;
+
+		TeleportUtil.teleport(living, open.target().address().pos());
 	}
 
 	public void onBreak() {
 		if (this.hasStargate()) {
-			this.getStargate().get().dispose();
-			this.getStargate().dispose();
+			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+			this.gate().get().shape().destroy(world, pos, facing);
 		}
+
 		this.ref = null;
-		this.removeRing();
 	}
+
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
 		if (world.isClient()) return;
 
 		this.onBreak();
 		this.requiresPlacement = false;
 
-		createRing(StargateBlocks.RING.getDefaultState(), (ServerWorld) world, false);
-
-		Direction facing = world.getBlockState(this.getPos()).get(StargateBlock.FACING);
+		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
-		this.setStargate(StargateRef.createAs(this, Stargate.create(new Address(globalPos))));
-	}
 
-	protected int getRingRadius() {
-		return 4;
-	}
+		ServerStargate stargate = new ServerStargate(globalPos, UniverseGateKernel::new);
+		ServerStargateNetwork.get().add(stargate);
 
-	/**
-	 * Creates a ring of state around the stargate using text
-	 * @param state the state to create the ring with
-	 * @return the positions of the blocks created
-	 */
-	public Set<BlockPos> createRing(BlockState state, ServerWorld world, boolean force) {
-		int radius = this.getRingRadius(); // Adjust the radius as needed
-		Set<BlockPos> ringPositions = new HashSet<>();
-		BlockPos center = this.getPos().up(radius);
-		Direction facing = this.getCachedState().get(StargateBlock.FACING);
+		this.setStargate(StargateRef.createAs(this, stargate));
 
-		String blockPositioning = this.getRingPositioning();
-
-		List<String> list = blockPositioning.lines().toList();
-
-        for (int j = 0; j < list.size(); j++) {
-            String line = list.get(j);
-
-            for (int i = 0; i < line.length(); i++) {
-                if (line.charAt(i) != 'X') continue;
-
-                ringPositions.add(center.add(rotate(4 - i, 4 - j, facing)));
-            }
-        }
-
-		for (BlockPos pos : ringPositions) {
-			if (force || world.getBlockState(pos).isReplaceable())
-				world.setBlockState(pos, state);
-		}
-
-		return ringPositions;
-	}
-
-	protected String getRingPositioning() {
-		return """
-				_________
-				_________
-				___XXX___/
-				__X___X__/
-				_X_____X_//
-				_X_____X_///
-				_X_____X_////
-				__X___X__
-				___X_X___.
-				""";
-	}
-
-	public static BlockPos rotate(int x, int y, Direction facing) {
-		return switch (facing) {
-			case NORTH -> new BlockPos(x, y, 0);
-			case SOUTH -> new BlockPos(-x, y, 0);
-			case WEST -> new BlockPos(0, y, x);
-			case EAST -> new BlockPos(0, y, -x);
-			default -> BlockPos.ORIGIN;
-		};
-	}
-	/**
-	 * Removes the ring of "StargateRingBlock" around the stargate
-	 * @return the positions of the blocks removed
-	 */
-	public Set<BlockPos> removeRing() {
-		return createRing(Blocks.AIR.getDefaultState(), (ServerWorld) this.getWorld(), true);
+		stargate.shape().place(StargateBlocks.RING.getDefaultState(), world, this.pos, facing);
 	}
 
 	@Override
@@ -200,10 +143,9 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 			ANIM_STATE.startIfNotRunning(age);
 
 			if (this.hasStargate()) {
-				Stargate gate = this.getStargate().get();
-				Dialer dialer = gate.getDialer();
+				Stargate gate = this.gate().get();
 				// Run if there is a selected glyph and it is being added to the locked amount
-				if (dialer.isCurrentGlyphBeingLocked()) {
+				if (gate.state() instanceof GateState.Closed closed && closed.locking()) {
 					CHEVRON_LOCK_STATE.startIfNotRunning(age);
 					IRIS_CLOSE_STATE.stop();
 					IRIS_OPEN_STATE.stop();
@@ -235,36 +177,5 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (this.requiresPlacement) {
 			this.onPlaced(world, pos, state, null, ItemStack.EMPTY);
 		}
-
-		if (world.getServer().getTicks() % 5 == 0) {
-			if (!this.hasStargate()) return;
-			if (this.getGateState() != Stargate.GateState.OPEN) return;
-
-			// Define the bounding box based on the ring radius and facing direction
-			int radius = this.getRingRadius();
-			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-			Vec3d centre = Vec3d.ofCenter(pos);
-			Box detectionBox = switch (facing) {
-				case EAST -> new Box(centre.add(0.5, 0, -radius), centre.add(-0.5, radius * 2, radius));
-				case WEST -> new Box(centre.add(0.5, 0, radius), centre.add(-0.5, radius * 2, -radius));
-				case NORTH -> new Box(centre.add(-radius, 0, 0.5), centre.add(radius, radius * 2, -0.5));
-				case SOUTH -> new Box(centre.add(radius, 0, 0.5), centre.add(-radius, radius * 2, -0.5));
-				default -> new Box(pos, pos);
-			};
-
-			// Find entities inside the bounding box
-			List<LivingEntity> entities = world.getEntitiesByClass(LivingEntity.class, detectionBox, e -> true);
-
-			for (LivingEntity entity : entities) {
-				// teleport the player to the stargate
-				StargateCall existing = this.getStargate().get().getCurrentCall().orElse(null);
-
-				BlockPos offset = BlockPos.ofFloored(entity.getPos().subtract(pos.toCenterPos()));
-				if (existing != null && existing.to != this.getStargate().get()) {
-					existing.to.teleportHere(entity, offset);
-				}
-			}
-		}
 	}
-
 }

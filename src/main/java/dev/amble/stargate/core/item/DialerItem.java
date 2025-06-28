@@ -1,7 +1,8 @@
 package dev.amble.stargate.core.item;
 
-import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.network.StargateLinkable;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -19,15 +20,11 @@ import java.util.List;
  * right click to link to stargate
  * right click on stargate to dial
  */
-public class DialerItem extends StargateLinkableItem{
+public class DialerItem extends StargateLinkableItem {
+
 	public DialerItem(Settings settings) {
 		super(settings, true);
 	}
-
-//	@Override
-//	public boolean hasGlint(ItemStack stack) {
-//		return true;
-//	}
 
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
@@ -41,14 +38,22 @@ public class DialerItem extends StargateLinkableItem{
 			if (!be.hasStargate()) return ActionResult.FAIL;
 
 			if (!isLinked(hand)) {
-				this.link(hand, be.getStargate().get());
+				this.link(hand, be.gate().get());
 				return ActionResult.SUCCESS;
 			}
 
 			Stargate target = StargateLinkableItem.getStargate(world, hand);
 			if (target == null) return ActionResult.FAIL;
 
-			be.getStargate().get().dial(target);
+			Stargate gate = be.gate().get();
+
+			// TODO: put this in a utility class/method
+			if (gate.state() instanceof GateState.Closed closed) {
+				// TODO: add a way to dial directly without having to address->text->address
+				closed.setAddress(target.address().text());
+				gate.sync();
+			}
+
 			hand.decrement(1);
 			return ActionResult.SUCCESS;
 		}

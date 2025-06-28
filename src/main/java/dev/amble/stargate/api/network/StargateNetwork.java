@@ -3,6 +3,7 @@ package dev.amble.stargate.api.network;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -36,7 +37,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 * @param address the address to add
 	 * @param stargate the Stargate to associate with the address
 	 */
-	public boolean add(Address address, T stargate) {
+	protected boolean add(Address address, T stargate) {
 		if (this.lookup.containsKey(address)) {
 			StargateMod.LOGGER.warn("Address {} already exists in the phone book!", address);
 			return false;
@@ -50,7 +51,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 * @param stargate the Stargate to add
 	 */
 	public void add(T stargate) {
-		this.add(stargate.getAddress(), stargate);
+		this.add(stargate.address(), stargate);
 	}
 
 	public T get(Address address) {
@@ -100,7 +101,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 */
 	public Optional<Stargate> getNearTo(GlobalPos source, int radius) {
 		for (Stargate gate : this.lookup.values()) {
-			DirectedGlobalPos pos = gate.getAddress().pos();
+			DirectedGlobalPos pos = gate.address().pos();
 
 			if (pos.getDimension() != source.getDimension()) continue;
 
@@ -130,7 +131,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 
 		list.forEach(tag -> {
 			T stargate = this.fromNbt((NbtCompound) tag);
-			this.lookup.put(stargate.getAddress(), stargate);
+			this.lookup.put(stargate.address(), stargate);
 		});
 
 		return this;

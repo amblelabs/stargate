@@ -1,6 +1,5 @@
 package dev.amble.stargate.core.block.entities;
 
-import dev.amble.stargate.api.network.Stargate;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.network.StargateLinkable;
 import net.minecraft.block.BlockState;
@@ -8,7 +7,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
 public abstract class StargateLinkableBlockEntity extends BlockEntity implements StargateLinkable {
@@ -39,7 +37,7 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 	}
 
 	@Override
-	public StargateRef getStargate() {
+	public StargateRef gate() {
 		if (this.ref == null) return null;
 
 		return this.ref;
@@ -50,18 +48,6 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 		this.ref = gate;
 		this.markDirty();
 		this.sync();
-	}
-
-	@Override
-	public void setGateState(Stargate.GateState state) {
-		if (!this.hasStargate()) return;
-		if (state.equals(this.getGateState())) return;
-		this.getStargate().get().setState(state);
-
-		this.markDirty();
-		if (this.getWorld() instanceof ServerWorld serverWorld) {
-			serverWorld.getChunkManager().markForUpdate(this.pos);
-		}
 	}
 
 	protected void sync() {

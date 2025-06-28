@@ -2,8 +2,9 @@ package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Dialer;
 import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.client.models.DHDModel;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.entities.DHDBlockEntity;
@@ -38,7 +39,8 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             return;
         }
 
-        Dialer dialer = entity.getStargate().get().getDialer();
+        Stargate gate = entity.gate().get();
+        GateState state = gate.state();
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         int middleIndex = Glyph.ALL.length / 2;
@@ -51,7 +53,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
                 j -= Glyph.ALL.length;
             }
 
-            boolean isInDial = dialer.contains(Glyph.ALL[i]);
+            boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == dialer.getSelectedIndex();
 
             int colour = 0x4f4f4f;
