@@ -6,9 +6,12 @@ import dev.amble.stargate.core.*;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.core.entities.DHDControlEntity;
+import dev.amble.stargate.world.gen.StargateWorldGeneration;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +37,11 @@ public class StargateMod implements ModInitializer {
 		RegistryContainer.register(StargateEntities.class, MOD_ID);
 		RegistryContainer.register(StargateSounds.class, MOD_ID);
 
+		StargateWorldGeneration.generateStargateWorldGen();
 		StargateServerData.init();
 
 		entityAttributeRegister();
+
 	}
 
 	public void entityAttributeRegister() {

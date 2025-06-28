@@ -8,6 +8,8 @@ import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
 import dev.amble.stargate.core.StargateBlocks;
 import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.world.StargateConfiguredFeature;
+import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.block.Blocks;
@@ -17,6 +19,8 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import static net.minecraft.data.server.recipe.RecipeProvider.*;
@@ -32,7 +36,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         genLoot(pack);
         genModels(pack);
         generateRecipes(pack);
-    }
+        pack.addProvider(StargateWorldGenerator::new);
+       }
 
     private void genModels(FabricDataGenerator.Pack pack) {
         pack.addProvider((((output, registriesFuture) -> {
@@ -44,6 +49,14 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             return provider;
         })));
     }
+
+
+    @Override
+    public void buildRegistry(RegistryBuilder registryBuilder) {
+        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, StargateConfiguredFeature::bootstrap);
+        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, StargatePlacedFeatures::bootstrap);
+    }
+
     private void genTags(FabricDataGenerator.Pack pack) {
         pack.addProvider((((output, registriesFuture) -> new AmbleBlockTagProvider(output, registriesFuture).withBlocks(StargateBlocks.class))));
     }
@@ -62,18 +75,20 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(Items.ENDER_PEARL), conditionsFromItem(Items.ENDER_PEARL)));
 
             provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateItems.IRIS_BLADE, 1)
-                    .pattern("NN ")
-                    .pattern(" N ")
+                    .pattern("II ")
                     .pattern("  N")
-                    .input('N', StargateItems.NAQUADAH_INGOT)
-                    .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
+                    .pattern("   ")
+                    .input('I', StargateItems.NAQUADAH_INGOT)
+                    .input('N', StargateItems.NAQUADAH_NUGGET)
+                    .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT))
+                    .criterion(hasItem(StargateItems.NAQUADAH_NUGGET), conditionsFromItem(StargateItems.NAQUADAH_NUGGET)));
 
             provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateItems.IRIS_FRAME, 1)
                     .pattern("NIN")
                     .pattern("I I")
                     .pattern("NIN")
-                    .input('N', StargateItems.NAQUADAH_NUGGET)
-                    .input('I', StargateItems.NAQUADAH_INGOT)
+                    .input('N', Items.IRON_NUGGET)
+                    .input('I', Items.IRON_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT))
                     .criterion(hasItem(StargateItems.NAQUADAH_NUGGET), conditionsFromItem(StargateItems.NAQUADAH_NUGGET)));
 
@@ -141,6 +156,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.ADDRESS_CARTOUCHE, "Address Cartouche");
             provider.addTranslation(StargateItems.IRIS_BLADE, "Iris Blade");
             provider.addTranslation(StargateItems.IRIS_FRAME, "Iris Frame");
+            provider.addTranslation(StargateItems.IRIS, "Iris");
             provider.addTranslation(StargateItems.RAW_NAQUADAH, "Raw Naquadah");
             provider.addTranslation(StargateItems.NAQUADAH_INGOT, "Naquadah Ingot");
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
@@ -161,4 +177,6 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             return provider;
         })));
     }
+
+
 }

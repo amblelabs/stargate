@@ -40,17 +40,17 @@ public class StargateBlocks extends BlockContainer {
 	@AutomaticModel
 	@NoEnglish
 	@NoBlockDrop
-	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
+	@PickaxeMineable(tool = PickaxeMineable.Tool.DIAMOND)
 	public static final Block NAQUADAH_ORE = new Block(ABlockSettings.create()
 			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
-			.strength(10.0F, 6.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.STONE));
+			.strength(10.0F, 6.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.ANCIENT_DEBRIS));
 
 	@AutomaticModel
 	@NoEnglish
-	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
+	@PickaxeMineable(tool = PickaxeMineable.Tool.DIAMOND)
 	public static final Block NAQUADAH_BLOCK = new Block(ABlockSettings.create()
 			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
-			.strength(15.0F, 9.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.NETHERITE));
+			.strength(25.0F, 9.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.NETHERITE));
 
 	@Override
 	public Item.Settings createBlockItemSettings(Block block) {
