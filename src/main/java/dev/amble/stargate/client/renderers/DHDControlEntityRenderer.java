@@ -2,7 +2,7 @@ package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.client.models.ControlModel;
-import dev.amble.stargate.core.entities.DHDControlEntity;
+import dev.amble.stargate.entities.DHDControlEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;

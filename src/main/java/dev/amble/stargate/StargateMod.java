@@ -2,12 +2,16 @@ package dev.amble.stargate;
 
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.GlyphOriginRegistry;
-import dev.amble.stargate.core.*;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.core.entities.DHDControlEntity;
+import dev.amble.stargate.command.StargateDataCommand;
+import dev.amble.stargate.command.StargateSyncCommand;
+import dev.amble.stargate.entities.DHDControlEntity;
+import dev.amble.stargate.init.*;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -27,6 +31,13 @@ public class StargateMod implements ModInitializer {
 		AmbleRegistries.getInstance().registerAll(
 				GlyphOriginRegistry.getInstance()
 		);
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> {
+			StargateDataCommand.register(dispatcher);
+			StargateSyncCommand.register(dispatcher);
+		});
+
+		GateKernelRegistry.init();
 
 		RegistryContainer.register(StargateItemGroups.class, MOD_ID);
 		RegistryContainer.register(StargateItems.class, MOD_ID);

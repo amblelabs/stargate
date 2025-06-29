@@ -84,7 +84,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		buf.writeNbt(nbt);
 
 		targets.forEach(player ->
-				ServerPlayNetworking.send(player, SYNC_ALL, buf));
+				ServerPlayNetworking.send(player, SYNC, buf));
 
 		StargateServerData.get().markDirty();
 	}

@@ -51,6 +51,10 @@ public sealed interface GateState {
             return locked;
         }
 
+        public void setLocked(int locked) {
+            this.locked = locked;
+        }
+
         public void lock() {
             this.locked++;
         }

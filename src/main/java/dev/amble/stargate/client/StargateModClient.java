@@ -3,25 +3,26 @@ package dev.amble.stargate.client;
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.GlyphOriginRegistry;
-import dev.amble.stargate.client.models.StargateModel;
+import dev.amble.stargate.client.command.ClientStargateDataCommand;
+import dev.amble.stargate.client.command.ClientStargateDumpCommand;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
-import dev.amble.stargate.core.StargateBlockEntities;
-import dev.amble.stargate.core.StargateBlocks;
-import dev.amble.stargate.core.StargateEntities;
-import dev.amble.stargate.core.block.StargateBlock;
-import dev.amble.stargate.core.block.entities.StargateBlockEntity;
+import dev.amble.stargate.init.StargateBlockEntities;
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateEntities;
+import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -32,6 +33,11 @@ public class StargateModClient implements ClientModInitializer {
         AmbleRegistries.getInstance().registerAll(
                 GlyphOriginRegistry.getInstance()
         );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
+            ClientStargateDataCommand.register(dispatcher);
+            ClientStargateDumpCommand.register(dispatcher);
+        });
 
         ClientStargateNetwork.get();
         registerBlockEntityRenderers();

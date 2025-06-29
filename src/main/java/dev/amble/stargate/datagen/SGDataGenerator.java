@@ -6,8 +6,8 @@ import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
-import dev.amble.stargate.core.StargateBlocks;
-import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
@@ -59,6 +59,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");
             provider.addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
+
+            provider.addTranslation("text.stargate.gate", "STARGATE");
 
             return provider;
         })));

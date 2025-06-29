@@ -21,8 +21,10 @@ public interface StargateKernel extends NbtSync {
     long energyToDial(Address address);
 
     default boolean hasEnoughEnergy(Address address) {
-        return this.energy() >= this.energyToDial(address);
+        return this.maxEnergy() == -1 || this.energy() >= this.energyToDial(address);
     }
+
+    boolean canDialTo(Stargate stargate);
 
     GateShape shape();
     GateState state();
@@ -64,7 +66,12 @@ public interface StargateKernel extends NbtSync {
             this.state = new GateState.Closed();
         }
 
-        private int ticksPerGlyph = 2 * 20;
+        @Override
+        public long maxEnergy() {
+            return -1;
+        }
+
+        private static final int ticksPerGlyph = 2 * 30;
 
         private int timer;
 
@@ -79,6 +86,11 @@ public interface StargateKernel extends NbtSync {
                 if (length == 0 || length <= closed.locked()) {
                     if (closed.locking()) {
                         closed.setLocking(false);
+                        this.parent.sync();
+                    }
+
+                    if (length == 0 && closed.locked() > 0) {
+                        closed.setLocked(0);
                         this.parent.sync();
                     }
 
@@ -106,7 +118,15 @@ public interface StargateKernel extends NbtSync {
             } else if (state instanceof GateState.PreOpen preOpen) {
                 // FIXME: NPE, handle missing gates by address
                 // FIXME: this operation is O(N^2). bad.
-                state = new GateState.Open(ServerStargateNetwork.get().get(preOpen.address()));
+                Stargate target = ServerStargateNetwork.get().get(preOpen.address());
+
+                if (target == null || !this.canDialTo(target) || !this.hasEnoughEnergy(target.address())) {
+                    state = new GateState.Closed();
+                } else {
+                    // TODO: open the portal on the target side too
+                    state = new GateState.Open(target);
+                }
+
                 this.parent.sync();
             }
         }
@@ -128,7 +148,7 @@ public interface StargateKernel extends NbtSync {
 
         @Override
         public void loadNbt(NbtCompound nbt, boolean isSync) {
-            this.address = Address.fromNbt(nbt.getCompound("address"));
+            this.address = Address.fromNbt(nbt.getCompound("Address"));
             this.energy = nbt.getInt("energy");
 
             this.state = GateState.fromNbt(nbt.getCompound("State"));

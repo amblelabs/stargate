@@ -1,8 +1,8 @@
 package dev.amble.stargate.mixins;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.core.block.entities.StargateBlockEntity;
-import dev.amble.stargate.core.block.entities.StargateLinkableBlockEntity;
+import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.block.entities.StargateLinkableBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureTemplate;

@@ -1,6 +1,6 @@
 package dev.amble.stargate.compat.energy;
 
-import dev.amble.stargate.core.StargateBlockEntities;
+import dev.amble.stargate.init.StargateBlockEntities;
 import team.reborn.energy.api.EnergyStorage;
 
 public class EnergyHandler {
