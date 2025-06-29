@@ -1,7 +1,6 @@
-package dev.amble.stargate.fluid;
+package dev.amble.stargate.core.fluid;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.core.StargateItemGroups;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;

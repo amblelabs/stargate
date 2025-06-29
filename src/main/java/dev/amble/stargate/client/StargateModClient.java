@@ -14,7 +14,7 @@ import dev.amble.stargate.core.StargateBlocks;
 import dev.amble.stargate.core.StargateEntities;
 import dev.amble.stargate.core.block.StargateBlock;
 import dev.amble.stargate.core.block.entities.StargateBlockEntity;
-import dev.amble.stargate.fluid.StargateFluids;
+import dev.amble.stargate.core.fluid.StargateFluids;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -52,6 +52,17 @@ public class StargateModClient implements ClientModInitializer {
         ClientStargateUtil.init();
 
         WorldRenderEvents.AFTER_ENTITIES.register(this::portalBOTI);
+
+        FluidRenderHandlerRegistry.INSTANCE.register(StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH,
+                new SimpleFluidRenderHandler(
+                        new Identifier("minecraft:block/lava_still"),
+                        new Identifier("minecraft:block/lava_flow"),
+                        0xA1E038D0
+                ));
+
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
+                StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH);
+
     }
 
     public void registerBlockEntityRenderers() {
@@ -86,17 +97,6 @@ public class StargateModClient implements ClientModInitializer {
             stack.pop();
         }
         PortalRendering.PORTAL_RENDER_QUEUE.clear();
-
-        FluidRenderHandlerRegistry.INSTANCE.register(StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH,
-                new SimpleFluidRenderHandler(
-                        new Identifier("minecraft:block/lava_still"),
-                        new Identifier("minecraft:block/lava_flow"),
-                        0xA1E038D0
-                ));
-
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
-                StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH);
-
     }
 }
 

@@ -1,4 +1,4 @@
-package dev.amble.stargate.fluid;
+package dev.amble.stargate.core.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
