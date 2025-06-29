@@ -6,8 +6,8 @@ import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
-import dev.amble.stargate.core.StargateBlocks;
-import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 

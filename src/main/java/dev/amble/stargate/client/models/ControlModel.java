@@ -1,6 +1,6 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.core.entities.DHDControlEntity;
+import dev.amble.stargate.entities.DHDControlEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
