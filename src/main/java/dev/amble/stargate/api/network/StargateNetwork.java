@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 public abstract class StargateNetwork<T extends Stargate> {
 	public static Identifier SYNC = StargateMod.id("sync");
 	public static Identifier SYNC_ALL = StargateMod.id("sync_all");
-	protected final HashMap<Address, T> lookup;
+	public final HashMap<Address, T> lookup;
 
 	protected StargateNetwork() {
 		this.lookup = new HashMap<>();

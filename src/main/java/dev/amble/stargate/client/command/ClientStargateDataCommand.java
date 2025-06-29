@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -17,6 +16,7 @@ public class ClientStargateDataCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(literal("stargate-client")
                 .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
+                    System.out.println(ClientStargateNetwork.get().lookup.keySet());
                     String address = StringArgumentType.getString(context, "address");
                     NbtCompound nbt = ClientStargateNetwork.get().get(address).toNbt(true);
 
