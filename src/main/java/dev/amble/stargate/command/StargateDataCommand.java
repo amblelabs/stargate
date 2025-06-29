@@ -15,7 +15,7 @@ public class StargateDataCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("stargate")
-                .then(literal("dump").then(argument("address", StringArgumentType.string()).executes(context -> {
+                .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
                     String address = StringArgumentType.getString(context, "address");
                     NbtCompound nbt = ServerStargateNetwork.get().get(address).toNbt(true);
 
