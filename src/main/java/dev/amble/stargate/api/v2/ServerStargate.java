@@ -10,6 +10,7 @@ import net.minecraft.util.math.Direction;
 
 public class ServerStargate extends Stargate {
 
+    // FIXME: remove this if its not functional
     private boolean canSync = false;
 
     public ServerStargate(DirectedGlobalPos pos, GateKernelRegistry.KernelCreator constructor) {

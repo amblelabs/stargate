@@ -16,7 +16,7 @@ public interface GateShape {
     boolean verify(BlockState state, BlockView view, BlockPos corePos, Direction direction);
 
     static GateShape generated(String shape) {
-        return new GeneratedShape(shape);
+        return new GeneratedShape(shape).prepare();
     }
 
     GateShape DEFAULT = generated("""
@@ -31,14 +31,12 @@ public interface GateShape {
 				___X_X___.
 				""");
 
-    abstract class Built implements GateShape {
-
-        protected abstract Iterable<BlockPos> build();
+    class Const implements GateShape {
 
         private final Iterable<BlockPos> built;
 
-        public Built() {
-            this.built = this.build();
+        public Const(Iterable<BlockPos> built) {
+            this.built = built;
         }
 
         @Override
@@ -83,6 +81,15 @@ public interface GateShape {
                 case EAST -> new BlockPos(0, y, -x);
                 default -> BlockPos.ORIGIN;
             };
+        }
+    }
+
+    abstract class Built {
+
+        protected abstract Iterable<BlockPos> build();
+
+        protected GateShape prepare() {
+            return new Const(this.build());
         }
     }
 
