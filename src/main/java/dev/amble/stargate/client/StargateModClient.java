@@ -3,6 +3,7 @@ package dev.amble.stargate.client;
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.GlyphOriginRegistry;
+import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
@@ -14,6 +15,7 @@ import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -30,6 +32,10 @@ public class StargateModClient implements ClientModInitializer {
         AmbleRegistries.getInstance().registerAll(
                 GlyphOriginRegistry.getInstance()
         );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
+            ClientStargateDataCommand.register(dispatcher);
+        });
 
         ClientStargateNetwork.get();
         registerBlockEntityRenderers();
