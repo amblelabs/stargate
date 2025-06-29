@@ -128,7 +128,7 @@ public interface StargateKernel extends NbtSync {
 
         @Override
         public void loadNbt(NbtCompound nbt, boolean isSync) {
-            this.address = Address.fromNbt(nbt.getCompound("address"));
+            this.address = Address.fromNbt(nbt.getCompound("Address"));
             this.energy = nbt.getInt("energy");
 
             this.state = GateState.fromNbt(nbt.getCompound("State"));
