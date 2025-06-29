@@ -1,6 +1,10 @@
 package dev.amble.stargate.core.fluid;
 
+import dev.amble.lib.datagen.util.AutomaticModel;
+import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.core.item.EmptyContainerItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -28,10 +32,17 @@ public class StargateFluids {
                 new Identifier(StargateMod.MOD_ID, "flowing_liquid_naquadah"), new LiquidNaquadahFluid.Flowing());
 
         LIQUID_NAQUADAH_BLOCK = Registry.register(Registries.BLOCK, new Identifier(StargateMod.MOD_ID, "liquid_naquadah_block"),
-                new FluidBlock(STILL_LIQUID_NAQUADAH, FabricBlockSettings.copyOf(Blocks.WATER)){ });
-        LIQUID_NAQUADAH = Registry.register(Registries.ITEM, new Identifier(StargateMod.MOD_ID, "liquid_naquadah"),
-                new BucketItem(STILL_LIQUID_NAQUADAH, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
+                new FluidBlock(STILL_LIQUID_NAQUADAH, FabricBlockSettings.copyOf(Blocks.WATER)) {
+                });
 
+        LIQUID_NAQUADAH = Registry.register(
+                Registries.ITEM,
+                new Identifier(StargateMod.MOD_ID, "liquid_naquadah"),
+                new EmptyContainerItem(
+                        STILL_LIQUID_NAQUADAH,
+                        new FabricItemSettings().recipeRemainder(StargateItems.EMPTY_CONTAINER).maxCount(1)
+                )
+        );
     }
 
 

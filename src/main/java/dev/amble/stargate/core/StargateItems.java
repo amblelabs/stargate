@@ -4,13 +4,14 @@ import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
+import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.core.item.DialerItem;
-import dev.amble.stargate.fluid.StargateFluids;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import dev.amble.stargate.core.item.EmptyContainerItem;
 import net.minecraft.item.Item;
 
 public class StargateItems extends ItemContainer {
 
+	@AutomaticModel
 	@NoEnglish
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1).group(StargateItemGroups.MAIN));
 
@@ -27,6 +28,11 @@ public class StargateItems extends ItemContainer {
 	@NoEnglish
 	public static final Item NAQUADAH_NUGGET = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
 
+	@AutomaticModel
+	@NoEnglish
+	public static final Item EMPTY_CONTAINER = new EmptyContainerItem(StargateFluids.STILL_LIQUID_NAQUADAH, new AItemSettings().maxCount(16).group(StargateItemGroups.MAIN));
+
+
 
 	// Iris
 	@AutomaticModel
@@ -40,7 +46,5 @@ public class StargateItems extends ItemContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Item IRIS = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
-
-
 
 }

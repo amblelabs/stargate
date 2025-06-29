@@ -55,9 +55,8 @@ public class StargateModClient implements ClientModInitializer {
 
         FluidRenderHandlerRegistry.INSTANCE.register(StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH,
                 new SimpleFluidRenderHandler(
-                        new Identifier("minecraft:block/lava_still"),
-                        new Identifier("minecraft:block/lava_flow"),
-                        0xA1E038D0
+                        new Identifier("stargate:block/liquid_naquadah_still"),
+                        new Identifier("stargate:block/liquid_naquadah_flow")
                 ));
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
