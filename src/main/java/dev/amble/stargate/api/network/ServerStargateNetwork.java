@@ -77,7 +77,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	}
 
 	private void syncPartial(ServerStargate gate, Stream<ServerPlayerEntity> targets) {
-		StargateMod.LOGGER.debug("Syncing stargate {}", gate.address());
+		StargateMod.LOGGER.info("Syncing stargate {}", gate.address());
 
 		NbtCompound nbt = gate.toNbt(true);
 		PacketByteBuf buf = PacketByteBufs.create();
