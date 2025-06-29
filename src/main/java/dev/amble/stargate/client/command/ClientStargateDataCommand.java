@@ -16,7 +16,6 @@ public class ClientStargateDataCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(literal("stargate-client")
                 .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
-                    System.out.println(ClientStargateNetwork.get().lookup.keySet());
                     String address = StringArgumentType.getString(context, "address");
                     NbtCompound nbt = ClientStargateNetwork.get().get(address).toNbt(true);
 

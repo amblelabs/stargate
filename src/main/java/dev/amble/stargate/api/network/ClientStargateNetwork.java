@@ -51,7 +51,7 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 
 		if (existing != null) existing.age();
 
-		StargateMod.LOGGER.info("Received stargate {}", gate.address());
+		StargateMod.LOGGER.debug("Received stargate {}", gate.address());
 	}
 
 	private void onSyncAll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
