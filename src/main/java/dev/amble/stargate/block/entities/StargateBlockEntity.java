@@ -95,6 +95,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	public void onBreak() {
 		if (this.hasStargate()) {
+			if (world == null || world.getBlockState(pos).isAir()) return;
 			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 			this.gate().get().shape().destroy(world, pos, facing);
 		}

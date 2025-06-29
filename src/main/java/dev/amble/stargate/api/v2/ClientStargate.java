@@ -40,4 +40,9 @@ public class ClientStargate extends Stargate {
 
         ShakeUtil.shakeFromGate(this);
     }
+
+    @Override
+    public boolean canDialTo(Stargate stargate) {
+        return !(stargate.state() instanceof GateState.Open);
+    }
 }

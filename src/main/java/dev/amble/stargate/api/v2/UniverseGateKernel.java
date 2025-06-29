@@ -23,6 +23,11 @@ public class UniverseGateKernel extends StargateKernel.Basic {
     }
 
     @Override
+    public boolean canDialTo(Stargate stargate) {
+        return !(stargate.state() instanceof GateState.Open);
+    }
+
+    @Override
     public GateShape shape() {
         return GateShape.DEFAULT;
     }

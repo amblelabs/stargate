@@ -58,7 +58,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.setFromDialer(state);
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
-            power = Math.min(gate.energy() / gate.maxEnergy(), 1);
+            power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
 
             boolean bl = (state instanceof GateState.Closed closed && closed.locking())
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen;
