@@ -13,12 +13,12 @@ public class MilkyWayGateKernel extends StargateKernel.Basic {
     }
 
     @Override
-    public long maxEnergy() {
-        return Long.MAX_VALUE;
+    public long energyToDial(Address address) {
+        return (long) (this.address.distanceTo(address).distance() * 100);
     }
 
     @Override
-    public long energyToDial(Address address) {
-        return (long) (this.address.distanceTo(address).distance() * 100);
+    public boolean canDialTo(Stargate stargate) {
+        return stargate.kernel instanceof MilkyWayGateKernel;
     }
 }

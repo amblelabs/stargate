@@ -80,5 +80,7 @@ public abstract class Stargate implements StargateKernel, Disposable {
         return kernel.state();
     }
 
+    // TODO: replace this with a markDirty so the SSN just iterates
+    //  through all the dirty stargates and syncs them
     public abstract void sync();
 }
