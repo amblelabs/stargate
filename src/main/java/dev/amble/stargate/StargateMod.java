@@ -6,6 +6,7 @@ import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.command.StargateDataCommand;
+import dev.amble.stargate.command.StargateSyncCommand;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.*;
 import net.fabricmc.api.ModInitializer;
@@ -33,6 +34,7 @@ public class StargateMod implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> {
 			StargateDataCommand.register(dispatcher);
+			StargateSyncCommand.register(dispatcher);
 		});
 
 		GateKernelRegistry.init();

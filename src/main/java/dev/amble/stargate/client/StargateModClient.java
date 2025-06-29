@@ -4,6 +4,7 @@ import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.GlyphOriginRegistry;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
+import dev.amble.stargate.client.command.ClientStargateDumpCommand;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
@@ -35,6 +36,7 @@ public class StargateModClient implements ClientModInitializer {
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
             ClientStargateDataCommand.register(dispatcher);
+            ClientStargateDumpCommand.register(dispatcher);
         });
 
         ClientStargateNetwork.get();

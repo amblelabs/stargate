@@ -12,17 +12,14 @@ import net.minecraft.nbt.NbtHelper;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class ClientStargateDataCommand {
+public class ClientStargateDumpCommand {
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(literal("stargate-client")
-                .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
-                    String address = StringArgumentType.getString(context, "address");
-                    NbtCompound nbt = ClientStargateNetwork.get().get(address).toNbt(true);
-
+                .then(literal("dump").executes(context -> {
+                    NbtCompound nbt = ServerStargateNetwork.get().toNbt();
                     context.getSource().sendFeedback(NbtHelper.toPrettyPrintedText(nbt));
                     return Command.SINGLE_SUCCESS;
-                })))
-        );
+                })));
     }
 }
