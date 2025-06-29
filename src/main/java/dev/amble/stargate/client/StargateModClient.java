@@ -57,19 +57,18 @@ public class StargateModClient implements ClientModInitializer {
 
     public void portalBOTI(WorldRenderContext context) {
         MinecraftClient client = MinecraftClient.getInstance();
-        SinglePartEntityModel contents = new StargateModel(StargateModel.getTexturedModelData().createModel());
         if (client.player == null || client.world == null) return;
         MatrixStack stack = context.matrixStack();
-        for (StargateBlockEntity painting : PortalRendering.PORTAL_RENDER_QUEUE) {
-            if (painting == null) continue;
-            Vec3d pos = painting.getPos().toCenterPos();
+        for (StargateBlockEntity gate : PortalRendering.PORTAL_RENDER_QUEUE) {
+            if (gate == null || !gate.hasStargate()) continue;
+            Vec3d pos = gate.getPos().toCenterPos();
             stack.push();
             stack.translate(pos.getX() - context.camera().getPos().getX(),
                     pos.getY() - context.camera().getPos().getY(), pos.getZ() - context.camera().getPos().getZ());
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(painting.getCachedState().get(StargateBlock.FACING).asRotation()));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(gate.getCachedState().get(StargateBlock.FACING).asRotation()));
             stack.translate(0, -2f, 0);
-            PortalRendering.renderPortal(painting, painting.gate().get().state(), stack);
+            PortalRendering.renderPortal(gate, gate.gate().get().state(), stack);
             stack.pop();
         }
         PortalRendering.PORTAL_RENDER_QUEUE.clear();
