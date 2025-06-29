@@ -39,7 +39,6 @@ public class StargateServerData extends PersistentState {
 	}
 
 	public static StargateServerData get() {
-		// TODO: null server handling
 		return get(ServerLifecycleHooks.get());
 	}
 

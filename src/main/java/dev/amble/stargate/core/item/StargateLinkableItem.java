@@ -64,8 +64,7 @@ public abstract class StargateLinkableItem extends Item {
 		ClientStargate stargate = (ClientStargate) ClientStargateNetwork.get().get(id);
 
 		if (stargate != null) {
-			// TODO: replace literals with translations
-			tooltip.add(Text.literal("STARGATE: ").formatted(Formatting.BLUE));
+			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));
 
 			Address address = stargate.address();
 			DirectedGlobalPos pos = address.pos();

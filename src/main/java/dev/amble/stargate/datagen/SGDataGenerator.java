@@ -60,6 +60,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");
             provider.addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
 
+            provider.addTranslation("text.stargate.gate", "STARGATE");
+
             return provider;
         })));
     }

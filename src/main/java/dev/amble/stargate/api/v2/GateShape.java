@@ -91,7 +91,7 @@ public interface GateShape {
         protected Iterable<BlockPos> build() {
             return null;
         }
-        // TODO
+        // TODO: this entire thing
     }
 
     class GeneratedShape extends Built {

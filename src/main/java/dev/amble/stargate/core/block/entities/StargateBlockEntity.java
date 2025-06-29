@@ -43,8 +43,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public boolean requiresPlacement = false;
 	private boolean stopOpening = false;
 	private boolean prevIrisState = false;
-	private boolean irisSoundPlayed = false;
-
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
 		super(StargateBlockEntities.STARGATE, pos, state);
@@ -106,8 +104,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
 		if (world.isClient()) return;
-
-		this.onBreak();
 		this.requiresPlacement = false;
 
 		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
