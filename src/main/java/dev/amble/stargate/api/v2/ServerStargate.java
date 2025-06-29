@@ -32,9 +32,4 @@ public class ServerStargate extends Stargate {
         }
         ServerStargateNetwork.get().syncPartial(this);
     }
-
-    @Override
-    public boolean canDialTo(Stargate stargate) {
-        return !(stargate.state() instanceof GateState.Open);
-    }
 }

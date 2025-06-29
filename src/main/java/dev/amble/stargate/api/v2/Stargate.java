@@ -26,7 +26,11 @@ public abstract class Stargate implements StargateKernel, Disposable {
     // TODO: impl this
     @Override
     public void dispose() {
+    }
 
+    @Override
+    public boolean canDialTo(Stargate stargate) {
+        return kernel.canDialTo(stargate);
     }
 
     @Override
