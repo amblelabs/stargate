@@ -31,5 +31,8 @@ public class StargateFluids {
                 new FluidBlock(STILL_LIQUID_NAQUADAH, FabricBlockSettings.copyOf(Blocks.WATER)){ });
         LIQUID_NAQUADAH = Registry.register(Registries.ITEM, new Identifier(StargateMod.MOD_ID, "liquid_naquadah"),
                 new BucketItem(STILL_LIQUID_NAQUADAH, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
+
     }
+
+
 }
