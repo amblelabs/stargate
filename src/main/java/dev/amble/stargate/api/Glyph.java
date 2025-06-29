@@ -34,7 +34,7 @@ public record Glyph(Identifier world, char glyph) implements Identifiable {
 
     public static char pickRandom() {
         // FIXME: don't use java.util.Random
-        return ALL[StargateMod.RANDOM.nextInt()];
+        return ALL[StargateMod.RANDOM.nextInt(ALL.length)];
     }
 
     // FIXME: the letters don't go in ASCII order, and there are gaps.

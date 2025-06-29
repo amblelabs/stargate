@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 
 public interface StargateKernel extends NbtSync {
 
-    default void onCreate(DirectedGlobalPos pos) { }
+    default void onCreate(DirectedGlobalPos pos) {}
 
     default void tick() { }
 
@@ -61,6 +61,7 @@ public interface StargateKernel extends NbtSync {
         @Override
         public void onCreate(DirectedGlobalPos pos) {
             this.address = new Address(pos);
+            this.state = new GateState.Closed();
         }
 
         private int ticksPerGlyph = 2 * 20;
@@ -72,45 +73,41 @@ public interface StargateKernel extends NbtSync {
             if (!(this.parent instanceof ServerStargate))
                 return;
 
-            switch (state) {
-                case GateState.Closed closed -> {
-                    int length = closed.addressBuilder().length();
+            if (state instanceof GateState.Closed closed) {
+                int length = closed.addressBuilder().length();
 
-                    if (length == 0 || length <= closed.locked()) {
-                        if (closed.locking()) {
-                            closed.setLocking(false);
-                            this.parent.sync();
-                        }
-
-                        return;
-                    }
-
-                    if (timer >= ticksPerGlyph) {
-                        timer = 0;
-
-                        closed.lock();
-
-                        if (closed.locked() == Address.LENGTH)
-                            state = new GateState.PreOpen(closed.addressBuilder());
-
-                        this.parent.sync();
-                        return;
-                    }
-
-                    if (!closed.locking()) {
-                        closed.setLocking(true);
+                if (length == 0 || length <= closed.locked()) {
+                    if (closed.locking()) {
+                        closed.setLocking(false);
                         this.parent.sync();
                     }
 
-                    timer++;
+                    return;
                 }
-                case GateState.PreOpen preOpen -> {
-                    // FIXME: NPE, handle missing gates by address
-                    // FIXME: this operation is O(N^2). bad.
-                    state = new GateState.Open(ServerStargateNetwork.get().get(preOpen.address()));
+
+                if (timer >= ticksPerGlyph) {
+                    timer = 0;
+
+                    closed.lock();
+
+                    if (closed.locked() == Address.LENGTH)
+                        state = new GateState.PreOpen(closed.addressBuilder());
+
+                    this.parent.sync();
+                    return;
+                }
+
+                if (!closed.locking()) {
+                    closed.setLocking(true);
                     this.parent.sync();
                 }
-                default -> {}
+
+                timer++;
+            } else if (state instanceof GateState.PreOpen preOpen) {
+                // FIXME: NPE, handle missing gates by address
+                // FIXME: this operation is O(N^2). bad.
+                state = new GateState.Open(ServerStargateNetwork.get().get(preOpen.address()));
+                this.parent.sync();
             }
         }
 
@@ -122,6 +119,11 @@ public interface StargateKernel extends NbtSync {
         @Override
         public long energy() {
             return energy;
+        }
+
+        @Override
+        public GateShape shape() {
+            return GateShape.DEFAULT;
         }
 
         @Override

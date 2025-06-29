@@ -30,16 +30,12 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 
 	@Override
 	public void onStartTick(MinecraftClient client) {
-		// FIXME: this sucks. not only do we try to iterate through the map,
-		//  but also we do a String#equals on all of them!
+		if (client.world == null) return;
 		Identifier worldId = client.world.getRegistryKey().getValue();
 
-		for (ClientStargate stargate : this.lookup.values()) {
-			if (!stargate.address().pos().getDimension().getValue().equals(worldId))
-				continue;
-
-			stargate.tick();
-		}
+		this.lookup.values().stream()
+				.filter(stargate -> stargate.address().pos().getDimension().getValue().equals(worldId))
+				.forEach(ClientStargate::tick);
 	}
 
 	@Override
