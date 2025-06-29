@@ -16,10 +16,11 @@ public abstract class Stargate implements StargateKernel, Disposable {
     public Stargate(NbtCompound nbt) {
         String rawModel = nbt.getString("Model");
 
-        Identifier modelId = rawModel != null ? Identifier.tryParse(rawModel)
-                : MilkyWayGateKernel.ID;
+        Identifier modelId = rawModel.isEmpty() ? MilkyWayGateKernel.ID
+                : Identifier.tryParse(rawModel);
 
         this.kernel = GateKernelRegistry.get().get(modelId).create(this);
+        this.loadNbt(nbt);
     }
 
     // TODO: impl this
@@ -35,6 +36,7 @@ public abstract class Stargate implements StargateKernel, Disposable {
 
     @Override
     public void loadNbt(NbtCompound nbt, boolean isSync) {
+        // "Model" is handled in the constructor
         this.kernel.loadNbt(nbt.getCompound("Kernel"), isSync);
     }
 
