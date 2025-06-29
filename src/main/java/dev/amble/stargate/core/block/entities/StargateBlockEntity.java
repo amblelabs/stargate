@@ -8,7 +8,7 @@ import dev.amble.stargate.api.v2.ServerStargate;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v2.UniverseGateKernel;
+import dev.amble.stargate.api.v2.MilkyWayGateKernel;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.core.StargateBlockEntities;
 import dev.amble.stargate.core.StargateBlocks;
@@ -109,7 +109,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
 
-		ServerStargate stargate = new ServerStargate(globalPos, UniverseGateKernel::new);
+		ServerStargate stargate = new ServerStargate(globalPos, MilkyWayGateKernel::new);
 		ServerStargateNetwork.get().add(stargate);
 
 		this.setStargate(StargateRef.createAs(this, stargate));

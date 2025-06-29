@@ -17,7 +17,7 @@ public abstract class Stargate implements StargateKernel, Disposable {
         String rawModel = nbt.getString("Model");
 
         Identifier modelId = rawModel != null ? Identifier.tryParse(rawModel)
-                : UniverseGateKernel.ID;
+                : MilkyWayGateKernel.ID;
 
         this.kernel = GateKernelRegistry.get().get(modelId).create(this);
     }

@@ -2,6 +2,7 @@ package dev.amble.stargate;
 
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.GlyphOriginRegistry;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.core.*;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.stargate.api.StargateServerData;
@@ -27,6 +28,8 @@ public class StargateMod implements ModInitializer {
 		AmbleRegistries.getInstance().registerAll(
 				GlyphOriginRegistry.getInstance()
 		);
+
+		GateKernelRegistry.init();
 
 		RegistryContainer.register(StargateItemGroups.class, MOD_ID);
 		RegistryContainer.register(StargateItems.class, MOD_ID);
