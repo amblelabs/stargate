@@ -1,15 +1,13 @@
 package dev.amble.stargate.core;
 
 import dev.amble.lib.container.impl.ItemContainer;
-import dev.amble.lib.container.impl.ItemGroupContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
-import dev.amble.lib.itemgroup.AItemGroup;
-import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.item.DialerItem;
+import dev.amble.stargate.fluid.StargateFluids;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
 
 public class StargateItems extends ItemContainer {
 
@@ -42,6 +40,7 @@ public class StargateItems extends ItemContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Item IRIS = new Item(new AItemSettings().group(StargateItemGroups.MAIN));
+
 
 
 }

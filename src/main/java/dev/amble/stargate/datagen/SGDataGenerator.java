@@ -8,6 +8,7 @@ import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
 import dev.amble.stargate.core.StargateBlocks;
 import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -160,6 +161,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.RAW_NAQUADAH, "Raw Naquadah");
             provider.addTranslation(StargateItems.NAQUADAH_INGOT, "Naquadah Ingot");
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
+            provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah");
 
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
