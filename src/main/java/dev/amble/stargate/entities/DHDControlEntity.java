@@ -1,20 +1,14 @@
 package dev.amble.stargate.entities;
 
-import java.util.List;
-
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.dhd.DHDArrangement;
 import dev.amble.stargate.dhd.SymbolArrangement;
 import dev.amble.stargate.dhd.control.SymbolControl;
-import dev.amble.stargate.init.StargateEntities;
-import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
-
+import dev.amble.stargate.init.StargateEntities;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -36,6 +30,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import java.util.List;
 
 public class DHDControlEntity extends LinkableDummyLivingEntity {
 
@@ -104,8 +102,8 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
     public void writeCustomDataToNbt(NbtCompound nbt) {
         StargateRef ref = this.asRef();
 
-        if (ref != null && ref.getAddress() != null)
-            nbt.putString("stargate", ref.getAddress());
+        if (ref != null && ref.id() != null)
+            nbt.putUuid("Stargate", ref.id());
 
         if (dhdBlockPos != null)
             nbt.put("dhd", NbtHelper.fromBlockPos(this.dhdBlockPos));
@@ -248,15 +246,6 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     public void setOffset(Vector3f offset) {
         this.dataTracker.set(OFFSET, offset);
-    }
-
-    public boolean shouldGlow() {
-        if (!this.hasStargate()) return false;
-
-        GateState state = this.gate().get().state();
-
-        // so dumb.
-        return state instanceof GateState.Closed closed && closed.contains(this.getCustomName().getString().charAt(0));
     }
 
     public void run(PlayerEntity player, World world, boolean leftClick) {

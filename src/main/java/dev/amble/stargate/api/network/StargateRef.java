@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -15,39 +16,38 @@ import java.util.function.Function;
 // thanks to me for my tardis code :( - theo
 public class StargateRef implements Disposable {
 	private final LoadFunc load;
-	private String address;
+	private final UUID id;
+
 	private Stargate cached;
 
-	public StargateRef(String address, LoadFunc load) {
-		this.address = address;
+	public StargateRef(UUID id, LoadFunc load) {
+		this.id = id;
 		this.load = load;
 	}
-	public StargateRef(Stargate stargate, LoadFunc load) {
-		if (stargate != null)
-			this.address = stargate.address().text();
 
-		this.load = load;
+	public StargateRef(Stargate stargate, LoadFunc load) {
+		this(stargate.address().id(), load);
 		this.cached = stargate;
 	}
 
 	public StargateRef(Address address, LoadFunc load) {
-		this(address.text(), load);
+		this(address.id(), load);
+	}
+
+	public UUID id() {
+		return id;
 	}
 
 	public Stargate get() {
 		if (this.cached != null && !this.shouldInvalidate())
 			return this.cached;
 
-		this.cached = this.load.apply(this.address);
+		this.cached = this.load.apply(this.id);
 		return this.cached;
 	}
 
 	private boolean shouldInvalidate() {
 		return this.cached.isAged();
-	}
-
-	public String getAddress() {
-		return address;
 	}
 
 	public boolean isPresent() {
@@ -74,11 +74,13 @@ public class StargateRef implements Disposable {
 	}
 
 	public static StargateRef createAs(Entity entity, Stargate gate) {
-		return new StargateRef(gate, real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
+		return new StargateRef(gate,
+				real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
 	}
 
-	public static StargateRef createAs(Entity entity, String uuid) {
-		return new StargateRef(uuid, real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
+	public static StargateRef createAs(Entity entity, UUID uuid) {
+		return new StargateRef(uuid,
+				real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
 	}
 
 	public static StargateRef createAs(BlockEntity blockEntity, Stargate gate) {
@@ -86,7 +88,7 @@ public class StargateRef implements Disposable {
 				real -> StargateNetwork.with(blockEntity, (o, manager) -> manager.get(real)));
 	}
 
-	public static StargateRef createAs(BlockEntity blockEntity, String uuid) {
+	public static StargateRef createAs(BlockEntity blockEntity, UUID uuid) {
 		return new StargateRef(uuid,
 				real -> StargateNetwork.with(blockEntity, (o, manager) -> manager.get(real)));
 	}
@@ -95,7 +97,7 @@ public class StargateRef implements Disposable {
 		return new StargateRef(tardis, real -> StargateNetwork.with(world, (o, manager) -> manager.get(real)));
 	}
 
-	public static StargateRef createAs(World world, String uuid) {
+	public static StargateRef createAs(World world, UUID uuid) {
 		return new StargateRef(uuid, real -> StargateNetwork.with(world, (o, manager) -> manager.get(real)));
 	}
 
@@ -104,5 +106,6 @@ public class StargateRef implements Disposable {
 		this.cached = null;
 	}
 
-	public interface LoadFunc extends Function<String, Stargate> {}
+	public interface LoadFunc extends Function<UUID, Stargate> {
+	}
 }

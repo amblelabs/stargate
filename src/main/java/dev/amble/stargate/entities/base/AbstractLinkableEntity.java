@@ -7,7 +7,12 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.world.World;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public interface AbstractLinkableEntity extends StargateLinkable {
 
@@ -15,17 +20,16 @@ public interface AbstractLinkableEntity extends StargateLinkable {
 
     DataTracker getDataTracker();
 
-    TrackedData<String> getTracked();
+    TrackedData<Optional<UUID>> getTracked();
 
     StargateRef asRef();
 
     void setRef(StargateRef ref);
 
-
     @Override
     default void setStargate(StargateRef stargate) {
         this.setRef(stargate);
-        this.getDataTracker().set(this.getTracked(), stargate.getAddress());
+        this.getDataTracker().set(this.getTracked(), Optional.of(stargate.id()));
     }
 
     @Override
@@ -33,7 +37,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
         StargateRef result = this.asRef();
 
         if (result == null) {
-            this.link(this.getDataTracker().get(this.getTracked()), this.getWorld());
+            this.link(StargateRef.createAs((Entity) this, this.getDataTracker().get(this.getTracked()).orElse(null)));
             return this.gate();
         }
 
@@ -41,23 +45,24 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     }
 
     default void initDataTracker() {
-        this.getDataTracker().startTracking(this.getTracked(), "");
+        this.getDataTracker().startTracking(this.getTracked(), null);
     }
 
     default void onTrackedDataSet(TrackedData<?> data) {
         if (!this.getTracked().equals(data))
             return;
 
-        this.link(this.getDataTracker().get(this.getTracked()), this.getWorld());
+        this.link(StargateRef.createAs((Entity) this, this.getDataTracker().get(this.getTracked()).orElse(null)));
     }
 
     default void readCustomDataFromNbt(NbtCompound nbt) {
-        String id = nbt.getString("stargate");
+        NbtElement rawId = nbt.get("Stargate");
 
-        if (id == null)
+        if (rawId == null)
             return;
 
-        this.link(id, this.getWorld());
+        UUID id = NbtHelper.toUuid(rawId);
+        this.link(StargateRef.createAs((Entity) this, id));
 
         if (this.getWorld() == null)
             return;
@@ -68,11 +73,11 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     default void writeCustomDataToNbt(NbtCompound nbt) {
         StargateRef ref = this.asRef();
 
-        if (ref != null && ref.getAddress() != null)
-            nbt.putString("stargate", ref.getAddress());
+        if (ref != null && ref.id() != null)
+            nbt.putUuid("Stargate", ref.id());
     }
 
-    static <T extends Entity & AbstractLinkableEntity> TrackedData<String> register(Class<T> self) {
-        return DataTracker.registerData(self, TrackedDataHandlerRegistry.STRING);
+    static <T extends Entity & AbstractLinkableEntity> TrackedData<Optional<UUID>> register(Class<T> self) {
+        return DataTracker.registerData(self, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     }
 }

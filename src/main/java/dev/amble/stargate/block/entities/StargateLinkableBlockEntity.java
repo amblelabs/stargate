@@ -1,7 +1,7 @@
 package dev.amble.stargate.block.entities;
 
-import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.network.StargateLinkable;
+import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -20,21 +20,21 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 
-		if (nbt.contains("Address")) {
-			this.ref = StargateRef.createAs(this, nbt.getString("Address"));
-			this.markDirty();
-			this.sync();
-		}
-	}
+        if (!nbt.contains("Address")) return;
+
+        this.ref = StargateRef.createAs(this, nbt.getUuid("Address"));
+        this.markDirty();
+        this.sync();
+    }
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
 
-		if (this.ref != null) {
-			nbt.putString("Address", this.ref.getAddress());
-		}
-	}
+        if (this.ref == null) return;
+
+        nbt.putUuid("Address", this.ref.id());
+    }
 
 	@Override
 	public StargateRef gate() {

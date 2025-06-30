@@ -4,9 +4,13 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.data.DistanceInformation;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.UUID;
 
 /**
  * Represents a Stargate address.
@@ -14,7 +18,7 @@ import net.minecraft.util.Identifier;
  * @param text address in string form
  * @param pos the position of the Stargate
  */
-public record Address(String text, DirectedGlobalPos pos) {
+public record Address(UUID id, String text, DirectedGlobalPos pos) {
 	private static final Identifier FONT_ID = StargateMod.id("stargate");
 	private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
@@ -25,7 +29,7 @@ public record Address(String text, DirectedGlobalPos pos) {
 	 * @param pos the position of the Stargate
 	 */
 	public Address(DirectedGlobalPos pos) {
-		this(randomAddress(pos.getDimension().getValue()), pos);
+		this(UUID.randomUUID(), randomAddress(pos.getDimension().getValue()), pos);
 	}
 
 	/**
@@ -43,9 +47,20 @@ public record Address(String text, DirectedGlobalPos pos) {
 		return this.pos.distanceTo(other.pos);
 	}
 
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Address other && id.equals(other.id);
+	}
+
 	public NbtCompound toNbt() {
 		NbtCompound nbt = new NbtCompound();
 
+		nbt.putUuid("Id", id);
 		nbt.putString("Text", text);
 		nbt.put("Position", pos.toNbt());
 
@@ -53,11 +68,14 @@ public record Address(String text, DirectedGlobalPos pos) {
 	}
 
 	public static Address fromNbt(NbtCompound nbt) {
+		NbtElement rawId = nbt.get("Id");
+
+		UUID id = rawId == null ? UUID.randomUUID() : NbtHelper.toUuid(rawId);
 		String text = nbt.getString("Text");
 
 		DirectedGlobalPos pos = DirectedGlobalPos.fromNbt(nbt.getCompound("Position"));
 
-		return new Address(text, pos);
+		return new Address(id, text, pos);
 	}
 
 	private static String randomAddress(Identifier world) {

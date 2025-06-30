@@ -8,9 +8,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implements AbstractLinkableEntity {
 
-    private static final TrackedData<String> STARGATE = AbstractLinkableEntity
+    private static final TrackedData<Optional<UUID>> STARGATE = AbstractLinkableEntity
             .register(LinkableDummyLivingEntity.class);
 
     private StargateRef stargate;
@@ -30,7 +33,7 @@ public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implem
     }
 
     @Override
-    public TrackedData<String> getTracked() {
+    public TrackedData<Optional<UUID>> getTracked() {
         return STARGATE;
     }
 

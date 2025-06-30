@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -58,30 +59,17 @@ public abstract class StargateNetwork<T extends Stargate> {
 		return lookup.get(address);
 	}
 
-	public Optional<T> getOptional(Address address) {
-		return Optional.ofNullable(this.get(address));
-	}
-
-	public Optional<T> get(DirectedGlobalPos pos) {
-		// find an address that matches
-		return lookup.keySet().stream()
-				.filter(address -> address.pos().equals(pos))
-				.map(this::get)
-				.findFirst();
-	}
-
-	public Optional<Address> getAddress(String text) {
-		return lookup.keySet().stream()
-				.filter(address -> address.text().equals(text))
-				.findFirst();
-	}
-
 	public @Nullable Stargate get(String address) {
 		Address addr = lookup.keySet().stream()
 				.filter(a -> a.text().equals(address))
 				.findFirst().orElse(null);
 
 		return addr == null ? null : this.get(addr);
+	}
+
+	public @Nullable T get(UUID id) {
+        //noinspection SuspiciousMethodCalls - trust me bro
+        return this.lookup.get(id);
 	}
 
 	/**
@@ -153,7 +141,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 
 	@SuppressWarnings("unchecked")
 	public static <C, R> R with(boolean isClient, ContextManager<C, R> consumer, Supplier<MinecraftServer> server) {
-		StargateNetwork manager = StargateNetwork.getInstance(!isClient);
+		StargateNetwork<?> manager = StargateNetwork.getInstance(!isClient);
 
 		if (isClient) {
 			return consumer.run((C) MinecraftClient.getInstance(), manager);
