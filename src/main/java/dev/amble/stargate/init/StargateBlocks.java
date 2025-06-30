@@ -38,7 +38,7 @@ public class StargateBlocks extends BlockContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Block PEANUT = new Block(ABlockSettings.create()
-			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)));
+			.itemSettings(new AItemSettings()));
 
 	//Naquadah
 	@AutomaticModel

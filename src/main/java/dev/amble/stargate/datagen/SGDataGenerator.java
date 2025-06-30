@@ -13,6 +13,7 @@ import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
@@ -146,6 +147,16 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                             .input('W', ItemTags.PLANKS));
 
             provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.EMPTY_CONTAINER, 1)
+                            .pattern("GIG")
+                            .pattern("G G")
+                            .pattern(" G ")
+                            .input('G', Blocks.GLASS)
+                            .input('I', Items.IRON_INGOT)
+                            .criterion(hasItem(Blocks.GLASS), conditionsFromItem(Blocks.GLASS))
+                            .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT)));
+
+            provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.TOASTER)
                             .pattern("ICI")
                             .pattern("ICI")
@@ -188,6 +199,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
             provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah Container");
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
+            provider.addTranslation(StargateItems.COPPER_COIL, "Copper Coil");
+            provider.addTranslation(StargateItems.TOASTER, "Toaster");
 
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
