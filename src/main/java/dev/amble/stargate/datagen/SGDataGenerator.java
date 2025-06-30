@@ -199,7 +199,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
             provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah Container");
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
-            provider.addTranslation(StargateItems.COPPER_COIL, "Copper Coil");
+            provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
             provider.addTranslation(StargateItems.TOASTER, "Toaster");
 
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
