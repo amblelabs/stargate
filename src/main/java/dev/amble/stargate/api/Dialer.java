@@ -1,7 +1,7 @@
 package dev.amble.stargate.api;
 
 import dev.amble.stargate.core.block.StargateBlock;
-import dev.drtheo.scheduler.api.common.Scheduler;;
+import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.StargateSounds;
