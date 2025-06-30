@@ -4,10 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v2.DestinyGateKernel;
 import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v2.OrlinGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
-import dev.amble.stargate.client.models.StargateModel;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix3f;
@@ -43,7 +42,12 @@ public class PortalUtil {
         Identifier texture = monochrome ? MONOCHROMATIC : TEXTURE_LOCATION;
         RenderSystem.setShaderTexture(0, texture);
 
-        matrixStack.scale(scale, scale, scale);
+        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel instanceof OrlinGateKernel;
+
+        if (isOrlin) {
+            matrixStack.translate(0, 2, 0);
+        }
+        matrixStack.scale(isOrlin ? 16f : scale, isOrlin ? 16f : scale, isOrlin ? 16f : scale);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
         Tessellator tessellator = Tessellator.getInstance();

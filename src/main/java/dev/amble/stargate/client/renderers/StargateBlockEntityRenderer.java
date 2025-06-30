@@ -4,6 +4,8 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.v2.*;
+import dev.amble.stargate.client.models.BaseStargateModel;
+import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.block.StargateBlock;
@@ -31,7 +33,10 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     public static final Identifier PEGASUS_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/pegasus/pegasus_emission.png");
     public static final Identifier DESTINY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/destiny/destiny.png");
     public static final Identifier DESTINY_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/destiny/destiny_emission.png");
-    private final StargateModel model;
+    public static final Identifier ORLIN = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin.png");
+    public static final Identifier ORLIN_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin_emission.png");
+    private StargateModel model;
+    private static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
 
     private final GateState.Closed FALLBACK = new GateState.Closed();
 
@@ -60,6 +65,15 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         if (entity.hasStargate()) {
             Stargate gate = entity.gate().get();
+            texture = getTextureForGate(gate);
+            emission = getEmissionForGate(gate);
+            if (gate.kernel instanceof OrlinGateKernel) {
+                ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
+                ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
+                matrices.pop();
+                PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
+                return;
+            }
             this.setFromDialer(state, gate.kernel);
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
@@ -68,16 +82,14 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             boolean bl = (state instanceof GateState.Closed closed && closed.locking())
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen;
 
-            this.model.chev_light7.visible = true;//bl;
-            this.model.chev_light7bottom.visible = true;//bl;
+            this.model.chev_light7.visible = bl;
+            this.model.chev_light7bottom.visible = bl;
             rot = rotationValue;
-            texture = getTextureForGate(gate);
-            emission = getEmissionForGate(gate);
         }
 
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
-        this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
+        if(this.model.getChild("iris").isPresent()) this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
         matrices.pop();
@@ -186,6 +198,9 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         if (impl instanceof DestinyGateKernel) {
             return DESTINY;
         }
+        if (impl instanceof OrlinGateKernel) {
+            return ORLIN;
+        }
         return MILKY_WAY;
     }
 
@@ -196,6 +211,9 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         }
         if (impl instanceof DestinyGateKernel) {
             return DESTINY_EMISSION;
+        }
+        if (impl instanceof OrlinGateKernel) {
+            return ORLIN_EMISSION;
         }
         return MILKY_WAY_EMISSION;
     }

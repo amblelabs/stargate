@@ -21,4 +21,10 @@ public class OrlinGateKernel extends StargateKernel.Basic {
     public boolean canDialTo(Stargate stargate) {
         return stargate.kernel instanceof OrlinGateKernel;
     }
+
+    @Override
+    public GateShape shape() {
+        // Empty shape because the Orlin gate is so small the collisions come from a custom VoxelShape in the block - Loqor
+        return GateShape.generated("");
+    }
 }
