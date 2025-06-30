@@ -22,7 +22,7 @@ public record Glyph(Identifier world, char glyph) implements Identifiable {
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
-    public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%#?/".toCharArray();
+    public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%".toCharArray();
 
     private Glyph(Identifier dimension, String glyph) {
         this(dimension, glyph.charAt(0));

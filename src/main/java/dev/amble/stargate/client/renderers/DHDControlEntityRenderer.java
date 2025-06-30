@@ -54,8 +54,8 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         OrderedText orderedText = name.asOrderedText();
 
-        textRenderer.drawWithOutline(orderedText, h, (float) name.getString().length(), livingEntity.shouldGlow() ? 0xedb334 : 0x4f4f4f, 0x000000,
-                matrix4f, vertexConsumerProvider, 0xFF);
+        //textRenderer.drawWithOutline(orderedText, h, (float) name.getString().length(), livingEntity.shouldGlow() ? 0xedb334 : 0x4f4f4f, 0x000000,
+        //        matrix4f, vertexConsumerProvider, 0xFF);
         matrixStack.pop();
         super.render(livingEntity, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
     }

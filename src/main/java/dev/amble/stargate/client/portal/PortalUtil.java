@@ -2,7 +2,9 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.v2.DestinyGateKernel;
 import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.OrlinGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.util.math.RotationAxis;
@@ -17,8 +19,11 @@ import net.minecraft.util.Identifier;
 
 public class PortalUtil {
     public Identifier TEXTURE_LOCATION;
+    public static final Identifier MONOCHROMATIC = StargateMod.id("textures/portal/monochromatic.png");
     private final float scale;
     private float time = 0;
+    private float timer = 0;
+    private float maxTime = 4000;
     private float radius = 0.08f;
 
     public PortalUtil(Identifier texture) {
@@ -32,14 +37,22 @@ public class PortalUtil {
 
     public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
+        timer += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Advance timer for ripple trigger
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+        boolean monochrome = stargate.hasStargate() && stargate.gate().get().kernel instanceof DestinyGateKernel;
+        Identifier texture = monochrome ? MONOCHROMATIC : TEXTURE_LOCATION;
+        RenderSystem.setShaderTexture(0, texture);
 
-        matrixStack.scale(scale, scale, scale);
+        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel instanceof OrlinGateKernel;
 
-        MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE_LOCATION);
+        if (isOrlin) {
+            matrixStack.translate(0, 2, 0);
+        }
+        matrixStack.scale(isOrlin ? 14f : scale, isOrlin ? 14f : scale, isOrlin ? 14f : scale);
+
+        MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -64,7 +77,7 @@ public class PortalUtil {
     public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, StargateBlockEntity stargate, GateState state) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
-        int rings =24;
+        int rings =36;
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
         float minWaveHeight = 0.001f;
@@ -88,8 +101,10 @@ public class PortalUtil {
 
         // Add central big ripple if active
 
-        if (state instanceof GateState.PreOpen)
-            triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
+        if (state instanceof GateState.PreOpen && timer >= maxTime) {
+            triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
+        }
+
         CentralRippleParams central = getCentralRipple();
         boolean hasCentralRipple = central != null;
 
@@ -120,16 +135,30 @@ public class PortalUtil {
                 }
 
                 // Central big ripple (affect all rings, but only near center)
-                // Central big ripple (affect all rings, including center)
                 if (hasCentralRipple) {
                     float distToCenter = (float) Math.sqrt(x * x + y * y);
                     if (distToCenter <= central.radius) {
                         float norm = 1f - (distToCenter / central.radius);
-                        float bulge = (float) Math.pow(norm, 0.5f); // Skew the bulge towards the front
+                        float bulge = (float) Math.pow(norm, 1f);
                         float phase = time * central.speed + central.phaseOffset;
-                        dz += (float) (Math.sin(bulge * central.frequency + phase) * central.height * bulge * t);
-                        // Move the center point with the ripple
-                        dz += (float) (Math.sin(bulge * central.frequency + phase) * central.height * bulge);
+                        float twist = (float) Math.sin(time * 0.7f + angle * 2.5f) * 0.1f;
+                        float wave = (float) Math.sin(bulge * central.frequency + phase + twist);
+                        float effect;
+                        if (wave >= 0f) {
+                            effect = wave * central.height * bulge * t;
+                        } else {
+                            // Soften the backward (negative) effect
+                            effect = wave * 0.25f * central.height * bulge * t;
+                        }
+                        // Suppress the "needle" in the very center
+                        if (distToCenter < central.radius * 0.12f) {
+                            effect = 0f;
+                        }
+                        dz += effect;
+                        dz += wave * central.height * bulge * 0.2f; // minimal backward movement, mostly forward
+                    }
+                    if (timer >= maxTime) {
+                        this.centralRipple = null;
                     }
                 }
                 mesh[r][i][0] = dx;
@@ -186,9 +215,9 @@ public class PortalUtil {
                     intensity0 = Math.min(1f, intensity0 + 0.6f * centerNorm0);
                     intensity1 = Math.min(1f, intensity1 + 0.6f * centerNorm1);
                     intensity2 = Math.min(1f, intensity2 + 0.6f * centerNorm2);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, 1f * intensity0, 1f * intensity0, 1f * intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, 1f * intensity1, 1f * intensity1, 1f * intensity1, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, 1f * intensity2, 1f * intensity2, 1f * intensity2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1,  intensity1, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
                 } else {
                     addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
                     addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1, intensity1, 1f, 0xf000f0);
@@ -205,13 +234,17 @@ public class PortalUtil {
                 boolean centerTriangle2 = (dist0 < centerRadius) || (dist2 < centerRadius) || (dist3 < centerRadius);
                 boolean coreTriangle2 = (dist0 < coreRadius) || (dist2 < coreRadius) || (dist3 < coreRadius);
 
+                float intensity0_2 = intensity0;
+                float intensity2_2 = intensity2;
+                float intensity3_2 = intensity3;
+
                 if (coreTriangle2) {
-                    intensity0 = Math.min(1f, intensity0 + 1.0f);
-                    intensity2 = Math.min(1f, intensity2 + 1.0f);
-                    intensity3 = Math.min(1f, intensity3 + 1.0f);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, 1 * intensity0, 1 * intensity0,  intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, 1 * intensity2, 1 * intensity2,  intensity2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, 1 * intensity3, 1 * intensity3,  intensity3, 1f, 0xf000f0);
+                    intensity0_2 = Math.min(1f, intensity0_2 + 1.0f);
+                    intensity2_2 = Math.min(1f, intensity2_2 + 1.0f);
+                    intensity3_2 = Math.min(1f, intensity3_2 + 1.0f);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2,  intensity0_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2,  intensity2_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2,  intensity3_2, 1f, 0xf000f0);
                 } else if (centerTriangle2) {
                     // Larger center: blueish, softer, brightness based on distance from center
                     float centerDist0 = (float) Math.sqrt(v0[0]*v0[0] + v0[1]*v0[1]);
@@ -220,12 +253,16 @@ public class PortalUtil {
                     float centerNorm0 = 1f - Math.min(1f, centerDist0 / centerRadius);
                     float centerNorm2 = 1f - Math.min(1f, centerDist2 / centerRadius);
                     float centerNorm3 = 1f - Math.min(1f, centerDist3 / centerRadius);
-                    intensity0 = Math.min(1f, intensity0 + 0.6f * centerNorm0);
-                    intensity2 = Math.min(1f, intensity2 + 0.6f * centerNorm2);
-                    intensity3 = Math.min(1f, intensity3 + 0.6f * centerNorm3);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, 1f * intensity0, 1f * intensity0, 1f * intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, 1f * intensity2, 1f * intensity2, 1f * intensity2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, 1f * intensity3, 1f * intensity3, 1f * intensity3, 1f, 0xf000f0);
+                    intensity0_2 = Math.min(1f, intensity0_2 + 0.6f * centerNorm0);
+                    intensity2_2 = Math.min(1f, intensity2_2 + 0.6f * centerNorm2);
+                    intensity3_2 = Math.min(1f, intensity3_2 + 0.6f * centerNorm3);
+                    intensity0_2 = Math.min(1f, intensity0_2);
+                    intensity2_2 = Math.min(1f, intensity2_2);
+                    intensity3_2 = Math.min(1f, intensity3_2);
+
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2, intensity0_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2, intensity2_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2, intensity3_2, 1f, 0xf000f0);
                 } else {
                     addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
                     addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
@@ -258,6 +295,9 @@ public class PortalUtil {
 
     /** Call this to trigger a big central ripple. */
     public void triggerCentralRipple(float radius, float height, float frequency, float speed) {
+        if (timer < maxTime) return; // Only allow triggering after maxTime
+        timer = 0; // Reset timer after triggering
+        if (this.centralRipple != null) return;
         this.centralRipple = new CentralRippleParams(radius, height, frequency, speed, 0f);
         this.centralRippleTime = 0f;
         this.centralRippleSettling = false;

@@ -16,12 +16,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DHDBlock extends HorizontalFacingBlock implements BlockEntityProvider {
+	public static final VoxelShape DHDSHAPE = Block.createCuboidShape(4.0F, 0.0F, 4.0F, 12.0F, 14.0F, 12.0F);
 	public DHDBlock(Settings settings) {
 		super(settings);
 
@@ -57,6 +60,11 @@ public class DHDBlock extends HorizontalFacingBlock implements BlockEntityProvid
 			if (ticker instanceof DHDBlockEntity dhd)
 				dhd.tick(world, blockPos, blockState, dhd);
 		};
+	}
+
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return DHDSHAPE;
 	}
 
 	@Override

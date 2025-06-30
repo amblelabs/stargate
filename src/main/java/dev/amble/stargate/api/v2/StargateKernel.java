@@ -167,6 +167,11 @@ public interface StargateKernel extends NbtSync {
         }
 
         @Override
+        public boolean canDialTo(Stargate stargate) {
+            return !(stargate.state() instanceof GateState.Open);
+        }
+
+        @Override
         public void loadNbt(NbtCompound nbt, boolean isSync) {
             this.address = Address.fromNbt(nbt.getCompound("Address"));
             this.energy = nbt.getInt("energy");

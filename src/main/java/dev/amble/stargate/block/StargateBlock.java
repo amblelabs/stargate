@@ -1,8 +1,11 @@
 package dev.amble.stargate.block;
 
 import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.OrlinGateKernel;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.item.StargateItem;
 import dev.amble.stargate.item.StargateLinkableItem;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -22,10 +25,14 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +63,51 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+	}
+
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
+			if (!be.hasStargate()) return super.getOutlineShape(state, world, pos, context);
+			Stargate gate = be.gate().get();
+			if (gate.kernel instanceof OrlinGateKernel) {
+				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
+			}
+		}
+		return super.getOutlineShape(state, world, pos, context);
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
+			if (!be.hasStargate()) return  super.getCollisionShape(state, world, pos, context);
+			Stargate gate = be.gate().get();
+			if (gate.kernel instanceof OrlinGateKernel) {
+				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
+			}
+		}
+		return super.getCollisionShape(state, world, pos, context);
+	}
+
+	public VoxelShape makeOrlinShape(){
+		VoxelShape shape = VoxelShapes.empty();
+		shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(0.0F, 0.0F, 0.0F, 16.0F / 16, 8.0F / 16f, 16.0F / 16f), BooleanBiFunction.OR);
+
+		return shape;
+	}
+
+	public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
+		VoxelShape[] buffer = new VoxelShape[]{shape, VoxelShapes.empty()};
+
+		int times = (to.getHorizontal() - from.getHorizontal() + 4) % 4;
+		for (int i = 0; i < times; i++) {
+			buffer[0].forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> buffer[1] = VoxelShapes.combine(buffer[1],
+					VoxelShapes.cuboid(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX), BooleanBiFunction.OR));
+			buffer[0] = buffer[1];
+			buffer[1] = VoxelShapes.empty();
+		}
+
+		return buffer[0];
 	}
 
 	@Override
@@ -131,8 +183,9 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+		if (!(itemStack.getItem() instanceof StargateItem stargateItem)) return;
 		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			be.onPlaced(world, pos, state, placer, itemStack);
+			be.onPlacedWithKernel(world, pos, stargateItem.getCreator());
 		}
 
 		super.onPlaced(world, pos, state, placer, itemStack);

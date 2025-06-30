@@ -17,6 +17,9 @@ public class GateKernelRegistry {
 
     public static void init() {
         Registry.register(REGISTRY, MilkyWayGateKernel.ID, MilkyWayGateKernel::new);
+        Registry.register(REGISTRY, PegasusGateKernel.ID, PegasusGateKernel::new);
+        Registry.register(REGISTRY, DestinyGateKernel.ID, DestinyGateKernel::new);
+        Registry.register(REGISTRY, OrlinGateKernel.ID, OrlinGateKernel::new);
     }
 
     @FunctionalInterface

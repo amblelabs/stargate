@@ -7,7 +7,8 @@ import net.minecraft.util.Identifier;
 
 public abstract class Stargate implements StargateKernel, Disposable {
 
-    protected final StargateKernel.Impl kernel;
+    // TODO FIX ME THEO THIS IS HORRIBLE I NEED A BETTER WAY TO CHECK THE KERNEL ON CLIENT AHHH - Loqor
+    public final StargateKernel.Impl kernel;
 
     protected Stargate(GateKernelRegistry.KernelCreator constructor) {
         this.kernel = constructor.create(this);
@@ -26,7 +27,11 @@ public abstract class Stargate implements StargateKernel, Disposable {
     // TODO: impl this
     @Override
     public void dispose() {
+    }
 
+    @Override
+    public boolean canDialTo(Stargate stargate) {
+        return kernel.canDialTo(stargate);
     }
 
     @Override

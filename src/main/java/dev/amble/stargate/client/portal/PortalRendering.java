@@ -29,9 +29,6 @@ public class PortalRendering {
             RenderSystem.enableDepthTest();
             util.renderPortalInterior(stack, stargateBlockEntity, state);
 
-            if (state instanceof GateState.PreOpen)
-                util.triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
-
             RenderSystem.disableDepthTest();
         }
 
