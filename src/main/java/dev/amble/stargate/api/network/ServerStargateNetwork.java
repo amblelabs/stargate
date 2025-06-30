@@ -109,6 +109,11 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	public void onEndTick(MinecraftServer server) {
 		for (ServerStargate stargate : this.lookup.values()) {
 			stargate.tick();
+
+			if (stargate.dirty()) {
+				this.syncPartial(stargate);
+				stargate.unmarkDirty();
+			}
 		}
 	}
 }

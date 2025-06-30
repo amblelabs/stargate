@@ -14,9 +14,6 @@ public class ClientStargate extends Stargate {
     }
 
     @Override
-    public void sync() { }
-
-    @Override
     public void age() {
         this.aged = true;
     }

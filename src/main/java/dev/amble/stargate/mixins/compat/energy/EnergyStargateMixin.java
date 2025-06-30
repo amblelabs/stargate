@@ -16,7 +16,7 @@ public abstract class EnergyStargateMixin implements StargateRebornEnergy, Starg
 		@Override
 		protected void onFinalCommit() {
 			EnergyStargateMixin.this.energy = (int) this.amount;
-			EnergyStargateMixin.this.parent.sync();
+			EnergyStargateMixin.this.parent.markDirty();
 		}
 	};
 

@@ -29,12 +29,17 @@ public interface StargateKernel extends NbtSync {
     GateShape shape();
     GateState state();
 
+    boolean dirty();
+    void markDirty();
+    void unmarkDirty();
+
     abstract class Impl implements StargateKernel {
 
         private final Identifier id;
         protected final Stargate parent;
 
         protected GateState state;
+        protected boolean dirty;
 
         public Impl(Identifier id, Stargate parent) {
             this.id = id;
@@ -48,6 +53,21 @@ public interface StargateKernel extends NbtSync {
         @Override
         public GateState state() {
             return state;
+        }
+
+        @Override
+        public boolean dirty() {
+            return dirty;
+        }
+
+        @Override
+        public void unmarkDirty() {
+            this.dirty = false;
+        }
+
+        @Override
+        public void markDirty() {
+            this.dirty = true;
         }
     }
 
@@ -86,12 +106,12 @@ public interface StargateKernel extends NbtSync {
                 if (length == 0 || length <= closed.locked()) {
                     if (closed.locking()) {
                         closed.setLocking(false);
-                        this.parent.sync();
+                        this.parent.markDirty();
                     }
 
                     if (length == 0 && closed.locked() > 0) {
                         closed.setLocked(0);
-                        this.parent.sync();
+                        this.parent.markDirty();
                     }
 
                     return;
@@ -105,13 +125,13 @@ public interface StargateKernel extends NbtSync {
                     if (closed.locked() == Address.LENGTH)
                         state = new GateState.PreOpen(closed.addressBuilder());
 
-                    this.parent.sync();
+                    this.parent.markDirty();
                     return;
                 }
 
                 if (!closed.locking()) {
                     closed.setLocking(true);
-                    this.parent.sync();
+                    this.parent.markDirty();
                 }
 
                 timer++;
@@ -127,7 +147,7 @@ public interface StargateKernel extends NbtSync {
                     state = new GateState.Open(target);
                 }
 
-                this.parent.sync();
+                this.parent.markDirty();
             }
         }
 

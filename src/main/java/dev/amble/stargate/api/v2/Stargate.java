@@ -66,6 +66,11 @@ public abstract class Stargate implements StargateKernel, Disposable {
     }
 
     @Override
+    public boolean canDialTo(Stargate stargate) {
+        return kernel.canDialTo(stargate);
+    }
+
+    @Override
     public long energyToDial(Address address) {
         return kernel.energyToDial(address);
     }
@@ -80,7 +85,22 @@ public abstract class Stargate implements StargateKernel, Disposable {
         return kernel.state();
     }
 
-    // TODO: replace this with a markDirty so the SSN just iterates
-    //  through all the dirty stargates and syncs them
-    public abstract void sync();
+    @Override
+    public boolean dirty() {
+        return this.kernel.dirty();
+    }
+
+    @Override
+    public void unmarkDirty() {
+        this.kernel.unmarkDirty();
+    }
+
+    @Override
+    public void markDirty() {
+        this.kernel.markDirty();
+    }
+
+    public StargateKernel.Impl kernel() {
+        return kernel;
+    }
 }
