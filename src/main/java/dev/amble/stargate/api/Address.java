@@ -14,7 +14,7 @@ import java.util.UUID;
 
 /**
  * Represents a Stargate address.
- * 6 Characters Long
+ * 7 Characters Long
  * @param text address in string form
  * @param pos the position of the Stargate
  */

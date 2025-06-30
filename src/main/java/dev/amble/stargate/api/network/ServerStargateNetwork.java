@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		implements ServerPlayConnectionEvents.Join, ServerLifecycleEvents.ServerStopped, ServerTickEvents.EndTick {
 
+	private static volatile ServerStargateNetwork instance;
+
 	private ServerStargateNetwork() {
 		ServerPlayConnectionEvents.JOIN.register(this);
 		ServerLifecycleEvents.SERVER_STOPPED.register(this);
@@ -41,8 +43,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	public Optional<Stargate> remove(Address address) {
 		Optional<Stargate> removed = super.remove(address);
 		removed.ifPresent(s -> this.syncAll());
-
-		StargateServerData.get().markDirty();;
+		StargateServerData.get().markDirty();
 		return removed;
 	}
 
@@ -50,7 +51,6 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	protected boolean add(Address address, ServerStargate stargate) {
 		boolean success = super.add(address, stargate);
 		if (success) this.syncAll();
-
 		StargateServerData.get().markDirty();
 		return success;
 	}
@@ -94,10 +94,8 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		this.syncPartial(gate, PlayerLookup.all(ServerLifecycleHooks.get()).stream());
 	}
 
-	private static ServerStargateNetwork instance;
-
 	public static ServerStargateNetwork get() {
-		return instance == null ? instance = new ServerStargateNetwork() : instance;
+		return instance == null ? (instance = new ServerStargateNetwork()) : instance;
 	}
 
 	@Override

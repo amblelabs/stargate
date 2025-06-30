@@ -47,7 +47,8 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 		NbtCompound nbt = buf.readNbt();
 		ClientStargate gate = this.fromNbt(nbt);
 
-		ClientStargate existing = this.lookup.put(gate.address(), gate);
+		this.lookup.put(gate.address(), gate);
+		ClientStargate existing = this.idLookup.put(gate.address().id(), gate);
 
 		if (existing != null) existing.age();
 
@@ -63,6 +64,7 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 
 	private void reset() {
 		this.lookup.clear();
+		this.idLookup.clear();
 	}
 
 	private static ClientStargateNetwork instance;
