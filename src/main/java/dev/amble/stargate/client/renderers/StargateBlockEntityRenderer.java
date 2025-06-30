@@ -68,8 +68,8 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             boolean bl = (state instanceof GateState.Closed closed && closed.locking())
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen;
 
-            this.model.chev_light7.visible = bl;
-            this.model.chev_light7bottom.visible = bl;
+            this.model.chev_light7.visible = true;//bl;
+            this.model.chev_light7bottom.visible = true;//bl;
             rot = rotationValue;
             texture = getTextureForGate(gate);
             emission = getEmissionForGate(gate);
@@ -89,7 +89,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         model.chev_light8.visible = false;
         model.chev_light9.visible = false;
 
-        boolean visible = state instanceof GateState.Open || state instanceof GateState.PreOpen;
+        boolean visible = true;//state instanceof GateState.Open || state instanceof GateState.PreOpen;
         int locked = (state instanceof GateState.Closed closed) ? closed.locked() : -1;
 
         // FIXME: this should be done at the top level of the class,
@@ -130,7 +130,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         float baseSpeed = 360f / Glyph.ALL.length; // degrees per glyph
         float time = MinecraftClient.getInstance().player.age / 200f;
         float rot = 0;
-        boolean isDialing = true;//state instanceof GateState.Closed closed && closed.isDialing();
+        boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing();
 
         if (isDialing)
             rot = MathHelper.wrapDegrees(time * baseSpeed * Glyph.ALL.length);
@@ -141,7 +141,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == selectedIndex;
 
-            int colour = 0x17171b;
+            int colour = gate.kernel instanceof PegasusGateKernel ? 0xffffff : 0x17171b;
 
             if (isInDial) {
                 colour = 0x17171b;

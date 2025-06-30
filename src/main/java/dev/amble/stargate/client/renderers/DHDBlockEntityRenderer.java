@@ -10,6 +10,7 @@ import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SnowBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.model.ModelPart;
@@ -51,12 +52,14 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
 
         // TODO add a snow state so the snow block renders under the DHD for fun purposes
-        /*BlockState snowState = Blocks.SNOW.getDefaultState();
-        matrices.push();
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-        matrices.translate(-1, 0, -1);
-        MinecraftClient.getInstance().getBlockRenderManager().renderBlock(snowState, entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getBlockLayers().get(0)), false, MinecraftClient.getInstance().world.getRandom());
-        matrices.pop();*/
+        if (entity.getWorld().getBlockState(entity.getPos().north()).getBlock() instanceof SnowBlock) {
+            BlockState snowState = Blocks.SNOW.getDefaultState();
+            matrices.push();
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+            matrices.translate(-1, 0, -1);
+            MinecraftClient.getInstance().getBlockRenderManager().renderBlock(snowState, entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getBlockLayers().get(0)), false, MinecraftClient.getInstance().world.getRandom());
+            matrices.pop();
+        }
 
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
