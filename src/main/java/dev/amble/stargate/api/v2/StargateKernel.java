@@ -3,6 +3,7 @@ package dev.amble.stargate.api.v2;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.NbtSync;
+import dev.amble.stargate.api.StargateAccessor;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -71,7 +72,7 @@ public interface StargateKernel extends NbtSync {
         }
     }
 
-    abstract class Basic extends Impl {
+    abstract class Basic extends Impl implements StargateAccessor {
 
         protected long energy = 0;
         protected Address address;
@@ -187,6 +188,11 @@ public interface StargateKernel extends NbtSync {
 
             nbt.put("State", this.state.toNbt());
             return nbt;
+        }
+
+        @Override
+        public void setState(GateState state) {
+            this.state = state;
         }
     }
 }
