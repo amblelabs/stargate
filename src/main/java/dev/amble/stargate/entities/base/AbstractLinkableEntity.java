@@ -45,7 +45,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     }
 
     default void initDataTracker() {
-        this.getDataTracker().startTracking(this.getTracked(), null);
+        this.getDataTracker().startTracking(this.getTracked(), Optional.empty());
     }
 
     default void onTrackedDataSet(TrackedData<?> data) {
