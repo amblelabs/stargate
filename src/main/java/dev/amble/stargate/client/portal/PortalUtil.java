@@ -7,15 +7,14 @@ import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.api.v2.OrlinGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
-import net.minecraft.util.math.RotationAxis;
-import org.jetbrains.annotations.ApiStatus;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
+import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class PortalUtil {
     public Identifier TEXTURE_LOCATION;
@@ -41,11 +40,11 @@ public class PortalUtil {
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        boolean monochrome = stargate.hasStargate() && stargate.gate().get().kernel instanceof DestinyGateKernel;
+        boolean monochrome = stargate.hasStargate() && stargate.gate().get().kernel() instanceof DestinyGateKernel;
         Identifier texture = monochrome ? MONOCHROMATIC : TEXTURE_LOCATION;
         RenderSystem.setShaderTexture(0, texture);
 
-        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel instanceof OrlinGateKernel;
+        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel() instanceof OrlinGateKernel;
 
         if (isOrlin) {
             matrixStack.translate(0, 2, 0);

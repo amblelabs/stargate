@@ -3,8 +3,8 @@ package dev.amble.stargate.block;
 import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.api.v2.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.item.StargateItem;
 import dev.amble.stargate.item.StargateLinkableItem;
 import net.minecraft.block.*;
@@ -70,7 +70,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
 			if (!be.hasStargate()) return super.getOutlineShape(state, world, pos, context);
 			Stargate gate = be.gate().get();
-			if (gate.kernel instanceof OrlinGateKernel) {
+			if (gate.kernel() instanceof OrlinGateKernel) {
 				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
 			}
 		}
@@ -82,7 +82,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
 			if (!be.hasStargate()) return  super.getCollisionShape(state, world, pos, context);
 			Stargate gate = be.gate().get();
-			if (gate.kernel instanceof OrlinGateKernel) {
+			if (gate.kernel() instanceof OrlinGateKernel) {
 				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
 			}
 		}

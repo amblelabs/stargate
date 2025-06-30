@@ -4,12 +4,11 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.v2.*;
-import dev.amble.stargate.client.models.BaseStargateModel;
+import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
-import dev.amble.stargate.block.StargateBlock;
-import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.model.ModelPart;
@@ -35,7 +34,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     public static final Identifier DESTINY_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/destiny/destiny_emission.png");
     public static final Identifier ORLIN = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin.png");
     public static final Identifier ORLIN_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin_emission.png");
-    private StargateModel model;
+    private final StargateModel model;
     private static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
 
     private final GateState.Closed FALLBACK = new GateState.Closed();
@@ -67,14 +66,14 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             Stargate gate = entity.gate().get();
             texture = getTextureForGate(gate);
             emission = getEmissionForGate(gate);
-            if (gate.kernel instanceof OrlinGateKernel) {
+            if (gate.kernel() instanceof OrlinGateKernel) {
                 ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
                 ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
                 matrices.pop();
                 PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
                 return;
             }
-            this.setFromDialer(state, gate.kernel);
+            this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
             power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
@@ -153,7 +152,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == selectedIndex;
 
-            int colour = gate.kernel instanceof PegasusGateKernel ? 0xffffff : 0x17171b;
+            int colour = gate.kernel() instanceof PegasusGateKernel ? 0xffffff : 0x17171b;
 
             if (isInDial) {
                 colour = 0x17171b;
@@ -191,7 +190,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public Identifier getTextureForGate(Stargate gate) {
-        StargateKernel.Impl impl = gate.kernel;
+        StargateKernel.Impl impl = gate.kernel();
         if (impl instanceof PegasusGateKernel) {
             return PEGASUS;
         }
@@ -205,7 +204,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public Identifier getEmissionForGate(Stargate gate) {
-        StargateKernel.Impl impl = gate.kernel;
+        StargateKernel.Impl impl = gate.kernel();
         if (impl instanceof PegasusGateKernel) {
             return PEGASUS_EMISSION;
         }

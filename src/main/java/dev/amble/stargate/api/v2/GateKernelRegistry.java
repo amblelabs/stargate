@@ -2,17 +2,17 @@ package dev.amble.stargate.api.v2;
 
 import dev.amble.stargate.StargateMod;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
 
 public class GateKernelRegistry {
 
     private static final RegistryKey<Registry<KernelCreator>> KEY = RegistryKey.ofRegistry(StargateMod.id("kernel"));
-    private static final SimpleRegistry<KernelCreator> REGISTRY = FabricRegistryBuilder
+    private static final DefaultedRegistry<KernelCreator> REGISTRY = FabricRegistryBuilder
             .createDefaulted(KEY, MilkyWayGateKernel.ID).buildAndRegister();
 
-    public static SimpleRegistry<KernelCreator> get() {
+    public static DefaultedRegistry<KernelCreator> get() {
         return REGISTRY;
     }
 
