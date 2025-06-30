@@ -3,7 +3,6 @@ package dev.amble.stargate.core.fluid;
 import net.minecraft.block.*;
 import net.minecraft.fluid.*;
 import net.minecraft.item.Item;
-import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -15,8 +14,6 @@ import java.util.Optional;
 
 public abstract class LiquidNaquadahFluid extends FlowableFluid {
     public static final float MIN_HEIGHT_TO_REPLACE = 0.44444445F;
-
-
 
     @Override
     public Fluid getFlowing() {
@@ -33,8 +30,6 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
         return StargateFluids.LIQUID_NAQUADAH;
     }
 
-
-
     private boolean canLightFire(WorldView world, BlockPos pos) {
         for (Direction direction : Direction.values()) {
             if (this.hasBurnableBlock(world, pos.offset(direction))) {
@@ -50,12 +45,11 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
-        this.playExtinguishEvent(world, pos);
     }
 
     @Override
     public int getFlowSpeed(WorldView world) {
-        return world.getDimension().ultrawarm() ? 4 : 2;
+        return 2; // Prevents fluid from flowing
     }
 
     @Override
@@ -70,12 +64,12 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     public int getLevelDecreasePerBlock(WorldView world) {
-        return world.getDimension().ultrawarm() ? 1 : 2;
+        return 1; // Prevents fluid from spreading
     }
 
     @Override
     public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-        return state.getHeight(world, pos) >= MIN_HEIGHT_TO_REPLACE && fluid.isIn(FluidTags.WATER);
+return false;
     }
 
     @Override
@@ -92,15 +86,10 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
         return i;
     }
 
-    private void playExtinguishEvent(WorldAccess world, BlockPos pos) {
-        world.syncWorldEvent(1501, pos, 0);
-    }
-
     @Override
     protected boolean isInfinite(World world) {
         return false;
     }
-
 
     @Override
     protected boolean hasRandomTicks() {
@@ -117,7 +106,6 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
         return Optional.of(SoundEvents.ITEM_BOTTLE_FILL);
     }
 
-    // --- Fluid State Properties ---
     @Override
     protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
         super.appendProperties(builder);
@@ -125,7 +113,6 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
     }
 
 
-    // --- Inner Classes ---
     public static class Still extends LiquidNaquadahFluid {
         @Override
         public int getLevel(FluidState state) {
@@ -148,6 +135,5 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
         public boolean isStill(FluidState state) {
             return false;
         }
-
     }
 }
