@@ -39,6 +39,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         genLoot(pack);
         genModels(pack);
         generateRecipes(pack);
+        generateAdvancements(pack);
         pack.addProvider(StargateWorldGenerator::new);
        }
 
@@ -53,6 +54,9 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         })));
     }
 
+    private void generateAdvancements(FabricDataGenerator.Pack pack) {
+        pack.addProvider(StargateAchievementProvider::new);
+    }
 
     @Override
     public void buildRegistry(RegistryBuilder registryBuilder) {
@@ -111,6 +115,13 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .input('I', StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
 
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .input('R', StargateItems.RAW_NAQUADAH)
+                    .criterion(hasItem(StargateItems.RAW_NAQUADAH), conditionsFromItem(StargateItems.RAW_NAQUADAH)));
+
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 1)
@@ -127,6 +138,13 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                             .input(StargateBlocks.NAQUADAH_BLOCK)
                             .criterion(hasItem(StargateBlocks.NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.NAQUADAH_BLOCK)),
                     new Identifier("stargate", "naquadah_ingot_recipe_from_block")
+            );
+
+            provider.addShapelessRecipe(
+                    ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.RAW_NAQUADAH, 9)
+                            .input(StargateBlocks.RAW_NAQUADAH_BLOCK)
+                            .criterion(hasItem(StargateBlocks.RAW_NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.RAW_NAQUADAH_BLOCK)),
+                    new Identifier("stargate", "raw_naquadah_recipe_from_block")
             );
 
             provider.addBlastFurnaceRecipe(CookingRecipeJsonBuilder.createBlasting(Ingredient.ofItems(StargateItems.RAW_NAQUADAH),
@@ -183,12 +201,15 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider((((output, registriesFuture) -> {
             AmbleLanguageProvider provider = new AmbleLanguageProvider(output, LanguageType.EN_US);
 
+            //Blocks
             provider.translateBlocks(StargateBlocks.class);
             provider.addTranslation(StargateBlocks.DHD, "Dial-Home Device");
             provider.addTranslation(StargateBlocks.STARGATE, "Stargate");
             provider.addTranslation(StargateBlocks.NAQUADAH_BLOCK, "Block of Naquadah");
+            provider.addTranslation(StargateBlocks.RAW_NAQUADAH_BLOCK, "Block of Raw Naquadah");
             provider.addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");
 
+            //Items
             provider.translateItems(StargateItems.class);
             provider.addTranslation(StargateItems.ADDRESS_CARTOUCHE, "Address Cartouche");
             provider.addTranslation(StargateItems.IRIS_BLADE, "Iris Blade");
@@ -202,12 +223,23 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
             provider.addTranslation(StargateItems.TOASTER, "Toaster");
 
+            //Misc
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
             provider.addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");
             provider.addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
 
             provider.addTranslation("text.stargate.gate", "STARGATE");
+
+            //Achievements
+            provider.addTranslation("achievement.stargate.title.root", "Stargate Mod");
+            provider.addTranslation("achievement.stargate.description.root", "Begin your journey through the stars!");
+
+            provider.addTranslation("achievement.stargate.title.obtain_raw_naquadah", "The Fifth Race");
+            provider.addTranslation("achievement.stargate.description.obtain_raw_naquadah", "Discover the element the Stargates are made of.");
+
+            provider.addTranslation("achievement.stargate.title.obtain_address_cartouche", "It was right in front of us!");
+            provider.addTranslation("achievement.stargate.description.obtain_address_cartouche", "Create an Address Cartouche to dial the Stargate Address.");
 
             return provider;
         })));

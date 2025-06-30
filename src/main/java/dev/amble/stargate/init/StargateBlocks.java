@@ -56,6 +56,13 @@ public class StargateBlocks extends BlockContainer {
 			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
 			.strength(25.0F, 9.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.NETHERITE));
 
+	@AutomaticModel
+	@NoEnglish
+	@PickaxeMineable(tool = PickaxeMineable.Tool.DIAMOND)
+	public static final Block RAW_NAQUADAH_BLOCK = new Block(ABlockSettings.create()
+			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
+			.strength(15.0F, 7.5F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.NETHERITE));
+
 	@Override
 	public Item.Settings createBlockItemSettings(Block block) {
 		return new AItemSettings().group(StargateItemGroups.MAIN);
