@@ -14,9 +14,18 @@ import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateEntities;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.client.util.ClientStargateUtil;
+import dev.amble.stargate.core.StargateBlockEntities;
+import dev.amble.stargate.core.StargateBlocks;
+import dev.amble.stargate.core.StargateEntities;
+import dev.amble.stargate.core.block.StargateBlock;
+import dev.amble.stargate.core.block.entities.StargateBlockEntity;
+import dev.amble.stargate.core.fluid.StargateFluids;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -45,6 +54,16 @@ public class StargateModClient implements ClientModInitializer {
         registerEntityRenderers();
 
         WorldRenderEvents.AFTER_ENTITIES.register(this::portalBOTI);
+
+        FluidRenderHandlerRegistry.INSTANCE.register(StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH,
+                new SimpleFluidRenderHandler(
+                        new Identifier("stargate:block/liquid_naquadah_still"),
+                        new Identifier("stargate:block/liquid_naquadah_flow")
+                ));
+
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
+                StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH);
+
     }
 
     public void registerBlockEntityRenderers() {
