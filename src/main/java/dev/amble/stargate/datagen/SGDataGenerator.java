@@ -1,19 +1,18 @@
 package dev.amble.stargate.datagen;
 
-import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.lib.datagen.lang.AmbleLanguageProvider;
+import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
+import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
-import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
@@ -22,9 +21,11 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
-import static net.minecraft.data.server.recipe.RecipeProvider.*;
+import static net.minecraft.data.server.recipe.RecipeProvider.conditionsFromItem;
+import static net.minecraft.data.server.recipe.RecipeProvider.hasItem;
 
 public class SGDataGenerator implements DataGeneratorEntrypoint {
     @Override
@@ -134,6 +135,30 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addShapelessRecipe(ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_NUGGET,9)
                     .input(StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.COPPER_COIL, 8)
+                            .pattern(" C ")
+                            .pattern("CWC")
+                            .pattern(" C ")
+                            .input('C', Items.COPPER_INGOT)
+                            .criterion(hasItem(Items.COPPER_INGOT), conditionsFromItem(Items.COPPER_INGOT))
+                            .input('W', ItemTags.PLANKS));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.TOASTER)
+                            .pattern("ICI")
+                            .pattern("ICI")
+                            .pattern("SRS")
+                            .input('I', Items.IRON_INGOT)
+                            .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
+                            .input('C', StargateItems.COPPER_COIL)
+                            .criterion(hasItem(StargateItems.COPPER_COIL), conditionsFromItem(StargateItems.COPPER_COIL))
+                            .input('S', Items.DRIED_KELP)
+                            .criterion(hasItem(Items.DRIED_KELP), conditionsFromItem(Items.DRIED_KELP))
+                            .input('R', Items.REDSTONE)
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+            );
 
             return provider;
         })));
