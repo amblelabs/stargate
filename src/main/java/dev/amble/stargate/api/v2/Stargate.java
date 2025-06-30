@@ -30,11 +30,6 @@ public abstract class Stargate implements StargateKernel, Disposable {
     }
 
     @Override
-    public boolean canDialTo(Stargate stargate) {
-        return kernel.canDialTo(stargate);
-    }
-
-    @Override
     public void tick() {
         this.kernel.tick();
     }

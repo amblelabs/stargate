@@ -9,7 +9,8 @@ import net.minecraft.registry.SimpleRegistry;
 public class GateKernelRegistry {
 
     private static final RegistryKey<Registry<KernelCreator>> KEY = RegistryKey.ofRegistry(StargateMod.id("kernel"));
-    private static final SimpleRegistry<KernelCreator> REGISTRY = FabricRegistryBuilder.createSimple(KEY).buildAndRegister();
+    private static final SimpleRegistry<KernelCreator> REGISTRY = FabricRegistryBuilder
+            .createDefaulted(KEY, MilkyWayGateKernel.ID).buildAndRegister();
 
     public static SimpleRegistry<KernelCreator> get() {
         return REGISTRY;
