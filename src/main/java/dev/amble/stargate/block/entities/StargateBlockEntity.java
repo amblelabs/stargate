@@ -87,7 +87,9 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (!(gate.state() instanceof GateState.Open open))
 			return;
 
-		TeleportUtil.teleport(living, open.target().address().pos());
+		BlockPos position = open.target().address().pos().getPos();
+
+		TeleportUtil.teleport(living, open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ()));
 	}
 
 	public void onBreak() {

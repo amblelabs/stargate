@@ -55,6 +55,8 @@ public class StargateDialCommand {
         }
 
         closed.setAddress(target);
+        stargate.markDirty();
+        targetGate.markDirty();
         return 1;
     }
 }

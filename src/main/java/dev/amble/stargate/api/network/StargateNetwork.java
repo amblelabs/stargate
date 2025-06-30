@@ -117,13 +117,17 @@ public abstract class StargateNetwork<T extends Stargate> {
 	}
 
 	public StargateNetwork<T> fromNbt(NbtCompound nbt, boolean clear) {
-		if (clear) this.lookup.clear();
+		if (clear) {
+			this.lookup.clear();
+			this.idLookup.clear();
+		}
 
 		NbtList list = nbt.getList("Stargates", NbtElement.COMPOUND_TYPE);
 
 		list.forEach(tag -> {
 			T stargate = this.fromNbt((NbtCompound) tag);
 			this.lookup.put(stargate.address(), stargate);
+			this.idLookup.put(stargate.address().id(), stargate);
 		});
 
 		return this;
