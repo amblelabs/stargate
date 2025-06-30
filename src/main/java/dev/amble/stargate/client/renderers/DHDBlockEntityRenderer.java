@@ -10,6 +10,7 @@ import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -19,12 +20,29 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
+import java.util.*;
+
 public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntity> {
     public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd.png");
     public static final Identifier EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd_emission.png");
     private final DHDModel model;
+    private ModelPart[] bottomlights;
+    private ModelPart[] toplights;
+
     public DHDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.model = new DHDModel(DHDModel.getTexturedModelData().createModel());
+        this.bottomlights = new ModelPart[] {
+                this.model.button1, this.model.button2, this.model.button3, this.model.button4, this.model.button5,
+                this.model.button6, this.model.button7, this.model.button8, this.model.button9, this.model.button10,
+                this.model.button11, this.model.button12, this.model.button13, this.model.button14, this.model.button15,
+                this.model.button16, this.model.button17, this.model.button18, this.model.button19
+        };
+        this.toplights = new ModelPart[] {
+                this.model.button20, this.model.button21, this.model.button22, this.model.button23, this.model.button24,
+                this.model.button25, this.model.button26, this.model.button27, this.model.button28, this.model.button29,
+                this.model.button30, this.model.button31, this.model.button32, this.model.button33, this.model.button34,
+                this.model.button35, this.model.button36, this.model.button37, this.model.button38
+        };
     }
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
@@ -33,47 +51,28 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
+        /*this.model.toplights.visible = true;
+        this.model.bottomlights.visible = true;
+        this.model.dialbuttonlight.visible = true;*/
+        // Animate the lights in a circle: only one is active at a time, based on world time
+        List<ModelPart> allLights = new ArrayList<>();
+        allLights.addAll(Arrays.asList(this.bottomlights));
+        allLights.addAll(Arrays.asList(this.toplights));
+
+// Use a persistent random seed based on world time, changing every 3 seconds
+        long seed = MinecraftClient.getInstance().world.getTime() / 60; // 20 ticks per second * 3 = 60
+        Collections.shuffle(allLights, new Random(seed));
+
+// Hide all lights
+        for (ModelPart lights : allLights) {
+            lights.visible = false;
+        }
+
+// Show 7 random lights
+        for (int i = 0; i < Math.min(7, allLights.size()); i++) {
+            allLights.get(i).visible = true;
+        }
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), light, overlay, 1, 1, 1, 1);
-        if (!entity.hasStargate()) {
-            matrices.pop();
-            return;
-        }
-
-        Stargate gate = entity.gate().get();
-        GateState state = gate.state();
-
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-        int middleIndex = Glyph.ALL.length / 2;
-        for (int i = 0; i < Glyph.ALL.length; i++) {
-            int selected = state instanceof GateState.Closed closed ? closed.locked() : 0;
-            int j = Glyph.ALL.length - i + selected - middleIndex;
-
-            if (j < 0) {
-                j += Glyph.ALL.length;
-            } else if (j >= Glyph.ALL.length) {
-                j -= Glyph.ALL.length;
-            }
-
-            boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
-            boolean isSelected = state instanceof GateState.Closed closed && closed.locked() == i; // funny hack, because the amount of locked is the size but the next index is also equal to the size
-
-            int colour = 0x4f4f4f;
-
-            if (isInDial) {
-                colour = 0xedc093;
-            }
-            if (isSelected) {
-                colour = 0xedb334;
-            }
-
-            matrices.push();
-            double angle = 2 * Math.PI * j / Glyph.ALL.length;
-            matrices.translate(Math.sin(angle) * 20f, Math.cos(angle) * 20f, 0);
-            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
-            renderer.draw(text, -renderer.getWidth(text) / 2f, 0, colour, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 0xF000F0);
-            matrices.pop();
-        }
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCullZOffset(EMISSION)), 0xF000F0, overlay, 1, 1, 1, 1);
         matrices.pop();
     }

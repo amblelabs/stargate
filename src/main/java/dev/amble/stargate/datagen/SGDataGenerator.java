@@ -8,8 +8,6 @@ import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
-import dev.amble.stargate.core.StargateBlocks;
-import dev.amble.stargate.core.StargateItems;
 import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;

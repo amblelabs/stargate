@@ -1,7 +1,7 @@
 package dev.amble.stargate.world;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.core.StargateBlocks;
+import dev.amble.stargate.init.StargateBlocks;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;

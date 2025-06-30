@@ -23,17 +23,14 @@ public class PortalRendering {
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
         stack.translate(0, -1f, 0);
-        //if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
+        if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
             PortalUtil util = new PortalUtil("watery");
 
             RenderSystem.enableDepthTest();
             util.renderPortalInterior(stack, stargateBlockEntity, state);
 
-            if (state instanceof GateState.PreOpen)
-                util.triggerCentralRipple(0.055f, 0.175f, 0.01f, 0.2f);
-
             RenderSystem.disableDepthTest();
-        //}
+        }
 
         stack.pop();
         stack.pop();

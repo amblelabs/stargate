@@ -1,6 +1,6 @@
-package dev.amble.stargate.core.item;
+package dev.amble.stargate.item;
 
-import dev.amble.stargate.core.StargateItems;
+import dev.amble.stargate.init.StargateItems;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;

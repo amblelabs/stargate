@@ -115,13 +115,19 @@ public interface GateShape {
             Set<BlockPos> ringPositions = new HashSet<>();
             List<String> list = shape.lines().toList();
 
-            for (int j = 0; j < list.size(); j++) {
+            int height = list.size();
+            int width = list.stream().mapToInt(String::length).max().orElse(0);
+            int xOffset = width / 2;
+            int yOffset = height / 2;
+
+            for (int j = 0; j < height; j++) {
                 String line = list.get(j);
 
                 for (int i = 0; i < line.length(); i++) {
                     if (line.charAt(i) != 'X') continue;
 
-                    ringPositions.add(new BlockPos(i, j, 0));
+                    // Center both horizontally and vertically
+                    ringPositions.add(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0));
                 }
             }
 

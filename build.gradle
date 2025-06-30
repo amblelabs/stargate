@@ -87,7 +87,7 @@ java {
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType(JavaCompile).configureEach {
+/*tasks.withType(JavaCompile).configureEach {
 	options.compilerArgs.add('--enable-preview')
 }
 
@@ -97,7 +97,7 @@ tasks.withType(Test).configureEach {
 
 tasks.withType(JavaExec).configureEach {
 	jvmArgs += '--enable-preview'
-}
+}*/
 
 jar {
 	from("LICENSE") {
