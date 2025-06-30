@@ -1,6 +1,7 @@
 package dev.amble.stargate.datagen;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -44,5 +45,13 @@ public class StargateAchievementProvider extends FabricAdvancementProvider {
                         null, AdvancementFrame.GOAL, true, true, true)
                 .criterion("obtain_address_cartouche", InventoryChangedCriterion.Conditions.items(StargateItems.ADDRESS_CARTOUCHE))
                 .build(consumer, StargateMod.MOD_ID + "/obtain_address_cartouche");
+
+        Advancement liquidNaquadah = Advancement.Builder.create().parent(rawNaquadah)
+                .display(StargateFluids.LIQUID_NAQUADAH,
+                        Text.translatable("achievement.stargate.title.obtain_liquid_naquadah"),
+                        Text.translatable("achievement.stargate.description.obtain_liquid_naquadah"),
+                        null, AdvancementFrame.GOAL, true, true, true)
+                .criterion("obtain_liquid_naquadah", InventoryChangedCriterion.Conditions.items(StargateFluids.LIQUID_NAQUADAH))
+                .build(consumer, StargateMod.MOD_ID + "/obtain_liquid_naquadah");
     }
 }

@@ -241,6 +241,9 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation("achievement.stargate.title.obtain_address_cartouche", "It was right in front of us!");
             provider.addTranslation("achievement.stargate.description.obtain_address_cartouche", "Create an Address Cartouche to dial the Stargate Address.");
 
+            provider.addTranslation("achievement.stargate.title.obtain_liquid_naquadah", "Enough power to dial the Eighth Chevron...?!");
+            provider.addTranslation("achievement.stargate.description.obtain_liquid_naquadah", "Create or find, then put Liquid Naquada into a Container.");
+
             return provider;
         })));
     }
