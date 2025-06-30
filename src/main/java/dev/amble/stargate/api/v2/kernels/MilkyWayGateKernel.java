@@ -21,6 +21,6 @@ public class MilkyWayGateKernel extends StargateKernel.Basic {
 
     @Override
     public boolean canDialTo(Stargate stargate) {
-        return stargate.kernel instanceof MilkyWayGateKernel;
+        return stargate.kernel() instanceof MilkyWayGateKernel;
     }
 }

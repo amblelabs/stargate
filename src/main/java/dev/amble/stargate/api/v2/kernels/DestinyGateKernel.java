@@ -21,6 +21,11 @@ public class DestinyGateKernel extends StargateKernel.Basic {
     }
 
     @Override
+    public boolean canDialTo(Stargate stargate) {
+        return stargate.kernel() instanceof DestinyGateKernel && this.address.distanceTo(address).distance() <= 1500d;
+    }
+
+    @Override
     public long energyToDial(Address address) {
         return (long) (this.address.distanceTo(address).distance() * 100);
     }

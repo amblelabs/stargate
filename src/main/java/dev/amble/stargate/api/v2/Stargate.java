@@ -8,8 +8,6 @@ import net.minecraft.util.Identifier;
 
 public abstract class Stargate implements StargateKernel, Disposable {
 
-    // TODO FIX ME THEO THIS IS HORRIBLE I NEED A BETTER WAY TO CHECK THE KERNEL ON CLIENT AHHH - Loqor
-    // FIXME i've made a #kernel getter, but i don't like how monolithic the rendering is.
     protected final StargateKernel.Impl kernel;
 
     protected Stargate(GateKernelRegistry.KernelCreator constructor) {

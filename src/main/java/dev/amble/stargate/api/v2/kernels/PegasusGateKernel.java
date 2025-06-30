@@ -18,9 +18,4 @@ public class PegasusGateKernel extends StargateKernel.Basic {
     public long energyToDial(Address address) {
         return (long) (this.address.distanceTo(address).distance() * 100);
     }
-
-    @Override
-    public boolean canDialTo(Stargate stargate) {
-        return stargate.kernel instanceof PegasusGateKernel;
-    }
 }

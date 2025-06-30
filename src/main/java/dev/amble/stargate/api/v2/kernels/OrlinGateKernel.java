@@ -22,7 +22,7 @@ public class OrlinGateKernel extends StargateKernel.Basic {
 
     @Override
     public boolean canDialTo(Stargate stargate) {
-        return stargate.kernel instanceof OrlinGateKernel;
+        return stargate.kernel() instanceof MilkyWayGateKernel;
     }
 
     @Override
