@@ -28,9 +28,11 @@ public abstract class StargateNetwork<T extends Stargate> {
 	public static Identifier SYNC = StargateMod.id("sync");
 	public static Identifier SYNC_ALL = StargateMod.id("sync_all");
 	protected final HashMap<Address, T> lookup;
+	protected final HashMap<UUID, T> idLookup;
 
 	protected StargateNetwork() {
 		this.lookup = new HashMap<>();
+		this.idLookup = new HashMap<>();
 	}
 
 	/**
@@ -39,12 +41,13 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 * @param stargate the Stargate to associate with the address
 	 */
 	protected boolean add(Address address, T stargate) {
-		if (this.lookup.containsKey(address)) {
+		if (this.lookup.containsKey(address) || this.idLookup.containsKey(address.id())) {
 			StargateMod.LOGGER.warn("Address {} already exists in the phone book!", address);
 			return false;
 		}
 
 		lookup.put(address, stargate);
+		idLookup.put(address.id(), stargate);
 		return true;
 	}
 	/**
@@ -68,8 +71,8 @@ public abstract class StargateNetwork<T extends Stargate> {
 	}
 
 	public @Nullable T get(UUID id) {
-        //noinspection SuspiciousMethodCalls - trust me bro
-        return this.lookup.get(id);
+        //noinspection SuspiciousMethodCalls - trust me bro - im not trusting you ever again theo.
+        return this.idLookup.get(id);
 	}
 
 	/**
@@ -78,7 +81,8 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 * @return the Stargate associated with the address
 	 */
 	public Optional<Stargate> remove(Address address) {
-		return Optional.ofNullable(lookup.remove(address));
+		this.idLookup.remove(address.id());
+		return Optional.ofNullable(this.lookup.remove(address));
 	}
 
 	/**
