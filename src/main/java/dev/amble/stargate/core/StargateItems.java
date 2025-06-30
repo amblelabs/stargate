@@ -7,6 +7,7 @@ import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.core.item.DialerItem;
 import dev.amble.stargate.core.item.EmptyContainerItem;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 
 public class StargateItems extends ItemContainer {
@@ -30,7 +31,7 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item EMPTY_CONTAINER = new EmptyContainerItem(StargateFluids.STILL_LIQUID_NAQUADAH, new AItemSettings().maxCount(16).group(StargateItemGroups.MAIN));
+	public static final Item EMPTY_CONTAINER = new EmptyContainerItem(Fluids.EMPTY, (new AItemSettings().maxCount(16).group(StargateItemGroups.MAIN)));
 
 
 

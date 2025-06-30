@@ -39,7 +39,6 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
         this.fluid = fluid;
     }
 
-    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         BlockHitResult blockHitResult = raycast(world, user, this.fluid == Fluids.EMPTY ? RaycastContext.FluidHandling.SOURCE_ONLY : RaycastContext.FluidHandling.NONE);
@@ -54,23 +53,6 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
             if (world.canPlayerModifyAt(user, blockPos) && user.canPlaceOn(blockPos2, direction, itemStack)) {
                 if (this.fluid == Fluids.EMPTY) {
                     BlockState blockState = world.getBlockState(blockPos);
-
-                    // Custom fluid pickup logic
-                    if (blockState.getFluidState().getFluid() == StargateFluids.STILL_LIQUID_NAQUADAH) {
-                        if (!world.isClient) {
-                            world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 11);
-                            if (!user.getAbilities().creativeMode) {
-                                itemStack.decrement(1);
-                                ItemStack filled = new ItemStack(StargateFluids.LIQUID_NAQUADAH);
-                                if (!user.getInventory().insertStack(filled)) {
-                                    user.dropItem(filled, false);
-                                }
-                            }
-                        }
-                        return TypedActionResult.success(itemStack, world.isClient());
-                    }
-
-                    // Vanilla logic...
                     if (blockState.getBlock() instanceof FluidDrainable) {
                         FluidDrainable fluidDrainable = (FluidDrainable)blockState.getBlock();
                         ItemStack itemStack2 = fluidDrainable.tryDrainFluid(world, blockPos, blockState);
@@ -82,12 +64,13 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
                             if (!world.isClient) {
                                 Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
                             }
+
                             return TypedActionResult.success(itemStack3, world.isClient());
                         }
                     }
+
                     return TypedActionResult.fail(itemStack);
                 } else {
-                    // ...existing place logic...
                     BlockState blockState = world.getBlockState(blockPos);
                     BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable && this.fluid == Fluids.WATER ? blockPos : blockPos2;
                     if (this.placeFluid(user, world, blockPos3, blockHitResult)) {
@@ -95,6 +78,7 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
                         if (user instanceof ServerPlayerEntity) {
                             Criteria.PLACED_BLOCK.trigger((ServerPlayerEntity)user, blockPos3, itemStack);
                         }
+
                         user.incrementStat(Stats.USED.getOrCreateStat(this));
                         return TypedActionResult.success(getEmptiedStack(itemStack, user), world.isClient());
                     } else {
