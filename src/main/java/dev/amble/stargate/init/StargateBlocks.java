@@ -10,6 +10,7 @@ import dev.amble.lib.datagen.util.PickaxeMineable;
 import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.StargateCustomRecipeBlock;
 import dev.amble.stargate.block.StargateRingBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
@@ -39,6 +40,12 @@ public class StargateBlocks extends BlockContainer {
 	@NoEnglish
 	public static final Block PEANUT = new Block(ABlockSettings.create()
 			.itemSettings(new AItemSettings()));
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Block STARGATE_CUSTOM_RECIPE_BLOCK = new StargateCustomRecipeBlock(ABlockSettings.create()
+			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
+			.strength(2.0F, 1.0F).pistonBehavior(PistonBehavior.IGNORE).sounds(BlockSoundGroup.WOOD));
 
 	//Naquadah
 	@AutomaticModel
