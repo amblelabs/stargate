@@ -2,6 +2,7 @@ package dev.amble.stargate.api.v2;
 
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Disposable;
+import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 

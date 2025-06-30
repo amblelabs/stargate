@@ -28,63 +28,12 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
     @Override
     public void render(DHDControlEntity livingEntity, float yaw, float tickDelta, MatrixStack matrixStack,
                        VertexConsumerProvider vertexConsumerProvider, int light) {
-        if (livingEntity.getCustomName() == null) return;
-
-        Text name = Address.asText(livingEntity.getCustomName().getString());
-        double d = this.dispatcher.getSquaredDistanceToCamera(livingEntity);
-
-        TextRenderer textRenderer = this.getTextRenderer();
-        float h = (float) -textRenderer.getWidth(name) / 2;
-        float f = livingEntity.getNameLabelHeight() - 0.525f;
-
-
-        if (!livingEntity.hasStargate()) {
-            matrixStack.pop();
-            return;
-        }
-
-        matrixStack.push();
-        matrixStack.translate(0.0f, f, 0.0f);
-
-        //float k = livingEntity.getWorld().getBlockState(livingEntity.dhdBlockPos).get(DHDBlock.FACING).asRotation();
-        matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(MinecraftClient.getInstance().player.getHeadYaw()));
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(65));
-        matrixStack.scale(-0.0075f, -0.0075f, 0.0075f);
-
-        Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-        OrderedText orderedText = name.asOrderedText();
-
-        //textRenderer.drawWithOutline(orderedText, h, (float) name.getString().length(), livingEntity.shouldGlow() ? 0xedb334 : 0x4f4f4f, 0x000000,
-        //        matrix4f, vertexConsumerProvider, 0xFF);
-        matrixStack.pop();
         super.render(livingEntity, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
     }
 
     @Override
     protected void renderLabelIfPresent(DHDControlEntity entity, Text text, MatrixStack matrices,
                                         VertexConsumerProvider vertexConsumers, int light) {
-        /*Text name = Address.toGlyphs(entity.getCustomName().getString());
-
-        TextRenderer textRenderer = this.getTextRenderer();
-        float h = (float) -textRenderer.getWidth(name) / 2;
-        float f = entity.getNameLabelHeight() - 0.525f;
-
-        Stargate stargate = entity.getStargate().get();
-
-        if (stargate == null)
-            return;
-
-        matrices.push();
-        matrices.translate(0.0f, f, 0.0f);
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(65));
-        matrices.scale(-0.0075f, -0.0075f, 0.0075f);
-
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-        OrderedText orderedText = name.asOrderedText();
-
-        textRenderer.drawWithOutline(orderedText, h, (float) name.getString().length(), entity.shouldGlow() ? 0xedb334 : 0x4f4f4f, 0x000000,
-                matrix4f, vertexConsumers, 0xFF);
-        matrices.pop();*/
     }
 
     @Override

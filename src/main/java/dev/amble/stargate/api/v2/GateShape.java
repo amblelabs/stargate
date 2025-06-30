@@ -109,7 +109,6 @@ public interface GateShape {
             this.shape = shape;
         }
 
-        // FIXME: this is obviously wrong, but it will do for now.
         @Override
         protected Iterable<BlockPos> build() {
             Set<BlockPos> ringPositions = new HashSet<>();

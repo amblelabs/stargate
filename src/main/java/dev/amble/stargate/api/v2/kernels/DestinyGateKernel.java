@@ -1,7 +1,10 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.v2.kernels;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.v2.GateShape;
+import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v2.StargateKernel;
 import net.minecraft.util.Identifier;
 
 public class DestinyGateKernel extends StargateKernel.Basic {
