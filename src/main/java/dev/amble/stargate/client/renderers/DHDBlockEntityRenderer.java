@@ -26,8 +26,8 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd.png");
     public static final Identifier EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd_emission.png");
     private final DHDModel model;
-    private ModelPart[] bottomlights;
-    private ModelPart[] toplights;
+    private final ModelPart[] bottomlights;
+    private final ModelPart[] toplights;
 
     public DHDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.model = new DHDModel(DHDModel.getTexturedModelData().createModel());
@@ -59,16 +59,16 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         allLights.addAll(Arrays.asList(this.bottomlights));
         allLights.addAll(Arrays.asList(this.toplights));
 
-// Use a persistent random seed based on world time, changing every 3 seconds
+        // Use a persistent random seed based on world time, changing every 3 seconds
         long seed = MinecraftClient.getInstance().world.getTime() / 60; // 20 ticks per second * 3 = 60
         Collections.shuffle(allLights, new Random(seed));
 
-// Hide all lights
+        // Hide all lights
         for (ModelPart lights : allLights) {
             lights.visible = false;
         }
 
-// Show 7 random lights
+        // Show 7 random lights
         for (int i = 0; i < Math.min(7, allLights.size()); i++) {
             allLights.get(i).visible = true;
         }

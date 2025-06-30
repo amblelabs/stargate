@@ -4,17 +4,12 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import net.minecraft.util.Identifier;
 
-public class UniverseGateKernel extends StargateKernel.Basic {
+public class OrlinGateKernel extends StargateKernel.Basic {
 
-    public static final Identifier ID = StargateMod.id("universe");
+    public static final Identifier ID = StargateMod.id("orlin");
 
-    public UniverseGateKernel(Stargate parent) {
+    public OrlinGateKernel(Stargate parent) {
         super(ID, parent);
-    }
-
-    @Override
-    public long maxEnergy() {
-        return Long.MAX_VALUE;
     }
 
     @Override
@@ -23,7 +18,7 @@ public class UniverseGateKernel extends StargateKernel.Basic {
     }
 
     @Override
-    public GateShape shape() {
-        return GateShape.DEFAULT;
+    public boolean canDialTo(Stargate stargate) {
+        return stargate.kernel instanceof OrlinGateKernel;
     }
 }
