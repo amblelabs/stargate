@@ -22,6 +22,8 @@ public class PortalUtil {
     public static final Identifier MONOCHROMATIC = StargateMod.id("textures/portal/monochromatic.png");
     private final float scale;
     private float time = 0;
+    private float timer = 0;
+    private float maxTime = 4000;
     private float radius = 0.08f;
 
     public PortalUtil(Identifier texture) {
@@ -35,6 +37,7 @@ public class PortalUtil {
 
     public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
+        timer += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Advance timer for ripple trigger
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
@@ -47,7 +50,7 @@ public class PortalUtil {
         if (isOrlin) {
             matrixStack.translate(0, 2, 0);
         }
-        matrixStack.scale(isOrlin ? 16f : scale, isOrlin ? 16f : scale, isOrlin ? 16f : scale);
+        matrixStack.scale(isOrlin ? 14f : scale, isOrlin ? 14f : scale, isOrlin ? 14f : scale);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
         Tessellator tessellator = Tessellator.getInstance();
@@ -98,8 +101,10 @@ public class PortalUtil {
 
         // Add central big ripple if active
 
-        if (state instanceof GateState.PreOpen)
+        if (state instanceof GateState.PreOpen && timer >= maxTime) {
             triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
+        }
+
         CentralRippleParams central = getCentralRipple();
         boolean hasCentralRipple = central != null;
 
@@ -130,7 +135,6 @@ public class PortalUtil {
                 }
 
                 // Central big ripple (affect all rings, but only near center)
-                // Central big ripple (affect all rings, including center)
                 if (hasCentralRipple) {
                     float distToCenter = (float) Math.sqrt(x * x + y * y);
                     if (distToCenter <= central.radius) {
@@ -152,6 +156,9 @@ public class PortalUtil {
                         }
                         dz += effect;
                         dz += wave * central.height * bulge * 0.2f; // minimal backward movement, mostly forward
+                    }
+                    if (timer >= maxTime) {
+                        this.centralRipple = null;
                     }
                 }
                 mesh[r][i][0] = dx;
@@ -288,6 +295,9 @@ public class PortalUtil {
 
     /** Call this to trigger a big central ripple. */
     public void triggerCentralRipple(float radius, float height, float frequency, float speed) {
+        if (timer < maxTime) return; // Only allow triggering after maxTime
+        timer = 0; // Reset timer after triggering
+        if (this.centralRipple != null) return;
         this.centralRipple = new CentralRippleParams(radius, height, frequency, speed, 0f);
         this.centralRippleTime = 0f;
         this.centralRippleSettling = false;

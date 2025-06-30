@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DHDBlock extends HorizontalFacingBlock implements BlockEntityProvider {
-	public static final VoxelShape DHDSHAPE = Block.createCuboidShape(0.0F, 0.0F, 0.0F, 16.0F, 8.0F, 16.0F);
+	public static final VoxelShape DHDSHAPE = Block.createCuboidShape(4.0F, 0.0F, 4.0F, 12.0F, 14.0F, 12.0F);
 	public DHDBlock(Settings settings) {
 		super(settings);
 

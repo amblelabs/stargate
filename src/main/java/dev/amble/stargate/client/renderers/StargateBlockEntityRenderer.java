@@ -101,7 +101,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         model.chev_light8.visible = false;
         model.chev_light9.visible = false;
 
-        boolean visible = true;//state instanceof GateState.Open || state instanceof GateState.PreOpen;
+        boolean visible = state instanceof GateState.Open || state instanceof GateState.PreOpen;
         int locked = (state instanceof GateState.Closed closed) ? closed.locked() : -1;
 
         // FIXME: this should be done at the top level of the class,
