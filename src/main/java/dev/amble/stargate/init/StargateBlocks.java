@@ -35,6 +35,10 @@ public class StargateBlocks extends BlockContainer {
 	public static final Block RING = new StargateRingBlock(ABlockSettings.create().nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(0.5F, 6.0F)
 			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
 
+	@AutomaticModel
+	@NoEnglish
+	public static final Block PEANUT = new Block(ABlockSettings.create()
+			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)));
 
 	//Naquadah
 	@AutomaticModel
