@@ -60,7 +60,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         if (entity.hasStargate()) {
             Stargate gate = entity.gate().get();
-            this.setFromDialer(state);
+            this.setFromDialer(state, gate.kernel);
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
             power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
@@ -71,8 +71,8 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.model.chev_light7.visible = bl;
             this.model.chev_light7bottom.visible = bl;
             rot = rotationValue;
-            //texture = getTextureForGate(gate);
-            //emission = getEmissionForGate(gate);
+            texture = getTextureForGate(gate);
+            emission = getEmissionForGate(gate);
         }
 
         this.model.animateStargateModel(entity, state, entity.age);
@@ -85,12 +85,12 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
     }
 
-    private void setFromDialer(GateState state) {
+    private void setFromDialer(GateState state, StargateKernel.Impl kernel) {
         model.chev_light8.visible = false;
         model.chev_light9.visible = false;
 
         boolean visible = state instanceof GateState.Open || state instanceof GateState.PreOpen;
-        int locked = state instanceof GateState.Closed closed ? closed.locked() : -1;
+        int locked = (state instanceof GateState.Closed closed) ? closed.locked() : -1;
 
         // FIXME: this should be done at the top level of the class,
         //  not in a method that gets ran every time ffs.
@@ -99,8 +99,14 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
                 model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom
         };
 
-        for (int i = 0; i < chevrons.length; i++) {
-            chevrons[i].visible = visible || i <= locked;
+        if (kernel instanceof MilkyWayGateKernel) {
+            for (int i = 0; i < chevrons.length; i++) {
+                chevrons[i].visible = visible || i < locked;
+            }
+        } else {
+            for (ModelPart chevron : chevrons) {
+                chevron.visible = visible;
+            }
         }
     }
 
@@ -122,9 +128,9 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         int selectedIndex = state instanceof GateState.Closed closed ? closed.locked() : -1;
         float baseSpeed = 360f / Glyph.ALL.length; // degrees per glyph
-        float time = MinecraftClient.getInstance().player.age / 500f;
+        float time = MinecraftClient.getInstance().player.age / 200f;
         float rot = 0;
-        boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing();
+        boolean isDialing = true;//state instanceof GateState.Closed closed && closed.isDialing();
 
         if (isDialing)
             rot = MathHelper.wrapDegrees(time * baseSpeed * Glyph.ALL.length);
@@ -172,7 +178,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         return Vec3d.ofCenter(exteriorBlockEntity.getPos()).multiply(1.0, 0.0, 1.0).isInRange(vec3d.multiply(1.0, 0.0, 1.0), this.getRenderDistance());
     }
 
-    /*public Identifier getTextureForGate(Stargate gate) {
+    public Identifier getTextureForGate(Stargate gate) {
         StargateKernel.Impl impl = gate.kernel;
         if (impl instanceof PegasusGateKernel) {
             return PEGASUS;
@@ -192,5 +198,5 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             return DESTINY_EMISSION;
         }
         return MILKY_WAY_EMISSION;
-    }*/
+    }
 }

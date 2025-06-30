@@ -3,12 +3,9 @@ package dev.amble.stargate.block.entities;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.ServerStargate;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v2.*;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v2.MilkyWayGateKernel;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
@@ -103,14 +100,18 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		this.ref = null;
 	}
 
-	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+	public void onPlaced(World world, BlockPos pos) {
+		this.onPlacedWithKernel(world, pos, MilkyWayGateKernel::new);
+	}
+
+	public void onPlacedWithKernel(World world, BlockPos pos, GateKernelRegistry.KernelCreator kernelCreator) {
 		if (world.isClient()) return;
 		this.requiresPlacement = false;
 
 		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
 
-		ServerStargate stargate = new ServerStargate(globalPos, MilkyWayGateKernel::new);
+		ServerStargate stargate = new ServerStargate(globalPos, kernelCreator);
 		ServerStargateNetwork.get().add(stargate);
 
 		this.setStargate(StargateRef.createAs(this, stargate));
@@ -171,8 +172,8 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 			}
 		}
 
-		if (this.requiresPlacement) {
-			this.onPlaced(world, pos, state, null, ItemStack.EMPTY);
-		}
+		/*if (this.requiresPlacement) {
+			this.onPlaced(world, pos, );
+		}*/
 	}
 }

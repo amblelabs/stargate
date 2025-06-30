@@ -3,6 +3,7 @@ package dev.amble.stargate.block;
 import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.item.StargateItem;
 import dev.amble.stargate.item.StargateLinkableItem;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -131,8 +132,9 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+		if (!(itemStack.getItem() instanceof StargateItem stargateItem)) return;
 		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			be.onPlaced(world, pos, state, placer, itemStack);
+			be.onPlacedWithKernel(world, pos, stargateItem.getCreator());
 		}
 
 		super.onPlaced(world, pos, state, placer, itemStack);

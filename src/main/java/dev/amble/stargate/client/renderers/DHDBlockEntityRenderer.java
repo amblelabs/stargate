@@ -8,6 +8,8 @@ import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.client.models.DHDModel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.model.ModelPart;
@@ -46,6 +48,16 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     }
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+
+
+        // TODO add a snow state so the snow block renders under the DHD for fun purposes
+        /*BlockState snowState = Blocks.SNOW.getDefaultState();
+        matrices.push();
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+        matrices.translate(-1, 0, -1);
+        MinecraftClient.getInstance().getBlockRenderManager().renderBlock(snowState, entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getBlockLayers().get(0)), false, MinecraftClient.getInstance().world.getRandom());
+        matrices.pop();*/
+
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();

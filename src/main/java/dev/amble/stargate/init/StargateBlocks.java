@@ -20,8 +20,8 @@ import net.minecraft.sound.BlockSoundGroup;
 
 public class StargateBlocks extends BlockContainer {
 	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
-	@AutomaticModel(justItem = true)
 	@NoEnglish
+	@NoBlockItem
 	public static final Block STARGATE = new StargateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
 					.group(StargateItemGroups.MAIN)).nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(5.5F, 10.0F)
 			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
