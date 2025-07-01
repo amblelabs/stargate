@@ -49,7 +49,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	}
 
 	@Override
-	protected boolean add(ServerStargate stargate) {
+	public boolean add(ServerStargate stargate) {
 		boolean success = super.add(stargate);
 		if (success) this.syncPartial(stargate);
 
