@@ -16,7 +16,6 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -27,52 +26,39 @@ import java.util.function.Supplier;
 public abstract class StargateNetwork<T extends Stargate> {
 	public static Identifier SYNC = StargateMod.id("sync");
 	public static Identifier SYNC_ALL = StargateMod.id("sync_all");
-	protected final HashMap<Address, T> lookup;
-	protected final HashMap<UUID, T> idLookup;
+	public static Identifier REMOVE = StargateMod.id("remove");
+
+	protected final GateMap.Mutable<T> lookup = new GateMap.Mutable<>();
 
 	protected StargateNetwork() {
-		this.lookup = new HashMap<>();
-		this.idLookup = new HashMap<>();
 	}
 
 	/**
 	 * Adds a new address to the phone book.
-	 * @param address the address to add
 	 * @param stargate the Stargate to associate with the address
 	 */
-	protected boolean add(Address address, T stargate) {
-		if (this.lookup.containsKey(address) || this.idLookup.containsKey(address.id())) {
+	protected boolean add(T stargate) {
+		Address address = stargate.address();
+		T prev = this.lookup.put(stargate);
+
+		if (prev != null) {
 			StargateMod.LOGGER.warn("Address {} already exists in the phone book!", address);
 			return false;
 		}
 
-		lookup.put(address, stargate);
-		idLookup.put(address.id(), stargate);
 		return true;
 	}
-	/**
-	 * Adds a new stargate to the phone book
-	 * @param stargate the Stargate to add
-	 */
-	public void add(T stargate) {
-		this.add(stargate.address(), stargate);
-	}
 
-	public T get(Address address) {
+	public @Nullable T get(Address address) {
 		return lookup.get(address);
 	}
 
 	public @Nullable Stargate get(String address) {
-		Address addr = lookup.keySet().stream()
-				.filter(a -> a.text().equals(address))
-				.findFirst().orElse(null);
-
-		return addr == null ? null : this.get(addr);
+		return lookup.get(address);
 	}
 
 	public @Nullable T get(UUID id) {
-        //noinspection SuspiciousMethodCalls - trust me bro - im not trusting you ever again theo.
-        return this.idLookup.get(id);
+        return lookup.get(id);
 	}
 
 	/**
@@ -81,7 +67,6 @@ public abstract class StargateNetwork<T extends Stargate> {
 	 * @return the Stargate associated with the address
 	 */
 	public Optional<Stargate> remove(Address address) {
-		this.idLookup.remove(address.id());
 		return Optional.ofNullable(this.lookup.remove(address));
 	}
 
@@ -116,21 +101,15 @@ public abstract class StargateNetwork<T extends Stargate> {
 		return nbt;
 	}
 
-	public StargateNetwork<T> fromNbt(NbtCompound nbt, boolean clear) {
-		if (clear) {
-			this.lookup.clear();
-			this.idLookup.clear();
-		}
+	public void fromNbt(NbtCompound nbt, boolean clear) {
+		if (clear) this.lookup.clear();
 
 		NbtList list = nbt.getList("Stargates", NbtElement.COMPOUND_TYPE);
 
 		list.forEach(tag -> {
 			T stargate = this.fromNbt((NbtCompound) tag);
-			this.lookup.put(stargate.address(), stargate);
-			this.idLookup.put(stargate.address().id(), stargate);
+			this.lookup.put(stargate);
 		});
-
-		return this;
 	}
 
 	protected abstract T fromNbt(NbtCompound nbt);
