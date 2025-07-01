@@ -137,8 +137,7 @@ public interface StargateKernel extends NbtSync {
 
                 timer++;
             } else if (state instanceof GateState.PreOpen preOpen) {
-                // FIXME: NPE, handle missing gates by address
-                // FIXME: this operation is O(N^2). bad.
+                // Handle missing gates by address gracefully
                 Stargate target = ServerStargateNetwork.get().get(preOpen.address());
 
                 if (target == null || !this.canDialTo(target) || !this.hasEnoughEnergy(target.address())) {
@@ -149,6 +148,8 @@ public interface StargateKernel extends NbtSync {
                 }
 
                 this.parent.markDirty();
+                if (target != null)
+                    target.markDirty();
             }
         }
 

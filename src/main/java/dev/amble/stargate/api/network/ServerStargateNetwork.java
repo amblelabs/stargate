@@ -15,7 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.*;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
@@ -42,15 +42,17 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	@Override
 	public Optional<Stargate> remove(Address address) {
 		Optional<Stargate> removed = super.remove(address);
-		removed.ifPresent(s -> this.syncAll());
+		removed.ifPresent(s -> this.removePartial(address));
+
 		StargateServerData.get().markDirty();
 		return removed;
 	}
 
 	@Override
-	protected boolean add(Address address, ServerStargate stargate) {
-		boolean success = super.add(address, stargate);
-		if (success) this.syncAll();
+	public boolean add(ServerStargate stargate) {
+		boolean success = super.add(stargate);
+		if (success) this.syncPartial(stargate);
+
 		StargateServerData.get().markDirty();
 		return success;
 	}
@@ -89,13 +91,28 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		StargateServerData.get().markDirty();
 	}
 
+	private void removePartial(Address address, Stream<ServerPlayerEntity> targets) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeUuid(address.id());
+		buf.writeString(address.text());
+
+		targets.forEach(player ->
+				ServerPlayNetworking.send(player, REMOVE, buf));
+
+		StargateServerData.get().markDirty();
+	}
+
+	private void removePartial(Address address) {
+		this.removePartial(address, PlayerLookup.all(ServerLifecycleHooks.get()).stream());
+	}
+
 	public void syncPartial(ServerStargate gate) {
 		// TODO: null server handling
 		this.syncPartial(gate, PlayerLookup.all(ServerLifecycleHooks.get()).stream());
 	}
 
 	public static ServerStargateNetwork get() {
-		return instance == null ? (instance = new ServerStargateNetwork()) : instance;
+		return instance == null ? instance = new ServerStargateNetwork() : instance;
 	}
 
 	@Override

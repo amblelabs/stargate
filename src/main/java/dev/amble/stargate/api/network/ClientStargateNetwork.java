@@ -12,12 +12,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+import java.util.UUID;
+
 public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 		implements ClientPlayConnectionEvents.Disconnect, ClientTickEvents.StartTick {
 
 	private ClientStargateNetwork() {
 		ClientPlayNetworking.registerGlobalReceiver(SYNC, this::onSyncPartial);
 		ClientPlayNetworking.registerGlobalReceiver(SYNC_ALL, this::onSyncAll);
+		ClientPlayNetworking.registerGlobalReceiver(REMOVE, this::onRemove);
 
 		ClientTickEvents.START_CLIENT_TICK.register(this);
 		ClientPlayConnectionEvents.DISCONNECT.register(this);
@@ -33,9 +36,10 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 		if (client.world == null) return;
 		Identifier worldId = client.world.getRegistryKey().getValue();
 
-		this.lookup.values().stream()
-				.filter(stargate -> stargate.address().pos().getDimension().getValue().equals(worldId))
-				.forEach(ClientStargate::tick);
+		for (ClientStargate stargate : this.lookup.values()) {
+			if (stargate.address().pos().getDimension().getValue().equals(worldId))
+				stargate.tick();
+		}
 	}
 
 	@Override
@@ -43,14 +47,21 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 		return new ClientStargate(nbt);
 	}
 
+	private void onRemove(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
+		UUID uuid = buf.readUuid();
+		String addr = buf.readString();
+
+		this.lookup.remove(uuid, addr);
+	}
+
 	private void onSyncPartial(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		NbtCompound nbt = buf.readNbt();
 		ClientStargate gate = this.fromNbt(nbt);
 
-		this.lookup.put(gate.address(), gate);
-		ClientStargate existing = this.idLookup.put(gate.address().id(), gate);
+		ClientStargate existing = this.lookup.put(gate);
 
-		if (existing != null) existing.age();
+		if (existing != null)
+			existing.age();
 
 		StargateMod.LOGGER.debug("Received stargate {}", gate.address());
 	}
@@ -64,7 +75,6 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 
 	private void reset() {
 		this.lookup.clear();
-		this.idLookup.clear();
 	}
 
 	private static ClientStargateNetwork instance;

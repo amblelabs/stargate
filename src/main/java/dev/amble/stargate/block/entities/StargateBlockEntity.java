@@ -1,17 +1,19 @@
 package dev.amble.stargate.block.entities;
 
-import dev.amble.lib.util.TeleportUtil;
 import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.v2.*;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.ServerStargate;
+import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
-import dev.amble.stargate.block.StargateBlock;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
 import net.minecraft.block.BlockState;
@@ -27,7 +29,8 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +90,9 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (!(gate.state() instanceof GateState.Open open))
 			return;
 
-		TeleportUtil.teleport(living, open.target().address().pos());
+		BlockPos position = open.target().address().pos().getPos();
+
+		TeleportUtil.teleport(living, open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ()));
 	}
 
 	public void onBreak() {
@@ -98,10 +103,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		}
 
 		this.ref = null;
-	}
-
-	public void onPlaced(World world, BlockPos pos) {
-		this.onPlacedWithKernel(world, pos, MilkyWayGateKernel::new);
 	}
 
 	public void onPlacedWithKernel(World world, BlockPos pos, GateKernelRegistry.KernelCreator kernelCreator) {
@@ -171,9 +172,5 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				}
 			}
 		}
-
-		/*if (this.requiresPlacement) {
-			this.onPlaced(world, pos, );
-		}*/
 	}
 }
