@@ -16,6 +16,8 @@ import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
+import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
@@ -30,6 +32,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -90,9 +93,24 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (!(gate.state() instanceof GateState.Open open))
 			return;
 
+		if (open.target() == null) return;
+
 		BlockPos position = open.target().address().pos().getPos();
 
-		TeleportUtil.teleport(living, open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ()));
+		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+		Box baseBox = new Box(this.getPos());
+		Box box = switch (facing) {
+			case WEST, EAST  -> baseBox.contract(0, 0, 0.4f);
+			default -> baseBox.contract(0.4f, 0, 0);
+		};
+
+		if  (!living.getBoundingBox().intersects(box)) return;
+
+		DirectedGlobalPos modifiedBlockPos = open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ());
+
+		this.getWorld().playSound(living, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+		TeleportUtil.teleport(living, modifiedBlockPos);
+		Scheduler.get().runTaskLater(() -> living.playSound(StargateSounds.GATE_TELEPORT, 1f, 1), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
 	}
 
 	public void onBreak() {

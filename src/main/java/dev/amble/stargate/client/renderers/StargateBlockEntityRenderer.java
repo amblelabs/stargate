@@ -24,10 +24,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
     public static final Identifier MILKY_WAY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
@@ -48,11 +45,23 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
+        Box baseBox = new Box(entity.getPos());
+        Box box = switch (entity.getCachedState().get(StargateBlock.FACING)) {
+            case WEST, EAST  -> baseBox.contract(0, 0, 0.4f);
+            default -> baseBox.contract(0.4f, 0, 0);
+        };
+
+        matrices.push();
+        matrices.translate(0.5f, 0, 0.5f);
+        WorldRenderer.drawBox(matrices, vertexConsumers.getBuffer(RenderLayer.getLines()), box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, 1, 1, 1, 1.0f);
+        matrices.pop();
+
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
 
         matrices.translate(0.5f, 1.5f, 0.5f);
-        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
+
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         matrices.scale(1, 1, 1);

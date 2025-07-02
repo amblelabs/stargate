@@ -145,6 +145,7 @@ public interface StargateKernel extends NbtSync {
                 } else {
                     // TODO: open the portal on the target side too
                     state = new GateState.Open(target);
+                    ((StargateAccessor) target.kernel()).setState(state);
                 }
 
                 this.parent.markDirty();
