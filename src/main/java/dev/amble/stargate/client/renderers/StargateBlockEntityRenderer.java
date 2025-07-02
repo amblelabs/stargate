@@ -46,16 +46,6 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
-        Box baseBox = new Box(entity.getPos());
-        Box box = switch (entity.getCachedState().get(StargateBlock.FACING)) {
-            case WEST, EAST  -> baseBox.contract(0, 0, 0.4f);
-            default -> baseBox.contract(0.4f, 0, 0);
-        };
-
-        matrices.push();
-        matrices.translate(0.5f, 0, 0.5f);
-        WorldRenderer.drawBox(matrices, vertexConsumers.getBuffer(RenderLayer.getLines()), box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, 1, 1, 1, 1.0f);
-        matrices.pop();
 
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
@@ -91,8 +81,8 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
             power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
 
-            boolean bl = (state instanceof GateState.Closed closed && closed.locking())
-                         || state instanceof GateState.Open || state instanceof GateState.PreOpen;
+            boolean bl = entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed)
+                         || state instanceof GateState.Open || state instanceof GateState.PreOpen);
 
             this.model.chev_light7.visible = bl;
             this.model.chev_light7bottom.visible = bl;
