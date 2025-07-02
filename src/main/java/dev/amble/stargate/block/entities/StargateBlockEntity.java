@@ -108,7 +108,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 		DirectedGlobalPos modifiedBlockPos = open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ());
 
-		this.getWorld().playSound(living, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+		if (this.getWorld() != null) this.getWorld().playSound(living, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
 		TeleportUtil.teleport(living, modifiedBlockPos);
 		Scheduler.get().runTaskLater(() -> living.playSound(StargateSounds.GATE_TELEPORT, 1f, 1), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
 	}
