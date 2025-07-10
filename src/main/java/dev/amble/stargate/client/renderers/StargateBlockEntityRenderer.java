@@ -29,20 +29,16 @@ import net.minecraft.util.math.*;
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
     public static final Identifier MILKY_WAY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
     public static final Identifier MILKY_WAY_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way_emission.png");
-    public static final Identifier PEGASUS = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/pegasus/pegasus.png");
-    public static final Identifier PEGASUS_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/pegasus/pegasus_emission.png");
-    public static final Identifier DESTINY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/destiny/destiny.png");
-    public static final Identifier DESTINY_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/destiny/destiny_emission.png");
-    public static final Identifier ORLIN = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin.png");
-    public static final Identifier ORLIN_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/orlin/orlin_emission.png");
-    private final StargateModel model;
+    private final StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
     private static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
+    private final GlyphRenderer glyphRenderer = new GlyphRenderer();
 
     private final GateState.Closed FALLBACK = new GateState.Closed();
 
-    public StargateBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        this.model = new StargateModel(StargateModel.getTexturedModelData().createModel());
-    }
+    public StargateBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+
+    private final ChevronVisibilityHelper chevronVisibilityHelper = new ChevronVisibilityHelper(this.model);
+
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
@@ -76,6 +72,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
                 PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
                 return;
             }
+
             this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
@@ -100,81 +97,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     private void setFromDialer(GateState state, StargateKernel.Impl kernel) {
-        model.chev_light8.visible = false;
-        model.chev_light9.visible = false;
-
-        boolean visible = state instanceof GateState.Open || state instanceof GateState.PreOpen;
-        int locked = (state instanceof GateState.Closed closed) ? closed.locked() : -1;
-
-        // FIXME: this should be done at the top level of the class,
-        //  not in a method that gets ran every time ffs.
-        ModelPart[] chevrons = new ModelPart[] {
-                model.chev_light, model.chev_light2, model.chev_light3, model.chev_light4,
-                model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom
-        };
-
-        if (kernel instanceof MilkyWayGateKernel) {
-            for (int i = 0; i < chevrons.length; i++) {
-                chevrons[i].visible = visible || i < locked;
-            }
-        } else {
-            for (ModelPart chevron : chevrons) {
-                chevron.visible = visible;
-            }
-        }
+        chevronVisibilityHelper.setFromDialer(state, kernel);
     }
 
     private float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light) {
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-
-        Direction direction = gate.address().pos().getRotationDirection();
-        boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
-        int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
-        float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;
-        float zOffset = northern ? direction.getOffsetZ() * 0.24f * multiplier : direction.getOffsetX() * 0.24f * multiplier;
-
-        matrices.push();
-        matrices.translate(0, -2.05f, 0);
-        matrices.translate(xOffset, 0.05f, zOffset);
-        matrices.scale(0.025f, 0.025f, 0.025f);
-
-        GateState state = gate.state();
-
-        int selectedIndex = state instanceof GateState.Closed closed ? closed.locked() : -1;
-        float baseSpeed = 360f / Glyph.ALL.length; // degrees per glyph
-        float time = MinecraftClient.getInstance().player.age / 200f;
-        float rot = 0;
-        boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing();
-
-        if (isDialing)
-            rot = MathHelper.wrapDegrees(time * baseSpeed * Glyph.ALL.length);
-
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rot));
-
-        for (int i = 0; i < Glyph.ALL.length; i++) {
-            boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
-            boolean isSelected = i == selectedIndex;
-
-            int colour = gate.kernel() instanceof PegasusGateKernel ? 0xffffff : 0x17171b;
-
-            if (isInDial) {
-                colour = 0x17171b;
-            }
-            if (isSelected && isDialing) {
-                colour = 0x17171b;
-            }
-
-            matrices.push();
-            double angle = 2 * Math.PI * i / Glyph.ALL.length;
-            matrices.translate(Math.sin(angle) * 117, Math.cos(angle) * 117, 0);
-            matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
-            renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
-            matrices.pop();
-        }
-        matrices.pop();
-        return !isDialing ? 0 : (float) MathHelper.wrapDegrees(time * (Math.PI * 2 / Glyph.ALL.length) * Glyph.ALL.length);
+        return glyphRenderer.renderGlyphs(matrices, vertexConsumers, gate, light);
     }
 
     @Override
@@ -193,30 +120,10 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public Identifier getTextureForGate(Stargate gate) {
-        StargateKernel.Impl impl = gate.kernel();
-        if (impl instanceof PegasusGateKernel) {
-            return PEGASUS;
-        }
-        if (impl instanceof DestinyGateKernel) {
-            return DESTINY;
-        }
-        if (impl instanceof OrlinGateKernel) {
-            return ORLIN;
-        }
-        return MILKY_WAY;
+        return StargateTextureUtil.getTextureForGate(gate);
     }
 
     public Identifier getEmissionForGate(Stargate gate) {
-        StargateKernel.Impl impl = gate.kernel();
-        if (impl instanceof PegasusGateKernel) {
-            return PEGASUS_EMISSION;
-        }
-        if (impl instanceof DestinyGateKernel) {
-            return DESTINY_EMISSION;
-        }
-        if (impl instanceof OrlinGateKernel) {
-            return ORLIN_EMISSION;
-        }
-        return MILKY_WAY_EMISSION;
+        return StargateTextureUtil.getEmissionForGate(gate);
     }
 }
