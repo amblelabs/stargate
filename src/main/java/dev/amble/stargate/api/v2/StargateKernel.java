@@ -70,6 +70,10 @@ public interface StargateKernel extends NbtSync {
         public void markDirty() {
             this.dirty = true;
         }
+
+
+        public void setState(GateState.Open open) {
+        }
     }
 
     abstract class Basic extends Impl implements StargateAccessor {
@@ -144,7 +148,10 @@ public interface StargateKernel extends NbtSync {
                     state = new GateState.Closed();
                 } else {
                     // TODO: open the portal on the target side too
-                    state = new GateState.Open(target);
+                    target.kernel().setState(new GateState.Open(this.parent));
+                    this.state = new GateState.Open(target);
+                    this.parent.markDirty();
+                    target.markDirty();
                 }
 
                 this.parent.markDirty();

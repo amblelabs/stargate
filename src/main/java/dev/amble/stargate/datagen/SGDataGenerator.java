@@ -186,8 +186,73 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                             .input('S', Items.DRIED_KELP)
                             .criterion(hasItem(Items.DRIED_KELP), conditionsFromItem(Items.DRIED_KELP))
                             .input('R', Items.REDSTONE)
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_RED, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.RED_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
                             .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
-            );
+                            .criterion(hasItem(Items.RED_DYE), conditionsFromItem(Items.RED_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_YELLOW, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.YELLOW_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+                            .criterion(hasItem(Items.YELLOW_DYE), conditionsFromItem(Items.YELLOW_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_BLUE, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.BLUE_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+                            .criterion(hasItem(Items.BLUE_DYE), conditionsFromItem(Items.BLUE_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_MASTER, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Blocks.REDSTONE_BLOCK)
+                            .input('D', Items.RED_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Blocks.REDSTONE_BLOCK), conditionsFromItem(Blocks.REDSTONE_BLOCK))
+                            .criterion(hasItem(Items.RED_DYE), conditionsFromItem(Items.RED_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.TRANSPORTATION, StargateBlocks.DHD, 1)
+                            .pattern("NPN")
+                            .pattern("BMY")
+                            .pattern("NRN")
+                            .input('N', StargateBlocks.NAQUADAH_BLOCK)
+                            .input('R', StargateItems.CONTROL_CRYSTAL_RED)
+                            .input('B', StargateItems.CONTROL_CRYSTAL_BLUE)
+                            .input('Y', StargateItems.CONTROL_CRYSTAL_YELLOW)
+                            .input('M', StargateItems.CONTROL_CRYSTAL_MASTER)
+                            .input('P', Items.STONE_BUTTON)
+                            .criterion(hasItem(StargateBlocks.NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.NAQUADAH_BLOCK))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_RED), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_RED))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_BLUE), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_BLUE))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_YELLOW), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_YELLOW))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_MASTER), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_MASTER))
+                            .criterion(hasItem(Items.STONE_BUTTON), conditionsFromItem(Items.STONE_BUTTON)));
 
             return provider;
         })));
@@ -222,6 +287,10 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
             provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
             provider.addTranslation(StargateItems.TOASTER, "Toaster");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_BLUE, "Blue Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_YELLOW, "Yellow Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_RED, "Red Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_MASTER, "Master Control Crystal");
 
             //Misc
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
