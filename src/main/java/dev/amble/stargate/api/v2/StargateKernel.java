@@ -1,11 +1,16 @@
 package dev.amble.stargate.api.v2;
 
 import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.NbtSync;
 import dev.amble.stargate.api.StargateAccessor;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 public interface StargateKernel extends NbtSync {
@@ -70,10 +75,6 @@ public interface StargateKernel extends NbtSync {
         public void markDirty() {
             this.dirty = true;
         }
-
-
-        public void setState(GateState.Open open) {
-        }
     }
 
     abstract class Basic extends Impl implements StargateAccessor {
@@ -123,12 +124,24 @@ public interface StargateKernel extends NbtSync {
                 }
 
                 if (timer >= ticksPerGlyph) {
+                    ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
                     timer = 0;
 
                     closed.lock();
+                    if (world != null) {
+                        world.playSound(null,
+                                this.address.pos().getPos(), StargateSounds.CHEVRON_LOCK,
+                                SoundCategory.BLOCKS, 1.0f, 1.0f);
+                    }
 
-                    if (closed.locked() == Address.LENGTH)
+                    if (closed.locked() == Address.LENGTH) {
+                        if (world != null) {
+                            world.playSound(null,
+                                    this.address.pos().getPos(), StargateSounds.GATE_OPEN,
+                                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        }
                         state = new GateState.PreOpen(closed.addressBuilder());
+                    }
 
                     this.parent.markDirty();
                     return;
@@ -148,10 +161,8 @@ public interface StargateKernel extends NbtSync {
                     state = new GateState.Closed();
                 } else {
                     // TODO: open the portal on the target side too
-                    target.kernel().setState(new GateState.Open(this.parent));
-                    this.state = new GateState.Open(target);
-                    this.parent.markDirty();
-                    target.markDirty();
+                    state = new GateState.Open(target);
+                    ((StargateAccessor) target.kernel()).setState(state);
                 }
 
                 this.parent.markDirty();

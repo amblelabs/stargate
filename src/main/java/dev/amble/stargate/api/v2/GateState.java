@@ -154,6 +154,10 @@ public sealed interface GateState {
 
         @Override
         public NbtCompound toNbt(NbtCompound nbt) {
+            if (this.target == null) {
+                StargateMod.LOGGER.error("Tried to serialize an open gate with a null target!");
+                return nbt;
+            }
             nbt.put("address", this.target.address().toNbt());
             return nbt;
         }
