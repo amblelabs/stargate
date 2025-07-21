@@ -1,6 +1,7 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateLinkable;
@@ -18,6 +19,7 @@ import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
 import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.common.TaskStage;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
@@ -36,6 +38,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
@@ -83,7 +87,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		return ActionResult.SUCCESS;
 	}
 
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity e) {
+	public void onEnterHitbox(BlockPos pos, Entity e, Box box) {
 		if (!(e instanceof LivingEntity living)) return;
 
 		if (!this.hasStargate()) return;
@@ -96,13 +100,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (open.target() == null) return;
 
 		BlockPos position = open.target().address().pos().getPos();
-
-		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-		Box baseBox = new Box(this.getPos());
-		Box box = switch (facing) {
-			case WEST, EAST  -> baseBox.contract(0, 0, 0.4f);
-			default -> baseBox.contract(0.4f, 0, 0);
-		};
 
 		if  (!living.getBoundingBox().intersects(box)) return;
 
@@ -151,6 +148,24 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
 				}
 				prevIrisState = irisState;
+			}
+
+			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+			Box northSouthBox = new Box(this.getPos()).expand(2, 2, 0).offset(0, 3, 0);
+			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);;
+			Box box = switch (facing) {
+				case WEST, EAST  -> westEastBox;
+				default -> northSouthBox;
+			};
+
+			if (ServerLifecycleHooks.get().getTicks() % 20 == 0) {
+				List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
+
+				for (Entity e : entities) {
+					if (e instanceof LivingEntity living) {
+						onEnterHitbox(pos, living, box);
+					}
+				}
 			}
 		}
 

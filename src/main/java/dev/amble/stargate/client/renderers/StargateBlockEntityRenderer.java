@@ -21,6 +21,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
@@ -42,6 +43,22 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
+        /*Direction facing = entity.getCachedState().get(StargateBlock.FACING);
+        Box northSouthBox = new Box(entity.getPos()).expand(2, 2, 0).offset(0, 3, 0);
+        Box westEastBox = new Box(entity.getPos()).expand(0, 2, 2).offset(0, 3, 0);;
+        Box box = switch (facing) {
+            case WEST, EAST  -> westEastBox;
+            default -> northSouthBox;
+        };
+        boolean colorRed = box.intersects(MinecraftClient.getInstance().player.getBoundingBox());
+        matrices.push();
+        matrices.translate(entity.getPos().getX(), entity.getPos().getY(), entity.getPos().getZ());
+        DebugRenderer.drawBox(
+                matrices,
+                vertexConsumers,
+                box ,1, colorRed ? 0 : 1, colorRed ? 0 : 1, 0.1f
+        );
+        matrices.pop();*/
 
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
