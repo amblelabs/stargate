@@ -80,11 +80,18 @@ public record Address(UUID id, String text, DirectedGlobalPos pos) {
 
 	private static String randomAddress(Identifier world) {
 		StringBuilder builder = new StringBuilder();
+		char origin = GlyphOriginRegistry.getInstance().get(world).glyph();
+
 		for (int i = 0; i < LENGTH - 1; i++) {
-			builder.append(Glyph.pickRandom());
+			char glyph = Glyph.pickRandom();
+			while (glyph == origin) {
+				glyph = Glyph.pickRandom();
+			}
+
+			builder.append(glyph);
 		}
 
-		builder.append(GlyphOriginRegistry.getInstance().get(world).glyph());
+		builder.append(origin);
 		return builder.toString();
 	}
 }
