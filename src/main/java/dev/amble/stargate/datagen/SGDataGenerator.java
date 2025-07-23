@@ -231,6 +231,10 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addTranslation("text.stargate.gate", "STARGATE");
 
+            provider.addTranslation("death.attack.stargate_flow", "%s went against the flow");
+            provider.addTranslation("attribute.stargate.spacial_resistance", "Spacial Resistance");
+            provider.addTranslation("effect.stargate.spacial_dynamic", "Spacial Dynamic");
+
             // Commands
             provider.addTranslation("command.stargate.generic.missing", "No Stargate found!");
             provider.addTranslation("command.stargate.generic.unavailable", "This Stargate is not available!");

@@ -12,24 +12,22 @@ import dev.amble.stargate.api.v2.ServerStargate;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.compat.DependencyChecker;
-import dev.amble.stargate.init.StargateBlockEntities;
-import dev.amble.stargate.init.StargateBlocks;
-import dev.amble.stargate.init.StargateSounds;
+import dev.amble.stargate.init.*;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
-import dev.drtheo.scheduler.api.common.Scheduler;
-import dev.drtheo.scheduler.api.common.TaskStage;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -88,31 +86,52 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	}
 
 	public void onEnterHitbox(BlockPos pos, Entity e, Box box) {
-		if (!(e instanceof LivingEntity living)) return;
+		if (!(e instanceof LivingEntity living) || living.hasPortalCooldown())
+			return;
 
 		if (!this.hasStargate()) return;
 
 		Stargate gate = this.gate().get();
 
+		// TODO: everything after this comment should be moved for StargateKernel to handle.
 		if (!(gate.state() instanceof GateState.Open open))
 			return;
 
-		if (open.target() == null) return;
+		World world = this.getWorld();
 
-		BlockPos position = open.target().address().pos().getPos();
+		if (world == null || !living.getBoundingBox().intersects(box))
+			return;
 
-		if  (!living.getBoundingBox().intersects(box)) return;
+		// shatter
+		DamageSource flow = StargateDamages.flow(world);
 
-		DirectedGlobalPos modifiedBlockPos = open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ());
+		if (open.callee() && !living.isInvulnerableTo(flow)) {
+			EntityAttributeInstance spacialResistance = living.getAttributeInstance(StargateAttributes.SPACIAL_RESISTANCE);
 
-		if (this.getWorld() != null) this.getWorld().playSound(living, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
-		TeleportUtil.teleport(living, modifiedBlockPos);
-		Scheduler.get().runTaskLater(() -> living.playSound(StargateSounds.GATE_TELEPORT, 1f, 1), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
+			float resistance = spacialResistance == null ? 0 : (float) spacialResistance.getValue();
+			resistance = 1 - resistance / 100;
+
+			living.damage(flow, living.getMaxHealth() * resistance);
+		}
+
+		living.setPortalCooldown(5 * 20); // 5 seconds
+
+		DirectedGlobalPos targetPos = open.target().address().pos().offset(0, 1, 0);
+		ServerWorld targetWorld = world.getServer().getWorld(targetPos.getDimension());
+		BlockPos targetBlockPos = targetPos.getPos();
+
+		if (targetWorld == null)
+			return;
+
+		world.playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+		targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+
+		TeleportUtil.teleport(living, targetWorld,
+				targetBlockPos.toCenterPos(), targetPos.getRotationDegrees());
 	}
 
 	public void onBreak() {
 		if (this.hasStargate()) {
-			if (world == null || world.getBlockState(pos).isAir()) return;
 			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 			this.gate().get().shape().destroy(world, pos, facing);
 		}

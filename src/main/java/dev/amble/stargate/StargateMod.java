@@ -50,6 +50,8 @@ public class StargateMod implements ModInitializer {
 		RegistryContainer.register(StargateBlockEntities.class, MOD_ID);
 		RegistryContainer.register(StargateEntities.class, MOD_ID);
 		RegistryContainer.register(StargateSounds.class, MOD_ID);
+		RegistryContainer.register(StargateAttributes.class, MOD_ID);
+		RegistryContainer.register(StargateStatusEffects.class, MOD_ID);
 
 		StargateWorldGeneration.generateStargateWorldGen();
 		StargateServerData.init();

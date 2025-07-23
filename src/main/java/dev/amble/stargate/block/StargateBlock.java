@@ -1,8 +1,8 @@
 package dev.amble.stargate.block;
 
 import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.item.StargateItem;
@@ -11,7 +11,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -154,10 +153,8 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (!state.isOf(newState.getBlock())) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof StargateBlockEntity) {
-				((StargateBlockEntity) be).onBreak();
-			}
+			if (world.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
+				blockEntity.onBreak();
 		}
 
 		super.onStateReplaced(state, world, pos, newState, moved);
