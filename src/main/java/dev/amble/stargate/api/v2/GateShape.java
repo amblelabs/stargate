@@ -19,6 +19,8 @@ public interface GateShape {
         return new GeneratedShape(shape).prepare();
     }
 
+    GateShape EMPTY = new Const(List.of());
+
     GateShape DEFAULT = generated("""
 				_________
 				_________

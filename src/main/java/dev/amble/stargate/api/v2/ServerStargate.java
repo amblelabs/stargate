@@ -18,8 +18,6 @@ public class ServerStargate extends Stargate {
 
     @Override
     public void dispose() {
-        super.dispose();
-
         ServerStargateNetwork.get().remove(this.address());
     }
 }

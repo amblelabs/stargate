@@ -1,5 +1,6 @@
 package dev.amble.stargate.api.v2;
 
+import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.client.util.ShakeUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
@@ -36,5 +37,10 @@ public class ClientStargate extends Stargate {
             return;
 
         ShakeUtil.shakeFromGate(this);
+    }
+
+    @Override
+    public void dispose() {
+        ClientStargateNetwork.get().remove(this.address());
     }
 }

@@ -24,11 +24,6 @@ public abstract class Stargate implements StargateKernel, Disposable {
         this.loadNbt(nbt);
     }
 
-    // TODO: impl this
-    @Override
-    public void dispose() {
-    }
-
     @Override
     public void tick() {
         this.kernel.tick();
@@ -100,7 +95,7 @@ public abstract class Stargate implements StargateKernel, Disposable {
         this.kernel.markDirty();
     }
 
-    public StargateKernel.Impl kernel() {
+    public StargateKernel.Mutable kernel() {
         return kernel;
     }
 }

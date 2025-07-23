@@ -143,9 +143,13 @@ public sealed interface GateState {
         }
     }
 
-    record Open(Stargate target) implements GateState {
+    record Open(Stargate target, boolean caller) implements GateState {
 
         static final String TYPE = "Open";
+
+        public boolean callee() {
+            return !caller;
+        }
 
         @Override
         public String type() {
@@ -159,14 +163,17 @@ public sealed interface GateState {
                 return nbt;
             }
             nbt.put("address", this.target.address().toNbt());
+            nbt.putBoolean("caller", this.caller);
             return nbt;
         }
 
         static Open fromNbt(NbtCompound nbt) {
             Address address = Address.fromNbt(nbt.getCompound("address"));
+            boolean caller = nbt.getBoolean("caller");
+
             Stargate stargate = ServerStargateNetwork.get().get(address);
 
-            return new Open(stargate);
+            return new Open(stargate, caller);
         }
     }
 }

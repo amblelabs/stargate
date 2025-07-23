@@ -53,7 +53,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 		return lookup.get(address);
 	}
 
-	public @Nullable Stargate get(String address) {
+	public @Nullable T get(String address) {
 		return lookup.get(address);
 	}
 
