@@ -34,6 +34,8 @@ public class StargateMod implements ModInitializer {
 				GlyphOriginRegistry.getInstance()
 		);
 
+		StargateArgumentTypes.register();
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> {
 			StargateDataCommand.register(dispatcher);
 			StargateSyncCommand.register(dispatcher);
