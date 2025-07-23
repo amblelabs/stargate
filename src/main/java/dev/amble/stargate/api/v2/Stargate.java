@@ -95,7 +95,7 @@ public abstract class Stargate implements StargateKernel, Disposable {
         this.kernel.markDirty();
     }
 
-    public StargateKernel.Mutable kernel() {
+    public StargateKernel.Impl kernel() {
         return kernel;
     }
 }

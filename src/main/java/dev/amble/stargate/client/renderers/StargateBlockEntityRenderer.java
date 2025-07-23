@@ -1,31 +1,24 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.v2.*;
-import dev.amble.stargate.api.v2.kernels.DestinyGateKernel;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
+import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v2.StargateKernel;
 import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
-import dev.amble.stargate.api.v2.kernels.PegasusGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
     public static final Identifier MILKY_WAY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
@@ -92,8 +85,6 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
             this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
-
-            power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
 
             boolean bl = entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed)
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen);
