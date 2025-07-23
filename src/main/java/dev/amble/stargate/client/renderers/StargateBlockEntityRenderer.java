@@ -77,7 +77,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             emission = getEmissionForGate(gate);
             if (gate.kernel() instanceof OrlinGateKernel) {
                 ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
-                ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
+                ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEyes(emission)), 0xF000F0, overlay, 1, power, power, 1);
                 matrices.pop();
                 PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
                 return;
@@ -86,7 +86,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
-            boolean bl = entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed)
+            boolean bl = (entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed))
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen);
 
             this.model.chev_light7.visible = bl;
