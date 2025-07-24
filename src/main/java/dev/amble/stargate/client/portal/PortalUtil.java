@@ -98,7 +98,6 @@ public class PortalUtil {
         // Add central big ripple if active
 
         if (state instanceof GateState.PreOpen) {
-            StargateMod.LOGGER.info("preopen ripple");
             triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
         }
 
