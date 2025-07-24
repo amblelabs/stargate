@@ -2,6 +2,7 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
 import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
@@ -145,7 +146,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				default -> northSouthBox;
 			};
 
-			if (ServerLifecycleHooks.get().getTicks() % 10 == 0) {
+			if (ServerLifecycleHooks.get().getTicks() % BasicStargateKernel.TELEPORT_FREQUENCY == 0) {
 				List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
 
 				for (Entity e : entities) {

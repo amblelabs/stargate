@@ -20,6 +20,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public abstract class BasicStargateKernel extends AbstractStargateKernel implements StargateKernel.Impl {
@@ -42,6 +43,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         this.state = new GateState.Closed();
     }
 
+    public static final int TELEPORT_FREQUENCY = 10;
+    private static final int TELEPORT_DELAY = 20;
+
     @Override
     public boolean canTeleportFrom(LivingEntity entity) {
         if (!(this.state instanceof GateState.Open))
@@ -50,7 +54,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         if (!(entity instanceof TeleportableEntity tp))
             return false;
 
-        return !tp.stargate$updateAndGetStatus().isInGate();
+        return tp.stargate$updateAndGetTicks(TELEPORT_DELAY) == 0;
     }
 
     @Override
@@ -59,7 +63,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 || !(entity instanceof TeleportableEntity holder))
             return;
 
-        BlockPos pos = open.target().address().pos().getPos();
+        BlockPos pos = this.address().pos().getPos();
 
         World world = entity.getWorld();
         DamageSource flow = StargateDamages.flow(world);
@@ -80,9 +84,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 return;
         }
 
-        entity.setPortalCooldown(5 * 20); // 5 seconds
+        DirectedGlobalPos targetPos = open.target().address().pos();
 
-        DirectedGlobalPos targetPos = open.target().address().pos().offset(0, 1, 0);
+        Vec3d offset = entity.getPos().subtract(pos.toCenterPos());
 
         ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(targetPos.getDimension());
         BlockPos targetBlockPos = targetPos.getPos();
@@ -94,9 +98,11 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
 
         TeleportUtil.teleport(entity, targetWorld,
-                targetBlockPos.toCenterPos(), targetPos.getRotationDegrees());
+                targetBlockPos.toCenterPos().add(offset),
+                targetPos.getRotationDegrees()
+        );
 
-        holder.stargate$setStatus(TeleportableEntity.State.IN_GATE);
+        holder.stargate$setTicks(TELEPORT_DELAY);
     }
 
     private int timer;

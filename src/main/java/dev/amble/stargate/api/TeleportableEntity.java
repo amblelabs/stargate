@@ -1,52 +1,25 @@
 package dev.amble.stargate.api;
 
 public interface TeleportableEntity {
-    void stargate$setStatus(State inGate);
+    void stargate$setTicks(int ticks);
 
-    default void stargate$updateStatus() {
-        if (stargate$status() == State.PENDING)
-            stargate$setStatus(State.IN_GATE);
+    default void stargate$updateTicks(int max) {
+        if (stargate$ticks() != 0)
+            stargate$setTicks(max);
     }
 
-    default State stargate$updateAndGetStatus() {
-        stargate$updateStatus();
-        return stargate$status();
+    default int stargate$updateAndGetTicks(int max) {
+        stargate$updateTicks(max);
+        return stargate$ticks();
     }
 
-    State stargate$status();
+    int stargate$ticks();
 
-    enum State {
-        IN_GATE(true) {
-            @Override
-            public State next() {
-                return PENDING;
-            }
-        },
-        PENDING(true) {
-            @Override
-            public State next() {
-                return OUTSIDE;
-            }
-        },
-        OUTSIDE(false) {
-            @Override
-            public State next() {
-                return OUTSIDE;
-            }
-        };
+    default void stargate$tickTicks() {
+        int ticks = this.stargate$ticks();
 
-        public static final State[] VALS = State.values();
-
-        private final boolean value;
-
-        State(boolean value) {
-            this.value = value;
+        if (ticks > 0) {
+            this.stargate$setTicks(ticks - 1);
         }
-
-        public boolean isInGate() {
-            return value;
-        }
-
-        public abstract State next();
     }
 }

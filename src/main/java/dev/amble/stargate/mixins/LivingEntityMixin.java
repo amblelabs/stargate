@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LivingEntityMixin implements TeleportableEntity {
 
     @Unique
-    private State stargate$state = State.OUTSIDE;
+    private int stargate$ticks;
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void addAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
@@ -25,28 +25,27 @@ public class LivingEntityMixin implements TeleportableEntity {
 
     @Inject(method = "tick", at = @At("RETURN"))
     public void tick(CallbackInfo ci) {
-        if (this.stargate$state.isInGate())
-            this.stargate$state = stargate$state.next();
+        this.stargate$tickTicks();
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
     public void toNbt(NbtCompound nbt, CallbackInfo ci) {
-        if (stargate$state.isInGate())
-            nbt.putInt("StargateTpState", stargate$state.ordinal());
+        if (stargate$ticks != 0)
+            nbt.putInt("StargateTpState", stargate$ticks);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("RETURN"))
     public void fromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.stargate$state = State.VALS[nbt.getInt("StargateTpState")];
+        this.stargate$ticks = nbt.getInt("StargateTpState");
     }
 
     @Override
-    public void stargate$setStatus(State inGate) {
-        this.stargate$state = inGate;
+    public int stargate$ticks() {
+        return stargate$ticks;
     }
 
     @Override
-    public State stargate$status() {
-        return stargate$state;
+    public void stargate$setTicks(int ticks) {
+        this.stargate$ticks = ticks;
     }
 }
