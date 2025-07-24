@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LivingEntityMixin implements TeleportableEntity {
 
     @Unique
-    private State stargate$state;
+    private State stargate$state = State.OUTSIDE;
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void addAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
