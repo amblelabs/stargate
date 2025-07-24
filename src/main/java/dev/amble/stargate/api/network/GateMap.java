@@ -13,8 +13,6 @@ public class GateMap<T extends Stargate> {
     protected final Map<UUID, T> idMap = new HashMap<>();
     protected final Map<String, T> addrMap = new HashMap<>();
 
-    //protected final List<T> gates = new ArrayList<>();
-
     public @Nullable T get(Address address) {
         return get(address.id());
     }
@@ -38,7 +36,6 @@ public class GateMap<T extends Stargate> {
     public void clear() {
         this.idMap.clear();
         this.addrMap.clear();
-        //this.gates.clear();
     }
 
     public static class Mutable<T extends Stargate> extends GateMap<T> {

@@ -99,10 +99,13 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		gate.tryTeleportFrom(living);
 	}
 
-	public void onBreak() {
+	public void onBreak(BlockState state) {
 		if (this.hasStargate()) {
-			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-			this.gate().get().shape().destroy(world, pos, facing);
+			Stargate gate = this.gate().get();
+			Direction facing = state.get(StargateBlock.FACING);
+
+			gate.shape().destroy(world, pos, facing);
+			gate.dispose();
 		}
 
 		this.ref = null;
@@ -118,7 +121,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		ServerStargate stargate = new ServerStargate(globalPos, kernelCreator);
 		ServerStargateNetwork.get().add(stargate);
 
-		this.setStargate(StargateRef.createAs(this, stargate));
+		this.setStargate(new StargateRef(stargate));
 
 		stargate.shape().place(StargateBlocks.RING.getDefaultState(), world, this.pos, facing);
 	}

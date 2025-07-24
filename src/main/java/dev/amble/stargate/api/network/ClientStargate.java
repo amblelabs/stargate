@@ -13,6 +13,7 @@ public class ClientStargate extends Stargate {
 
     public ClientStargate(NbtCompound nbt) {
         super(nbt);
+        this.loadNbt(nbt, true);
     }
 
     @Override

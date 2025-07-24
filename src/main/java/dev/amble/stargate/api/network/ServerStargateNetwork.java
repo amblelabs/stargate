@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -26,6 +27,20 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		ServerPlayConnectionEvents.JOIN.register(this);
 		ServerLifecycleEvents.SERVER_STOPPED.register(this);
 		ServerTickEvents.END_SERVER_TICK.register(this);
+	}
+
+	@Override
+	protected void postProcessNbt(NbtList list, Stargate[] gates) {
+		for (int i = 0; i < gates.length; i++) {
+			Stargate gate = gates[i];
+
+			if (gate == null)
+				continue;
+
+			gate.loadNbt((NbtCompound) list.get(i), false);
+		}
+
+		super.postProcessNbt(list, gates);
 	}
 
 	@Override
@@ -62,7 +77,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	private void syncAll(Stream<ServerPlayerEntity> targets) {
 		StargateMod.LOGGER.debug("Syncing {} stargates!", this.lookup.size());
 
-		NbtCompound nbt = this.toNbt();
+		NbtCompound nbt = this.toNbt(true);
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeNbt(nbt);
 

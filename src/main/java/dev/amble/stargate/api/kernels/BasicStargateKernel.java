@@ -63,6 +63,14 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 || !(entity instanceof TeleportableEntity holder))
             return;
 
+        Stargate target = open.target().get();
+
+        // this is most likely false, since we do a check every tick, but just in case...
+        if (target == null)
+            return;
+
+        DirectedGlobalPos targetPos = target.address().pos();
+
         BlockPos pos = this.address().pos().getPos();
 
         World world = entity.getWorld();
@@ -83,8 +91,6 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             if (!entity.isAlive())
                 return;
         }
-
-        DirectedGlobalPos targetPos = open.target().address().pos();
 
         Vec3d offset = entity.getPos().subtract(pos.toCenterPos());
 
@@ -182,6 +188,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             }
 
             timer++;
+        } else if (this.state instanceof GateState.Open open) {
+            if (open.target().isEmpty())
+                this.setState(new GateState.Closed());
         }
     }
 
@@ -200,7 +209,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
     }
 
     public int ticksPerKawoosh() {
-        return 20 * 3;
+        return 28;
     }
 
     @Override
@@ -222,7 +231,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         this.address = Address.fromNbt(nbt.getCompound("Address"));
         this.energy = nbt.getInt("energy");
 
-        this.state = GateState.fromNbt(nbt.getCompound("State"));
+        this.state = GateState.fromNbt(nbt.getCompound("State"), isSync);
     }
 
     @Override

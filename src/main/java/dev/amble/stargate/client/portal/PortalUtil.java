@@ -296,14 +296,14 @@ public class PortalUtil {
         this.centralRippleSettling = false;
     }
 
+    static final float mainDuration = 0.7f;
+    static final float settleDuration = 0.7f;
+
+    static final float dt = 1/20f;
+
     /** Returns the current central ripple, or null if none. */
     private CentralRippleParams getCentralRipple() {
         if (centralRipple == null) return null;
-
-        // Animation timing
-        float mainDuration = 0.7f; // seconds for main ripple
-        float settleDuration = 0.7f; // seconds for settle
-        float dt = 1/20f;
 
         centralRippleTime += dt;
 

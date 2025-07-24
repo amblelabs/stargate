@@ -154,7 +154,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (!state.isOf(newState.getBlock())) {
 			if (world.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
-				blockEntity.onBreak();
+				blockEntity.onBreak(state);
 		}
 
 		super.onStateReplaced(state, world, pos, newState, moved);
