@@ -5,6 +5,7 @@
   "plugin": "dev.amble.stargate.compat.SGMixinPlugin",
   "mixins": [
     "LivingEntityMixin",
+    "ServerPlayerEntityMixin",
     "StructureTemplateMixin",
     "compat.energy.EnergyStargateMixin"
   ],
