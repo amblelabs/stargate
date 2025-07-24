@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.ServerStargate;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.command.argumenttypes.StargateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -38,7 +38,6 @@ public class StargateDialCommand {
         closeIfForce(ctx, targetGate, force);
 
         if (!(stargate.state() instanceof GateState.Closed closed) || !stargate.canDialTo(targetGate)) {
-            // TODO: replace with translatable
             ctx.getSource().sendFeedback(() -> Text.translatable("command.stargate.generic.unavailable"), false);
             return 0;
         }

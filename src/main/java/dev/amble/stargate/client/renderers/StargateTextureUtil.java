@@ -1,8 +1,10 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.impl.PegasusGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.kernels.*;
 import net.minecraft.util.Identifier;
 
 // TODO make them datapackable because I hate this :( - Loqor

@@ -1,6 +1,6 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.animation.Animation;

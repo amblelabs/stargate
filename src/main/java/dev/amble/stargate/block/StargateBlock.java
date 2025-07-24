@@ -1,8 +1,8 @@
 package dev.amble.stargate.block;
 
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.item.StargateItem;

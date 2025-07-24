@@ -1,8 +1,10 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.kernels;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.NbtSync;
+import dev.amble.stargate.api.v2.Stargate;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
 public interface StargateKernel extends NbtSync {
@@ -10,6 +12,9 @@ public interface StargateKernel extends NbtSync {
     default void onCreate(DirectedGlobalPos pos) {}
 
     default void tick() { }
+
+    boolean canTeleportFrom(LivingEntity entity);
+    void tryTeleportFrom(LivingEntity entity);
 
     Address address();
 

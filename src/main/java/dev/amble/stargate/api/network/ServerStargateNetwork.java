@@ -4,7 +4,6 @@ import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.api.v2.ServerStargate;
 import dev.amble.stargate.api.v2.Stargate;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

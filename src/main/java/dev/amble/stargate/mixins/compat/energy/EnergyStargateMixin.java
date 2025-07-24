@@ -1,8 +1,8 @@
 package dev.amble.stargate.mixins.compat.energy;
 
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.StargateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.StargateKernel;
-import dev.amble.stargate.api.v2.kernels.base.BasicStargateKernel;
 import dev.amble.stargate.compat.energy.StargateRebornEnergy;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

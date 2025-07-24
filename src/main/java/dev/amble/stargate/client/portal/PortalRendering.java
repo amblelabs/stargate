@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;

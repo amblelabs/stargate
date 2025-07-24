@@ -1,15 +1,26 @@
-package dev.amble.stargate.api.v2.kernels.base;
+package dev.amble.stargate.api.kernels;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.TeleportableEntity;
+import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.v2.*;
+import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.init.StargateAttributes;
+import dev.amble.stargate.init.StargateDamages;
 import dev.amble.stargate.init.StargateSounds;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class BasicStargateKernel extends AbstractStargateKernel implements StargateKernel.Impl {
 
@@ -21,14 +32,71 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
     }
 
     @Override
+    public long maxEnergy() {
+        return -1;
+    }
+
+    @Override
     public void onCreate(DirectedGlobalPos pos) {
         this.address = new Address(pos);
         this.state = new GateState.Closed();
     }
 
     @Override
-    public long maxEnergy() {
-        return -1;
+    public boolean canTeleportFrom(LivingEntity entity) {
+        if (!(this.state instanceof GateState.Open))
+            return false;
+
+        if (!(entity instanceof TeleportableEntity tp))
+            return false;
+
+        return !tp.stargate$updateAndGetStatus().isInGate();
+    }
+
+    @Override
+    public void tryTeleportFrom(LivingEntity entity) {
+        if (!(this.state instanceof GateState.Open open)
+                || !(entity instanceof TeleportableEntity holder))
+            return;
+
+        BlockPos pos = open.target().address().pos().getPos();
+
+        World world = entity.getWorld();
+        DamageSource flow = StargateDamages.flow(world);
+
+        if (open.callee() && !entity.isInvulnerableTo(flow)) {
+            EntityAttribute attribute = StargateAttributes.SPACIAL_RESISTANCE;
+            EntityAttributeInstance spacialResistance = entity.getAttributeInstance(attribute);
+
+            float resistance = (float) (spacialResistance == null
+                    ? attribute.getDefaultValue() : spacialResistance.getValue());
+
+            resistance = 1 - resistance / 100;
+
+            entity.damage(flow, entity.getMaxHealth() * resistance);
+
+            // TODO: add energy conversion
+            if (!entity.isAlive())
+                return;
+        }
+
+        entity.setPortalCooldown(5 * 20); // 5 seconds
+
+        DirectedGlobalPos targetPos = open.target().address().pos().offset(0, 1, 0);
+
+        ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(targetPos.getDimension());
+        BlockPos targetBlockPos = targetPos.getPos();
+
+        if (targetWorld == null)
+            return;
+
+        world.playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+        targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
+
+        TeleportUtil.teleport(entity, targetWorld,
+                targetBlockPos.toCenterPos(), targetPos.getRotationDegrees());
+
+        holder.stargate$setStatus(TeleportableEntity.State.IN_GATE);
     }
 
     private int timer;
@@ -86,20 +154,28 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
             timer++;
         } else if (this.state instanceof GateState.PreOpen preOpen) {
-            // Handle missing gates by address gracefully
-            Stargate target = ServerStargateNetwork.get().get(preOpen.address());
+            if (timer > this.ticksPerKawoosh()) {
+                timer = 0;
 
-            if (target == null || !this.canDialTo(target) || !this.hasEnoughEnergy(target.address())) {
-                this.state = new GateState.Closed();
-            } else {
-                this.state = new GateState.Open(target, true);
-                target.kernel().setState(new GateState.Open(this.parent, false));
+                // Handle missing gates by address gracefully
+                Stargate target = ServerStargateNetwork.get().get(preOpen.address());
+
+                if (target == null || !this.canDialTo(target) || !this.hasEnoughEnergy(target.address())) {
+                    this.state = new GateState.Closed();
+                } else {
+                    this.state = new GateState.Open(target, true);
+                    target.kernel().setState(new GateState.Open(this.parent, false));
+                }
+
+                this.markDirty();
+
+                if (target != null)
+                    target.markDirty();
+
+                return;
             }
 
-            this.markDirty();
-
-            if (target != null)
-                target.markDirty();
+            timer++;
         }
     }
 
@@ -114,7 +190,11 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
     }
 
     public int ticksPerGlyph() {
-        return 2 * 30;
+        return 20 * 3;
+    }
+
+    public int ticksPerKawoosh() {
+        return 20 * 3;
     }
 
     @Override

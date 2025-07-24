@@ -1,6 +1,7 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.network;
 
-import dev.amble.stargate.api.network.ClientStargateNetwork;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.client.util.ShakeUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;

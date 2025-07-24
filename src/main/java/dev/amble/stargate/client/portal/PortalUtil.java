@@ -2,11 +2,9 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.ClientStargate;
-import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.kernels.DestinyGateKernel;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -35,7 +33,7 @@ public class PortalUtil {
     }
 
     public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
-        time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
+        time += MinecraftClient.getInstance().player.age / 2f; // Slow down the animation
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
@@ -100,6 +98,7 @@ public class PortalUtil {
         // Add central big ripple if active
 
         if (state instanceof GateState.PreOpen) {
+            StargateMod.LOGGER.info("preopen ripple");
             triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
         }
 

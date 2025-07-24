@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.kernels;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

@@ -2,17 +2,18 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
-import dev.amble.lib.util.TeleportUtil;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.ServerStargate;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.compat.DependencyChecker;
-import dev.amble.stargate.init.*;
+import dev.amble.stargate.init.StargateBlockEntities;
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
 import net.minecraft.block.BlockState;
@@ -20,14 +21,11 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -86,48 +84,18 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	}
 
 	public void onEnterHitbox(BlockPos pos, Entity e, Box box) {
-		if (!(e instanceof LivingEntity living) || living.hasPortalCooldown())
+		if (!(e instanceof LivingEntity living))
 			return;
 
-		if (!this.hasStargate()) return;
+		if (!this.hasStargate())
+			return;
 
 		Stargate gate = this.gate().get();
 
-		// TODO: everything after this comment should be moved for StargateKernel to handle.
-		if (!(gate.state() instanceof GateState.Open open))
+		if (!gate.canTeleportFrom(living))
 			return;
 
-		World world = this.getWorld();
-
-		if (world == null || !living.getBoundingBox().intersects(box))
-			return;
-
-		// shatter
-		DamageSource flow = StargateDamages.flow(world);
-
-		if (open.callee() && !living.isInvulnerableTo(flow)) {
-			EntityAttributeInstance spacialResistance = living.getAttributeInstance(StargateAttributes.SPACIAL_RESISTANCE);
-
-			float resistance = spacialResistance == null ? 0 : (float) spacialResistance.getValue();
-			resistance = 1 - resistance / 100;
-
-			living.damage(flow, living.getMaxHealth() * resistance);
-		}
-
-		living.setPortalCooldown(5 * 20); // 5 seconds
-
-		DirectedGlobalPos targetPos = open.target().address().pos().offset(0, 1, 0);
-		ServerWorld targetWorld = world.getServer().getWorld(targetPos.getDimension());
-		BlockPos targetBlockPos = targetPos.getPos();
-
-		if (targetWorld == null)
-			return;
-
-		world.playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
-		targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
-
-		TeleportUtil.teleport(living, targetWorld,
-				targetBlockPos.toCenterPos(), targetPos.getRotationDegrees());
+		gate.tryTeleportFrom(living);
 	}
 
 	public void onBreak() {
@@ -177,7 +145,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				default -> northSouthBox;
 			};
 
-			if (ServerLifecycleHooks.get().getTicks() % 20 == 0) {
+			if (ServerLifecycleHooks.get().getTicks() % 10 == 0) {
 				List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
 
 				for (Entity e : entities) {

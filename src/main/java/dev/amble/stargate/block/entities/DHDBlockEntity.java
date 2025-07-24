@@ -1,11 +1,11 @@
 package dev.amble.stargate.block.entities;
 
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.dhd.SymbolArrangement;
 import dev.amble.stargate.entities.DHDControlEntity;
+import dev.amble.stargate.init.StargateBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.Entity;

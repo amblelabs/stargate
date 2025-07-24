@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.renderers;
 
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.StargateKernel;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
-import net.minecraft.client.model.ModelPart;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
 import dev.amble.stargate.client.models.StargateModel;
+import net.minecraft.client.model.ModelPart;
 
 public class ChevronVisibilityHelper {
     private final StargateModel model;

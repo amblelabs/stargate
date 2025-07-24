@@ -1,10 +1,12 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.kernels;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
 
 public sealed interface GateState {
 
@@ -143,7 +145,7 @@ public sealed interface GateState {
         }
     }
 
-    record Open(Stargate target, boolean caller) implements GateState {
+    record Open(@NotNull Stargate target, boolean caller) implements GateState {
 
         static final String TYPE = "Open";
 
@@ -158,20 +160,19 @@ public sealed interface GateState {
 
         @Override
         public NbtCompound toNbt(NbtCompound nbt) {
-            if (this.target == null) {
-                StargateMod.LOGGER.error("Tried to serialize an open gate with a null target!");
-                return nbt;
-            }
             nbt.put("address", this.target.address().toNbt());
             nbt.putBoolean("caller", this.caller);
             return nbt;
         }
 
-        static Open fromNbt(NbtCompound nbt) {
+        static GateState fromNbt(NbtCompound nbt) {
             Address address = Address.fromNbt(nbt.getCompound("address"));
             boolean caller = nbt.getBoolean("caller");
 
             Stargate stargate = ServerStargateNetwork.get().get(address);
+
+            if (stargate == null)
+                return new Closed();
 
             return new Open(stargate, caller);
         }

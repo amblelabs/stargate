@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.StargateKernel;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;

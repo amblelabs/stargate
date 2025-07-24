@@ -1,8 +1,6 @@
-package dev.amble.stargate.api.v2.kernels.base;
+package dev.amble.stargate.api.kernels;
 
-import dev.amble.stargate.api.v2.GateState;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.StargateKernel;
 import net.minecraft.util.Identifier;
 
 public abstract class AbstractStargateKernel implements StargateKernel {
