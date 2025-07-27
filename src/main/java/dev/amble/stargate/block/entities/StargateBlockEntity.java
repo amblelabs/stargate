@@ -4,6 +4,8 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.kernels.BasicStargateKernel;
 import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateLinkable;
@@ -131,6 +133,10 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
 
 		if (!world.isClient()) {
+			if (this.gate().isEmpty()) return;
+			Stargate gate = this.gate().get();
+			if (gate == null) return;
+
 			// Play sound only when IRIS state changes
 			if (irisState != prevIrisState) {
 				if (irisState) {
@@ -143,10 +149,14 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 			Box northSouthBox = new Box(this.getPos()).expand(2, 2, 0).offset(0, 3, 0);
-			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);;
+			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);
+			Box orlinNorthSouthBox = new Box(this.getPos()).expand(1, 1, 0).offset(0, 2, 0);
+			Box orlinWestEastBox = new Box(this.getPos()).expand(0, 1, 1).offset(0, 2, 0);
+			StargateKernel kernel = gate.kernel();
+			boolean bl = kernel instanceof OrlinGateKernel;
 			Box box = switch (facing) {
-				case WEST, EAST  -> westEastBox;
-				default -> northSouthBox;
+				case WEST, EAST  -> bl ? orlinWestEastBox : westEastBox;
+				default -> bl ? orlinNorthSouthBox : northSouthBox;
 			};
 
 			if (ServerLifecycleHooks.get().getTicks() % BasicStargateKernel.TELEPORT_FREQUENCY == 0) {
