@@ -103,8 +103,16 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         world.playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
         targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
 
+        // Check for blocks above the target position and adjust the Y offset accordingly
+        double yOffset = 0;
+        for (int y = 1; y <= 5; y++) {
+            if (!targetWorld.getBlockState(targetBlockPos.up(y)).isAir()) {
+                yOffset = y;
+                break;
+            }
+        }
         TeleportUtil.teleport(entity, targetWorld,
-                targetBlockPos.toCenterPos().add(offset),
+                targetBlockPos.toCenterPos().add(offset).add(0, yOffset, 0),
                 targetPos.getRotationDegrees()
         );
 
