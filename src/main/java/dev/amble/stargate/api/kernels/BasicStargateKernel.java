@@ -197,8 +197,29 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
             timer++;
         } else if (this.state instanceof GateState.Open open) {
-            if (open.target().isEmpty())
+
+            if (open.target().isEmpty()) {
+
                 this.setState(new GateState.Closed());
+                this.markDirty();
+
+                timer = 0;
+
+                return;
+            }
+
+            if (timer > this.ticksPerOpen()) {
+
+                timer = 0;
+
+                this.setState(new GateState.Closed());
+                this.markDirty();
+
+                Stargate gate = open.target().get();
+
+                gate.kernel().setState(new GateState.Closed());
+                gate.markDirty();
+            }
         }
     }
 
@@ -218,6 +239,10 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
     public int ticksPerKawoosh() {
         return 28;
+    }
+
+    public int ticksPerOpen() {
+        return 30 * 20;
     }
 
     @Override
