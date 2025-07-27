@@ -24,7 +24,7 @@ public class PortalRendering {
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
         stack.translate(0, -1f, 0);
         if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
-            PortalUtil util = new PortalUtil("watery");
+            PortalUtil util = new PortalUtil("normal");
 
             RenderSystem.enableDepthTest();
             util.renderPortalInterior(stack, stargateBlockEntity, state);

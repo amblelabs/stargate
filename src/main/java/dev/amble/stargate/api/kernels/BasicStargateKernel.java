@@ -92,7 +92,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 return;
         }
 
-        Vec3d offset = entity.getPos().subtract(pos.toCenterPos());
+        Vec3d offset = entity.getPos().subtract(pos.toCenterPos().add(0, -0.5, 0.5));
 
         ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(targetPos.getDimension());
         BlockPos targetBlockPos = targetPos.getPos();
