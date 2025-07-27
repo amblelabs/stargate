@@ -150,8 +150,8 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
 			Box northSouthBox = new Box(this.getPos()).expand(2, 2, 0).offset(0, 3, 0);
 			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);
-			Box orlinNorthSouthBox = new Box(this.getPos()).expand(1, 1, 0).offset(0, 2, 0);
-			Box orlinWestEastBox = new Box(this.getPos()).expand(0, 1, 1).offset(0, 2, 0);
+			Box orlinNorthSouthBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
+			Box orlinWestEastBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
 			StargateKernel kernel = gate.kernel();
 			boolean bl = kernel instanceof OrlinGateKernel;
 			Box box = switch (facing) {
