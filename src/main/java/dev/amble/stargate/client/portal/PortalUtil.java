@@ -2,9 +2,11 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
 import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -33,15 +35,16 @@ public class PortalUtil {
     }
 
     public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
+        Stargate gate = stargate.gate().get();
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        boolean monochrome = stargate.hasStargate() && stargate.gate().get().kernel() instanceof DestinyGateKernel;
+        boolean monochrome = stargate.hasStargate() && gate.kernel() instanceof DestinyGateKernel;
         Identifier texture = monochrome ? WHITE : TEXTURE_LOCATION;
         RenderSystem.setShaderTexture(0, texture);
 
-        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel() instanceof OrlinGateKernel;
+        boolean isOrlin = stargate.hasStargate() && gate.kernel() instanceof OrlinGateKernel;
 
         if (isOrlin) {
             matrixStack.translate(0, 2, 0);
@@ -55,7 +58,7 @@ public class PortalUtil {
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
 
         RenderSystem.disableCull();
-        portalTriangles(matrixStack, buffer, stargate, state);
+        portalTriangles(matrixStack, buffer, stargate, state, gate);
         tessellator.draw();
         RenderSystem.enableCull();
         matrixStack.pop();
@@ -70,7 +73,7 @@ public class PortalUtil {
         return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
     }
 
-    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, GateState state) {
+    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, GateState state, Stargate gate) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings =36;
@@ -98,7 +101,7 @@ public class PortalUtil {
         // Add central big ripple if active
 
         if (state instanceof GateState.PreOpen) {
-            triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
+            triggerCentralRipple(0.07f, 0.6f, 0.01f, 0.2f);
         }
 
         CentralRippleParams central = getCentralRipple();
@@ -134,7 +137,7 @@ public class PortalUtil {
                     if (distToCenter <= central.radius) {
                         float norm = 1f - (distToCenter / central.radius);
                         float bulge = (float) Math.pow(norm, 1f);
-                        float wave = getWave(central, angle, bulge);
+                        float wave = getWave(central, angle, bulge, gate);
                         float effect;
                         if (wave >= 0f) {
                             effect = wave * central.height * bulge * t;
@@ -262,10 +265,11 @@ public class PortalUtil {
         }
     }
 
-    private float getWave(CentralRippleParams central, float angle, float bulge) {
+    private float getWave(CentralRippleParams central, float angle, float bulge, Stargate gate) {
+        float realHeight = ((BasicStargateKernel) gate.kernel()).getKawooshHeight();
         float mainDuration = 1f;
         float normTime = Math.min(1f, centralRippleTime / mainDuration);
-        float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (time * central.speed + central.phaseOffset); // TODO <---- THIS IS THE VALUE BUT FOR SOME REASON THIS WONT DWINDLE AAAAA
+        float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (realHeight * central.speed + central.phaseOffset); // TODO <---- THIS IS THE VALUE BUT FOR SOME REASON THIS WONT DWINDLE AAAAA
         float twist = (float) Math.sin(time * 0.7f + angle * 2.5f) * 0.1f;
         return (float) Math.sin(bulge * central.frequency + phase + twist);
     }

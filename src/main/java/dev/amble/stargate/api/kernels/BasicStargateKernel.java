@@ -27,6 +27,8 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
     protected long energy = 0;
     protected Address address;
+    protected float kawooshHeight = 0;
+    protected int shouldKawooshOscillate = 1;
 
     public BasicStargateKernel(Identifier id, Stargate parent) {
         super(id, parent);
@@ -113,10 +115,17 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
         // Check for blocks above the target position and adjust the Y offset accordingly
 
+        // Retain entity velocity but reorient it towards the target stargate
+        Vec3d velocity = entity.getVelocity();
+        Vec3d direction = targetBlockPos.toCenterPos().subtract(pos.toCenterPos()).normalize();
+        double speed = velocity.length();
+        Vec3d newVelocity = direction.multiply(speed);
+
         TeleportUtil.teleport(entity, targetWorld,
                 targetBlockPos.toCenterPos().add(offset).add(0, yOffset, 0),
                 targetPos.getRotationDegrees()
         );
+        entity.setVelocity(newVelocity);
 
         holder.stargate$setTicks(TELEPORT_DELAY);
     }
@@ -176,7 +185,29 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
             timer++;
         } else if (this.state instanceof GateState.PreOpen preOpen) {
-            if (timer > this.ticksPerKawoosh()) {
+            if (this.shouldKawooshOscillate != 4) {
+                if (this.shouldKawooshOscillate % 2 != 0) {
+                    if (this.shouldKawooshOscillate == 3) {
+                        if (this.kawooshHeight >= 0) {
+                            this.shouldKawooshOscillate++;
+                        }
+                    }
+                    this.kawooshHeight += 0.5f;
+                    if (this.kawooshHeight >= 7.0f) {
+                        this.shouldKawooshOscillate++;
+                    }
+                } else {
+                    this.kawooshHeight -= 0.5f;
+                    if (this.kawooshHeight <= -5.0f) {
+                        this.shouldKawooshOscillate++;
+                    }
+                }
+            }
+            System.out.println(this.kawooshHeight);
+            this.markDirty();
+            if (timer > this.ticksPerKawoosh() && this.shouldKawooshOscillate == 4) {
+                this.kawooshHeight = 0;
+                this.shouldKawooshOscillate = 1;
                 timer = 0;
 
                 // Handle missing gates by address gracefully
@@ -203,7 +234,13 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             if (open.target().isEmpty()) {
 
                 this.setState(new GateState.Closed());
+
                 this.markDirty();
+                ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
+                if (world != null) {
+                    world.playSound(null, this.address.pos().getPos(),
+                            StargateSounds.GATE_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                }
 
                 timer = 0;
 
@@ -216,11 +253,20 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
                 this.setState(new GateState.Closed());
                 this.markDirty();
+                ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
+                if (world != null) {
+                    world.playSound(null, this.address.pos().getPos(),
+                            StargateSounds.GATE_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                }
 
                 Stargate gate = open.target().get();
 
                 gate.kernel().setState(new GateState.Closed());
                 gate.markDirty();
+                if (world != null) {
+                    world.playSound(null, gate.address().pos().getPos(),
+                            StargateSounds.GATE_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                }
             }
         }
         timer++;
@@ -241,11 +287,15 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
     }
 
     public int ticksPerKawoosh() {
-        return 28;
+        return 4 * 20;
     }
 
     public int ticksPerOpen() {
         return 30 * 20;
+    }
+
+    public float getKawooshHeight() {
+        return this.kawooshHeight;
     }
 
     @Override
@@ -266,6 +316,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
     public void loadNbt(NbtCompound nbt, boolean isSync) {
         this.address = Address.fromNbt(nbt.getCompound("Address"));
         this.energy = nbt.getInt("energy");
+        this.kawooshHeight = nbt.getFloat("kawooshHeight");
 
         this.state = GateState.fromNbt(nbt.getCompound("State"), isSync);
     }
@@ -275,6 +326,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         NbtCompound nbt = new NbtCompound();
         nbt.put("Address", this.address.toNbt());
         nbt.putLong("energy", this.energy);
+        nbt.putFloat("kawooshHeight", this.kawooshHeight);
 
         nbt.put("State", this.state.toNbt());
         return nbt;
