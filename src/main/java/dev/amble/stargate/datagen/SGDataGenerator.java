@@ -300,6 +300,14 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addTranslation("text.stargate.gate", "STARGATE");
 
+            provider.addTranslation("death.attack.stargate_flow", "%s went against the flow");
+            provider.addTranslation("attribute.stargate.spacial_resistance", "Spacial Resistance");
+            provider.addTranslation("effect.stargate.spacial_dynamic", "Spacial Dynamic");
+
+            // Commands
+            provider.addTranslation("command.stargate.generic.missing", "No Stargate found!");
+            provider.addTranslation("command.stargate.generic.unavailable", "This Stargate is not available!");
+
             //Achievements
             provider.addTranslation("achievement.stargate.title.root", "Stargate Mod");
             provider.addTranslation("achievement.stargate.description.root", "Begin your journey through the stars!");
@@ -311,7 +319,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation("achievement.stargate.description.obtain_address_cartouche", "Create an Address Cartouche to dial the Stargate Address.");
 
             provider.addTranslation("achievement.stargate.title.obtain_liquid_naquadah", "Enough power to dial the Eighth Chevron...?!");
-            provider.addTranslation("achievement.stargate.description.obtain_liquid_naquadah", "Create or find, then put Liquid Naquada into a Container.");
+            provider.addTranslation("achievement.stargate.description.obtain_liquid_naquadah", "Create or find, then put Liquid Naquadah into a Container.");
 
             return provider;
         })));

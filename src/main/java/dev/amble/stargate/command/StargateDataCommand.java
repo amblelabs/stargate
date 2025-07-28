@@ -2,8 +2,8 @@ package dev.amble.stargate.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.network.ServerStargate;
+import dev.amble.stargate.command.argumenttypes.StargateArgumentType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.command.ServerCommandSource;
@@ -15,9 +15,9 @@ public class StargateDataCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("stargate")
-                .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
-                    String address = StringArgumentType.getString(context, "address");
-                    NbtCompound nbt = ServerStargateNetwork.get().get(address).toNbt(true);
+                .then(literal("data").then(argument("gate", StargateArgumentType.server()).executes(context -> {
+                    ServerStargate gate = StargateArgumentType.getGate(context, "gate").get(context);
+                    NbtCompound nbt = gate.toNbt(true);
 
                     context.getSource().sendFeedback(() -> NbtHelper.toPrettyPrintedText(nbt), false);
                     return Command.SINGLE_SUCCESS;

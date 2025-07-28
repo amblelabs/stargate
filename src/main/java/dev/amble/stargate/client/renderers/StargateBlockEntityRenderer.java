@@ -1,30 +1,25 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.v2.*;
-import dev.amble.stargate.api.v2.kernels.DestinyGateKernel;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
-import dev.amble.stargate.api.v2.kernels.PegasusGateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.model.ModelPart;
+import dev.amble.stargate.compat.DependencyChecker;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
     public static final Identifier MILKY_WAY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
@@ -66,8 +61,13 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             texture = getTextureForGate(gate);
             emission = getEmissionForGate(gate);
             if (gate.kernel() instanceof OrlinGateKernel) {
+                if (DependencyChecker.hasIris()) {
+                    ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+                }
                 ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
-                ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
+                if (!DependencyChecker.hasIris()) {
+                    ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+                }
                 matrices.pop();
                 PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
                 return;
@@ -76,9 +76,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
-            power = 1;//Math.min(gate.energy() / gate.maxEnergy(), 1);
-
-            boolean bl = entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed)
+            boolean bl = (entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed))
                          || state instanceof GateState.Open || state instanceof GateState.PreOpen);
 
             this.model.chev_light7.visible = bl;
@@ -89,8 +87,13 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
         if(this.model.getChild("iris").isPresent()) this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
+        if (DependencyChecker.hasIris()) {
+            this.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+        }
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
-        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(emission)), 0xF000F0, overlay, 1, power, power, 1);
+        if (!DependencyChecker.hasIris()) {
+            this.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+        }
         matrices.pop();
 
         PortalRendering.PORTAL_RENDER_QUEUE.add(entity);

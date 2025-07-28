@@ -1,13 +1,13 @@
-package dev.amble.stargate.api.v2.kernels;
+package dev.amble.stargate.api.kernels.impl;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.v2.GateShape;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.StargateKernel;
 import net.minecraft.util.Identifier;
 
-public class OrlinGateKernel extends StargateKernel.Basic {
+public class OrlinGateKernel extends BasicStargateKernel {
 
     public static final Identifier ID = StargateMod.id("orlin");
 
@@ -22,12 +22,12 @@ public class OrlinGateKernel extends StargateKernel.Basic {
 
     @Override
     public boolean canDialTo(Stargate stargate) {
-        return stargate.kernel() instanceof MilkyWayGateKernel;
+        return super.canDialTo(stargate) && stargate.kernel() instanceof MilkyWayGateKernel;
     }
 
     @Override
     public GateShape shape() {
         // Empty shape because the Orlin gate is so small the collisions come from a custom VoxelShape in the block - Loqor
-        return GateShape.generated("");
+        return GateShape.EMPTY;
     }
 }

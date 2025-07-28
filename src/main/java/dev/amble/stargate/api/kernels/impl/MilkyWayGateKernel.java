@@ -1,12 +1,12 @@
-package dev.amble.stargate.api.v2.kernels;
+package dev.amble.stargate.api.kernels.impl;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.api.v2.StargateKernel;
 import net.minecraft.util.Identifier;
 
-public class MilkyWayGateKernel extends StargateKernel.Basic {
+public class MilkyWayGateKernel extends BasicStargateKernel {
 
     public static final Identifier ID = StargateMod.id("milky_way");
 
@@ -21,6 +21,6 @@ public class MilkyWayGateKernel extends StargateKernel.Basic {
 
     @Override
     public boolean canDialTo(Stargate stargate) {
-        return stargate.kernel() instanceof MilkyWayGateKernel;
+        return super.canDialTo(stargate) && stargate.kernel() instanceof MilkyWayGateKernel;
     }
 }

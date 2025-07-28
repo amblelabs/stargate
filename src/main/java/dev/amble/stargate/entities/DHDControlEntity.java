@@ -55,7 +55,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     private DHDControlEntity(World world, Stargate stargate) {
         this(StargateEntities.DHD_CONTROL_TYPE, world);
-        this.setStargate(StargateRef.createAs(world, stargate));
+        this.setStargate(new StargateRef(stargate));
     }
 
     @Override

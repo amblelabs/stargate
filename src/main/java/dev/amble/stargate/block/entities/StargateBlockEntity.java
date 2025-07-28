@@ -1,13 +1,16 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.data.DirectedGlobalPos;
-import dev.amble.lib.util.TeleportUtil;
+import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.ServerStargate;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.compat.DependencyChecker;
@@ -16,8 +19,6 @@ import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
-import dev.drtheo.scheduler.api.common.Scheduler;
-import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
@@ -36,6 +37,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity implements StargateLinkable, BlockEntityTicker<StargateBlockEntity> {
 	public AnimationState ANIM_STATE = new AnimationState();
@@ -83,41 +86,28 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		return ActionResult.SUCCESS;
 	}
 
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity e) {
-		if (!(e instanceof LivingEntity living)) return;
+	public void onEnterHitbox(BlockPos pos, Entity e, Box box) {
+		if (!(e instanceof LivingEntity living))
+			return;
 
-		if (!this.hasStargate()) return;
+		if (!this.hasStargate())
+			return;
 
 		Stargate gate = this.gate().get();
 
-		if (!(gate.state() instanceof GateState.Open open))
+		if (!gate.canTeleportFrom(living))
 			return;
 
-		if (open.target() == null) return;
-
-		BlockPos position = open.target().address().pos().getPos();
-
-		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-		Box baseBox = new Box(this.getPos());
-		Box box = switch (facing) {
-			case WEST, EAST  -> baseBox.contract(0, 0, 0.4f);
-			default -> baseBox.contract(0.4f, 0, 0);
-		};
-
-		if  (!living.getBoundingBox().intersects(box)) return;
-
-		DirectedGlobalPos modifiedBlockPos = open.target().address().pos().pos(position.getX(), position.getY() + 1, position.getZ());
-
-		if (this.getWorld() != null) this.getWorld().playSound(living, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
-		TeleportUtil.teleport(living, modifiedBlockPos);
-		Scheduler.get().runTaskLater(() -> living.playSound(StargateSounds.GATE_TELEPORT, 1f, 1), TaskStage.END_SERVER_TICK, TimeUnit.TICKS, 1);
+		gate.tryTeleportFrom(living);
 	}
 
-	public void onBreak() {
+	public void onBreak(BlockState state) {
 		if (this.hasStargate()) {
-			if (world == null || world.getBlockState(pos).isAir()) return;
-			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-			this.gate().get().shape().destroy(world, pos, facing);
+			Stargate gate = this.gate().get();
+			Direction facing = state.get(StargateBlock.FACING);
+
+			gate.shape().destroy(world, pos, facing);
+			gate.dispose();
 		}
 
 		this.ref = null;
@@ -133,7 +123,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		ServerStargate stargate = new ServerStargate(globalPos, kernelCreator);
 		ServerStargateNetwork.get().add(stargate);
 
-		this.setStargate(StargateRef.createAs(this, stargate));
+		this.setStargate(new StargateRef(stargate));
 
 		stargate.shape().place(StargateBlocks.RING.getDefaultState(), world, this.pos, facing);
 	}
@@ -143,6 +133,10 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
 
 		if (!world.isClient()) {
+			if (this.gate().isEmpty()) return;
+			Stargate gate = this.gate().get();
+			if (gate == null) return;
+
 			// Play sound only when IRIS state changes
 			if (irisState != prevIrisState) {
 				if (irisState) {
@@ -151,6 +145,28 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 					world.playSound(null, this.getPos(), StargateSounds.IRIS_OPEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
 				}
 				prevIrisState = irisState;
+			}
+
+			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+			Box northSouthBox = new Box(this.getPos()).expand(2, 2, 0).offset(0, 3, 0);
+			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);
+			Box orlinNorthSouthBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
+			Box orlinWestEastBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
+			StargateKernel kernel = gate.kernel();
+			boolean bl = kernel instanceof OrlinGateKernel;
+			Box box = switch (facing) {
+				case WEST, EAST  -> bl ? orlinWestEastBox : westEastBox;
+				default -> bl ? orlinNorthSouthBox : northSouthBox;
+			};
+
+			if (ServerLifecycleHooks.get().getTicks() % BasicStargateKernel.TELEPORT_FREQUENCY == 0) {
+				List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
+
+				for (Entity e : entities) {
+					if (e instanceof LivingEntity living) {
+						onEnterHitbox(pos, living, box);
+					}
+				}
 			}
 		}
 

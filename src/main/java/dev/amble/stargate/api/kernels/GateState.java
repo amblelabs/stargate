@@ -1,10 +1,13 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.kernels;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public sealed interface GateState {
 
@@ -18,11 +21,11 @@ public sealed interface GateState {
         return toNbt(nbt);
     }
 
-    static GateState fromNbt(NbtCompound nbt) {
+    static GateState fromNbt(NbtCompound nbt, boolean isClient) {
         return switch (nbt.getString("type")) {
             case Closed.TYPE -> Closed.fromNbt(nbt);
             case PreOpen.TYPE -> PreOpen.fromNbt(nbt);
-            case Open.TYPE -> Open.fromNbt(nbt);
+            case Open.TYPE -> Open.fromNbt(isClient, nbt);
             default -> {
                 StargateMod.LOGGER.error("Failed to get stargate state! Defaulting to closed.");
                 yield new Closed();
@@ -143,9 +146,17 @@ public sealed interface GateState {
         }
     }
 
-    record Open(Stargate target) implements GateState {
+    record Open(@NotNull StargateRef target, boolean caller) implements GateState {
 
         static final String TYPE = "Open";
+
+        public Open(Stargate stargate, boolean caller) {
+            this(new StargateRef(stargate), caller);
+        }
+
+        public boolean callee() {
+            return !caller;
+        }
 
         @Override
         public String type() {
@@ -154,19 +165,16 @@ public sealed interface GateState {
 
         @Override
         public NbtCompound toNbt(NbtCompound nbt) {
-            if (this.target == null) {
-                StargateMod.LOGGER.error("Tried to serialize an open gate with a null target!");
-                return nbt;
-            }
-            nbt.put("address", this.target.address().toNbt());
+            nbt.putUuid("address", this.target.id());
+            nbt.putBoolean("caller", this.caller);
             return nbt;
         }
 
-        static Open fromNbt(NbtCompound nbt) {
-            Address address = Address.fromNbt(nbt.getCompound("address"));
-            Stargate stargate = ServerStargateNetwork.get().get(address);
+        static GateState fromNbt(boolean isClient, NbtCompound nbt) {
+            UUID id = nbt.getUuid("address");
+            boolean caller = nbt.getBoolean("caller");
 
-            return new Open(stargate);
+            return new Open(StargateRef.createAs(isClient, id), caller);
         }
     }
 }

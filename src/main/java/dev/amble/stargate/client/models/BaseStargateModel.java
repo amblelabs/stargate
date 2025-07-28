@@ -1,8 +1,8 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.client.animations.StargateAnimations;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.client.animations.StargateAnimations;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.animation.Animation;

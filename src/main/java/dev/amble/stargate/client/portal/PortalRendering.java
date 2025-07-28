@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,7 +24,7 @@ public class PortalRendering {
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
         stack.translate(0, -1f, 0);
         if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
-            PortalUtil util = new PortalUtil("watery");
+            PortalUtil util = new PortalUtil("normal");
 
             RenderSystem.enableDepthTest();
             util.renderPortalInterior(stack, stargateBlockEntity, state);

@@ -25,8 +25,8 @@ public class StargateRef implements Disposable {
 		this.load = load;
 	}
 
-	public StargateRef(Stargate stargate, LoadFunc load) {
-		this(stargate.address().id(), load);
+	public StargateRef(Stargate stargate) {
+		this(stargate.address().id(), uuid -> StargateNetwork.getInstance(stargate instanceof ServerStargate).get(uuid));
 		this.cached = stargate;
 	}
 
@@ -73,19 +73,9 @@ public class StargateRef implements Disposable {
 			consumer.accept(this.get());
 	}
 
-	public static StargateRef createAs(Entity entity, Stargate gate) {
-		return new StargateRef(gate,
-				real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
-	}
-
 	public static StargateRef createAs(Entity entity, UUID uuid) {
 		return new StargateRef(uuid,
 				real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
-	}
-
-	public static StargateRef createAs(BlockEntity blockEntity, Stargate gate) {
-		return new StargateRef(gate,
-				real -> StargateNetwork.with(blockEntity, (o, manager) -> manager.get(real)));
 	}
 
 	public static StargateRef createAs(BlockEntity blockEntity, UUID uuid) {
@@ -93,12 +83,12 @@ public class StargateRef implements Disposable {
 				real -> StargateNetwork.with(blockEntity, (o, manager) -> manager.get(real)));
 	}
 
-	public static StargateRef createAs(World world, Stargate tardis) {
-		return new StargateRef(tardis, real -> StargateNetwork.with(world, (o, manager) -> manager.get(real)));
-	}
-
 	public static StargateRef createAs(World world, UUID uuid) {
 		return new StargateRef(uuid, real -> StargateNetwork.with(world, (o, manager) -> manager.get(real)));
+	}
+
+	public static StargateRef createAs(boolean isClient, UUID uuid) {
+		return new StargateRef(uuid, real -> StargateNetwork.getInstance(!isClient).get(real));
 	}
 
 	@Override

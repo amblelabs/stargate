@@ -1,5 +1,7 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.network;
 
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.client.util.ShakeUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
@@ -11,6 +13,7 @@ public class ClientStargate extends Stargate {
 
     public ClientStargate(NbtCompound nbt) {
         super(nbt);
+        this.loadNbt(nbt, true);
     }
 
     @Override
@@ -36,5 +39,10 @@ public class ClientStargate extends Stargate {
             return;
 
         ShakeUtil.shakeFromGate(this);
+    }
+
+    @Override
+    public void dispose() {
+        ClientStargateNetwork.get().remove(this.address());
     }
 }

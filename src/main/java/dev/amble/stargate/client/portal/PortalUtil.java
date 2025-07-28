@@ -2,9 +2,11 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.kernels.DestinyGateKernel;
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -18,12 +20,10 @@ import org.joml.Matrix4f;
 
 public class PortalUtil {
     public Identifier TEXTURE_LOCATION;
-    public static final Identifier MONOCHROMATIC = StargateMod.id("textures/portal/monochromatic.png");
+    public static final Identifier WHITE = StargateMod.id("textures/portal/white.png");
     private final float scale;
     private float time = 0;
-    private float timer = 0;
-    private float maxTime = 4000;
-    private float radius = 0.08f;
+    private final float radius = 0.08f;
 
     public PortalUtil(Identifier texture) {
         TEXTURE_LOCATION = texture;
@@ -35,16 +35,16 @@ public class PortalUtil {
     }
 
     public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
+        Stargate gate = stargate.gate().get();
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
-        timer += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Advance timer for ripple trigger
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        boolean monochrome = stargate.hasStargate() && stargate.gate().get().kernel() instanceof DestinyGateKernel;
-        Identifier texture = monochrome ? MONOCHROMATIC : TEXTURE_LOCATION;
+        boolean monochrome = stargate.hasStargate() && gate.kernel() instanceof DestinyGateKernel;
+        Identifier texture = monochrome ? WHITE : TEXTURE_LOCATION;
         RenderSystem.setShaderTexture(0, texture);
 
-        boolean isOrlin = stargate.hasStargate() && stargate.gate().get().kernel() instanceof OrlinGateKernel;
+        boolean isOrlin = stargate.hasStargate() && gate.kernel() instanceof OrlinGateKernel;
 
         if (isOrlin) {
             matrixStack.translate(0, 2, 0);
@@ -58,7 +58,7 @@ public class PortalUtil {
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
 
         RenderSystem.disableCull();
-        portalTriangles(matrixStack, buffer, stargate, state);
+        portalTriangles(matrixStack, buffer, stargate, state, gate);
         tessellator.draw();
         RenderSystem.enableCull();
         matrixStack.pop();
@@ -73,7 +73,7 @@ public class PortalUtil {
         return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
     }
 
-    public void portalTriangles(MatrixStack matrixStack, BufferBuilder buffer, StargateBlockEntity stargate, GateState state) {
+    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, GateState state, Stargate gate) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings =36;
@@ -100,8 +100,8 @@ public class PortalUtil {
 
         // Add central big ripple if active
 
-        if (state instanceof GateState.PreOpen && timer >= maxTime) {
-            triggerCentralRipple(0.055f, 0.6f, 0.01f, 0.2f);
+        if (state instanceof GateState.PreOpen) {
+            triggerCentralRipple(0.07f, 0.6f, 0.01f, 0.2f);
         }
 
         CentralRippleParams central = getCentralRipple();
@@ -115,8 +115,6 @@ public class PortalUtil {
                 float angle = (float) (2 * Math.PI * i / sides);
                 float x = (float) Math.cos(angle) * ringRadius;
                 float y = (float) Math.sin(angle) * ringRadius;
-                float dx = x;
-                float dy = y;
                 float dz = 0f;
                 // Ripples (skip center and outer ring)
                 if (r != 0 && r != rings - 1) {
@@ -139,9 +137,7 @@ public class PortalUtil {
                     if (distToCenter <= central.radius) {
                         float norm = 1f - (distToCenter / central.radius);
                         float bulge = (float) Math.pow(norm, 1f);
-                        float phase = time * central.speed + central.phaseOffset;
-                        float twist = (float) Math.sin(time * 0.7f + angle * 2.5f) * 0.1f;
-                        float wave = (float) Math.sin(bulge * central.frequency + phase + twist);
+                        float wave = getWave(central, angle, bulge, gate);
                         float effect;
                         if (wave >= 0f) {
                             effect = wave * central.height * bulge * t;
@@ -156,12 +152,9 @@ public class PortalUtil {
                         dz += effect;
                         dz += wave * central.height * bulge * 0.2f; // minimal backward movement, mostly forward
                     }
-                    if (timer >= maxTime) {
-                        this.centralRipple = null;
-                    }
                 }
-                mesh[r][i][0] = dx;
-                mesh[r][i][1] = dy;
+                mesh[r][i][0] = x;
+                mesh[r][i][1] = y;
                 mesh[r][i][2] = dz;
             }
         }
@@ -172,12 +165,14 @@ public class PortalUtil {
                 float[] v0 = mesh[r][i];
                 float[] v1 = mesh[r + 1][i];
                 float[] v2 = mesh[r + 1][next];
-                float u0 = 0.5f + (v0[0] / (2 * radius));
-                float v0t = 0.5f + (v0[1] / (2 * radius));
-                float u1 = 0.5f + (v1[0] / (2 * radius));
-                float v1t = 0.5f + (v1[1] / (2 * radius));
-                float u2 = 0.5f + (v2[0] / (2 * radius));
-                float v2t = 0.5f + (v2[1] / (2 * radius));
+                int frames = 18; // Number of animation frames (vertical frames);
+                int currentFrame = (int) (time % frames);
+                float u0 = (v0[0] / (2 * radius) + 0.5f);
+                float u1 = (v1[0] / (2 * radius) + 0.5f);
+                float u2 = (v2[0] / (2 * radius) + 0.5f);
+                float v0t = (v0[1] / (2 * radius) + 0.5f) / frames + (float) currentFrame / frames;
+                float v1t = (v1[1] / (2 * radius) + 0.5f) / frames + (float) currentFrame / frames;
+                float v2t = (v2[1] / (2 * radius) + 0.5f) / frames + (float) currentFrame / frames;
                 float maxHeight = 0.00175f;
 
                 // Make the center area larger and more concentrated
@@ -224,9 +219,8 @@ public class PortalUtil {
                 }
 
                 float[] v3 = mesh[r][next];
-                float u3 = 0.5f + (v3[0] / (2 * radius));
-                float v3t = 0.5f + (v3[1] / (2 * radius));
-                int glow3 = glow(v3[0], v3[1]);
+                float u3 = (v3[0] / (2 * radius) + 0.5f);
+                float v3t = (v3[1] / (2 * radius) + 0.5f) / frames + (float) currentFrame / frames;
                 float intensity3 = Math.min(1f, Math.max(0.7f, (float) Math.pow(Math.max(0f, v3[2] / maxHeight), 2.5f)));
 
                 float dist3 = (float) Math.sqrt(v3[0]*v3[0] + v3[1]*v3[1]);
@@ -271,6 +265,15 @@ public class PortalUtil {
         }
     }
 
+    private float getWave(CentralRippleParams central, float angle, float bulge, Stargate gate) {
+        float realHeight = ((BasicStargateKernel) gate.kernel()).getKawooshHeight();
+        float mainDuration = 1f;
+        float normTime = Math.min(1f, centralRippleTime / mainDuration);
+        float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (realHeight * central.speed + central.phaseOffset); // TODO <---- THIS IS THE VALUE BUT FOR SOME REASON THIS WONT DWINDLE AAAAA
+        float twist = (float) Math.sin(time * 0.7f + angle * 2.5f) * 0.1f;
+        return (float) Math.sin(bulge * central.frequency + phase + twist);
+    }
+
     /** Parameters for a central ripple. */
     private static class CentralRippleParams {
         float radius;
@@ -294,22 +297,22 @@ public class PortalUtil {
 
     /** Call this to trigger a big central ripple. */
     public void triggerCentralRipple(float radius, float height, float frequency, float speed) {
-        if (timer < maxTime) return; // Only allow triggering after maxTime
-        timer = 0; // Reset timer after triggering
         if (this.centralRipple != null) return;
         this.centralRipple = new CentralRippleParams(radius, height, frequency, speed, 0f);
         this.centralRippleTime = 0f;
         this.centralRippleSettling = false;
     }
 
+    // Animation timing
+    static final float mainDuration = 0.7f; // seconds for main ripple
+    static final float settleDuration = 0.7f; // seconds for settle
+    static final float dt = 1/20f;
+
     /** Returns the current central ripple, or null if none. */
     private CentralRippleParams getCentralRipple() {
         if (centralRipple == null) return null;
 
-        // Animation timing
-        float mainDuration = 0.7f; // seconds for main ripple
-        float settleDuration = 0.7f; // seconds for settle
-        float dt = 1f / 20f; // assuming 20 TPS, adjust as needed
+
 
         centralRippleTime += dt;
 

@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.kernels;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +18,8 @@ public interface GateShape {
     static GateShape generated(String shape) {
         return new GeneratedShape(shape).prepare();
     }
+
+    GateShape EMPTY = new Const(List.of());
 
     GateShape DEFAULT = generated("""
 				_________

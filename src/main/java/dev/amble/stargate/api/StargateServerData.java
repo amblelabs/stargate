@@ -15,7 +15,7 @@ public class StargateServerData extends PersistentState {
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		nbt.put("Network", ServerStargateNetwork.get().toNbt());
+		nbt.put("Network", ServerStargateNetwork.get().toNbt(false));
 
 		return nbt;
 	}

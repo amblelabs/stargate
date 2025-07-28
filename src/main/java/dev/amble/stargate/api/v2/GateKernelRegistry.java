@@ -1,10 +1,11 @@
 package dev.amble.stargate.api.v2;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.kernels.DestinyGateKernel;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
-import dev.amble.stargate.api.v2.kernels.PegasusGateKernel;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
+import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.impl.PegasusGateKernel;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.Registry;

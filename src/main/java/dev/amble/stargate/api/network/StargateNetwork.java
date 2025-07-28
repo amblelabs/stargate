@@ -53,7 +53,7 @@ public abstract class StargateNetwork<T extends Stargate> {
 		return lookup.get(address);
 	}
 
-	public @Nullable Stargate get(String address) {
+	public @Nullable T get(String address) {
 		return lookup.get(address);
 	}
 
@@ -91,11 +91,11 @@ public abstract class StargateNetwork<T extends Stargate> {
 		return Optional.empty();
 	}
 
-	public NbtCompound toNbt() {
+	public NbtCompound toNbt(boolean sync) {
 		NbtCompound nbt = new NbtCompound();
 
 		NbtList list = new NbtList();
-		lookup.values().forEach(stargate -> list.add(stargate.toNbt()));
+		lookup.values().forEach(stargate -> list.add(stargate.toNbt(sync)));
 		nbt.put("Stargates", list);
 
 		return nbt;
@@ -105,11 +105,36 @@ public abstract class StargateNetwork<T extends Stargate> {
 		if (clear) this.lookup.clear();
 
 		NbtList list = nbt.getList("Stargates", NbtElement.COMPOUND_TYPE);
+		Stargate[] gates = this.fromNbtList(list);
 
-		list.forEach(tag -> {
-			T stargate = this.fromNbt((NbtCompound) tag);
-			this.lookup.put(stargate);
-		});
+		this.postProcessNbt(list, gates);
+	}
+
+    protected Stargate[] fromNbtList(NbtList list) {
+		Stargate[] gates = new Stargate[list.size()];
+
+		for (int i = 0; i < list.size(); i++) {
+			try {
+				NbtElement nbt = list.get(i);
+
+				T stargate = this.fromNbt((NbtCompound) nbt);
+				gates[i] = stargate;
+			} catch (Exception e) {
+				StargateMod.LOGGER.error("Failed to deserialize a stargate", e);
+			}
+		}
+
+		return gates;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void postProcessNbt(NbtList list, Stargate[] gates) {
+		for (Stargate t : gates) {
+			if (t == null)
+				continue;
+
+			this.lookup.put((T) t);
+		}
 	}
 
 	protected abstract T fromNbt(NbtCompound nbt);

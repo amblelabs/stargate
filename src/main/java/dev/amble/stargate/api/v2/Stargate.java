@@ -2,7 +2,11 @@ package dev.amble.stargate.api.v2;
 
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Disposable;
-import dev.amble.stargate.api.v2.kernels.MilkyWayGateKernel;
+import dev.amble.stargate.api.kernels.GateShape;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
@@ -21,17 +25,21 @@ public abstract class Stargate implements StargateKernel, Disposable {
                 : Identifier.tryParse(rawModel);
 
         this.kernel = GateKernelRegistry.get().get(modelId).create(this);
-        this.loadNbt(nbt);
-    }
-
-    // TODO: impl this
-    @Override
-    public void dispose() {
     }
 
     @Override
     public void tick() {
         this.kernel.tick();
+    }
+
+    @Override
+    public boolean canTeleportFrom(LivingEntity entity) {
+        return this.kernel.canTeleportFrom(entity);
+    }
+
+    @Override
+    public void tryTeleportFrom(LivingEntity entity) {
+        this.kernel.tryTeleportFrom(entity);
     }
 
     @Override

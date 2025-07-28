@@ -1,7 +1,7 @@
 package dev.amble.stargate.block;
 
-import dev.amble.stargate.api.v2.GateState;
-import dev.amble.stargate.api.v2.kernels.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
@@ -11,7 +11,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -120,24 +119,6 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			be.onEntityCollision(state, world, pos, entity);
-		}
-
-		super.onEntityCollision(state, world, pos, entity);
-	}
-
-	@Override
-	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
-		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			be.onEntityCollision(state, world, pos, entity);
-		}
-
-		super.onSteppedOn(world, pos, state, entity);
-	}
-
-	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
 		if (state.get(WATERLOGGED)) {
 			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
@@ -172,10 +153,8 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (!state.isOf(newState.getBlock())) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof StargateBlockEntity) {
-				((StargateBlockEntity) be).onBreak();
-			}
+			if (world.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
+				blockEntity.onBreak(state);
 		}
 
 		super.onStateReplaced(state, world, pos, newState, moved);

@@ -1,7 +1,8 @@
-package dev.amble.stargate.api.v2;
+package dev.amble.stargate.api.network;
 
 import dev.amble.lib.data.DirectedGlobalPos;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.nbt.NbtCompound;
 
 public class ServerStargate extends Stargate {
@@ -18,8 +19,6 @@ public class ServerStargate extends Stargate {
 
     @Override
     public void dispose() {
-        super.dispose();
-
         ServerStargateNetwork.get().remove(this.address());
     }
 }

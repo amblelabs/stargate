@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.util;
 
-import dev.amble.stargate.api.v2.ClientStargate;
-import dev.amble.stargate.api.v2.GateState;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.network.ClientStargate;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
