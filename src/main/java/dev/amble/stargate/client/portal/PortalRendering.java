@@ -22,7 +22,7 @@ public class PortalRendering {
 
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
-        stack.translate(0, -1f, 0);
+        stack.translate(0, -0.9f, 0);
         if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
             PortalUtil util = new PortalUtil("normal");
 

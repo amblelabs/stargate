@@ -35,7 +35,7 @@ public class GlyphRenderer {
         float baseSpeed = 360f / Glyph.ALL.length; // degrees per glyph
         float time = MinecraftClient.getInstance().player.age / 200f;
         float rot = 0;
-        boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing();
+        boolean isDialing = state instanceof GateState.Closed closed && closed.isDialing() && false; // TODO replace with #dialFromDHD() check
 
         if (isDialing)
             rot = MathHelper.wrapDegrees(time * baseSpeed * Glyph.ALL.length);

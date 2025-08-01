@@ -1,5 +1,6 @@
 package dev.amble.stargate.block.entities;
 
+import com.mojang.serialization.DataResult;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.kernels.BasicStargateKernel;
@@ -20,18 +21,26 @@ import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -49,6 +58,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public boolean requiresPlacement = false;
 	private boolean stopOpening = false;
 	private boolean prevIrisState = false;
+	private BlockState blockSet;
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
 		super(StargateBlockEntities.STARGATE, pos, state);
@@ -64,8 +74,58 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		return createNbt();
 	}
 
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+	@Override
+	public @Nullable Object getRenderData() {
+		return this;
+	}
+
+	@Override
+	protected void writeNbt(NbtCompound nbt) {
+		if (this.blockSet != null) {
+			nbt.put("blockSet", NbtHelper.fromBlockState(this.blockSet));
+		}
+		super.writeNbt(nbt);
+	}
+
+	@Override
+	public void readNbt(NbtCompound nbt) {
+		DataResult<BlockState> blockStateDataResult = BlockState.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("blockSet"));
+		this.setBlockSet(blockStateDataResult.result().orElse(null));
+		super.readNbt(nbt);
+	}
+
+	public void setBlockSet(BlockState state) {
+		this.blockSet = state;
+		this.markDirty();
+		this.sync();
+	}
+
+	public BlockState getBlockSet() {
+		return this.blockSet;
+	}
+
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!this.hasStargate()) return ActionResult.FAIL;
+
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity instanceof StargateBlockEntity stargateBlockEntity) {
+			ItemStack heldItem = player.getStackInHand(hand);
+			if (!heldItem.isEmpty()) {
+				if (heldItem.getItem() instanceof BlockItem blockItem) {
+					if (blockItem.getBlock().getDefaultState() != stargateBlockEntity.getBlockSet()) {
+						stargateBlockEntity.setBlockSet(blockItem.getBlock().getPlacementState(new ItemPlacementContext(player, hand, player.getMainHandStack(), hit)));
+						stargateBlockEntity.markDirty();
+						return ActionResult.SUCCESS;
+					}
+					return ActionResult.FAIL;
+				}
+			} else {
+				stargateBlockEntity.setBlockSet(null);
+				stargateBlockEntity.markDirty();
+				return ActionResult.SUCCESS;
+			}
+		}
+
 		if (world.isClient()) return ActionResult.SUCCESS;
 		if (!DependencyChecker.hasTechEnergy()) return ActionResult.FAIL; // require power mod
 
@@ -153,6 +213,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 			Box orlinNorthSouthBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
 			Box orlinWestEastBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);
 			StargateKernel kernel = gate.kernel();
+			if (!(kernel.state() instanceof GateState.Open)) return;
 			boolean bl = kernel instanceof OrlinGateKernel;
 			Box box = switch (facing) {
 				case WEST, EAST  -> bl ? orlinWestEastBox : westEastBox;
@@ -179,21 +240,21 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				Stargate gate = this.gate().get();
 				// Run if there is a selected glyph and it is being added to the locked amount
 				if (gate.state() instanceof GateState.Closed closed && closed.locking()) {
-					CHEVRON_LOCK_STATE.startIfNotRunning(age);
+					//CHEVRON_LOCK_STATE.startIfNotRunning(age);
 					IRIS_CLOSE_STATE.stop();
 					IRIS_OPEN_STATE.stop();
-				} else {
+				} /*else {
 					CHEVRON_LOCK_STATE.stop();
-				}
+				}*/
 
 				if (irisState) {
 					IRIS_CLOSE_STATE.startIfNotRunning(age);
-					CHEVRON_LOCK_STATE.stop();
+					//CHEVRON_LOCK_STATE.stop();
 					IRIS_OPEN_STATE.stop();
 					stopOpening = false;
 				} else {
 					if (!stopOpening) {
-						CHEVRON_LOCK_STATE.stop();
+						//CHEVRON_LOCK_STATE.stop();
 						IRIS_CLOSE_STATE.stop();
 						IRIS_OPEN_STATE.startIfNotRunning(age);
 					}

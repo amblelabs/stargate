@@ -122,12 +122,16 @@ public sealed interface GateState {
         }
     }
 
-    record PreOpen(String address) implements GateState {
+    record PreOpen(String address, boolean caller) implements GateState {
 
         static final String TYPE = "PreOpen";
 
         public String address() {
             return address;
+        }
+
+        public boolean callee() {
+            return !caller;
         }
 
         @Override
@@ -138,11 +142,14 @@ public sealed interface GateState {
         @Override
         public NbtCompound toNbt(NbtCompound nbt) {
             nbt.putString("address", address);
+            nbt.putBoolean("caller", caller);
             return nbt;
         }
 
         static PreOpen fromNbt(NbtCompound nbt) {
-            return new PreOpen(nbt.getString("address"));
+            String id = nbt.getString("address");
+            boolean caller = nbt.getBoolean("caller");
+            return new PreOpen(id, caller);
         }
     }
 

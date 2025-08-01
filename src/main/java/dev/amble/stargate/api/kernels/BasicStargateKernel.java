@@ -8,6 +8,7 @@ import dev.amble.stargate.api.TeleportableEntity;
 import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.init.StargateAttributes;
 import dev.amble.stargate.init.StargateDamages;
 import dev.amble.stargate.init.StargateSounds;
@@ -121,6 +122,10 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         double speed = velocity.length();
         Vec3d newVelocity = direction.multiply(speed);
 
+        if (targetWorld.getBlockState(targetPos.getPos()).get(StargateBlock.IRIS)) {
+            entity.damage(targetWorld.getDamageSources().inWall(), Integer.MAX_VALUE); // Lol
+        }
+
         TeleportUtil.teleport(entity, targetWorld,
                 targetBlockPos.toCenterPos().add(offset).add(0, yOffset, 0),
                 targetPos.getRotationDegrees()
@@ -171,10 +176,16 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                                 this.address.pos().getPos(), StargateSounds.GATE_OPEN,
                                 SoundCategory.BLOCKS, 1.0f, 1.0f);
                     }
-                    state = new GateState.PreOpen(closed.addressBuilder());
+                    state = new GateState.PreOpen(closed.addressBuilder(), true);
+                    Stargate target = ServerStargateNetwork.get().get(closed.addressBuilder());
+                    if (target != null) {
+                        target.kernel().setState(new GateState.PreOpen("", false));
+                    }
                 }
 
                 this.parent.markDirty();
+                Stargate target = ServerStargateNetwork.get().get(closed.addressBuilder());
+                if(target != null) target.markDirty();
                 return;
             }
 
@@ -203,7 +214,6 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                     }
                 }
             }
-            System.out.println(this.kawooshHeight);
             this.markDirty();
             if (timer > this.ticksPerKawoosh() && this.shouldKawooshOscillate == 4) {
                 this.kawooshHeight = 0;
