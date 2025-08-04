@@ -51,7 +51,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
 
-        matrices.translate(0.5f, 1.4f, 0.5f);
+        matrices.translate(0.5f, entity.hasStargate() && entity.gate().get().kernel() instanceof OrlinGateKernel ? 1.5f : 1.4f, 0.5f);
 
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
