@@ -103,7 +103,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         float zOffset = northern ? direction.getOffsetZ() * 0.24f * multiplier : direction.getOffsetX() * 0.24f * multiplier;
 
         matrices.push();
-        matrices.translate(xOffset, 0.575f, zOffset);
+        matrices.translate(xOffset, 0.565f, zOffset);
         matrices.scale(0.025f, 0.025f, 0.025f);
 
         //GateState state = gate.state();
@@ -135,7 +135,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             double angle = 2 * Math.PI * shiftedIndex / length;
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(0));
             matrices.scale(0.4f, 0.4f, 0.4f);
-            matrices.translate(Math.sin(angle) * 18.95 * 2.25f, Math.cos(angle) * 18.95 * 2.25f, 0);
+            matrices.translate(Math.sin(angle) * 18.95 * 2.35f, Math.cos(angle) * 18.95 * 2.35f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
             OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
@@ -160,7 +160,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.translate(0, 0f, -2.5f);
             double angle = 2 * Math.PI * i / length;
             matrices.scale(0.4f, 0.4f, 0.4f);
-            matrices.translate(Math.sin(angle) * 18.95 * 1.5f, Math.cos(angle) * 18.95 * 1.5f, 0);
+            matrices.translate(Math.sin(angle) * 18.95 * 1.55f, Math.cos(angle) * 18.95 * 1.55f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
             OrderedText text = Address.asText(String.valueOf(Glyph.ALL[18 + i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
