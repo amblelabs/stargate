@@ -39,15 +39,25 @@ public sealed interface GateState {
 
         private int locked;
         private boolean locking;
+        private boolean hasDialButton;
 
         private String addressBuilder = "";
 
         public Closed() {
-            this(0);
+            this(0, false);
         }
 
         public Closed(int locked) {
             this.locked = locked;
+        }
+
+        public Closed(boolean hasDialButton) {
+            this(0, hasDialButton);
+        }
+
+        public Closed(int locked, boolean hasDialButton) {
+            this.locked = locked;
+            this.hasDialButton = hasDialButton;
         }
 
         public int locked() {
@@ -72,6 +82,14 @@ public sealed interface GateState {
 
         public boolean isDialing() {
             return locking || locked > 0;
+        }
+
+        public void setHasDialButton(boolean hasDialButton) {
+            this.hasDialButton = hasDialButton;
+        }
+
+        public boolean hasDialButton() {
+            return hasDialButton;
         }
 
         public boolean contains(char c) {
@@ -103,6 +121,7 @@ public sealed interface GateState {
             this.locked = nbt.getInt("locked");
             this.locking = nbt.getBoolean("locking");
             this.addressBuilder = nbt.getString("address");
+            this.hasDialButton = nbt.getBoolean("hasDialButton");
         }
 
         @Override
@@ -110,6 +129,7 @@ public sealed interface GateState {
             nbt.putInt("locked", locked);
             nbt.putBoolean("locking", locking);
             nbt.putString("address", addressBuilder);
+            nbt.putBoolean("hasDialButton", hasDialButton);
 
             return nbt;
         }

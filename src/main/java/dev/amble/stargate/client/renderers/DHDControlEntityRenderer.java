@@ -12,6 +12,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -34,6 +35,13 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
     @Override
     protected void renderLabelIfPresent(DHDControlEntity entity, Text text, MatrixStack matrices,
                                         VertexConsumerProvider vertexConsumers, int light) {
+        if (MinecraftClient.getInstance().player.getOffHandStack().getItem() == Items.COMMAND_BLOCK) {
+            matrices.push();
+            matrices.translate(0, -0.19f, 0);
+            matrices.scale(0.5f, 0.5f, 0.5f);
+            super.renderLabelIfPresent(entity, text, matrices, vertexConsumers, 0xf000f0);
+            matrices.pop();
+        }
     }
 
     @Override

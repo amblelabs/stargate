@@ -100,7 +100,7 @@ public class DHDModel extends SinglePartEntityModel {
 		this.main = this.dhd.getChild("main");
 		this.area = this.main.getChild("area");
 		this.dialbutton = this.main.getChild("dialbutton");
-		this.dialbuttonlight = this.dialbutton.getChild("dialbuttonlight");
+		this.dialbuttonlight = this.main.getChild("dialbuttonlight");
 		this.rings = this.main.getChild("rings");
 		this.bottom = this.rings.getChild("bottom");
 		this.lights = this.bottom.getChild("lights");
@@ -228,8 +228,8 @@ public class DHDModel extends SinglePartEntityModel {
 		ModelPartData dialbutton = main.addChild("dialbutton", ModelPartBuilder.create().uv(24, 47).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.0F))
 				.uv(8, 47).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.25F)), ModelTransform.pivot(0.0F, -2.9F, 7.3F));
 
-		ModelPartData dialbuttonlight = dialbutton.addChild("dialbuttonlight", ModelPartBuilder.create().uv(24, 53).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.05F))
-				.uv(24, 53).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.55F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+		ModelPartData dialbuttonlight = main.addChild("dialbuttonlight", ModelPartBuilder.create().uv(24, 53).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.0F))
+				.uv(8, 53).cuboid(-2.0F, -1.5F, -1.75F, 4.0F, 2.0F, 4.0F, new Dilation(0.25F)), ModelTransform.pivot(0.0F, -2.9F, 7.3F));
 
 		ModelPartData rings = main.addChild("rings", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, -1.5F, 7.5F));
 

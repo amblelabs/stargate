@@ -159,7 +159,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 return;
             }
 
-            if (timer >= this.ticksPerGlyph()) {
+            if (timer >= this.ticksPerGlyph() || closed.hasDialButton()) {
                 ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
                 timer = 0;
 
@@ -170,14 +170,23 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                             SoundCategory.BLOCKS, 1.0f, 1.0f);
                 }
 
-                if (closed.locked() == Address.LENGTH) {
-                    if (world != null) {
-                        world.playSound(null,
-                                this.address.pos().getPos(), StargateSounds.GATE_OPEN,
-                                SoundCategory.BLOCKS, 1.0f, 1.0f);
-                    }
+                if (closed.locked() == Address.LENGTH && closed.hasDialButton()) {
                     state = new GateState.PreOpen(closed.addressBuilder(), true);
                     Stargate target = ServerStargateNetwork.get().get(closed.addressBuilder());
+                    if (world != null) {
+                        if (target != null && !target.address().text().isEmpty() && target != this.parent) {
+                            world.playSound(null,
+                                    this.address.pos().getPos(), StargateSounds.GATE_OPEN,
+                                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        } else {
+                            world.playSound(null,
+                                    this.address.pos().getPos(), StargateSounds.GATE_FAIL,
+                                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+                            this.state = new GateState.Closed();
+                            this.markDirty();
+                            return;
+                        }
+                    }
                     if (target != null) {
                         target.kernel().setState(new GateState.PreOpen("", false));
                     }
@@ -196,6 +205,8 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
             timer++;
         } else if (this.state instanceof GateState.PreOpen preOpen) {
+            // Handle missing gates by address gracefully
+            Stargate target = ServerStargateNetwork.get().get(preOpen.address());
             if (this.shouldKawooshOscillate != 4) {
                 if (this.shouldKawooshOscillate % 2 != 0) {
                     if (this.shouldKawooshOscillate == 3) {
@@ -219,9 +230,6 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 this.kawooshHeight = 0;
                 this.shouldKawooshOscillate = 1;
                 timer = 0;
-
-                // Handle missing gates by address gracefully
-                Stargate target = ServerStargateNetwork.get().get(preOpen.address());
 
                 if (target == null || !this.canDialTo(target) || !this.hasEnoughEnergy(target.address())) {
                     this.state = new GateState.Closed();

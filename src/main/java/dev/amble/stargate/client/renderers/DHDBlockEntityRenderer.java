@@ -3,6 +3,8 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.client.models.DHDModel;
 import dev.amble.stargate.block.StargateBlock;
@@ -19,6 +21,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
@@ -35,15 +38,16 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     public DHDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.model = new DHDModel(DHDModel.getTexturedModelData().createModel());
         this.bottomlights = new ModelPart[] {
-                this.model.button1, this.model.button2, this.model.button3, this.model.button4, this.model.button5,
-                this.model.button6, this.model.button7, this.model.button8, this.model.button9, this.model.button10,
-                this.model.button11, this.model.button12, this.model.button13, this.model.button14, this.model.button15,
-                this.model.button16, this.model.button17, this.model.button18, this.model.button19
+                this.model.button6, this.model.button7, this.model.button8, this.model.button9,
+                this.model.button10, this.model.button11, this.model.button12, this.model.button13, this.model.button14,
+                this.model.button15, this.model.button16, this.model.button17, this.model.button18,
+                this.model.button1, this.model.button2, this.model.button3, this.model.button4, this.model.button5
         };
         this.toplights = new ModelPart[] {
-                this.model.button20, this.model.button21, this.model.button22, this.model.button23, this.model.button24,
-                this.model.button25, this.model.button26, this.model.button27, this.model.button28, this.model.button29,
-                this.model.button30, this.model.button31, this.model.button32, this.model.button33, this.model.button34,
+                this.model.button19, this.model.button20, this.model.button21, this.model.button22,
+                this.model.button23, this.model.button24, this.model.button25, this.model.button26,
+                this.model.button27, this.model.button28, this.model.button29, this.model.button30,
+                this.model.button31, this.model.button32, this.model.button33, this.model.button34,
                 this.model.button35, this.model.button36
         };
     }
@@ -66,8 +70,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         /*this.model.toplights.visible = true;
-        this.model.bottomlights.visible = true;
-        this.model.dialbuttonlight.visible = true;*/
+        this.model.bottomlights.visible = true;*/
         // Animate the lights in a circle: only one is active at a time, based on world time
         List<ModelPart> allLights = new ArrayList<>();
         allLights.addAll(Arrays.asList(this.bottomlights));
@@ -75,16 +78,54 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         // Use a persistent random seed based on world time, changing every 3 seconds
         long seed = MinecraftClient.getInstance().world.getTime() / 60; // 20 ticks per second * 3 = 60
-        Collections.shuffle(allLights, new Random(seed));
 
         // Hide all lights
         for (ModelPart lights : allLights) {
             lights.visible = false;
         }
 
-        // Show 7 random lights
-        for (int i = 0; i < Math.min(7, allLights.size()); i++) {
-            allLights.get(i).visible = true;
+        if (entity.hasStargate()) {
+            var gate = entity.gate().get();
+            GateState state = gate.kernel().state();
+            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
+            this.model.dialbutton.visible = !bl;
+            this.model.dialbuttonlight.visible = bl;
+            if (state instanceof GateState.Closed closed) {
+                String addressText = closed.addressBuilder();
+                if (!addressText.isEmpty()) {
+                    for (int a = 0; a < closed.locked(); a++) {
+                        char target = addressText.charAt(a);
+                        for (int i = 0; i < Glyph.ALL.length; i++) {
+                            if (Glyph.ALL[i] == target) {
+                                allLights.get(i).visible = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else if (state instanceof GateState.PreOpen preOpen) {
+                String address = preOpen.address();
+                for (int i = 0; i < address.length(); i++) {
+                    char target = address.charAt(i);
+                    for (int a = 0; a < Glyph.ALL.length; a++) {
+                        if (Glyph.ALL[a] == target) {
+                            allLights.get(a).visible = true;
+                            break;
+                        }
+                    }
+                }
+            } else if (state instanceof GateState.Open open) {
+                String address = open.target().get().address().text();
+                for (int i = 0; i < address.length(); i++) {
+                    char target = address.charAt(i);
+                    for (int a = 0; a < Glyph.ALL.length; a++) {
+                        if (Glyph.ALL[a] == target) {
+                            allLights.get(a).visible = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         renderGlyphs(matrices, vertexConsumers, entity, 0xf000f0);
@@ -137,7 +178,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.scale(0.4f, 0.4f, 0.4f);
             matrices.translate(Math.sin(angle) * 18.95 * 2.35f, Math.cos(angle) * 18.95 * 2.35f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
+            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[i]));*/Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
             matrices.pop();
@@ -158,11 +199,13 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
             matrices.push();
             matrices.translate(0, 0f, -2.5f);
-            double angle = 2 * Math.PI * i / length;
+            int offset = -9; // Change this value to shift more or less
+            int shiftedIndex = (i + offset) % (int)length;
+            double angle = 2 * Math.PI * shiftedIndex / length;
             matrices.scale(0.4f, 0.4f, 0.4f);
             matrices.translate(Math.sin(angle) * 18.95 * 1.55f, Math.cos(angle) * 18.95 * 1.55f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[18 + i])).asOrderedText();
+            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[18 + i]));*/Address.asText(String.valueOf(Glyph.ALL[18 + i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
             matrices.pop();
