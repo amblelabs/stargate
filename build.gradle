@@ -30,7 +30,7 @@ repositories {
 	}
 
 	// For the scheduler library
-	maven { url "https://theo.is-a.dev/maven-repo/" }
+	maven { url "https://theo.is-a.dev/maven/" }
 }
 
 sourceSets {
