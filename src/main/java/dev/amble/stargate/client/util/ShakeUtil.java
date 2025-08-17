@@ -1,44 +1,39 @@
 package dev.amble.stargate.client.util;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.network.ClientStargate;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ShakeUtil {
 	private static final float SHAKE_CLAMP = 45.0f; // Adjust this value to set the maximum shake angle
 	private static final float SHAKE_INTENSITY = 0.45f; // Adjust this value to control the intensity of the shake
 	private static final int MAX_DISTANCE = 16; // The radius from the stargate where the player will feel the shake
+	private static final int MAX_DISTANCE_SQUARED = MathHelper.square(MAX_DISTANCE);
 
-	/**
-	 * Shakes based off the distance of the player from the stargate
-	 */
-	public static void shakeFromGate() {
+	public static void shakeFromGate(@NotNull ClientStargate gate) {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (player == null)
+
+		float multiplier;
+
+		if (gate.state() instanceof GateState.Closed closed)
+			multiplier = closed.locked() / 7f;
+		else if (gate.state() instanceof GateState.PreOpen)
+			multiplier = 1;
+		else
 			return;
 
-		Stargate nearest = ClientStargateUtil.getNearest().orElse(null);
-		if (nearest == null)
+		double distance = gate.address().pos().getPos().getSquaredDistance(player.getBlockPos());
+
+		if (distance > MAX_DISTANCE_SQUARED)
 			return;
 
-		float multiplier = (nearest.getDialer().getAmountLocked() / 7f);
-
-		if (nearest.getState() == Stargate.GateState.PREOPEN) {
-			multiplier = 1f;
-		}
-
-		if (multiplier == 0f) return;
-
-
-		shake((1f - ((float) (nearest.distanceFrom(player.getBlockPos()) / MAX_DISTANCE))) * multiplier);
-	}
-
-	public static void shakeFromEverywhere() {
-		shake(0.1f);
+		shake((1f - (float) Math.sqrt(distance / MAX_DISTANCE_SQUARED)) * multiplier);
 	}
 
 	public static void shake(float scale) {

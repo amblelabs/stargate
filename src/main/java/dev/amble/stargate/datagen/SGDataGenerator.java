@@ -1,14 +1,14 @@
 package dev.amble.stargate.datagen;
 
-import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.lib.datagen.lang.AmbleLanguageProvider;
+import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
-import dev.amble.stargate.core.StargateBlocks;
-import dev.amble.stargate.core.StargateItems;
 import dev.amble.stargate.core.fluid.StargateFluids;
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItems;
 import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -22,9 +22,11 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
-import static net.minecraft.data.server.recipe.RecipeProvider.*;
+import static net.minecraft.data.server.recipe.RecipeProvider.conditionsFromItem;
+import static net.minecraft.data.server.recipe.RecipeProvider.hasItem;
 
 public class SGDataGenerator implements DataGeneratorEntrypoint {
     @Override
@@ -37,6 +39,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         genLoot(pack);
         genModels(pack);
         generateRecipes(pack);
+        generateAdvancements(pack);
         pack.addProvider(StargateWorldGenerator::new);
        }
 
@@ -51,6 +54,9 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         })));
     }
 
+    private void generateAdvancements(FabricDataGenerator.Pack pack) {
+        pack.addProvider(StargateAchievementProvider::new);
+    }
 
     @Override
     public void buildRegistry(RegistryBuilder registryBuilder) {
@@ -109,6 +115,13 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .input('I', StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
 
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .pattern("RRR")
+                    .input('R', StargateItems.RAW_NAQUADAH)
+                    .criterion(hasItem(StargateItems.RAW_NAQUADAH), conditionsFromItem(StargateItems.RAW_NAQUADAH)));
+
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 1)
@@ -127,6 +140,13 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     new Identifier("stargate", "naquadah_ingot_recipe_from_block")
             );
 
+            provider.addShapelessRecipe(
+                    ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.RAW_NAQUADAH, 9)
+                            .input(StargateBlocks.RAW_NAQUADAH_BLOCK)
+                            .criterion(hasItem(StargateBlocks.RAW_NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.RAW_NAQUADAH_BLOCK)),
+                    new Identifier("stargate", "raw_naquadah_recipe_from_block")
+            );
+
             provider.addBlastFurnaceRecipe(CookingRecipeJsonBuilder.createBlasting(Ingredient.ofItems(StargateItems.RAW_NAQUADAH),
                             RecipeCategory.MISC,StargateItems.NAQUADAH_INGOT, 0.2f, 500)
                     .criterion(hasItem(StargateItems.RAW_NAQUADAH), conditionsFromItem(StargateItems.RAW_NAQUADAH)));
@@ -134,6 +154,105 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addShapelessRecipe(ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_NUGGET,9)
                     .input(StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.COPPER_COIL, 8)
+                            .pattern(" C ")
+                            .pattern("CWC")
+                            .pattern(" C ")
+                            .input('C', Items.COPPER_INGOT)
+                            .criterion(hasItem(Items.COPPER_INGOT), conditionsFromItem(Items.COPPER_INGOT))
+                            .input('W', ItemTags.PLANKS));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.EMPTY_CONTAINER, 1)
+                            .pattern("GIG")
+                            .pattern("G G")
+                            .pattern(" G ")
+                            .input('G', Blocks.GLASS)
+                            .input('I', Items.IRON_INGOT)
+                            .criterion(hasItem(Blocks.GLASS), conditionsFromItem(Blocks.GLASS))
+                            .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.TOASTER)
+                            .pattern("ICI")
+                            .pattern("ICI")
+                            .pattern("SRS")
+                            .input('I', Items.IRON_INGOT)
+                            .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
+                            .input('C', StargateItems.COPPER_COIL)
+                            .criterion(hasItem(StargateItems.COPPER_COIL), conditionsFromItem(StargateItems.COPPER_COIL))
+                            .input('S', Items.DRIED_KELP)
+                            .criterion(hasItem(Items.DRIED_KELP), conditionsFromItem(Items.DRIED_KELP))
+                            .input('R', Items.REDSTONE)
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_RED, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.RED_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+                            .criterion(hasItem(Items.RED_DYE), conditionsFromItem(Items.RED_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_YELLOW, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.YELLOW_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+                            .criterion(hasItem(Items.YELLOW_DYE), conditionsFromItem(Items.YELLOW_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_BLUE, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Items.REDSTONE)
+                            .input('D', Items.BLUE_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Items.REDSTONE), conditionsFromItem(Items.REDSTONE))
+                            .criterion(hasItem(Items.BLUE_DYE), conditionsFromItem(Items.BLUE_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_MASTER, 1)
+                            .pattern("DAD")
+                            .pattern("RAR")
+                            .pattern(" R ")
+                            .input('A', Items.AMETHYST_SHARD)
+                            .input('R', Blocks.REDSTONE_BLOCK)
+                            .input('D', Items.RED_DYE)
+                            .criterion(hasItem(Items.AMETHYST_SHARD), conditionsFromItem(Items.AMETHYST_SHARD))
+                            .criterion(hasItem(Blocks.REDSTONE_BLOCK), conditionsFromItem(Blocks.REDSTONE_BLOCK))
+                            .criterion(hasItem(Items.RED_DYE), conditionsFromItem(Items.RED_DYE)));
+
+            provider.addShapedRecipe(
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.TRANSPORTATION, StargateBlocks.DHD, 1)
+                            .pattern("NPN")
+                            .pattern("BMY")
+                            .pattern("NRN")
+                            .input('N', StargateBlocks.NAQUADAH_BLOCK)
+                            .input('R', StargateItems.CONTROL_CRYSTAL_RED)
+                            .input('B', StargateItems.CONTROL_CRYSTAL_BLUE)
+                            .input('Y', StargateItems.CONTROL_CRYSTAL_YELLOW)
+                            .input('M', StargateItems.CONTROL_CRYSTAL_MASTER)
+                            .input('P', Items.STONE_BUTTON)
+                            .criterion(hasItem(StargateBlocks.NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.NAQUADAH_BLOCK))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_RED), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_RED))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_BLUE), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_BLUE))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_YELLOW), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_YELLOW))
+                            .criterion(hasItem(StargateItems.CONTROL_CRYSTAL_MASTER), conditionsFromItem(StargateItems.CONTROL_CRYSTAL_MASTER))
+                            .criterion(hasItem(Items.STONE_BUTTON), conditionsFromItem(Items.STONE_BUTTON)));
 
             return provider;
         })));
@@ -147,12 +266,15 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider((((output, registriesFuture) -> {
             AmbleLanguageProvider provider = new AmbleLanguageProvider(output, LanguageType.EN_US);
 
+            //Blocks
             provider.translateBlocks(StargateBlocks.class);
             provider.addTranslation(StargateBlocks.DHD, "Dial-Home Device");
             provider.addTranslation(StargateBlocks.STARGATE, "Stargate");
             provider.addTranslation(StargateBlocks.NAQUADAH_BLOCK, "Block of Naquadah");
+            provider.addTranslation(StargateBlocks.RAW_NAQUADAH_BLOCK, "Block of Raw Naquadah");
             provider.addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");
 
+            //Items
             provider.translateItems(StargateItems.class);
             provider.addTranslation(StargateItems.ADDRESS_CARTOUCHE, "Address Cartouche");
             provider.addTranslation(StargateItems.IRIS_BLADE, "Iris Blade");
@@ -163,11 +285,41 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
             provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah Container");
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
+            provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
+            provider.addTranslation(StargateItems.TOASTER, "Toaster");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_BLUE, "Blue Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_YELLOW, "Yellow Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_RED, "Red Control Crystal");
+            provider.addTranslation(StargateItems.CONTROL_CRYSTAL_MASTER, "Master Control Crystal");
 
+            //Misc
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
             provider.addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");
             provider.addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
+
+            provider.addTranslation("text.stargate.gate", "STARGATE");
+
+            provider.addTranslation("death.attack.stargate_flow", "%s went against the flow");
+            provider.addTranslation("attribute.stargate.spacial_resistance", "Spacial Resistance");
+            provider.addTranslation("effect.stargate.spacial_dynamic", "Spacial Dynamic");
+
+            // Commands
+            provider.addTranslation("command.stargate.generic.missing", "No Stargate found!");
+            provider.addTranslation("command.stargate.generic.unavailable", "This Stargate is not available!");
+
+            //Achievements
+            provider.addTranslation("achievement.stargate.title.root", "Stargate Mod");
+            provider.addTranslation("achievement.stargate.description.root", "Begin your journey through the stars!");
+
+            provider.addTranslation("achievement.stargate.title.obtain_raw_naquadah", "The Fifth Race");
+            provider.addTranslation("achievement.stargate.description.obtain_raw_naquadah", "Discover the element the Stargates are made of.");
+
+            provider.addTranslation("achievement.stargate.title.obtain_address_cartouche", "It was right in front of us!");
+            provider.addTranslation("achievement.stargate.description.obtain_address_cartouche", "Create an Address Cartouche to dial the Stargate Address.");
+
+            provider.addTranslation("achievement.stargate.title.obtain_liquid_naquadah", "Enough power to dial the Eighth Chevron...?!");
+            provider.addTranslation("achievement.stargate.description.obtain_liquid_naquadah", "Create or find, then put Liquid Naquadah into a Container.");
 
             return provider;
         })));

@@ -1,53 +1,42 @@
 package dev.amble.stargate.mixins.compat.energy;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.compat.energy.StargateRebornEnergy;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 
-@Mixin(value = Stargate.class, remap = false)
-public class EnergyStargateMixin implements StargateRebornEnergy {
+// FIXME: there's a better way to implement an optional TeamReborn Energy API compat
+@Mixin(value = BasicStargateKernel.class, remap = false)
+public abstract class EnergyStargateMixin implements StargateRebornEnergy, StargateKernel {
 	@Unique
-	public final SimpleEnergyStorage energy = new SimpleEnergyStorage(100000, 32, 0) {
+	public final SimpleEnergyStorage r$energy = new SimpleEnergyStorage(100000, 32, 0) {
 		@Override
 		protected void onFinalCommit() {
-			EnergyStargateMixin.this.syncMixin();
-		}
+			EnergyStargateMixin.this.energy = (int) this.amount;
 
-		@Override
-		public long insert(long maxAmount, TransactionContext transaction) {
-			EnergyStargateMixin.this.syncMixin();
+			Stargate gate = ServerStargateNetwork.get().get(EnergyStargateMixin.this.address);
+			if (gate == null) return;
 
-			return super.insert(maxAmount, transaction);
+			gate.markDirty();
 		}
 	};
 
-	@Unique
-	private void syncMixin() {
-		((Stargate) (Object) this).sync();
-	}
+	@Shadow
+	protected long energy;
+
+	@Shadow
+	protected Address address;
 
 	@Override
 	public EnergyStorage getStorage() {
-		return energy;
-	}
-
-	@Inject(method = "getEnergy", at = @At("HEAD"), cancellable = true)
-	private void stargate$getAmount(CallbackInfoReturnable<Long> cir) {
-		cir.setReturnValue(energy.getAmount());
-	}
-	@Inject(method="setEnergy", at=@At("HEAD"))
-	private void stargate$setAmount(long amount, CallbackInfo ci) {
-		energy.amount = (long) MathHelper.clamp(amount, 0, energy.getCapacity());
-
-		this.syncMixin();
+		return r$energy;
 	}
 }

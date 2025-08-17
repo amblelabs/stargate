@@ -25,12 +25,6 @@
 		],
 		"client": [
           "dev.amble.stargate.client.StargateModClient"
-		],
-		"amblekit-main": [
-			"dev.amble.stargate.init.AmbleInitializer"
-		],
-		"amblekit-client": [
-			"dev.amble.stargate.init.client.AmbleClientInitializer"
 		]
 	},
 	"mixins": [

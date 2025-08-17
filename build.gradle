@@ -50,11 +50,11 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	include(modImplementation("dev.drtheo:scheduler:${project.scheduler_version}")) {
+	include(modApi("dev.drtheo:scheduler:${project.scheduler_version}")) {
 		exclude(group: "net.fabricmc.fabric-api")
+		transitive = true
 	}
-	modImplementation("com.github.amblelabs:modkit:v${project.amblekit_version}") {
+	modApi("com.github.amblelabs:modkit:v${project.amblekit_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
@@ -83,9 +83,21 @@ tasks.withType(JavaCompile).configureEach {
 java {
 	// withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_22
 	targetCompatibility = JavaVersion.VERSION_17
 }
+
+/*tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs.add('--enable-preview')
+}
+
+tasks.withType(Test).configureEach {
+	jvmArgs += '--enable-preview'
+}
+
+tasks.withType(JavaExec).configureEach {
+	jvmArgs += '--enable-preview'
+}*/
 
 jar {
 	from("LICENSE") {
