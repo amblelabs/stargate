@@ -48,16 +48,16 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         if (!this.hasStargate()) return ActionResult.FAIL;
-        if (world.isClient()) return ActionResult.SUCCESS;
+        //if (world.isClient()) return ActionResult.SUCCESS;
 
-        Stargate target = this.gate().get();
+        /*Stargate target = this.gate().get();
 
         if (target.state() instanceof GateState.Open || target.state() instanceof GateState.PreOpen) return ActionResult.FAIL;
 
         player.sendMessage(target.address().asText(), true);
 
         if (target.state() instanceof GateState.Closed closed)
-            closed.setAddress(target.address().text());
+            closed.setAddress(target.address().text());*/
 
         return ActionResult.SUCCESS;
     }

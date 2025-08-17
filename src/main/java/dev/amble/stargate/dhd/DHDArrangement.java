@@ -31,9 +31,8 @@ public class DHDArrangement {
             symbolArrangement.add(new SymbolArrangement(
                     new Symbol(glyphs[18 + i]),
                     EntityDimensions.changing(0.1f, 0.1f),
-                    new Vector3f(x, 0.4f, z + 0.275f).rotateX((float) (Math.PI / -7)).rotateZ(0)
+                    new Vector3f(x, 0.4f, z + 0.25f).rotateX((float) (Math.PI / -7)).rotateZ(0)
             ));
-            System.out.print(glyphs[18 + i]);
         }
         // Outer ring
         for (int i = 0; i < outerCount; i++) {
@@ -44,9 +43,8 @@ public class DHDArrangement {
             symbolArrangement.add(new SymbolArrangement(
                     new Symbol(glyphs[i]),
                     EntityDimensions.changing(0.1f, 0.1f),
-                    new Vector3f(x, 0.4f, z + 0.275f).rotateX((float) (Math.PI / -7)).rotateZ(0)
+                    new Vector3f(x, 0.4f, z + 0.25f).rotateX((float) (Math.PI / -7)).rotateZ(0)
             ));
-            //System.out.print(glyphs[i]);
         }
     }
 
