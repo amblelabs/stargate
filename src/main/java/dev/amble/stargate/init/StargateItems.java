@@ -65,6 +65,22 @@ public class StargateItems extends ItemContainer {
 	@NoEnglish
 	public static final Item IRIS = new Item(new AItemSettings());
 
+	@AutomaticModel
+	@NoEnglish
+	public static final Item CONTROL_CRYSTAL_YELLOW = new Item(new AItemSettings());
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item CONTROL_CRYSTAL_BLUE = new Item(new AItemSettings());
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item CONTROL_CRYSTAL_RED = new Item(new AItemSettings());
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item CONTROL_CRYSTAL_MASTER = new Item(new AItemSettings());
+
 	static {
 		List<Item> items = new ArrayList<>();
 
