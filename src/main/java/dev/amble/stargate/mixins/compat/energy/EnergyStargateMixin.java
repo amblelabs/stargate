@@ -1,7 +1,10 @@
 package dev.amble.stargate.mixins.compat.energy;
 
+import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.kernels.BasicStargateKernel;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.StargateKernel;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.compat.energy.StargateRebornEnergy;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,15 +21,19 @@ public abstract class EnergyStargateMixin implements StargateRebornEnergy, Starg
 		@Override
 		protected void onFinalCommit() {
 			EnergyStargateMixin.this.energy = (int) this.amount;
-			EnergyStargateMixin.this.parent.markDirty();
+
+			Stargate gate = ServerStargateNetwork.get().get(EnergyStargateMixin.this.address);
+			if (gate == null) return;
+
+			gate.markDirty();
 		}
 	};
 
 	@Shadow
-	protected int energy;
+	protected long energy;
 
 	@Shadow
-	protected Stargate parent;
+	protected Address address;
 
 	@Override
 	public EnergyStorage getStorage() {
