@@ -82,7 +82,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         if (entity.hasStargate()) {
             var gate = entity.gate().get();
             GateState state = gate.kernel().state();
-            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
+            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6 && closed.hasDialButton()) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
             this.model.dialbutton.visible = !bl;
             this.model.dialbuttonlight.visible = bl;
             if (state instanceof GateState.Closed closed) {
