@@ -1,6 +1,8 @@
 package dev.amble.stargate.entities;
 
+import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
@@ -9,6 +11,7 @@ import dev.amble.stargate.dhd.SymbolArrangement;
 import dev.amble.stargate.dhd.control.SymbolControl;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;
+import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -63,7 +66,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         return false;
     }
 
-    public static SymbolArrangement[] getSymbolArrangement() {
+    public static List<SymbolArrangement> getSymbolArrangement() {
         return DHDArrangement.getSymbolArrangement();
     }
 
@@ -266,11 +269,25 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
             return;
         }
 
-        if (this.dhdBlockPos != null)
+        if (this.dhdBlockPos != null) {
             this.getWorld().playSound(null, this.getBlockPos(), this.control.getSound(), SoundCategory.BLOCKS, 0.7f,
                     1f);
+        }
 
         if (!this.control.canRun(stargate, (ServerPlayerEntity) player)) return;
+
+        if (this.getControl().getGlyph() != '*' && stargate.state() instanceof GateState.Closed closed) {
+            if (closed.locked() > 6) {
+                closed.setAddress("");
+                closed.setHasDialButton(false);
+                stargate.markDirty();
+                ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(stargate.address().pos().getDimension());
+                if (targetWorld != null) {
+                    targetWorld.playSound(null, stargate.address().pos().getPos(), StargateSounds.GATE_FAIL,
+                            SoundCategory.BLOCKS, 1.0f, 1.0f);
+                }
+            }
+        }
 
         this.control.runServer(stargate, (ServerPlayerEntity) player, (ServerWorld) world, this.dhdBlockPos,
                 leftClick);

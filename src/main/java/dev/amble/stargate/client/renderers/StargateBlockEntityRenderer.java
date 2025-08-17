@@ -11,7 +11,10 @@ import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.compat.DependencyChecker;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -36,12 +39,19 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        if (entity.getBlockSet() != null) {
+            BlockState blockState = entity.getBlockSet();
+            matrices.push();
+            MinecraftClient.getInstance().getBlockRenderManager().renderBlock(blockState, entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(blockState)), true, MinecraftClient.getInstance().world.getRandom());
+            matrices.pop();
+        }
+
         float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
 
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
 
-        matrices.translate(0.5f, 1.5f, 0.5f);
+        matrices.translate(0.5f, entity.hasStargate() && entity.gate().get().kernel() instanceof OrlinGateKernel ? 1.5f : 1.4f, 0.5f);
 
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
@@ -76,8 +86,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.setFromDialer(state, gate.kernel());
             float rotationValue = this.renderGlyphs(matrices, vertexConsumers, gate, lightAbove);
 
-            boolean bl = (entity.CHEVRON_LOCK_STATE.isRunning() && ((state instanceof GateState.Closed closed))
-                         || state instanceof GateState.Open || state instanceof GateState.PreOpen);
+            boolean bl = (state instanceof GateState.Closed closed && closed.locked() >= 7) || state instanceof GateState.PreOpen|| state instanceof GateState.Open;
 
             this.model.chev_light7.visible = bl;
             this.model.chev_light7bottom.visible = bl;

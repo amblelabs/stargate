@@ -1,5 +1,7 @@
 package dev.amble.stargate.dhd.control;
 
+import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.GlyphOriginRegistry;
 import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.init.StargateSounds;
@@ -25,8 +27,16 @@ public class SymbolControl {
     }
 
     public boolean runServer(Stargate stargate, ServerPlayerEntity player, ServerWorld world, BlockPos console) {
-        if (stargate.state() instanceof GateState.Closed closed)
-            closed.appendGlyph(this.glyph);
+        if (stargate.state() instanceof GateState.Closed closed) {
+            if (this.getGlyph() != '*' && !(closed.locked() > 6)) {
+                if (!closed.contains(this.glyph)) {
+                    closed.appendGlyph(this.glyph);
+                }
+            } else {
+                closed.setHasDialButton(true);
+            }
+            stargate.markDirty();
+        }
         return false;
     }
 
@@ -45,7 +55,7 @@ public class SymbolControl {
     }
 
     public boolean canRun(Stargate stargate, ServerPlayerEntity user) {
-        return stargate.state() instanceof GateState.Closed closed && closed.isDialing();
+        return stargate.state() instanceof GateState.Closed;
     }
 
     @Override

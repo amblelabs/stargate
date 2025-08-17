@@ -9,6 +9,7 @@ import dev.amble.stargate.client.overlays.WormholeOverlay;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
+import dev.amble.stargate.client.renderers.RingBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
@@ -19,6 +20,7 @@ import dev.amble.stargate.core.fluid.StargateFluids;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -68,6 +70,7 @@ public class StargateModClient implements ClientModInitializer {
     public void registerBlockEntityRenderers() {
         BlockEntityRendererFactories.register(StargateBlockEntities.STARGATE, StargateBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(StargateBlockEntities.DHD, DHDBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(StargateBlockEntities.RING, RingBlockEntityRenderer::new);
     }
 
     public void registerEntityRenderers() {

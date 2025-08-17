@@ -1,21 +1,33 @@
 package dev.amble.stargate.block.entities;
 
+import com.mojang.serialization.DataResult;
+import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.DHDBlock;
+import dev.amble.stargate.dhd.DHDArrangement;
 import dev.amble.stargate.dhd.SymbolArrangement;
+import dev.amble.stargate.dhd.control.SymbolControl;
+import dev.amble.stargate.dhd.control.impl.Symbol;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -40,25 +52,12 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
 
         Stargate target = this.gate().get();
 
+        if (target.state() instanceof GateState.Open || target.state() instanceof GateState.PreOpen) return ActionResult.FAIL;
+
         player.sendMessage(target.address().asText(), true);
 
         if (target.state() instanceof GateState.Closed closed)
             closed.setAddress(target.address().text());
-
-        /*
-        int counter = 0;
-        while (target == this.getStargate().get() && counter++ < 10) {
-            target = network.getRandom();
-        }
-
-        if (target == null) {
-            player.sendMessage(Text.literal("No stargates found"), true);
-            return ActionResult.FAIL;
-        }
-
-        this.getStargate().get().dial(target);
-        player.sendMessage(Text.literal("Dialing ").append(target.getAddress().toGlyphs()), true);
-        */
 
         return ActionResult.SUCCESS;
     }
@@ -66,7 +65,13 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     @Override
     public NbtCompound toInitialChunkDataNbt() {
         this.markNeedsControl();
-        return super.toInitialChunkDataNbt();
+        return createNbt();
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
@@ -94,17 +99,26 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
 
         if (!this.isLinked()) return;
 
-        SymbolArrangement[] controls = DHDControlEntity.getSymbolArrangement();
+        DHDArrangement.reloadArrangement(Glyph.ALL);
+
+        List<SymbolArrangement> controls = DHDControlEntity.getSymbolArrangement();
 
         for (SymbolArrangement control : controls) {
             DHDControlEntity controlEntity = DHDControlEntity.create(this.world, this.gate().get());
 
             Vector3f position = current.toCenterPos().toVector3f();
             Direction direction = this.world.getBlockState(this.getPos()).get(DHDBlock.FACING);
+
+            Vector3f offset = control.getOffset();
+            // Flip horizontally if facing north or south
+            if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+                offset = new Vector3f(-offset.x(), offset.y(), offset.z());
+            }
+
             position = new Vector3f(
-                    position.x + control.getOffset().x() * direction.getOffsetZ() + (-control.getOffset().z() * direction.getOffsetX()),
-                    position.y + control.getOffset().y(),
-                    position.z + control.getOffset().x() * direction.getOffsetX() - (control.getOffset().z() * direction.getOffsetZ())
+                    position.x + offset.x() * direction.getOffsetZ() + (-offset.z() * direction.getOffsetX()),
+                    position.y + offset.y(),
+                    position.z + offset.x() * direction.getOffsetX() - (offset.z() * direction.getOffsetZ())
             );
             controlEntity.setPosition(position.x(), position.y(), position.z());
             controlEntity.setYaw(0.0f);
@@ -115,6 +129,16 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
             serverWorld.spawnEntity(controlEntity);
             this.symbolControlEntities.add(controlEntity);
         }
+
+        DHDControlEntity dialButtonEntity = DHDControlEntity.create(this.world, this.gate().get());
+        dialButtonEntity.setPosition(current.getX() + 0.5, current.getY() + 0.9625015230849385f, current.getZ() + 0.5);
+        dialButtonEntity.setYaw(0.0f);
+        dialButtonEntity.setPitch(0.0f);
+        dialButtonEntity.setControlData(new SymbolArrangement(new SymbolControl('*'),
+                EntityDimensions.fixed(0.2f, 0.2f), new Vector3f(0, 0, 0)), this.getPos());
+
+        serverWorld.spawnEntity(dialButtonEntity);
+        this.symbolControlEntities.add(dialButtonEntity);
 
         this.needsSymbols = false;
     }
@@ -127,5 +151,15 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     public void tick(World world, BlockPos pos, BlockState state, DHDBlockEntity blockEntity) {
         if (this.needsSymbols)
             this.spawnControls();
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
     }
 }

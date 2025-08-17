@@ -83,10 +83,10 @@ public record Address(UUID id, String text, DirectedGlobalPos pos) {
 		char origin = GlyphOriginRegistry.getInstance().get(world).glyph();
 
 		for (int i = 0; i < LENGTH - 1; i++) {
-			char glyph = Glyph.pickRandom();
-			while (glyph == origin) {
+			char glyph;
+			do {
 				glyph = Glyph.pickRandom();
-			}
+			} while (glyph == origin || builder.indexOf(String.valueOf(glyph)) != -1);
 
 			builder.append(glyph);
 		}
