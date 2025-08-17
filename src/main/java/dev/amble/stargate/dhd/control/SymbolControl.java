@@ -30,7 +30,9 @@ public class SymbolControl {
         if (stargate.state() instanceof GateState.Closed closed) {
             if (this.getGlyph() != '*' && !(closed.locked() > 6)) {
                 if (!closed.contains(this.glyph)) {
+                    closed.setHasDialButton(false);
                     closed.appendGlyph(this.glyph);
+                    closed.lock();
                 }
             } else {
                 closed.setHasDialButton(true);

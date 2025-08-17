@@ -145,7 +145,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         if (state instanceof GateState.Closed closed) {
             int length = closed.addressBuilder().length();
 
-            if (length == 0 || length <= closed.locked()) {
+            if (length == 0 || (length <= closed.locked() && !closed.hasDialButton())) {
                 if (closed.locking()) {
                     closed.setLocking(false);
                     this.parent.markDirty();
@@ -163,7 +163,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
                 timer = 0;
 
-                closed.lock();
+                if (!closed.hasDialButton()) {
+                    closed.lock();
+                }
                 if (world != null) {
                     world.playSound(null,
                             this.address.pos().getPos(), StargateSounds.CHEVRON_LOCK,

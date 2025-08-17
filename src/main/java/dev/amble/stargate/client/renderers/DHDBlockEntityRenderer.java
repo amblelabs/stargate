@@ -4,7 +4,6 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.kernels.GateState;
-import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.client.models.DHDModel;
 import dev.amble.stargate.block.StargateBlock;
@@ -21,7 +20,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
@@ -71,15 +69,12 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         /*this.model.toplights.visible = true;
         this.model.bottomlights.visible = true;*/
-        // Animate the lights in a circle: only one is active at a time, based on world time
         List<ModelPart> allLights = new ArrayList<>();
         allLights.addAll(Arrays.asList(this.bottomlights));
         allLights.addAll(Arrays.asList(this.toplights));
 
-        // Use a persistent random seed based on world time, changing every 3 seconds
-        long seed = MinecraftClient.getInstance().world.getTime() / 60; // 20 ticks per second * 3 = 60
+        long seed = MinecraftClient.getInstance().world.getTime() / 60;
 
-        // Hide all lights
         for (ModelPart lights : allLights) {
             lights.visible = false;
         }
@@ -105,7 +100,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
                 }
             } else if (state instanceof GateState.PreOpen preOpen) {
                 String address = preOpen.address();
-                for (int i = 0; i < address.length(); i++) {
+                for (int i = 0; i < address.length() - 1; i++) {
                     char target = address.charAt(i);
                     for (int a = 0; a < Glyph.ALL.length; a++) {
                         if (Glyph.ALL[a] == target) {
@@ -116,7 +111,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
                 }
             } else if (state instanceof GateState.Open open) {
                 String address = open.target().get().address().text();
-                for (int i = 0; i < address.length(); i++) {
+                for (int i = 0; i < address.length() - 1; i++) {
                     char target = address.charAt(i);
                     for (int a = 0; a < Glyph.ALL.length; a++) {
                         if (Glyph.ALL[a] == target) {
