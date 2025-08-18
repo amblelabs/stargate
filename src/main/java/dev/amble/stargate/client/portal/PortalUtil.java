@@ -101,7 +101,7 @@ public class PortalUtil {
         // Add central big ripple if active
 
         if (state instanceof GateState.PreOpen) {
-            triggerCentralRipple(0.07f, 0.6f, 0.01f, 0.2f);
+            triggerCentralRipple(0.05f, 0.6f, 0.01f, 0.2f);
         }
 
         CentralRippleParams central = getCentralRipple();

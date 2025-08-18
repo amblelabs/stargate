@@ -38,6 +38,16 @@ public class SymbolControl {
                 closed.setHasDialButton(true);
             }
             stargate.markDirty();
+        } else if (stargate.state() instanceof GateState.Open open) {
+            System.out.println("HELLO?");
+            if (this.getGlyph() == '*') {
+                stargate.kernel().setState(new GateState.Closed());
+                stargate.markDirty();
+                Stargate gate = open.target().get();
+
+                gate.kernel().setState(new GateState.Closed());
+                gate.markDirty();
+            }
         }
         return false;
     }
@@ -57,7 +67,7 @@ public class SymbolControl {
     }
 
     public boolean canRun(Stargate stargate, ServerPlayerEntity user) {
-        return stargate.state() instanceof GateState.Closed;
+        return stargate.state() instanceof GateState.Closed || stargate.state() instanceof GateState.Open;
     }
 
     @Override
