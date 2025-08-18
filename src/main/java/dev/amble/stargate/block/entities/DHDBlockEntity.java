@@ -3,6 +3,7 @@ package dev.amble.stargate.block.entities;
 import com.mojang.serialization.DataResult;
 import dev.amble.stargate.api.Glyph;
 import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.dhd.DHDArrangement;
@@ -161,5 +162,12 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
+    }
+
+
+    // Silly little method to prevent certain blocks from linking to gates for whatever reason
+    @Override
+    public boolean preventLinkingToStargate(Stargate stargate) {
+        return stargate.kernel() instanceof OrlinGateKernel;
     }
 }

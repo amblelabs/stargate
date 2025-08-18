@@ -191,6 +191,12 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                     }
                     if (target != null) {
                         target.kernel().setState(new GateState.PreOpen("", false));
+                        ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(target.address().pos().getDimension());
+                        if (targetWorld != null) {
+                            targetWorld.playSound(null,
+                                    target.address().pos().getPos(), StargateSounds.GATE_OPEN,
+                                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        }
                     }
                 }
 

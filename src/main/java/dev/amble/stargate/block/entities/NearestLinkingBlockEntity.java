@@ -25,13 +25,19 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 		this.sendLinkMessage = sendLinkMessage;
 	}
 
+	public abstract boolean preventLinkingToStargate(Stargate gate);
+
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
 		if (world.isClient()) return;
 
 		Stargate nearest = ServerStargateNetwork.get().getNearTo(GlobalPos.create(world.getRegistryKey(), pos), 64).orElse(null);
 		if (nearest == null) return;
 
-		this.setStargate(new StargateRef(nearest));
+		StargateRef ref = new StargateRef(nearest);
+
+		if (this.preventLinkingToStargate(ref.get())) return;
+
+		this.setStargate(ref);
 
 		if (sendLinkMessage && placer instanceof ServerPlayerEntity player) {
 			// FIXME: use translations
