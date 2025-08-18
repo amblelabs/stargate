@@ -46,10 +46,6 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item TOASTER = new Item(new AItemSettings());
-
-	@AutomaticModel
-	@NoEnglish
 	public static final Item COPPER_COIL = new Item(new AItemSettings());
 
 	// Iris
@@ -80,6 +76,14 @@ public class StargateItems extends ItemContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Item CONTROL_CRYSTAL_MASTER = new Item(new AItemSettings());
+
+    @AutomaticModel
+    @NoEnglish
+    public static final Item TOAST = new Item(new AItemSettings().group(StargateItemGroups.MAIN).food(StargateFoodComponenets.TOAST));
+
+    @AutomaticModel
+    @NoEnglish
+    public static final Item BURNT_TOAST = new Item(new AItemSettings().group(StargateItemGroups.MAIN).food(StargateFoodComponenets.TOAST));
 
 	static {
 		List<Item> items = new ArrayList<>();

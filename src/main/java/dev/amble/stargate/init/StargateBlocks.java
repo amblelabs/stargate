@@ -11,6 +11,7 @@ import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.StargateRingBlock;
+import dev.amble.stargate.block.ToasterBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.Instrument;
@@ -62,6 +63,12 @@ public class StargateBlocks extends BlockContainer {
 	public static final Block RAW_NAQUADAH_BLOCK = new Block(ABlockSettings.create()
 			.itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
 			.strength(15.0F, 7.5F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.NETHERITE));
+
+    @NoEnglish
+    @PickaxeMineable(tool = PickaxeMineable.Tool.STONE)
+    public static final Block TOASTER = new ToasterBlock(ABlockSettings.create()
+            .itemSettings(new AItemSettings().group(StargateItemGroups.MAIN)).nonOpaque().requiresTool()
+            .strength(10.0F, 1.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.METAL));
 
 	@Override
 	public Item.Settings createBlockItemSettings(Block block) {

@@ -4,6 +4,7 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
+import dev.amble.stargate.item.StargateItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
@@ -53,5 +54,21 @@ public class StargateAchievementProvider extends FabricAdvancementProvider {
                         null, AdvancementFrame.GOAL, true, true, true)
                 .criterion("obtain_liquid_naquadah", InventoryChangedCriterion.Conditions.items(StargateFluids.LIQUID_NAQUADAH))
                 .build(consumer, StargateMod.MOD_ID + "/obtain_liquid_naquadah");
+
+        Advancement toaster = Advancement.Builder.create().parent(root)
+                .display(StargateBlocks.TOASTER,
+                        Text.translatable("achievement.stargate.title.obtain_toaster"),
+                        Text.translatable("achievement.stargate.description.obtain_toaster"),
+                        null, AdvancementFrame.GOAL, true, true, true)
+                .criterion("obtain_toaster", InventoryChangedCriterion.Conditions.items(StargateBlocks.TOASTER))
+                .build(consumer, StargateMod.MOD_ID + "/obtain_toaster");
+
+        Advancement burnt_toast = Advancement.Builder.create().parent(toaster)
+                .display(StargateItems.BURNT_TOAST,
+                        Text.translatable("achievement.stargate.title.obtain_burnt_toast"),
+                        Text.translatable("achievement.stargate.description.obtain_burnt_toast"),
+                        null, AdvancementFrame.CHALLENGE, true, true, true)
+                .criterion("obtain_burnt_toast", InventoryChangedCriterion.Conditions.items(StargateItems.BURNT_TOAST))
+                .build(consumer, StargateMod.MOD_ID + "/obtain_burnt_toast");
     }
 }

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "stargate:block/toaster" },
+    "facing=south": { "model": "stargate:block/toaster", "y": 180 },
+    "facing=west": { "model": "stargate:block/toaster", "y": 270 },
+    "facing=east": { "model": "stargate:block/toaster", "y": 90 }
+  }
+}

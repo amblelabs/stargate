@@ -175,7 +175,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                             .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT)));
 
             provider.addShapedRecipe(
-                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateItems.TOASTER)
+                    ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, StargateBlocks.TOASTER)
                             .pattern("ICI")
                             .pattern("ICI")
                             .pattern("SRS")
@@ -273,6 +273,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateBlocks.NAQUADAH_BLOCK, "Block of Naquadah");
             provider.addTranslation(StargateBlocks.RAW_NAQUADAH_BLOCK, "Block of Raw Naquadah");
             provider.addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");
+            provider.addTranslation(StargateBlocks.TOASTER, "Toaster");
 
             //Items
             provider.translateItems(StargateItems.class);
@@ -286,11 +287,12 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah Container");
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
             provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
-            provider.addTranslation(StargateItems.TOASTER, "Toaster");
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_BLUE, "Blue Control Crystal");
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_YELLOW, "Yellow Control Crystal");
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_RED, "Red Control Crystal");
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_MASTER, "Master Control Crystal");
+            provider.addTranslation(StargateItems.TOAST, "Toast");
+            provider.addTranslation(StargateItems.BURNT_TOAST, "Burnt Toast");
 
             //Misc
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");
@@ -320,6 +322,12 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addTranslation("achievement.stargate.title.obtain_liquid_naquadah", "Enough power to dial the Eighth Chevron...?!");
             provider.addTranslation("achievement.stargate.description.obtain_liquid_naquadah", "Create or find, then put Liquid Naquadah into a Container.");
+
+            provider.addTranslation("achievement.stargate.title.obtain_toaster", "You'll need a new one after this!");
+            provider.addTranslation("achievement.stargate.description.obtain_toaster", "Make a toaster for the Orlin gate.");
+
+            provider.addTranslation("achievement.stargate.title.obtain_burnt_toast", "Bit too long in the toaster");
+            provider.addTranslation("achievement.stargate.description.obtain_burnt_toast", "Obtain burnt toast!");
 
             return provider;
         })));
