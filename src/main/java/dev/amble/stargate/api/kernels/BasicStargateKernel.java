@@ -5,6 +5,7 @@ import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.TeleportableEntity;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.Stargate;
@@ -95,7 +96,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 return;
         }
 
-        Vec3d offset = entity.getPos().subtract(pos.toCenterPos().add(0, -0.5, 0.5));
+        Vec3d offset = entity.getPos().subtract(pos.toCenterPos().add(0, -0.5, 0));
 
         ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(targetPos.getDimension());
         BlockPos targetBlockPos = targetPos.getPos();
@@ -105,7 +106,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
         double yOffset = 0;
         for (int y = 1; y <= 5; y++) {
-            if (!targetWorld.getBlockState(targetBlockPos.up(y)).isAir()) {
+            boolean bottomIsAir = targetWorld.getBlockState(targetBlockPos.up(y)).isAir();
+            boolean belowIsAir = targetWorld.getBlockState(targetBlockPos.up(y - 1)).isAir();
+            if (!bottomIsAir || !belowIsAir) {
                 yOffset = y;
                 break;
             }
@@ -143,6 +146,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             return;
 
         if (state instanceof GateState.Closed closed) {
+            if (this instanceof OrlinGateKernel && closed.locked() > 6) closed.setHasDialButton(true);
             int length = closed.addressBuilder().length();
 
             if (length == 0 || (length <= closed.locked() && !closed.hasDialButton())) {
