@@ -51,6 +51,7 @@ public class DialerItem extends StargateLinkableItem {
 			if (gate.state() instanceof GateState.Closed closed) {
 				// TODO: add a way to dial directly without having to address->text->address
 				closed.setAddress(target.address().text());
+				closed.setHasDialButton(false);
 				gate.markDirty();
 			}
 

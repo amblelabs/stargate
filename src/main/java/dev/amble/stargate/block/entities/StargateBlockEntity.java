@@ -193,7 +193,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
 
 		if (!world.isClient()) {
-			if (this.gate().isEmpty()) return;
+			if (this.gate() == null || this.gate().isEmpty()) return;
 			Stargate gate = this.gate().get();
 			if (gate == null) return;
 
@@ -234,15 +234,17 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (world.isClient()) {
 			age++;
 
-			ANIM_STATE.startIfNotRunning(age);
-
 			if (this.hasStargate()) {
 				Stargate gate = this.gate().get();
+
+				ANIM_STATE.startIfNotRunning(age);
+
 				// Run if there is a selected glyph and it is being added to the locked amount
 				if (gate.state() instanceof GateState.Closed closed && closed.locking()) {
 					//CHEVRON_LOCK_STATE.startIfNotRunning(age);
 					IRIS_CLOSE_STATE.stop();
 					IRIS_OPEN_STATE.stop();
+					return;
 				} /*else {
 					CHEVRON_LOCK_STATE.stop();
 				}*/

@@ -14,8 +14,11 @@ public class StargateSounds implements SoundContainer {
 	public static final SoundEvent RING_LOOP = create("ring_loop");
 	public static final SoundEvent RING_START = create("ring_start");
 	public static final SoundEvent DHD_PRESS = create("dhd_press");
+
+	// Toaster
 	public static final SoundEvent TOASTER = create("toaster");
 	public static final SoundEvent TOASTER_ACTIVE = create("toaster_active");
+	public static final SoundEvent DING = create("ding");
 
 	// Iris
 	public static final SoundEvent IRIS_HIT = create("iris_hit");

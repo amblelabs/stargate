@@ -1,9 +1,13 @@
 package dev.amble.stargate.block;
 
+import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.item.StargateItem;
 import dev.amble.stargate.item.StargateLinkableItem;
@@ -44,6 +48,17 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 		super(settings);
 
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(IRIS, false));
+	}
+
+	public static void setBlockAndCreateStargate(World world, BlockPos pos, GateKernelRegistry.KernelCreator kernel, Direction facing) {
+		if (world.isClient()) return;
+		BlockState state = StargateBlocks.STARGATE.getDefaultState().with(StargateBlock.FACING, facing);
+		world.setBlockState(pos, state, 3);
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof StargateBlockEntity stargateBe) {
+			stargateBe.onPlacedWithKernel(world, pos, kernel);
+			world.playSound(null, pos, StargateSounds.DING, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		}
 	}
 
 	@Nullable
@@ -162,11 +177,11 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-		if (!(itemStack.getItem() instanceof StargateItem stargateItem)) return;
-		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			be.onPlacedWithKernel(world, pos, stargateItem.getCreator());
+		if (itemStack.getItem() instanceof StargateItem stargateItem) {
+			if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
+				be.onPlacedWithKernel(world, pos, stargateItem.getCreator());
+			}
 		}
-
 		super.onPlaced(world, pos, state, placer, itemStack);
 	}
 

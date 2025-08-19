@@ -10,7 +10,9 @@ import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.ToasterBlock;
 import dev.amble.stargate.init.StargateAttributes;
+import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateDamages;
 import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.entity.LivingEntity;
@@ -22,6 +24,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -146,7 +149,21 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             return;
 
         if (state instanceof GateState.Closed closed) {
-            if (this instanceof OrlinGateKernel && closed.locked() > 6) closed.setHasDialButton(true);
+            if (this instanceof OrlinGateKernel) {
+                ServerWorld world = ServerLifecycleHooks.get().getWorld(World.NETHER);
+                if (world != null) {
+                    Stargate netherGate = ServerStargateNetwork.getInstance(world).getRandom();
+                    if (netherGate != null) {
+                        if (ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension()).getBlockState(this.address.pos().getPos().north()).getBlock() == StargateBlocks.TOASTER) {
+                            closed.setAddress(netherGate.address().text());
+                        }
+                    }
+                    if (closed.locked() > 6) {
+                        closed.setHasDialButton(true);
+                    }
+                }
+
+            }
             int length = closed.addressBuilder().length();
 
             if (length == 0 || (length <= closed.locked() && !closed.hasDialButton())) {
@@ -163,7 +180,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 return;
             }
 
-            if (timer >= this.ticksPerGlyph() || closed.hasDialButton()) {
+            if (timer >= this.ticksPerGlyph() || (closed.hasDialButton() && closed.locked() > 6)) {
                 ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
                 timer = 0;
 
@@ -219,23 +236,28 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         } else if (this.state instanceof GateState.PreOpen preOpen) {
             // Handle missing gates by address gracefully
             Stargate target = ServerStargateNetwork.get().get(preOpen.address());
-            if (this.shouldKawooshOscillate != 4) {
-                if (this.shouldKawooshOscillate % 2 != 0) {
-                    if (this.shouldKawooshOscillate == 3) {
-                        if (this.kawooshHeight >= 0) {
-                            this.shouldKawooshOscillate++;
-                        }
-                    }
-                    this.kawooshHeight += 0.5f;
-                    if (this.kawooshHeight >= 7.0f) {
-                        this.shouldKawooshOscillate++;
-                    }
-                } else {
-                    this.kawooshHeight -= 0.5f;
-                    if (this.kawooshHeight <= -5.0f) {
-                        this.shouldKawooshOscillate++;
-                    }
-                }
+            // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
+            float t = (float) timer / ((float) this.ticksPerKawoosh() * 1.25f);
+
+// Remap t to ease in and out, spending more time near p1 and p2
+// Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle
+            float tPrime = (float) (3 * Math.pow(t, 2) - 2 * Math.pow(t, 3));
+            if (tPrime > 1.0f) tPrime = 1.0f;
+            if (tPrime < 0.0f) tPrime = 0.0f;
+
+            float p0 = 0.0f;
+            float p1 = 22.0f;
+            float p2 = -12.0f;
+            float p3 = 0.0f;
+            this.kawooshHeight = (float) (
+                    Math.pow(1 - tPrime, 3) * p0 +
+                            3 * Math.pow(1 - tPrime, 2) * tPrime * p1 +
+                            3 * (1 - tPrime) * Math.pow(tPrime, 2) * p2 +
+                            Math.pow(tPrime, 3) * p3
+            );
+
+            if (tPrime >= 1.0f) {
+                this.shouldKawooshOscillate = 4;
             }
             this.markDirty();
             if (timer > this.ticksPerKawoosh() && this.shouldKawooshOscillate == 4) {

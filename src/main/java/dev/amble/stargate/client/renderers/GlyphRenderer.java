@@ -46,13 +46,13 @@ public class GlyphRenderer {
             boolean isInDial = state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == selectedIndex;
 
-            int colour = gate.kernel() instanceof PegasusGateKernel ? 0xffffff : 0x17171b;
+            int colour = gate.kernel() instanceof PegasusGateKernel ? 0xffffff : 0x5c5c73;
 
             if (isInDial) {
-                colour = 0x17171b;
+                colour = 0x5c5c73;
             }
             if (isSelected && isDialing) {
-                colour = 0x17171b;
+                colour = 0x5c5c73;
             }
 
             matrices.push();

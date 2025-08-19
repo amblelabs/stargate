@@ -72,11 +72,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             emission = getEmissionForGate(gate);
             if (gate.kernel() instanceof OrlinGateKernel) {
                 if (DependencyChecker.hasIris()) {
-                    ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+                    if (!(state instanceof GateState.Closed)) ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
                 }
                 ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
                 if (!DependencyChecker.hasIris()) {
-                    ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
+                    if (!(state instanceof GateState.Closed)) ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
                 }
                 matrices.pop();
                 PortalRendering.PORTAL_RENDER_QUEUE.add(entity);

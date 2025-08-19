@@ -61,6 +61,18 @@ public abstract class StargateNetwork<T extends Stargate> {
         return lookup.get(id);
 	}
 
+	public @Nullable T getRandom() {
+		int size = lookup.size();
+		if (size == 0) return null;
+		int randomIndex = (int) (Math.random() * size);
+		int i = 0;
+		for (T stargate : lookup.values()) {
+			if (i == randomIndex) return stargate;
+			i++;
+		}
+		return null;
+	}
+
 	/**
 	 * Removes an address from the phone book.
 	 * @param address the address to remove

@@ -21,10 +21,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntity> {
     public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd.png");
@@ -155,13 +158,13 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             boolean isInDial = false;//state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == selectedIndex;
 
-            int colour = /*gate.kernel instanceof PegasusGateKernel ? 0xffffff : */0xababab;
+            int colour = /*gate.kernel instanceof PegasusGateKernel ? 0xffffff : */0x6f7287;
 
             if (isInDial) {
-                colour = 0xababab;
+                colour = 0x6f7287;
             }
             if (isSelected && isDialing) {
-                colour = 0xababab;
+                colour = 0x6f7287;
             }
 
             matrices.push();
@@ -174,8 +177,8 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.translate(Math.sin(angle) * 18.95 * 2.35f, Math.cos(angle) * 18.95 * 2.35f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
             OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[i]));*/Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
-            renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
+            renderer.draw(text, -renderer.getWidth(text) / 2f, -4, 0x6f7287, false,
+                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0,  light);
             matrices.pop();
         }
 
@@ -183,13 +186,13 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             boolean isInDial = false;//state instanceof GateState.Closed closed && closed.contains(Glyph.ALL[i]);
             boolean isSelected = i == selectedIndex;
 
-            int colour = /*gate.kernel instanceof PegasusGateKernel ? 0xffffff : */0xababab;
+            int colour = /*gate.kernel instanceof PegasusGateKernel ? 0xffffff : */0x6f7287;
 
             if (isInDial) {
-                colour = 0xababab;
+                colour = 0x6f7287;
             }
             if (isSelected && isDialing) {
-                colour = 0xababab;
+                colour = 0x6f7287;
             }
 
             matrices.push();
@@ -202,7 +205,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
             OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[18 + i]));*/Address.asText(String.valueOf(Glyph.ALL[18 + i])).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
+                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, light);
             matrices.pop();
         }
         matrices.pop();

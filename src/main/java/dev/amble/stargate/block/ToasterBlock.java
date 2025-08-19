@@ -1,22 +1,30 @@
 package dev.amble.stargate.block;
 
 import dev.amble.lib.block.ABlockSettings;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
 import dev.drtheo.scheduler.api.client.ClientScheduler;
+import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -52,7 +60,7 @@ public class ToasterBlock extends Block {
         boolean isSneaking = ctx.getPlayer() != null && ctx.getPlayer().isSneaking();
 
         return this.getDefaultState()
-                .with(FACING, ctx.getHorizontalPlayerFacing());
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }
 
     @Override
@@ -64,6 +72,50 @@ public class ToasterBlock extends Block {
                               PlayerEntity player,
                               Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
+            if (player.getMainHandStack().isEmpty()) {
+                Direction facing = state.get(FACING);
+
+                // Define relative positions and required blocks
+                BlockPos[] positions = {
+                        pos.up(), // up
+                        pos.offset(facing.rotateYClockwise()), // east
+                        pos.offset(facing.rotateYCounterclockwise()), // west
+                        pos.down(), // down
+                        pos.up().offset(facing.rotateYClockwise()), // upEast
+                        pos.up().offset(facing.rotateYCounterclockwise()), // upWest
+                        pos.down().offset(facing.rotateYClockwise()), // downEast
+                        pos.down().offset(facing.rotateYCounterclockwise()) // downWest
+                };
+                Block[] requiredBlocks = {
+                        Blocks.IRON_BLOCK, // up
+                        Blocks.IRON_BLOCK, // east
+                        Blocks.IRON_BLOCK, // west
+                        StargateBlocks.NAQUADAH_BLOCK, // down
+                        Blocks.CUT_COPPER_STAIRS, // upEast
+                        Blocks.CUT_COPPER_STAIRS, // upWest
+                        Blocks.CUT_COPPER_STAIRS, // downEast
+                        Blocks.CUT_COPPER_STAIRS // downWest
+                };
+
+                boolean valid = true;
+                for (int i = 0; i < positions.length; i++) {
+                    if (world.getBlockState(positions[i]).getBlock() != requiredBlocks[i]) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid) {
+                    // Clear all involved blocks
+                    for (BlockPos clearPos : positions) {
+                        world.setBlockState(clearPos, Blocks.AIR.getDefaultState());
+                    }
+                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                    world.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
+                    StargateBlock.setBlockAndCreateStargate(world, pos.down(), GateKernelRegistry.get().get(OrlinGateKernel.ID), facing);
+                }
+                return ActionResult.SUCCESS;
+            }
             if (player.getStackInHand(hand).getItem() == Items.BREAD) {
                 player.getStackInHand(hand).decrement(1);
                 world.playSound(
@@ -82,7 +134,7 @@ public class ToasterBlock extends Block {
                         1.0F,
                         1.0F
                 );
-                ClientScheduler.get().runTaskLater(() -> {
+                Scheduler.get().runTaskLater(() -> {
                     ItemStack toastItem = new ItemStack(StargateItems.TOAST);
                     toastItem.setCount(1);
                     Vec3d spawnPosition = Vec3d.ofCenter(pos).add(0, 0.4, 0);
@@ -92,11 +144,19 @@ public class ToasterBlock extends Block {
                             null,
                             pos,
                             StargateSounds.TOASTER,
-                            net.minecraft.sound.SoundCategory.BLOCKS,
+                            SoundCategory.BLOCKS,
+                            0.75F,
+                            1.0F
+                    );
+                    world.playSound(
+                            null,
+                            pos,
+                            StargateSounds.DING,
+                            SoundCategory.BLOCKS,
                             1.0F,
                             1.0F
                     );
-                }, TimeUnit.SECONDS, 10);
+                }, TaskStage.endWorldTick((ServerWorld) world), TimeUnit.SECONDS, 10);
 
                 return ActionResult.SUCCESS;
             }
@@ -119,7 +179,7 @@ public class ToasterBlock extends Block {
                         1.0F,
                         1.0F
                 );
-                ClientScheduler.get().runTaskLater(() -> {
+                Scheduler.get().runTaskLater(() -> {
                     ItemStack toastItem = new ItemStack(StargateItems.BURNT_TOAST);
                     toastItem.setCount(1);
                     Vec3d spawnPosition = Vec3d.ofCenter(pos).add(0, 0.4, 0);
@@ -129,17 +189,25 @@ public class ToasterBlock extends Block {
                             null,
                             pos,
                             StargateSounds.TOASTER,
-                            net.minecraft.sound.SoundCategory.BLOCKS,
+                            SoundCategory.BLOCKS,
+                            0.75F,
+                            1.0F
+                    );
+                    world.playSound(
+                            null,
+                            pos,
+                            StargateSounds.DING,
+                            SoundCategory.BLOCKS,
                             1.0F,
                             1.0F
                     );
-                }, TimeUnit.SECONDS, 10);
+                }, TaskStage.endWorldTick((ServerWorld) world), TimeUnit.SECONDS, 10);
 
                 return ActionResult.SUCCESS;
             }
 
         }
         return ActionResult.PASS;
-}
+    }
 
 }
