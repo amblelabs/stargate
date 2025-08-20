@@ -50,15 +50,8 @@
 </h2>
 
 This mod adds a new way to travel around your minecraft world and its many dimensions!
-This large ring structure can be found naturally in the deserts of your world (simulary to the show).
 
-When a stargate is activated, it will create a wormhole to another stargate, allowing players to travel between the two points.
-
-Each stargate has its own unique address consisting of 7 points; 6 of them used as points of reference in space, and the 7th being its "Point of Origin".
-
-To keep the minecraft theme, instead of using the same glyphs as the series does, we've decided to use the minecraft standard galactic alphabet (each symbol corrisponds with a letter from the alphabet). Please see the Gallery to see what letter is what symbol.
-
-[<img alt="minecraft storage" height="56" src="https://cdn.modrinth.com/data/cached_images/3a98e120295ec956896ba5adcdc27d7e83826f6e_0.webp">](https://minecraftstorage.com/mods/stargate)
+To keep the minecraft theme, instead of using the same glyphs as the series does, we've decided to use the minecraft standard galactic alphabet (each symbol corrisponds with a letter from the alphabet).
 
 -------------------
 
@@ -71,28 +64,6 @@ To keep the minecraft theme, instead of using the same glyphs as the series does
   How do I use this mod?
 </h2>
 
-Once you have discovered a stargate, you can dial it in one of three ways:
+If you are struggling to use this mod, please check out the [WIKI!](https://amblelabs.github.io/stargate-wiki/)
 
-- Dial-Home Device
-- Spectral Projector
-- Manual Dialing
-
-### DHD (Dial-Home Device)
-
-The DHD is a costly but efficient way to easily dial a stargate.
-
-On the DHD, you will find the same symbols as seen on the gate. To dial a stargate, you must press the corresponding chevron symbols on the DHD in the correct order.
-
-Right-click the DHD to dial the address related to the stargate that has that same address. (the DHD will need to be linked to a stargate to work)
-
-### Spectral Projector
-
-Unlike the DHD, the Spectral Projector is a much cheaper way to dial a stargate.
-
-It is a one-time use item that allows you to dial a stargate by linking it to the gate you wish to dial, you then right-click it on the stargate you want to travel from!
-
-### Manual Dialing
-
-You can manually input an address by right-clicking the stargate.
-
-Right-click the gate to rotate it clockwise, shift right-click the gate to lock in the current symbol/chevron.
+[<img alt="minecraft storage" height="56" src="https://cdn.modrinth.com/data/cached_images/3a98e120295ec956896ba5adcdc27d7e83826f6e_0.webp">](https://minecraftstorage.com/mods/stargate)
