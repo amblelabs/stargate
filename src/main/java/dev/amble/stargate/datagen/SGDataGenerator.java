@@ -81,7 +81,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
                     .criterion(hasItem(Items.ENDER_PEARL), conditionsFromItem(Items.ENDER_PEARL)));
 
-            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateItems.IRIS_BLADE, 1)
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.IRIS_BLADE, 1)
+                            .group("iris")
                     .pattern("II ")
                     .pattern("  N")
                     .pattern("   ")
@@ -90,7 +91,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT))
                     .criterion(hasItem(StargateItems.NAQUADAH_NUGGET), conditionsFromItem(StargateItems.NAQUADAH_NUGGET)));
 
-            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateItems.IRIS_FRAME, 1)
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.IRIS_FRAME, 1)
+                    .group("iris")
                     .pattern("NIN")
                     .pattern("I I")
                     .pattern("NIN")
@@ -99,7 +101,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT))
                     .criterion(hasItem(StargateItems.NAQUADAH_NUGGET), conditionsFromItem(StargateItems.NAQUADAH_NUGGET)));
 
-            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateItems.IRIS, 1)
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.IRIS, 1)
+                    .group("iris")
                     .pattern("BBB")
                     .pattern("BFB")
                     .pattern("BBB")
@@ -108,14 +111,16 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(StargateItems.IRIS_FRAME), conditionsFromItem(StargateItems.IRIS_FRAME))
                     .criterion(hasItem(StargateItems.IRIS_BLADE), conditionsFromItem(StargateItems.IRIS_BLADE)));
 
-            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.NAQUADAH_BLOCK, 1)
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateBlocks.NAQUADAH_BLOCK, 1)
+                    .group("naquadah")
                     .pattern("III")
                     .pattern("III")
                     .pattern("III")
                     .input('I', StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
 
-            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)
+            provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)
+                    .group("naquadah")
                     .pattern("RRR")
                     .pattern("RRR")
                     .pattern("RRR")
@@ -125,6 +130,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 1)
+                            .group("naquadah")
                             .pattern("NNN")
                             .pattern("NNN")
                             .pattern("NNN")
@@ -135,6 +141,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapelessRecipe(
                     ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 9)
+                            .group("naquadah")
                             .input(StargateBlocks.NAQUADAH_BLOCK)
                             .criterion(hasItem(StargateBlocks.NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.NAQUADAH_BLOCK)),
                     new Identifier("stargate", "naquadah_ingot_recipe_from_block")
@@ -142,6 +149,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapelessRecipe(
                     ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.RAW_NAQUADAH, 9)
+                            .group("naquadah")
                             .input(StargateBlocks.RAW_NAQUADAH_BLOCK)
                             .criterion(hasItem(StargateBlocks.RAW_NAQUADAH_BLOCK), conditionsFromItem(StargateBlocks.RAW_NAQUADAH_BLOCK)),
                     new Identifier("stargate", "raw_naquadah_recipe_from_block")
@@ -152,6 +160,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(hasItem(StargateItems.RAW_NAQUADAH), conditionsFromItem(StargateItems.RAW_NAQUADAH)));
 
             provider.addShapelessRecipe(ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.NAQUADAH_NUGGET,9)
+                    .group("naquadah")
                     .input(StargateItems.NAQUADAH_INGOT)
                     .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT)));
 
@@ -190,6 +199,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_RED, 1)
+                            .group("crystal")
                             .pattern("DAD")
                             .pattern("RAR")
                             .pattern(" R ")
@@ -202,6 +212,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_YELLOW, 1)
+                            .group("crystal")
                             .pattern("DAD")
                             .pattern("RAR")
                             .pattern(" R ")
@@ -214,6 +225,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_BLUE, 1)
+                            .group("crystal")
                             .pattern("DAD")
                             .pattern("RAR")
                             .pattern(" R ")
@@ -226,6 +238,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             provider.addShapedRecipe(
                     ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.CONTROL_CRYSTAL_MASTER, 1)
+                            .group("crystal")
                             .pattern("DAD")
                             .pattern("RAR")
                             .pattern(" R ")
