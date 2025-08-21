@@ -66,7 +66,7 @@ public class StargateMod implements ModInitializer {
 				DHDControlEntity.createDummyAttributes());
 	}
 
-	public static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
-	}
+    public static Identifier id(String path) {
+        return new Identifier(MOD_ID, path);
+    }
 }

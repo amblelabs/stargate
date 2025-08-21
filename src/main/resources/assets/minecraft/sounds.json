@@ -1,0 +1,12 @@
+
+{
+  "music.menu": {
+    "replace": true,
+    "sounds": [
+      {
+        "name": "stargate:theme",
+        "stream": true
+      }
+    ]
+  }
+}
