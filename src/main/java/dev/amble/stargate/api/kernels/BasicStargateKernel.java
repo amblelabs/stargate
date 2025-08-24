@@ -3,6 +3,7 @@ package dev.amble.stargate.api.kernels;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
+import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.TeleportableEntity;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
@@ -14,10 +15,14 @@ import dev.amble.stargate.init.StargateAttributes;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateDamages;
 import dev.amble.stargate.init.StargateSounds;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -134,6 +139,19 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                 targetBlockPos.toCenterPos().add(offset).add(0, yOffset, 0),
                 targetPos.getRotationDegrees()
         );
+
+        //noinspection UnstableApiUsage
+        entity.modifyAttached(StargateMod.HAS_PASSED_THROUGH_STARGATE, (bl) -> {
+            if (bl == null || !bl) {
+                entity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4,
+                        2, false, false, true));
+            }
+            return true;
+        });
+
+        if (entity.canFreeze())
+            entity.setFrozenTicks(100);
+
         entity.setVelocity(newVelocity);
 
         holder.stargate$setTicks(TELEPORT_DELAY);

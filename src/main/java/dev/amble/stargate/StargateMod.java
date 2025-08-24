@@ -1,5 +1,6 @@
 package dev.amble.stargate;
 
+import com.mojang.serialization.Codec;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.GlyphOriginRegistry;
@@ -13,9 +14,12 @@ import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.*;
 import dev.amble.stargate.world.gen.StargateWorldGeneration;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +28,9 @@ import java.util.Random;
 public class StargateMod implements ModInitializer {
 	public static final String MOD_ID = "stargate";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	// Attachments
+	public static AttachmentType<Boolean> HAS_PASSED_THROUGH_STARGATE;
 
 	// FIXME: get rid of this
 	public static final Random RANDOM = new Random();
@@ -53,6 +60,9 @@ public class StargateMod implements ModInitializer {
 		RegistryContainer.register(StargateAttributes.class, MOD_ID);
 		RegistryContainer.register(StargateStatusEffects.class, MOD_ID);
 
+		// Attachments
+		registerAttachments();
+
 		StargateWorldGeneration.generateStargateWorldGen();
 		StargateServerData.init();
 
@@ -68,5 +78,11 @@ public class StargateMod implements ModInitializer {
 
 	public static Identifier id(String path) {
 		return new Identifier(MOD_ID, path);
+	}
+
+	public static void registerAttachments() {
+        //noinspection UnstableApiUsage
+        HAS_PASSED_THROUGH_STARGATE = AttachmentRegistry.<Boolean>builder().copyOnDeath().persistent(Codec.BOOL.orElse(false))
+				.initializer(() -> false).buildAndRegister(StargateMod.id("has_passed_through_stargate"));
 	}
 }
