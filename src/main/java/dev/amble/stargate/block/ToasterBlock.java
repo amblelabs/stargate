@@ -3,12 +3,11 @@ package dev.amble.stargate.block;
 import dev.amble.lib.block.ABlockSettings;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
-import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.block.stargates.OrlinGateBlock;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.scheduler.api.TimeUnit;
-import dev.drtheo.scheduler.api.client.ClientScheduler;
 import dev.drtheo.scheduler.api.common.Scheduler;
 import dev.drtheo.scheduler.api.common.TaskStage;
 import net.minecraft.block.Block;
@@ -22,9 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -112,7 +109,7 @@ public class ToasterBlock extends Block {
                     }
                     world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     world.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
-                    StargateBlock.setBlockAndCreateStargate(world, pos.down(), GateKernelRegistry.get().get(OrlinGateKernel.ID), facing);
+                    OrlinGateBlock.setBlockAndCreateStargate(world, pos.down(), GateKernelRegistry.get().get(OrlinGateKernel.ID), facing);
                 }
                 return ActionResult.SUCCESS;
             }

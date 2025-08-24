@@ -9,8 +9,7 @@ import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.block.StargateBlock;
-import dev.amble.stargate.block.ToasterBlock;
+import dev.amble.stargate.block.AbstractStargateBlock;
 import dev.amble.stargate.init.StargateAttributes;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateDamages;
@@ -24,7 +23,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -128,7 +126,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
         double speed = velocity.length();
         Vec3d newVelocity = direction.multiply(speed);
 
-        if (targetWorld.getBlockState(targetPos.getPos()).get(StargateBlock.IRIS)) {
+        if (!targetWorld.getBlockState(targetPos.getPos()).isAir() && targetWorld.getBlockState(targetPos.getPos()).get(AbstractStargateBlock.IRIS)) {
             entity.damage(targetWorld.getDamageSources().inWall(), Integer.MAX_VALUE); // Lol
         }
 
@@ -152,8 +150,10 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             if (this instanceof OrlinGateKernel) {
                 ServerWorld world = ServerLifecycleHooks.get().getWorld(World.NETHER);
                 if (world != null) {
+
                     Stargate netherGate = ServerStargateNetwork.getInstance(world).getRandom();
-                    if (netherGate != null) {
+
+                    if (netherGate != null && netherGate.address().pos().getDimension() == World.NETHER) {
                         if (ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension()).getBlockState(this.address.pos().getPos().north()).getBlock() == StargateBlocks.TOASTER) {
                             closed.setAddress(netherGate.address().text());
                         }

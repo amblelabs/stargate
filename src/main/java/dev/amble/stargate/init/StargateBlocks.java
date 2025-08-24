@@ -9,9 +9,12 @@ import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.datagen.util.PickaxeMineable;
 import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.StargateRingBlock;
 import dev.amble.stargate.block.ToasterBlock;
+import dev.amble.stargate.block.stargates.MilkyWayGateBlock;
+import dev.amble.stargate.block.stargates.OrlinGateBlock;
+import dev.amble.stargate.block.stargates.PegasusGateBlock;
+import dev.amble.stargate.block.stargates.DestinyGateBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.Instrument;
@@ -20,12 +23,35 @@ import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 
 public class StargateBlocks extends BlockContainer {
+
 	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
 	@NoEnglish
 	@NoBlockItem
-	public static final Block STARGATE = new StargateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
+	public static final Block MILKY_WAY_STARGATE = new MilkyWayGateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
 					.group(StargateItemGroups.MAIN)).nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(5.5F, 10.0F)
 			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
+
+	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
+	@NoEnglish
+	@NoBlockItem
+	public static final Block ORLIN_STARGATE = new OrlinGateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
+					.group(StargateItemGroups.MAIN)).nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(5.5F, 10.0F)
+			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
+
+	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
+	@NoEnglish
+	@NoBlockItem
+	public static final Block PEGASUS_STARGATE = new PegasusGateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
+					.group(StargateItemGroups.MAIN)).nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(5.5F, 10.0F)
+			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
+
+	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
+	@NoEnglish
+	@NoBlockItem
+	public static final Block DESTINY_STARGATE = new DestinyGateBlock(ABlockSettings.create().itemSettings(new AItemSettings()
+					.group(StargateItemGroups.MAIN)).nonOpaque().requiresTool().instrument(Instrument.BASEDRUM).strength(5.5F, 10.0F)
+			.pistonBehavior(PistonBehavior.IGNORE).luminance(light -> 3));
+
 	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
 	@NoEnglish
 	@AutomaticModel(justItem = true)

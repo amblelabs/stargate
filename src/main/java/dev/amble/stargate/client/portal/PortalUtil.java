@@ -7,7 +7,7 @@ import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.AbstractStargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
@@ -80,7 +80,7 @@ public class PortalUtil {
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
         float minWaveHeight = 0.001f;
-        float maxWaveHeight = stargate.getCachedState().get(StargateBlock.IRIS) ?  0.001f : 0.006f;
+        float maxWaveHeight = stargate.getCachedState().get(AbstractStargateBlock.IRIS) ?  0.001f : 0.006f;
 
         int rippleCount = 12;
         float[][] rippleCenters = new float[rippleCount][2];

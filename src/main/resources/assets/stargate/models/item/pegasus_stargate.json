@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "stargate:item/stargate_destiny"
+    "layer0": "stargate:item/pegasus_stargate"
   }
 }

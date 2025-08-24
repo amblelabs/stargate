@@ -4,7 +4,6 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
-import dev.amble.stargate.item.StargateItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
@@ -23,12 +22,12 @@ public class StargateAchievementProvider extends FabricAdvancementProvider {
     @Override
     public void generateAdvancement(Consumer<Advancement> consumer) {
         Advancement root = Advancement.Builder.create()
-                .display(StargateBlocks.STARGATE,
+                .display(StargateBlocks.MILKY_WAY_STARGATE,
                         Text.translatable("achievement.stargate.title.root"),
                         Text.translatable("achievement.stargate.description.root"),
                         new Identifier("stargate", "textures/block/raw_naquadah_block.png"),
                         AdvancementFrame.TASK, false, false, false)
-                .criterion("root", InventoryChangedCriterion.Conditions.items(StargateBlocks.STARGATE))
+                .criterion("root", InventoryChangedCriterion.Conditions.items(StargateBlocks.MILKY_WAY_STARGATE))
                 .build(consumer, StargateMod.MOD_ID + "/root");
 
         Advancement rawNaquadah = Advancement.Builder.create().parent(root)

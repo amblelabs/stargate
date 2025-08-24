@@ -13,7 +13,7 @@ import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.block.StargateBlock;
+import dev.amble.stargate.block.AbstractStargateBlock;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
@@ -23,6 +23,7 @@ import dev.drtheo.scheduler.api.client.ClientScheduler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -61,7 +62,12 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	private BlockState blockSet;
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
-		super(StargateBlockEntities.STARGATE, pos, state);
+		super(StargateBlockEntities.MILKY_WAY_STARGATE, pos, state);
+	}
+
+	public StargateBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
+		super(blockEntityType, pos, state);
+
 	}
 
 	@Nullable @Override
@@ -164,7 +170,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 	public void onBreak(BlockState state) {
 		if (this.hasStargate()) {
 			Stargate gate = this.gate().get();
-			Direction facing = state.get(StargateBlock.FACING);
+			Direction facing = state.get(AbstractStargateBlock.FACING);
 
 			gate.shape().destroy(world, pos, facing);
 			gate.dispose();
@@ -177,7 +183,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 		if (world.isClient()) return;
 		this.requiresPlacement = false;
 
-		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+		Direction facing = world.getBlockState(pos).get(AbstractStargateBlock.FACING);
 		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
 
 		ServerStargate stargate = new ServerStargate(globalPos, kernelCreator);
@@ -190,7 +196,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 
 	@Override
 	public void tick(World world, BlockPos pos, BlockState state, StargateBlockEntity blockEntity) {
-		boolean irisState = this.getCachedState().get(StargateBlock.IRIS);
+		boolean irisState = this.getCachedState().get(AbstractStargateBlock.IRIS);
 
 		if (!world.isClient()) {
 			if (this.gate() == null || this.gate().isEmpty()) return;
@@ -207,7 +213,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity implements 
 				prevIrisState = irisState;
 			}
 
-			Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
+			Direction facing = world.getBlockState(pos).get(AbstractStargateBlock.FACING);
 			Box northSouthBox = new Box(this.getPos()).expand(2, 2, 0).offset(0, 3, 0);
 			Box westEastBox = new Box(this.getPos()).expand(0, 2, 2).offset(0, 3, 0);
 			Box orlinNorthSouthBox = new Box(this.getPos()).expand(0, 0, 0).offset(0, 1, 0);

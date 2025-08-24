@@ -3,29 +3,31 @@ package dev.amble.stargate.init;
 import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
-import dev.amble.lib.item.AItem;
 import dev.amble.lib.item.AItemSettings;
+import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
+import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
+import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
+import dev.amble.stargate.api.kernels.impl.PegasusGateKernel;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.item.DialerItem;
 import dev.amble.stargate.item.EmptyContainerItem;
 import dev.amble.stargate.item.StargateItem;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1));
+
+	// Stargates
+	public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.MILKY_WAY_STARGATE, GateKernelRegistry.get().get(MilkyWayGateKernel.ID));
+	public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.ORLIN_STARGATE, GateKernelRegistry.get().get(OrlinGateKernel.ID));
+	public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.PEGASUS_STARGATE, GateKernelRegistry.get().get(PegasusGateKernel.ID));
+	public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.DESTINY_STARGATE, GateKernelRegistry.get().get(DestinyGateKernel.ID));
 
 	//Naquadah
 	@AutomaticModel
@@ -84,29 +86,6 @@ public class StargateItems extends ItemContainer {
     @AutomaticModel
     @NoEnglish
     public static final Item BURNT_TOAST = new Item(new AItemSettings().group(StargateItemGroups.MAIN).food(StargateFoodComponenets.TOAST));
-
-	static {
-		List<Item> items = new ArrayList<>();
-
-		for(Identifier id : GateKernelRegistry.get().getIds()) {
-			Item item = new StargateItem(new AItemSettings(), GateKernelRegistry.get().get(id));
-			Registry.register(Registries.ITEM, id, item);
-			items.add(item);
-		}
-
-		ItemGroupEvents.MODIFY_ENTRIES_ALL.register((group, entries) -> {
-			for (Item item : items) {
-				ItemGroup target = ((AItem) item).a$group();
-				if (target == null) {
-					target = StargateItemGroups.MAIN;
-				}
-
-				if (target == group) {
-					entries.add(item);
-				}
-			}
-		});
-	}
 
 	@Override
 	public @Nullable ItemGroup getDefaultGroup() {

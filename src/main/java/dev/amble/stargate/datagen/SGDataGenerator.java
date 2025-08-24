@@ -282,7 +282,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             //Blocks
             provider.translateBlocks(StargateBlocks.class);
             provider.addTranslation(StargateBlocks.DHD, "Dial-Home Device");
-            provider.addTranslation(StargateBlocks.STARGATE, "Stargate");
+            provider.addTranslation(StargateBlocks.MILKY_WAY_STARGATE, "Stargate");
             provider.addTranslation(StargateBlocks.NAQUADAH_BLOCK, "Block of Naquadah");
             provider.addTranslation(StargateBlocks.RAW_NAQUADAH_BLOCK, "Block of Raw Naquadah");
             provider.addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");
@@ -306,6 +306,12 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_MASTER, "Master Control Crystal");
             provider.addTranslation(StargateItems.TOAST, "Toast");
             provider.addTranslation(StargateItems.BURNT_TOAST, "Burnt Toast");
+
+            // Stargate Items
+            provider.addTranslation(StargateItems.MILKY_WAY_STARGATE, "Milky Way Stargate");
+            provider.addTranslation(StargateItems.ORLIN_STARGATE, "Orlin Stargate");
+            provider.addTranslation(StargateItems.PEGASUS_STARGATE, "Pegasus Stargate");
+            provider.addTranslation(StargateItems.DESTINY_STARGATE, "Destiny Stargate");
 
             //Misc
             provider.addTranslation("itemGroup.stargate.item_group", "STARGATE");

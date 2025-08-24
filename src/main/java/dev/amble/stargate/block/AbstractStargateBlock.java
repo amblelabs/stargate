@@ -1,11 +1,7 @@
 package dev.amble.stargate.block;
 
-import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.kernels.GateState;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
-import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
@@ -35,30 +31,18 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class StargateBlock extends HorizontalFacingBlock implements BlockEntityProvider, Waterloggable {
+public abstract class AbstractStargateBlock extends HorizontalFacingBlock implements BlockEntityProvider, Waterloggable {
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 	public static final BooleanProperty IRIS = Properties.LIT;
-	public StargateBlock(Settings settings) {
+	public AbstractStargateBlock(Settings settings) {
 		super(settings);
 
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(IRIS, false));
-	}
-
-	public static void setBlockAndCreateStargate(World world, BlockPos pos, GateKernelRegistry.KernelCreator kernel, Direction facing) {
-		if (world.isClient()) return;
-		BlockState state = StargateBlocks.STARGATE.getDefaultState().with(StargateBlock.FACING, facing);
-		world.setBlockState(pos, state, 3);
-		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof StargateBlockEntity stargateBe) {
-			stargateBe.onPlacedWithKernel(world, pos, kernel);
-			world.playSound(null, pos, StargateSounds.DING, SoundCategory.BLOCKS, 1.0f, 1.0f);
-		}
 	}
 
 	@Nullable
@@ -77,37 +61,6 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
-	}
-
-	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			if (!be.hasStargate()) return super.getOutlineShape(state, world, pos, context);
-			Stargate gate = be.gate().get();
-			if (gate.kernel() instanceof OrlinGateKernel) {
-				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
-			}
-		}
-		return super.getOutlineShape(state, world, pos, context);
-	}
-
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		if (world.getBlockEntity(pos) instanceof StargateBlockEntity be) {
-			if (!be.hasStargate()) return  super.getCollisionShape(state, world, pos, context);
-			Stargate gate = be.gate().get();
-			if (gate.kernel() instanceof OrlinGateKernel) {
-				return rotateShape(Direction.SOUTH, state.get(FACING), makeOrlinShape());
-			}
-		}
-		return super.getCollisionShape(state, world, pos, context);
-	}
-
-	public VoxelShape makeOrlinShape(){
-		VoxelShape shape = VoxelShapes.empty();
-		shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(0.0F, 0.0F, 0.0F, 16.0F / 16, 8.0F / 16f, 16.0F / 16f), BooleanBiFunction.OR);
-
-		return shape;
 	}
 
 	public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
