@@ -32,7 +32,7 @@ public class Main {
 
         for (int i = 0; i < 100; i++) {
             GateKernel kernel = new GateKernel();
-            kernel.internal$addState(new DestinyState.Closed());
+            kernel.addState(new DestinyState.Closed());
 
             if (i == 0)
                 mainKernel = kernel;

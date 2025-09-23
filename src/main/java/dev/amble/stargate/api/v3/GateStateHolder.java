@@ -1,16 +1,30 @@
 package dev.amble.stargate.api.v3;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
+
 public interface GateStateHolder<Self extends GateStateHolder<Self>> {
     <T extends GateState<T>> @Nullable T stateOrNull(@NotNull GateState.Type<T> type);
-    <T extends GateState<T>> @NotNull T state(@NotNull GateState.Type<T> type);
 
+    default <T extends GateState<T>> @NotNull T state(@NotNull GateState.Type<T> type) {
+        T result = stateOrNull(type);
+
+        if (result == null)
+            throw new ResolveError();
+
+        return result;
+    }
+
+    void forEachState(Consumer<GateState<?>> consumer);
     void removeState(@NotNull GateState.Type<?> type);
+
+    @ApiStatus.Internal
     void internal$addState(@NotNull GateState.Type<?> type, @NotNull GateState<?> state);
 
-    default void internal$addState(@NotNull GateState<?> state) {
+    default void addState(@NotNull GateState<?> state) {
         GateState.Type<?> type = state.type();
         GateState.Group group = type.group();
 
