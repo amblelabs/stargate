@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v4;
+package dev.amble.stargate.api.v3;
 
 import java.util.ArrayList;
 import java.util.List;

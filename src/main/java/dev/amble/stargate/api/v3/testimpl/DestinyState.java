@@ -1,6 +1,6 @@
-package dev.amble.stargate.api.v4.testimpl;
+package dev.amble.stargate.api.v3.testimpl;
 
-import dev.amble.stargate.api.v4.GateState;
+import dev.amble.stargate.api.v3.GateState;
 import net.minecraft.nbt.NbtCompound;
 
 public class DestinyState {

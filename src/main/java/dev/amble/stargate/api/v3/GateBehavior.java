@@ -1,27 +1,22 @@
 package dev.amble.stargate.api.v3;
 
-public interface GateBehavior<S extends GateStates<S>, T extends GateState<T, S>> {
+public interface GateBehavior<T extends GateState<T>> {
 
     GateState.Type<T> type();
 
-    default void init(AbstractGateKernel<S> kernel, T state) { }
-    default void tick(AbstractGateKernel<S> kernel, T state) { }
-    default void finish(AbstractGateKernel<S> kernel, T state) { }
+    default void init(GateKernel kernel, T state) { }
+    default void tick(GateKernel kernel, T state) { }
+    default void finish(GateKernel kernel, T state) { }
 
-    default void internal$init(AbstractGateKernel<S> kernel) {
-        init(kernel, state(kernel));
+    default void internal$init(GateKernel kernel) {
+        init(kernel, kernel.state(type()));
     }
 
-    default void internal$tick(AbstractGateKernel<S> kernel) {
-        tick(kernel, state(kernel));
+    default void internal$tick(GateKernel kernel) {
+        tick(kernel, kernel.state(type()));
     }
 
-    default void internal$finish(AbstractGateKernel<S> kernel) {
-        finish(kernel, state(kernel));
-    }
-
-    default T state(AbstractGateKernel<S> kernel) {
-        // should be enforced by the type system.
-        return (T) kernel.getState();
+    default void internal$finish(GateKernel kernel) {
+        finish(kernel, kernel.state(type()));
     }
 }

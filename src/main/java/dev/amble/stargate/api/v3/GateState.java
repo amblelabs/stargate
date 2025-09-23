@@ -3,50 +3,75 @@ package dev.amble.stargate.api.v3;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * @param <From> what state group this state is from. Unused in code. Enforces proper usage by typing.
- */
-@SuppressWarnings("unused")
-public interface GateState<Self extends GateState<Self, From>, From extends GateStates<From>> {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public interface GateState<Self extends GateState<Self>> {
 
     Type<Self> type();
 
-    NbtCompound toNbt(NbtCompound nbt);
+    void toNbt(NbtCompound nbt);
 
-    interface Type<T extends GateState<T, ?>> extends NbtDeserializer<T> {
-        Identifier id();
+    interface Type<T extends GateState<T>> extends NbtDeserializer<T> {
+        Key key();
+
+        default Identifier id() {
+            return key().id;
+        }
+
+        class Key {
+            final Identifier id;
+            int index;
+
+            Key(Identifier id) {
+                this.id = id;
+            }
+        }
 
         default NbtCompound toNbt(T t) {
             NbtCompound nbt = new NbtCompound();
             nbt.putString("id", id().toString());
-            return t.toNbt(nbt);
+
+            t.toNbt(nbt);
+            return nbt;
+        }
+
+        default @Nullable Group group() {
+            return null;
         }
     }
 
-    record StargateChildType<T extends GateState<?>>(Type type, NbtDeserializer<T> deser) implements Type<T> {
+    record StargateChildType<T extends GateState<T>>(Key key, Type type, Group group, NbtDeserializer<T> deser) implements Type<T> {
 
-        public static <T extends GateState<?>> StargateChildType<T> closed(NbtDeserializer<T> deser) {
-            return new StargateChildType<>(Type.CLOSED, deser);
+        public static <T extends GateState<T>> StargateChildType<T> closed(Group group, NbtDeserializer<T> deser) {
+            return new StargateChildType<>(Type.CLOSED, group, deser);
         }
 
-        public static <T extends GateState<?>> StargateChildType<T> preOpen(NbtDeserializer<T> deser) {
-            return new StargateChildType<>(Type.PRE_OPEN, deser);
+        public static <T extends GateState<T>> StargateChildType<T> preOpen(Group group, NbtDeserializer<T> deser) {
+            return new StargateChildType<>(Type.PRE_OPEN, group, deser);
         }
 
-        public static <T extends GateState<?>> StargateChildType<T> open(NbtDeserializer<T> deser) {
-            return new StargateChildType<>(Type.OPEN, deser);
+        public static <T extends GateState<T>> StargateChildType<T> open(Group group, NbtDeserializer<T> deser) {
+            return new StargateChildType<>(Type.OPEN, group, deser);
         }
 
-        @Override
-        public Identifier id() {
-            return null;
+        private StargateChildType(Type type, Group group, NbtDeserializer<T> deser) {
+            this(new Key(StargateMod.id("stargate/" + type.path())), type, group, deser);
+
+            group.types().add(this);
         }
 
         @Override
         public NbtCompound toNbt(T t) {
             // don't put the id in, it's useless
-            return t.toNbt(new NbtCompound());
+            NbtCompound result = new NbtCompound();
+            t.toNbt(result);
+
+            return result;
         }
 
         @Override
@@ -55,54 +80,40 @@ public interface GateState<Self extends GateState<Self, From>, From extends Gate
         }
 
         enum Type {
-            CLOSED {
-                @Override
-                public <T extends GateState<?>> StargateChildType<T> get(StargateType<T> t) {
-                    return t.closed;
-                }
-            },
-            PRE_OPEN {
-                @Override
-                public <T extends GateState<?>> StargateChildType<T> get(StargateType<T> t) {
-                    return t.preOpen;
-                }
-            },
-            OPEN {
-                @Override
-                public <T extends GateState<?>> StargateChildType<T> get(StargateType<T> t) {
-                    return t.open;
-                }
-            };
+            CLOSED("closed"),
+            PRE_OPEN("pre_open"),
+            OPEN("open");
 
-            public abstract <T extends GateState<?>> StargateChildType<T> get(StargateType<T> t);
+            private final String path;
 
-            public static Type byName(String name) {
-                return valueOf(name);
+            Type(String path) {
+                this.path = path;
+            }
+
+            public String path() {
+                return path;
             }
         }
     }
 
-    record StargateType<T extends GateState<?>>(
-            Identifier id, StargateChildType<T> closed, StargateChildType<T> preOpen, StargateChildType<T> open) implements Type<T> {
+    interface Group {
 
-        private static final String TYPE_KEY = "Type";
+        List<Type<?>> types();
 
-        public StargateType(StargateChildType<T> closed, StargateChildType<T> preOpen, StargateChildType<T> open) {
-            this(StargateMod.id("stargate"), closed, preOpen, open);
+        @Contract(pure = true)
+        static Mutable create(Type<?>... types) {
+            ArrayList<Type<?>> list = new ArrayList<>();
+            Collections.addAll(list, types);
+
+            return new Mutable(list);
         }
 
-        @Override
-        public T fromNbt(NbtCompound nbt, boolean isClient) {
-            String type = nbt.getString(TYPE_KEY);
-            return StargateChildType.Type.byName(type).get(this).fromNbt(nbt, isClient);
-        }
+        record Mutable(ArrayList<Type<?>> types) implements Group { }
 
-        @Override
-        public NbtCompound toNbt(T t) {
-            NbtCompound nbt = Type.super.toNbt(t);
-            nbt.putString(TYPE_KEY, t.type().toString());
-
-            return nbt;
+        default void removeAll(GateStateHolder<?> holder) {
+            for (Type<?> type : types()) {
+                holder.removeState(type);
+            }
         }
     }
 }

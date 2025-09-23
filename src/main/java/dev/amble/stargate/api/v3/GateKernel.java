@@ -1,14 +1,15 @@
-package dev.amble.stargate.api.v4;
+package dev.amble.stargate.api.v3;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GateKernel implements GateStateHolder {
+public class GateKernel implements GateStateHolder<GateKernel> {
 
     private final Int2ObjectOpenHashMap<GateState<?>> states = new Int2ObjectOpenHashMap<>();
 
+    @SuppressWarnings("unchecked")
     public <T extends GateState<T>> @Nullable T stateOrNull(@NotNull GateState.Type<T> type) {
         return (T) states.get(type.key().index);
     }
@@ -17,7 +18,7 @@ public class GateKernel implements GateStateHolder {
         T result = stateOrNull(type);
 
         if (result == null)
-            throw new GateState.ResolveError();
+            throw new ResolveError();
 
         return result;
     }

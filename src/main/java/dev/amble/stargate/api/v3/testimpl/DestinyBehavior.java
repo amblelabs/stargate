@@ -1,8 +1,8 @@
-package dev.amble.stargate.api.v4.testimpl;
+package dev.amble.stargate.api.v3.testimpl;
 
-import dev.amble.stargate.api.v4.GateBehavior;
-import dev.amble.stargate.api.v4.GateKernel;
-import dev.amble.stargate.api.v4.GateState;
+import dev.amble.stargate.api.v3.GateBehavior;
+import dev.amble.stargate.api.v3.GateKernel;
+import dev.amble.stargate.api.v3.GateState;
 
 public class DestinyBehavior {
 
@@ -13,9 +13,11 @@ public class DestinyBehavior {
             return DestinyState.CLOSED;
         }
 
+        boolean shit;
+
         @Override
         public void tick(GateKernel kernel, DestinyState.Closed state) {
-            System.out.println("Ticking closed destiny state");
+            shit = !shit;
         }
     }
 }
