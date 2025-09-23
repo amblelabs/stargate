@@ -3,6 +3,7 @@ package dev.amble.stargate.api.v3;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,16 +17,41 @@ public interface GateState<Self extends GateState<Self>> {
 
     void toNbt(NbtCompound nbt);
 
+    default Self unbox() {
+        return (Self) this;
+    }
+
     interface Type<T extends GateState<T>> extends NbtDeserializer<T> {
+        /**
+         * @return The {@link Key} object. For internal use only.
+         * @see #id()
+         */
+        @ApiStatus.Internal
         Key key();
 
+        /**
+         * @return the type's unique {@link Identifier}.
+         */
         default Identifier id() {
             return key().id;
         }
 
+        /**
+         * An object representing a {@link GateState}'s key.
+         */
+        @ApiStatus.Internal
         class Key {
             final Identifier id;
-            int index;
+            int index = -1;
+
+            int verifyIdx() {
+                if (index < 0) throw new IllegalStateException("Attempted to use unregistered state: " + id);
+                return index;
+            }
+
+            void register(int index) {
+                this.index = index;
+            }
 
             Key(Identifier id) {
                 this.id = id;
@@ -93,6 +119,15 @@ public interface GateState<Self extends GateState<Self>> {
             public String path() {
                 return path;
             }
+        }
+
+        @Override
+        public String toString() {
+            return "StargateChildType{" +
+                    "key=" + key +
+                    ", type=" + type +
+                    ", deser=" + deser +
+                    '}';
         }
     }
 

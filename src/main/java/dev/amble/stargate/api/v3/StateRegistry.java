@@ -12,9 +12,12 @@ import java.util.function.Consumer;
 public class StateRegistry {
 
     private static final List<GateState.Type<?>> states = new ArrayList<>();
+    private static boolean frozen;
 
     public static void register(GateState.Type<?> state) {
-        state.key().index = states.size();
+        if (frozen) throw new IllegalStateException("Attempted to register a state while the registry was frozen");
+
+        state.key().register(states.size());
         states.add(state);
     }
 
@@ -24,9 +27,8 @@ public class StateRegistry {
         }
     }
 
-    // TODO: implement freezing
-    public void freeze() {
-
+    public static void freeze() {
+        frozen = true;
     }
 
     /**
@@ -34,20 +36,22 @@ public class StateRegistry {
      * @return recommended {@link GateStateHolder}.
      *
      * @see GateStateHolder
-     * @see #createDirectHolder()
+     * @see #createArrayHolder()
      * @see #createMapHolder()
      */
     public static GateStateHolder<?> createStateHolder() {
-        return states.size() > 100 ? createDirectHolder() : createMapHolder();
+        return states.size() > 100 ? createArrayHolder() : createMapHolder();
     }
 
     /**
-     * Creates a direct {@link GateStateHolder} (meaning, array-backed).
+     * Creates an array-backed {@link GateStateHolder} with the size of the frozen registry.
      * @return an array-backed {@link GateStateHolder}.
      *
      * @see GateStateHolder
      */
-    public static ArrayStateHolder createDirectHolder() {
+    public static ArrayStateHolder createArrayHolder() {
+        if (!frozen) throw new IllegalStateException("Attempted to create an array state holder with an unfrozen registry!");
+
         return new ArrayStateHolder(states.size());
     }
 
@@ -80,18 +84,25 @@ public class StateRegistry {
         @Override
         public void forEachState(Consumer<GateState<?>> consumer) {
             for (GateState<?> state : states) {
+                if (state == null) continue;
+
                 consumer.accept(state);
             }
         }
 
         @Override
         public void removeState(@NotNull GateState.Type<?> type) {
-            states[type.key().index] = null;
+            this.states[type.key().index] = null;
         }
 
         @Override
         public void internal$addState(@NotNull GateState.Type<?> type, @NotNull GateState<?> state) {
-            states[type.key().index] = state;
+            int idx = type.key().verifyIdx();
+
+            if (this.states[idx] != null)
+                return;
+
+            this.states[type.key().verifyIdx()] = state;
         }
     }
 
@@ -122,7 +133,7 @@ public class StateRegistry {
         @Override
         @ApiStatus.Internal
         public void internal$addState(@NotNull GateState.Type<?> type, @NotNull GateState<?> state) {
-            states.put(type.key().index, state);
+            states.put(type.key().verifyIdx(), state);
         }
     }
 }

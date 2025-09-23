@@ -7,18 +7,18 @@ import java.util.ArrayList;
 
 public class BehaviorRegistry {
 
-    private static final Int2ObjectMap<TypedList<?>> REGISTRY = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectMap<BehaviorList<?>> REGISTRY = new Int2ObjectOpenHashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends GateState<T>> void register(GateBehavior<T> behavior) {
-        TypedList<T> list = (TypedList<T>) REGISTRY.computeIfAbsent(behavior.type().key().index, i -> new TypedList<T>());
-        list.add(behavior);
+        ((BehaviorList<T>) REGISTRY.computeIfAbsent(behavior.type().key().verifyIdx(),
+                i -> new BehaviorList<T>())).add(behavior);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends GateState<T>> TypedList<T> get(GateState.Type<T> type) {
-        return (TypedList<T>) REGISTRY.get(type.key().index);
+    public static <T extends GateState<T>> BehaviorList<T> get(GateState.Type<T> type) {
+        return (BehaviorList<T>) REGISTRY.get(type.key().index);
     }
 
-    public static final class TypedList<T extends GateState<T>> extends ArrayList<GateBehavior<T>> { }
+    public static final class BehaviorList<T extends GateState<T>> extends ArrayList<GateBehavior<T>> { }
 }

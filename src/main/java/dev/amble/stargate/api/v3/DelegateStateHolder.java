@@ -9,6 +9,10 @@ public abstract class DelegateStateHolder<Self extends DelegateStateHolder<Self>
 
     protected final GateStateHolder<?> stateHolder;
 
+    public DelegateStateHolder() {
+        this(StateRegistry.createArrayHolder());
+    }
+
     public DelegateStateHolder(GateStateHolder<?> holder) {
         this.stateHolder = holder;
     }

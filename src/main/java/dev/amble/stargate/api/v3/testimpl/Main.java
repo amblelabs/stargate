@@ -24,19 +24,17 @@ public class Main {
 
         System.out.println("Warm-up done.");
 
-        BehaviorRegistry.register(new DestinyBehavior.Closed());
         StateRegistry.register(DestinyState.GROUP);
+        System.out.println(DestinyState.GROUP.types());
+        BehaviorRegistry.register(new DestinyBehavior.Closed());
 
-        GateKernel mainKernel = null;
+        StateRegistry.freeze();
+
         List<GateKernel> kernels = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
             GateKernel kernel = new GateKernel();
             kernel.addState(new DestinyState.Closed());
-
-            if (i == 0)
-                mainKernel = kernel;
-
             kernels.add(kernel);
         }
 
