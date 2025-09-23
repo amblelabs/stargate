@@ -1,9 +1,10 @@
 package dev.amble.stargate.client;
 
 import dev.amble.lib.register.AmbleRegistries;
-import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.GlyphOriginRegistry;
+import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.block.AbstractStargateBlock;
+import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
 import dev.amble.stargate.client.overlays.WormholeOverlay;
@@ -12,11 +13,10 @@ import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.DHDControlEntityRenderer;
 import dev.amble.stargate.client.renderers.RingBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateEntities;
-import dev.amble.stargate.block.entities.StargateBlockEntity;
-import dev.amble.stargate.core.fluid.StargateFluids;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;

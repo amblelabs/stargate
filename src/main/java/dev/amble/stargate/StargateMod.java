@@ -9,8 +9,8 @@ import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.command.StargateDataCommand;
 import dev.amble.stargate.command.StargateDialCommand;
 import dev.amble.stargate.command.StargateSyncCommand;
-import dev.amble.stargate.core.fluid.StargateFluids;
 import dev.amble.stargate.entities.DHDControlEntity;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.init.*;
 import dev.amble.stargate.world.gen.StargateWorldGeneration;
 import net.fabricmc.api.ModInitializer;
@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +29,7 @@ public class StargateMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	// Attachments
+	// TODO: replace with an achievement
 	public static AttachmentType<Boolean> HAS_PASSED_THROUGH_STARGATE;
 
 	// FIXME: get rid of this

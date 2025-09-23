@@ -15,8 +15,6 @@ import dev.amble.stargate.init.StargateAttributes;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateDamages;
 import dev.amble.stargate.init.StargateSounds;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -257,8 +255,8 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
             float t = (float) timer / ((float) this.ticksPerKawoosh() * 1.25f);
 
-// Remap t to ease in and out, spending more time near p1 and p2
-// Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle
+            // Remap t to ease in and out, spending more time near p1 and p2
+            // Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle
             float tPrime = (float) (3 * Math.pow(t, 2) - 2 * Math.pow(t, 3));
             if (tPrime > 1.0f) tPrime = 1.0f;
             if (tPrime < 0.0f) tPrime = 0.0f;
@@ -277,7 +275,9 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             if (tPrime >= 1.0f) {
                 this.shouldKawooshOscillate = 4;
             }
+
             this.markDirty();
+
             if (timer > this.ticksPerKawoosh() && this.shouldKawooshOscillate == 4) {
                 this.kawooshHeight = 0;
                 this.shouldKawooshOscillate = 1;
@@ -290,8 +290,6 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
                     target.kernel().setState(new GateState.Open(this.parent, false));
                 }
 
-                this.markDirty();
-
                 if (target != null)
                     target.markDirty();
 
@@ -300,7 +298,6 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
             timer++;
         } else if (this.state instanceof GateState.Open open) {
-
             if (open.target().isEmpty()) {
 
                 this.setState(new GateState.Closed());
@@ -318,11 +315,11 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
             }
 
             if (timer > this.ticksPerOpen()) {
-
                 timer = 0;
 
                 this.setState(new GateState.Closed());
                 this.markDirty();
+
                 ServerWorld world = ServerLifecycleHooks.get().getWorld(this.address.pos().getDimension());
                 if (world != null) {
                     world.playSound(null, this.address.pos().getPos(),
@@ -333,6 +330,7 @@ public abstract class BasicStargateKernel extends AbstractStargateKernel impleme
 
                 gate.kernel().setState(new GateState.Closed());
                 gate.markDirty();
+
                 if (world != null) {
                     world.playSound(null, gate.address().pos().getPos(),
                             StargateSounds.GATE_CLOSE, SoundCategory.BLOCKS, 1.0f, 1.0f);

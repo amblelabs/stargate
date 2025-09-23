@@ -1,7 +1,7 @@
 package dev.amble.stargate.datagen;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.core.fluid.StargateFluids;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

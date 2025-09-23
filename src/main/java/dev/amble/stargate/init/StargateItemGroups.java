@@ -3,8 +3,7 @@ package dev.amble.stargate.init;
 import dev.amble.lib.container.impl.ItemGroupContainer;
 import dev.amble.lib.itemgroup.AItemGroup;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.core.fluid.StargateFluids;
-import net.minecraft.item.ItemGroups;
+import dev.amble.stargate.fluid.StargateFluids;
 import net.minecraft.item.ItemStack;
 
 

@@ -1,4 +1,4 @@
-package dev.amble.stargate.core.fluid;
+package dev.amble.stargate.fluid;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.init.StargateItems;
