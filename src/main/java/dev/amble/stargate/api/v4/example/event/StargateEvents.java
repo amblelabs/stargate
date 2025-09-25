@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.v4.example.event;
 
-import dev.amble.stargate.api.v4.data.TState;
+import dev.amble.stargate.api.v4.state.TState;
 import dev.amble.stargate.api.v4.event.TEvents;
 import dev.amble.stargate.api.v4.example.Stargate;
 

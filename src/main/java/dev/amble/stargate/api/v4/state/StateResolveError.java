@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v4.data;
+package dev.amble.stargate.api.v4.state;
 
 /**
  * A {@link RuntimeException} that gets

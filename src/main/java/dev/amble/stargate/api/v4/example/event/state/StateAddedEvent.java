@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.v4.example.event.state;
 
-import dev.amble.stargate.api.v4.data.StateResolveError;
-import dev.amble.stargate.api.v4.data.TState;
+import dev.amble.stargate.api.v4.state.StateResolveError;
+import dev.amble.stargate.api.v4.state.TState;
 import dev.amble.stargate.api.v4.event.TEvent;
 import dev.amble.stargate.api.v4.event.TEvents;
 import dev.amble.stargate.api.v4.example.Stargate;

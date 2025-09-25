@@ -1,6 +1,5 @@
-package dev.amble.stargate.api.v4.data;
+package dev.amble.stargate.api.v4.state;
 
-import dev.amble.stargate.api.v3.NbtSerializer;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;

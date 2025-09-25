@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v3;
+package dev.amble.stargate.api.v4.state;
 
 import net.minecraft.nbt.NbtCompound;
 

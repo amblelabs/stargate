@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v4.data;
+package dev.amble.stargate.api.v4.state;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

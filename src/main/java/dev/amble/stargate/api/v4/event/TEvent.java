@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.v4.event;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v4.data.StateResolveError;
+import dev.amble.stargate.api.v4.state.StateResolveError;
 
 import java.util.function.Supplier;
 

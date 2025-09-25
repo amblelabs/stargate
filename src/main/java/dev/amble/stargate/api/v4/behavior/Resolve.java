@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v4.handler;
+package dev.amble.stargate.api.v4.behavior;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v4.handler;
+package dev.amble.stargate.api.v4.behavior;
 
 import dev.amble.stargate.api.v4.event.TEvents;
 import dev.amble.stargate.api.v4.event.TEventsRegistry;

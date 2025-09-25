@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.v4.event;
 
-import dev.amble.stargate.api.v4.handler.TBehavior;
+import dev.amble.stargate.api.v4.behavior.TBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
