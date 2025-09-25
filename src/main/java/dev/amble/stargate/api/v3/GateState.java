@@ -40,7 +40,7 @@ public interface GateState<Self extends GateState<Self>> {
          * An object representing a {@link GateState}'s key.
          */
         @ApiStatus.Internal
-        class Key {
+        final class Key {
             final Identifier id;
             int index = -1;
 

@@ -6,16 +6,16 @@ import dev.amble.stargate.api.v3.StateRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
     static final int MS_PER_TICK = 1000 / 20;
     static final float NS_PER_MS = 1_000_000f;
     static final long TICKS = 20 * 60 * 60 * 24;
+    static final int GATES = 1000;
 
     public static void main(String[] args) {
-        new Scanner(System.in).nextLine();
+        //new Scanner(System.in).nextLine();
 
         for (int i = 0; i < 100_000; i++) {
             Dummy dummy = new Dummy();
@@ -25,14 +25,14 @@ public class Main {
         System.out.println("Warm-up done.");
 
         StateRegistry.register(DestinyState.GROUP);
-        System.out.println(DestinyState.GROUP.types());
+        //System.out.println(DestinyState.GROUP.types());
         BehaviorRegistry.register(new DestinyBehavior.Closed());
 
         StateRegistry.freeze();
 
         List<GateKernel> kernels = new ArrayList<>();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < GATES; i++) {
             GateKernel kernel = new GateKernel();
             kernel.addState(new DestinyState.Closed());
             kernels.add(kernel);

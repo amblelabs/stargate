@@ -13,28 +13,32 @@ public class GateKernel extends DelegateStateHolder<GateKernel> {
     @Override
     public void internal$addState(GateState.@NotNull Type<?> type, @NotNull GateState<?> state) {
         super.internal$addState(type, state);
-        this.forEachState(this::initBehavior);
+        this.initBehavior(state);
     }
 
     @Override
-    public void removeState(GateState.@NotNull Type<?> type) {
-        super.removeState(type);
-        this.forEachState(this::removeBehavior);
+    public <T extends GateState<T>> T removeState(@NotNull GateState.Type<T> type) {
+        T result = super.removeState(type);
+
+        if (result != null)
+            this.removeBehavior(result);
+
+        return result;
     }
 
-    private <T extends GateState<T>> void tickBehavior(GateState<T> state) {
+    private final <T extends GateState<T>> void tickBehavior(GateState<T> state) {
         runEvent(state, (behavior, t) -> behavior.tick(this, t));
     }
 
-    private <T extends GateState<T>> void initBehavior(GateState<T> state) {
+    private final <T extends GateState<T>> void initBehavior(GateState<T> state) {
         runEvent(state, (behavior, t) -> behavior.init(this, t));
     }
 
-    private <T extends GateState<T>> void removeBehavior(GateState<T> state) {
+    private final <T extends GateState<T>> void removeBehavior(GateState<T> state) {
         runEvent(state, (behavior, t) -> behavior.finish(this, t));
     }
 
-    private <T extends GateState<T>> void runEvent(GateState<T> state, BiConsumer<GateBehavior<T>, T> consumer) {
+    private final <T extends GateState<T>> void runEvent(GateState<T> state, BiConsumer<GateBehavior<T>, T> consumer) {
         for (GateBehavior<T> behavior : BehaviorRegistry.get(state.type())) {
             consumer.accept(behavior, state.unbox());
         }

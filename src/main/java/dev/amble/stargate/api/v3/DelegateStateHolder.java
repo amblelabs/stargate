@@ -23,13 +23,13 @@ public abstract class DelegateStateHolder<Self extends DelegateStateHolder<Self>
     }
 
     @Override
-    public void forEachState(Consumer<GateState<?>> consumer) {
+    public void forEachState(@NotNull Consumer<GateState<?>> consumer) {
         stateHolder.forEachState(consumer);
     }
 
     @Override
-    public void removeState(@NotNull GateState.Type<?> type) {
-        stateHolder.removeState(type);
+    public <T extends GateState<T>> T removeState(@NotNull GateState.Type<T> type) {
+        return stateHolder.removeState(type);
     }
 
     @Override

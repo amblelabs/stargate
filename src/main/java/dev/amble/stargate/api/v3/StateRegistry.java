@@ -67,7 +67,7 @@ public class StateRegistry {
         return new MapStateHolder();
     }
 
-    public static class ArrayStateHolder implements GateStateHolder<ArrayStateHolder> {
+    public static final class ArrayStateHolder implements GateStateHolder<ArrayStateHolder> {
 
         private final GateState<?>[] states;
 
@@ -82,7 +82,7 @@ public class StateRegistry {
         }
 
         @Override
-        public void forEachState(Consumer<GateState<?>> consumer) {
+        public void forEachState(@NotNull Consumer<GateState<?>> consumer) {
             for (GateState<?> state : states) {
                 if (state == null) continue;
 
@@ -91,8 +91,14 @@ public class StateRegistry {
         }
 
         @Override
-        public void removeState(@NotNull GateState.Type<?> type) {
-            this.states[type.key().index] = null;
+        @SuppressWarnings("unchecked")
+        public <T extends GateState<T>> T removeState(@NotNull GateState.Type<T> type) {
+            int idx = type.key().index;
+
+            T result = (T) this.states[idx];
+            this.states[idx] = null;
+
+            return result;
         }
 
         @Override
@@ -106,7 +112,7 @@ public class StateRegistry {
         }
     }
 
-    public static class MapStateHolder implements GateStateHolder<MapStateHolder> {
+    public static final class MapStateHolder implements GateStateHolder<MapStateHolder> {
 
         private final Int2ObjectOpenHashMap<GateState<?>> states = new Int2ObjectOpenHashMap<>(40);
 
@@ -121,13 +127,13 @@ public class StateRegistry {
         }
 
         @Override
-        public void forEachState(Consumer<GateState<?>> consumer) {
+        public void forEachState(@NotNull Consumer<GateState<?>> consumer) {
             states.values().forEach(consumer);
         }
 
         @Override
-        public void removeState(@NotNull GateState.Type<?> type) {
-            states.remove(type.key().index);
+        public <T extends GateState<T>> T removeState(@NotNull GateState.Type<T> type) {
+            return (T) states.remove(type.key().index);
         }
 
         @Override

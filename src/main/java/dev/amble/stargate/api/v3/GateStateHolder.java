@@ -18,8 +18,10 @@ public interface GateStateHolder<Self extends GateStateHolder<Self>> {
         return result;
     }
 
-    void forEachState(Consumer<GateState<?>> consumer);
-    void removeState(@NotNull GateState.Type<?> type);
+    void forEachState(@NotNull Consumer<GateState<?>> consumer);
+
+    @Nullable
+    <T extends GateState<T>> T removeState(@NotNull GateState.Type<T> type);
 
     @ApiStatus.Internal
     void internal$addState(@NotNull GateState.Type<?> type, @NotNull GateState<?> state);
@@ -45,6 +47,11 @@ public interface GateStateHolder<Self extends GateStateHolder<Self>> {
 
         public ResolveError() {
             super("If you see this message, then that means someone forgot to use #doSafe!");
+        }
+
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+            return this;
         }
     }
 }

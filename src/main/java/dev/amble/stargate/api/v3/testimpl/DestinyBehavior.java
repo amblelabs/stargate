@@ -17,7 +17,7 @@ public class DestinyBehavior {
 
         @Override
         public void tick(GateKernel kernel, DestinyState.Closed state) {
-            shit = !shit;
+            //shit = !shit;
         }
     }
 }
