@@ -8,8 +8,11 @@ public class StateResolveError extends RuntimeException {
     private static final StateResolveError INSTANCE = new StateResolveError();
 
     private StateResolveError() {
-        if (!TStateRegistry.debug)
-            this.setStackTrace(new StackTraceElement[0]);
+        this.setStackTrace(new StackTraceElement[0]);
+    }
+
+    private StateResolveError(TStateContainer container, TState.Type<?> type) {
+        super("Couldn't find property " + type.id + " in container " + container);
     }
 
     @Override
@@ -20,9 +23,9 @@ public class StateResolveError extends RuntimeException {
         return this;
     }
 
-    public static StateResolveError create() {
+    public static StateResolveError create(TStateContainer container, TState.Type<?> type) {
         if (TStateRegistry.debug)
-            return new StateResolveError();
+            return new StateResolveError(container, type);
 
         return INSTANCE;
     }

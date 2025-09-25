@@ -11,7 +11,7 @@ public interface TStateContainer {
         T result = stateOrNull(type);
 
         if (result == null)
-            throw StateResolveError.create();
+            throw StateResolveError.create(this, type);
 
         return result;
     }
