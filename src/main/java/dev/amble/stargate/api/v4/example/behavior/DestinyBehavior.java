@@ -13,7 +13,7 @@ public interface DestinyBehavior {
     class Closed implements TBehavior, StargateEvents {
 
         @Resolve
-        private final GateManagerBehavior manager = handler();
+        private final GateManagerBehavior manager = behavior();
 
         @Override
         public void onStateChanged(Stargate stargate, TState<?> oldState, TState<?> newState) {

@@ -1,8 +1,23 @@
 package dev.amble.stargate.api.v4.state;
 
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.Contract;
 
+/**
+ * An interface for all classes that do NBT deserialization.
+ *
+ * @param <T> the target of deserialization.
+ */
 @FunctionalInterface
 public interface NbtDeserializer<T> {
+
+    /**
+     * Serializes the object to NBT.
+     *
+     * @param nbt the {@link NbtCompound} to deserialize from.
+     * @param isClient whether the deserialization is happening on a client.
+     * @return the deserialized object's instance.
+     */
+    @Contract(pure = true)
     T fromNbt(NbtCompound nbt, boolean isClient);
 }

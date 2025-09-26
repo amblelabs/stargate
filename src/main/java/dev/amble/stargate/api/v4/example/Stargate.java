@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class Stargate extends TStateContainer.Delegate {
 
     public Stargate(boolean created, @NotNull Supplier<TState<?>> defState, @NotNull TState.Type<?>... states) {
-        super(TStateRegistry.createListHolder());
+        super(TStateRegistry.createArrayHolder());
 
         this.addState(new GateState(this, defState, states));
 
