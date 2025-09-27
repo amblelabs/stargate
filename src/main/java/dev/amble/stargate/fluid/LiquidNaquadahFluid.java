@@ -1,5 +1,7 @@
 package dev.amble.stargate.fluid;
 
+import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.FlowableFluid;
@@ -19,7 +21,6 @@ import net.minecraft.world.WorldView;
 import java.util.Optional;
 
 public abstract class LiquidNaquadahFluid extends FlowableFluid {
-    public static final float MIN_HEIGHT_TO_REPLACE = 0.44444445F;
 
     @Override
     public Fluid getFlowing() {
@@ -33,20 +34,7 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     public Item getBucketItem() {
-        return StargateFluids.LIQUID_NAQUADAH;
-    }
-
-    private boolean canLightFire(WorldView world, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
-            if (this.hasBurnableBlock(world, pos.offset(direction))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasBurnableBlock(WorldView world, BlockPos pos) {
-        return pos.getY() >= world.getBottomY() && pos.getY() < world.getTopY() && !world.isChunkLoaded(pos) ? false : world.getBlockState(pos).isBurnable();
+        return StargateItems.LIQUID_NAQUADAH;
     }
 
     @Override
@@ -60,7 +48,7 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     public BlockState toBlockState(FluidState state) {
-        return StargateFluids.LIQUID_NAQUADAH_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
+        return StargateBlocks.LIQUID_NAQUADAH_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
     }
 
     @Override
@@ -117,7 +105,6 @@ return false;
         super.appendProperties(builder);
         builder.add(LEVEL);
     }
-
 
     public static class Still extends LiquidNaquadahFluid {
         @Override

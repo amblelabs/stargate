@@ -3,7 +3,7 @@ package dev.amble.stargate.api.network;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -107,9 +107,14 @@ public abstract class StargateNetwork<T extends Stargate> {
 		NbtCompound nbt = new NbtCompound();
 
 		NbtList list = new NbtList();
-		lookup.values().forEach(stargate -> list.add(stargate.toNbt(sync)));
-		nbt.put("Stargates", list);
+		lookup.values().forEach(stargate -> {
+			NbtCompound compound = new NbtCompound();
+			stargate.toNbt(compound, sync);
 
+			list.add(compound);
+		});
+
+		nbt.put("Stargates", list);
 		return nbt;
 	}
 

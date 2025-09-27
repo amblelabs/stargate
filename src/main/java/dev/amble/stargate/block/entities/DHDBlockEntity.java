@@ -1,15 +1,12 @@
 package dev.amble.stargate.block.entities;
 
-import com.mojang.serialization.DataResult;
 import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.dhd.DHDArrangement;
 import dev.amble.stargate.dhd.SymbolArrangement;
 import dev.amble.stargate.dhd.control.SymbolControl;
-import dev.amble.stargate.dhd.control.impl.Symbol;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
 import net.minecraft.block.BlockState;
@@ -18,8 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;

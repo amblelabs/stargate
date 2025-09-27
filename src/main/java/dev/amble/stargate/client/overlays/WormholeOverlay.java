@@ -2,7 +2,6 @@ package dev.amble.stargate.client.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.client.portal.WormholeRenderer;
 import dev.amble.stargate.client.renderers.SpaceSkyRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -11,16 +10,12 @@ import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 public class WormholeOverlay implements HudRenderCallback {

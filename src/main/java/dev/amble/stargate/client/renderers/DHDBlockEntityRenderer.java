@@ -3,11 +3,10 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.client.models.DHDModel;
-import dev.amble.stargate.block.AbstractStargateBlock;
+import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
+import dev.amble.stargate.client.models.DHDModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowBlock;
@@ -24,7 +23,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntity> {
@@ -65,7 +65,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
-        float k = entity.getCachedState().get(AbstractStargateBlock.FACING).asRotation();
+        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         /*this.model.toplights.visible = true;

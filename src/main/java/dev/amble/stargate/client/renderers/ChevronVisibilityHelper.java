@@ -1,7 +1,5 @@
 package dev.amble.stargate.client.renderers;
 
-import dev.amble.stargate.api.kernels.GateState;
-import dev.amble.stargate.api.kernels.StargateKernel;
 import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
 import dev.amble.stargate.client.models.StargateModel;
 import net.minecraft.client.model.ModelPart;

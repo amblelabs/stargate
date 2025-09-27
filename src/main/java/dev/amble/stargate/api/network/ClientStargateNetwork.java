@@ -1,6 +1,7 @@
 package dev.amble.stargate.api.network;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.v3.Stargate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -13,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
-public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
+public class ClientStargateNetwork extends StargateNetwork<Stargate>
 		implements ClientPlayConnectionEvents.Disconnect, ClientTickEvents.StartTick {
 
 	private ClientStargateNetwork() {
@@ -35,15 +36,15 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 		if (client.world == null) return;
 		Identifier worldId = client.world.getRegistryKey().getValue();
 
-		for (ClientStargate stargate : this.lookup.values()) {
+		for (Stargate stargate : this.lookup.values()) {
 			if (stargate.address().pos().getDimension().getValue().equals(worldId))
 				stargate.tick();
 		}
 	}
 
 	@Override
-	protected ClientStargate fromNbt(NbtCompound nbt) {
-		return new ClientStargate(nbt);
+	protected Stargate fromNbt(NbtCompound nbt) {
+		return new Stargate(nbt, true);
 	}
 
 	private void onRemove(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
@@ -55,9 +56,9 @@ public class ClientStargateNetwork extends StargateNetwork<ClientStargate>
 
 	private void onSyncPartial(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		NbtCompound nbt = buf.readNbt();
-		ClientStargate gate = this.fromNbt(nbt);
+		Stargate gate = this.fromNbt(nbt);
 
-		ClientStargate existing = this.lookup.put(gate);
+		Stargate existing = this.lookup.put(gate);
 
 		if (existing != null)
 			existing.age();

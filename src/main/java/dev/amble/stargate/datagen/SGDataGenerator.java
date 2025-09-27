@@ -6,7 +6,6 @@ import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
-import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;
 import dev.amble.stargate.world.StargateConfiguredFeature;
@@ -297,7 +296,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation(StargateItems.RAW_NAQUADAH, "Raw Naquadah");
             provider.addTranslation(StargateItems.NAQUADAH_INGOT, "Naquadah Ingot");
             provider.addTranslation(StargateItems.NAQUADAH_NUGGET, "Naquadah Nugget");
-            provider.addTranslation(StargateFluids.LIQUID_NAQUADAH, "Liquid Naquadah Container");
+            provider.addTranslation(StargateItems.LIQUID_NAQUADAH, "Liquid Naquadah Container");
             provider.addTranslation(StargateItems.EMPTY_CONTAINER, "Empty Container");
             provider.addTranslation(StargateItems.COPPER_COIL, "Copper Wire");
             provider.addTranslation(StargateItems.CONTROL_CRYSTAL_BLUE, "Blue Control Crystal");

@@ -4,14 +4,12 @@ import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
-import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
-import dev.amble.stargate.api.kernels.impl.MilkyWayGateKernel;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
-import dev.amble.stargate.api.kernels.impl.PegasusGateKernel;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.item.DialerItem;
 import dev.amble.stargate.item.EmptyContainerItem;
 import dev.amble.stargate.item.StargateItem;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -24,10 +22,7 @@ public class StargateItems extends ItemContainer {
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1));
 
 	// Stargates
-	public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.MILKY_WAY_STARGATE, GateKernelRegistry.get().get(MilkyWayGateKernel.ID));
-	public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.ORLIN_STARGATE, GateKernelRegistry.get().get(OrlinGateKernel.ID));
-	public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.PEGASUS_STARGATE, GateKernelRegistry.get().get(PegasusGateKernel.ID));
-	public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), StargateBlocks.DESTINY_STARGATE, GateKernelRegistry.get().get(DestinyGateKernel.ID));
+	public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
 
 	//Naquadah
 	@AutomaticModel
@@ -78,6 +73,9 @@ public class StargateItems extends ItemContainer {
 	@AutomaticModel
 	@NoEnglish
 	public static final Item CONTROL_CRYSTAL_MASTER = new Item(new AItemSettings());
+
+	@NoEnglish
+	public static final Item LIQUID_NAQUADAH = new EmptyContainerItem(StargateFluids.STILL_LIQUID_NAQUADAH, new FabricItemSettings().recipeRemainder(StargateItems.EMPTY_CONTAINER).maxCount(1));
 
     @AutomaticModel
     @NoEnglish

@@ -4,7 +4,7 @@ import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
@@ -18,7 +18,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
+public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		implements ServerPlayConnectionEvents.Join, ServerLifecycleEvents.ServerStopped, ServerTickEvents.EndTick {
 
 	private static volatile ServerStargateNetwork instance;
@@ -37,7 +37,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 			if (gate == null)
 				continue;
 
-			gate.loadNbt((NbtCompound) list.get(i), false);
+			throw new IllegalStateException("todo");
 		}
 
 		super.postProcessNbt(list, gates);
@@ -49,8 +49,8 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	}
 
 	@Override
-	protected ServerStargate fromNbt(NbtCompound nbt) {
-		return new ServerStargate(nbt);
+	protected Stargate fromNbt(NbtCompound nbt) {
+		throw new IllegalStateException("todo");
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 	}
 
 	@Override
-	public boolean add(ServerStargate stargate) {
+	public boolean add(Stargate stargate) {
 		boolean success = super.add(stargate);
 		if (success) this.syncPartial(stargate);
 
@@ -92,10 +92,12 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		this.syncAll(PlayerLookup.all(ServerLifecycleHooks.get()).stream());
 	}
 
-	private void syncPartial(ServerStargate gate, Stream<ServerPlayerEntity> targets) {
+	private void syncPartial(Stargate gate, Stream<ServerPlayerEntity> targets) {
 		StargateMod.LOGGER.debug("Syncing stargate {}", gate.address());
 
-		NbtCompound nbt = gate.toNbt(true);
+		NbtCompound nbt = new NbtCompound();
+		gate.toNbt(nbt, true);
+
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeNbt(nbt);
 
@@ -120,7 +122,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 		this.removePartial(address, PlayerLookup.all(ServerLifecycleHooks.get()).stream());
 	}
 
-	public void syncPartial(ServerStargate gate) {
+	public void syncPartial(Stargate gate) {
 		// TODO: null server handling
 		this.syncPartial(gate, PlayerLookup.all(ServerLifecycleHooks.get()).stream());
 	}
@@ -136,7 +138,7 @@ public class ServerStargateNetwork extends StargateNetwork<ServerStargate>
 
 	@Override
 	public void onEndTick(MinecraftServer server) {
-		for (ServerStargate stargate : this.lookup.values()) {
+		for (Stargate stargate : this.lookup.values()) {
 			stargate.tick();
 
 			if (stargate.dirty()) {

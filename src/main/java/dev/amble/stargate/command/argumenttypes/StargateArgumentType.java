@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import dev.amble.stargate.api.network.ServerStargate;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.command.ServerCommandSource;
@@ -34,7 +34,7 @@ public class StargateArgumentType implements ArgumentType<StargateArgumentType.S
                 if (!(blockEntity instanceof StargateBlockEntity linkable))
                     throw INVALID_UUID.create();
 
-                return (ServerStargate) linkable.gate().get();
+                return linkable.gate().get();
             };
         }
 
@@ -52,6 +52,6 @@ public class StargateArgumentType implements ArgumentType<StargateArgumentType.S
 
     @FunctionalInterface
     public interface StargateContext {
-        ServerStargate get(CommandContext<ServerCommandSource> context) throws CommandSyntaxException;
+        Stargate get(CommandContext<ServerCommandSource> context) throws CommandSyntaxException;
     }
 }

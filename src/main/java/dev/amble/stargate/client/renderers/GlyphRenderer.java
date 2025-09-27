@@ -2,7 +2,6 @@ package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.PegasusGateKernel;
 import dev.amble.stargate.api.v2.Stargate;
 import net.minecraft.client.MinecraftClient;

@@ -2,12 +2,11 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.kernels.BasicStargateKernel;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
-import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.block.AbstractStargateBlock;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.ClientIrisState;
+import dev.amble.stargate.api.v3.state.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
@@ -49,6 +48,7 @@ public class PortalUtil {
         if (isOrlin) {
             matrixStack.translate(0, 2, 0);
         }
+
         matrixStack.scale(isOrlin ? 14f : scale, isOrlin ? 14f : scale, isOrlin ? 14f : scale);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
@@ -73,14 +73,18 @@ public class PortalUtil {
         return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
     }
 
-    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, GateState state, Stargate gate) {
+    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, Stargate gate) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings =36;
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
         float minWaveHeight = 0.001f;
-        float maxWaveHeight = stargate.getCachedState().get(AbstractStargateBlock.IRIS) ?  0.001f : 0.006f;
+
+        // TODO move this outta here
+        IrisState irisState = gate.state(ClientIrisState.state);
+
+        float maxWaveHeight = irisState != null && irisState.open  ?  0.001f : 0.006f;
 
         int rippleCount = 12;
         float[][] rippleCenters = new float[rippleCount][2];

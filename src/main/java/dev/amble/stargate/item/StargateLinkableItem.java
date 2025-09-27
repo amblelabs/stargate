@@ -3,10 +3,9 @@ package dev.amble.stargate.item;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.WorldUtil;
-import dev.amble.stargate.api.network.ClientStargate;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.network.StargateNetwork;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// wow i wonder where did that come from
 public abstract class StargateLinkableItem extends Item {
 	private final boolean showTooltip;
 
@@ -62,7 +60,7 @@ public abstract class StargateLinkableItem extends Item {
 			return;
 		}
 
-		ClientStargate stargate = (ClientStargate) ClientStargateNetwork.get().get(id);
+		Stargate stargate = ClientStargateNetwork.get().get(id);
 
 		if (stargate != null) {
 			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));

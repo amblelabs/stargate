@@ -47,7 +47,7 @@ public class StargateAchievementProvider extends FabricAdvancementProvider {
                 .build(consumer, StargateMod.MOD_ID + "/obtain_address_cartouche");
 
         Advancement liquidNaquadah = Advancement.Builder.create().parent(rawNaquadah)
-                .display(StargateFluids.LIQUID_NAQUADAH,
+                .display(StargateItems.LIQUID_NAQUADAH,
                         Text.translatable("achievement.stargate.title.obtain_liquid_naquadah"),
                         Text.translatable("achievement.stargate.description.obtain_liquid_naquadah"),
                         null, AdvancementFrame.GOAL, true, true, true)

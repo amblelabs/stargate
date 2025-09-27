@@ -1,9 +1,6 @@
 package dev.amble.stargate.dhd.control;
 
-import dev.amble.stargate.api.Glyph;
-import dev.amble.stargate.api.GlyphOriginRegistry;
-import dev.amble.stargate.api.kernels.GateState;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;

@@ -1,8 +1,8 @@
 package dev.amble.stargate.item;
 
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.network.StargateLinkable;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.BasicGateStates;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -47,11 +47,11 @@ public class DialerItem extends StargateLinkableItem {
 
 			Stargate gate = be.gate().get();
 
-			// TODO: put this in a utility class/method
-			if (gate.state() instanceof GateState.Closed closed) {
+			BasicGateStates.Closed closed = gate.stateOrNull(BasicGateStates.Closed.state);
+
+			if (closed != null) {
 				// TODO: add a way to dial directly without having to address->text->address
-				closed.setAddress(target.address().text());
-				closed.setHasDialButton(false);
+				closed.address = target.address().text();
 				gate.markDirty();
 			}
 

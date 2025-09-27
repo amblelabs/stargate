@@ -2,7 +2,6 @@ package dev.amble.stargate.entities;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.Stargate;
 import dev.amble.stargate.block.entities.DHDBlockEntity;

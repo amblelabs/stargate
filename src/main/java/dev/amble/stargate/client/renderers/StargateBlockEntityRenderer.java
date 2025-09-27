@@ -1,16 +1,15 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.kernels.GateState;
-import dev.amble.stargate.api.kernels.StargateKernel;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
-import dev.amble.stargate.api.v2.Stargate;
-import dev.amble.stargate.block.AbstractStargateBlock;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;
+import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.compat.DependencyChecker;
+import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -27,8 +26,10 @@ import net.minecraft.util.math.Vec3d;
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
     public static final Identifier MILKY_WAY = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way.png");
     public static final Identifier MILKY_WAY_EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/stargates/milky_way/milky_way_emission.png");
-    private final StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
+
+    public final StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
     private static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
+
     private final GlyphRenderer glyphRenderer = new GlyphRenderer();
 
     private final GateState.Closed FALLBACK = new GateState.Closed();
@@ -46,7 +47,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.pop();
         }
 
-        float k = entity.getCachedState().get(AbstractStargateBlock.FACING).asRotation();
+        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
 
         matrices.push();
         GateState state = entity.hasStargate() ? entity.gate().get().state() : FALLBACK;
@@ -91,18 +92,24 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             this.model.chev_light7.visible = bl;
             this.model.chev_light7bottom.visible = bl;
             rot = rotationValue;
+
+            this.model.animateStargateModel(entity, gate, entity.age);
+
+            TEvents.handle(new StargateRenderEvent(gate, entity, this, matrices, vertexConsumers, light, overlay, tickDelta));
         }
 
-        this.model.animateStargateModel(entity, state, entity.age);
         this.model.SymbolRing.roll = rot;
-        if(this.model.getChild("iris").isPresent()) this.model.iris.visible = entity.IRIS_CLOSE_STATE.isRunning() || entity.IRIS_OPEN_STATE.isRunning();
+
         if (DependencyChecker.hasIris()) {
             this.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
         }
+
         this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), lightAbove, overlay, 1, 1, 1, 1);
+
         if (!DependencyChecker.hasIris()) {
             this.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, power, power, 1);
         }
+
         matrices.pop();
 
         PortalRendering.PORTAL_RENDER_QUEUE.add(entity);

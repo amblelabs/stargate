@@ -1,14 +1,14 @@
 package dev.amble.stargate.api.network;
 
 import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.Addressable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GateMap<T extends Stargate> {
+public class GateMap<T extends Addressable> {
 
     protected final Map<UUID, T> idMap = new HashMap<>();
     protected final Map<String, T> addrMap = new HashMap<>();
@@ -38,13 +38,12 @@ public class GateMap<T extends Stargate> {
         this.addrMap.clear();
     }
 
-    public static class Mutable<T extends Stargate> extends GateMap<T> {
+    public static class Mutable<T extends Addressable> extends GateMap<T> {
 
         public @Nullable T put(T gate) {
             Address address = gate.address();
             T prev = this.idMap.put(address.id(), gate);
             this.addrMap.put(address.text(), gate);
-            //this.gates.add(gate);
 
             return prev;
         }

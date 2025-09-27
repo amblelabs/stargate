@@ -2,8 +2,7 @@ package dev.amble.stargate.client;
 
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.GlyphOriginRegistry;
-import dev.amble.stargate.api.network.ClientStargateNetwork;
-import dev.amble.stargate.block.AbstractStargateBlock;
+import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
@@ -82,7 +81,7 @@ public class StargateModClient implements ClientModInitializer {
     public static void setupBlockRendering() {
         BlockRenderLayerMap map = BlockRenderLayerMap.INSTANCE;
         map.putBlock(StargateBlocks.MILKY_WAY_STARGATE, RenderLayer.getCutout());
-        map.putBlock(StargateBlocks.ORLIN_STARGATE, RenderLayer.getCutout());
+        map.putBlock(StargateBlocks.ORLIN_GATE, RenderLayer.getCutout());
         map.putBlock(StargateBlocks.PEGASUS_STARGATE, RenderLayer.getCutout());
         map.putBlock(StargateBlocks.DESTINY_STARGATE, RenderLayer.getCutout());
     }
@@ -98,7 +97,7 @@ public class StargateModClient implements ClientModInitializer {
             stack.translate(pos.getX() - context.camera().getPos().getX(),
                     pos.getY() - context.camera().getPos().getY(), pos.getZ() - context.camera().getPos().getZ());
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(gate.getCachedState().get(AbstractStargateBlock.FACING).asRotation()));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(gate.getCachedState().get(StargateBlock.FACING).asRotation()));
             stack.translate(0, -2f, 0);
             PortalRendering.renderPortal(gate, gate.gate().get().state(), stack);
             stack.pop();

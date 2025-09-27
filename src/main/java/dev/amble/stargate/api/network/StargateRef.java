@@ -2,7 +2,7 @@ package dev.amble.stargate.api.network;
 
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Disposable;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -12,8 +12,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-// thanks to theo for his tardis code lol - duzo
-// thanks to me for my tardis code :( - theo
 public class StargateRef implements Disposable {
 	private final LoadFunc load;
 	private final UUID id;
@@ -26,7 +24,7 @@ public class StargateRef implements Disposable {
 	}
 
 	public StargateRef(Stargate stargate) {
-		this(stargate.address().id(), uuid -> StargateNetwork.getInstance(stargate instanceof ServerStargate).get(uuid));
+		this(stargate.address().id(), uuid -> StargateNetwork.getInstance(!stargate.isClient()).get(uuid));
 		this.cached = stargate;
 	}
 

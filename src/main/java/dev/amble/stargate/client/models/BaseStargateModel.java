@@ -1,6 +1,7 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.kernels.GateState;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.ClientIrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import net.minecraft.client.model.ModelPart;
@@ -23,13 +24,17 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
         super(function);
     }
 
-    public void animateStargateModel(StargateBlockEntity stargateBlockEntity, GateState state, int age) {
+    public void animateStargateModel(StargateBlockEntity stargateBlockEntity, Stargate stargate, int age) {
         this.getPart().traverse().forEach(ModelPart::resetTransform);
 
-        //this.updateAnimation(stargateBlockEntity.ANIM_STATE, this.getAnimationForState(state), age);
         this.updateAnimation(stargateBlockEntity.CHEVRON_LOCK_STATE, StargateAnimations.LOCK_SYMBOL, age);
-        this.updateAnimation(stargateBlockEntity.IRIS_CLOSE_STATE, StargateAnimations.IRIS_CLOSE, age);
-        this.updateAnimation(stargateBlockEntity.IRIS_OPEN_STATE, StargateAnimations.IRIS_OPEN, age);
+
+        ClientIrisState clientIrisState = stargate.stateOrNull(ClientIrisState.state);
+
+        if (clientIrisState != null) {
+            this.updateAnimation(clientIrisState.CLOSE_STATE, StargateAnimations.IRIS_CLOSE, age);
+            this.updateAnimation(clientIrisState.OPEN_STATE, StargateAnimations.IRIS_OPEN, age);
+        }
     }
 
     @Override

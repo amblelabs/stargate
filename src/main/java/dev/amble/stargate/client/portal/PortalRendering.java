@@ -1,7 +1,6 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.kernels.GateState;
 import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
@@ -10,7 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Queue;
 
 public class PortalRendering {
