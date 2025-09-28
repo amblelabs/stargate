@@ -17,21 +17,17 @@ public class IrisItem extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         if (context.getWorld().isClient()) return ActionResult.PASS;
 
-        System.out.println("1");
         if (!(context.getWorld().getBlockEntity(context.getBlockPos()) instanceof StargateBlockEntity be) || !be.isLinked())
             return ActionResult.PASS;
 
-        System.out.println("2");
         Stargate stargate = be.gate().get();
 
         if (stargate.hasState(IrisState.state))
             return ActionResult.PASS;
-        System.out.println(3);
 
         context.getStack().decrement(1);
         stargate.addState(new IrisState());
 
-        System.out.println(4);
         return ActionResult.SUCCESS;
     }
 }

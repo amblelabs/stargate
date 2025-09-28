@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -30,27 +29,13 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 	}
 
 	@Override
-	protected void postProcessNbt(NbtList list, Stargate[] gates) {
-		for (int i = 0; i < gates.length; i++) {
-			Stargate gate = gates[i];
-
-			if (gate == null)
-				continue;
-
-			throw new IllegalStateException("todo");
-		}
-
-		super.postProcessNbt(list, gates);
-	}
-
-	@Override
 	public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
 		ServerStargateNetwork.get().syncAll(Stream.of(handler.getPlayer()));
 	}
 
 	@Override
 	protected Stargate fromNbt(NbtCompound nbt) {
-		throw new IllegalStateException("todo");
+		return Stargate.fromNbt(nbt, false);
 	}
 
 	@Override

@@ -70,8 +70,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         this.address = Address.fromNbt(nbt.getCompound("Address"));
         this.isClient = isClient;
 
-        NbtCompound states = nbt.getCompound("States");
-        this.updateStates(states, isClient);
+        this.updateStates(nbt, isClient);
 
         this.attachState(false, isClient);
 
@@ -91,9 +90,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
     }
 
     public void updateStates(NbtCompound nbt, boolean isClient) {
-        for (String key : nbt.getKeys()) {
+        NbtCompound states = nbt.getCompound("States");
+
+        for (String key : states.getKeys()) {
             if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable)
-                this.addState(serializable.decode(nbt.getCompound(key), isClient));
+                this.addState(serializable.decode(states.getCompound(key), isClient));
         }
     }
 

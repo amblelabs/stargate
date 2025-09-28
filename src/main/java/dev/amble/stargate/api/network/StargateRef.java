@@ -52,10 +52,8 @@ public class StargateRef implements Disposable {
 	 * @return the result of the function, {@literal null} otherwise.
 	 */
 	public <T> Optional<T> apply(Function<Stargate, T> consumer) {
-		if (this.isPresent())
-			return Optional.of(consumer.apply(this.cached));
-
-		return Optional.empty();
+		T result = this.isPresent() ? consumer.apply(this.get()) : null;
+		return Optional.ofNullable(result);
 	}
 
 	public void ifPresent(Consumer<Stargate> consumer) {
