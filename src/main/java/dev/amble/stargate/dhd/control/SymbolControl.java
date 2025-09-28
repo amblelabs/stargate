@@ -24,28 +24,6 @@ public class SymbolControl {
     }
 
     public boolean runServer(Stargate stargate, ServerPlayerEntity player, ServerWorld world, BlockPos console) {
-        if (stargate.state() instanceof GateState.Closed closed) {
-            if (this.getGlyph() != '*' && !(closed.locked() > 6)) {
-                if (!closed.contains(this.glyph)) {
-                    closed.setHasDialButton(false);
-                    closed.appendGlyph(this.glyph);
-                    closed.lock();
-                }
-            } else {
-                closed.setHasDialButton(true);
-            }
-            stargate.markDirty();
-        } else if (stargate.state() instanceof GateState.Open open) {
-            System.out.println("HELLO?");
-            if (this.getGlyph() == '*') {
-                stargate.kernel().setState(new GateState.Closed());
-                stargate.markDirty();
-                Stargate gate = open.target().get();
-
-                gate.kernel().setState(new GateState.Closed());
-                gate.markDirty();
-            }
-        }
         return false;
     }
 
@@ -64,7 +42,7 @@ public class SymbolControl {
     }
 
     public boolean canRun(Stargate stargate, ServerPlayerEntity user) {
-        return stargate.state() instanceof GateState.Closed || stargate.state() instanceof GateState.Open;
+        return true;
     }
 
     @Override

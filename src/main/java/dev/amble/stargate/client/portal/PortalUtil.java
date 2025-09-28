@@ -18,11 +18,7 @@ public class PortalUtil {
 
     private static final Identifier BASE = StargateMod.id("textures/portal/");
 
-    private float time = 0;
-
-    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, BasicGateStates<?> currentState) {
-        time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
-
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, BasicGateStates<?> currentState, float time) {
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
 
@@ -37,17 +33,17 @@ public class PortalUtil {
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
 
         RenderSystem.disableCull();
-        portalTriangles(matrixStack, buffer, stargate, currentState);
+        portalTriangles(matrixStack, buffer, stargate, currentState, time);
         tessellator.draw();
         RenderSystem.enableCull();
         matrixStack.pop();
     }
 
-    private void addVertexGlow(VertexConsumer builder, Matrix4f matrix, Matrix3f normalMatrix, float x, float y, float z, float u, float v, float r, float g, float b, float a, int light) {
+    private static void addVertexGlow(VertexConsumer builder, Matrix4f matrix, Matrix3f normalMatrix, float x, float y, float z, float u, float v, float r, float g, float b, float a, int light) {
         builder.vertex(matrix, x, y, z).color(Math.min(1, r), Math.min(1, g), Math.min(1, b), a).texture(u, v).light(light).next();
     }
 
-    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, BasicGateStates<?> currentState) {
+    private void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, BasicGateStates<?> currentState, float time) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings = 36;
@@ -116,7 +112,7 @@ public class PortalUtil {
                     if (distToCenter <= central.radius) {
                         float norm = 1f - (distToCenter / central.radius);
                         float bulge = (float) Math.pow(norm, 1f);
-                        float wave = getWave(central, angle, bulge, currentState);
+                        float wave = getWave(central, angle, bulge, currentState, time);
                         float effect;
                         if (wave >= 0f) {
                             effect = wave * central.height * bulge * t;
@@ -244,7 +240,7 @@ public class PortalUtil {
         }
     }
 
-    private float getWave(CentralRippleParams central, float angle, float bulge, BasicGateStates<?> currentState) {
+    private float getWave(CentralRippleParams central, float angle, float bulge, BasicGateStates<?> currentState, float time) {
         float realHeight = currentState instanceof BasicGateStates.Opening opening ? opening.kawooshHeight : 0;
 
         float mainDuration = 1f;
@@ -276,7 +272,7 @@ public class PortalUtil {
     private boolean centralRippleSettling = false;
 
     /** Call this to trigger a big central ripple. */
-    public void triggerCentralRipple(float radius, float height, float frequency, float speed) {
+    private void triggerCentralRipple(float radius, float height, float frequency, float speed) {
         if (this.centralRipple != null) return;
         this.centralRipple = new CentralRippleParams(radius, height, frequency, speed, 0f);
         this.centralRippleTime = 0f;

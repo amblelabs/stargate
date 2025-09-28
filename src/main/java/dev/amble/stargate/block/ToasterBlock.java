@@ -106,7 +106,7 @@ public class ToasterBlock extends Block {
                     }
                     world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     world.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
-                    OrlinGateBlock.setBlockAndCreateStargate(world, pos.down(), GateKernelRegistry.get().get(OrlinGateKernel.ID), facing);
+                    OrlinGateBlock.setBlockAndCreateStargate(world, pos.down(), GateKernelRegistry.ORLIN, facing);
                 }
                 return ActionResult.SUCCESS;
             }

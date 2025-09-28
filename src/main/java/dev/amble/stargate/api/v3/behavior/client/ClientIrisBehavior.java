@@ -61,8 +61,8 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, Starg
 
     @Override
     public void render(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
-        ClientIrisState clientIrisState = stargate.state(ClientIrisState.state);
-        boolean renderIris = clientIrisState.CLOSE_STATE.isRunning() || clientIrisState.OPEN_STATE.isRunning();
+        ClientIrisState clientIrisState = stargate.stateOrNull(ClientIrisState.state);
+        boolean renderIris = clientIrisState != null && (clientIrisState.CLOSE_STATE.isRunning() || clientIrisState.OPEN_STATE.isRunning());
 
         // TODO: make the iris a separate thingy
         if (renderer.model.getChild("iris").isPresent())

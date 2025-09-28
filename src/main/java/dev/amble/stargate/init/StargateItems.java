@@ -23,6 +23,9 @@ public class StargateItems extends ItemContainer {
 
 	// Stargates
 	public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
+	public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.ORLIN);
+	public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.DESTINY);
+	public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.PEGASUS);
 
 	//Naquadah
 	@AutomaticModel

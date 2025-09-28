@@ -38,10 +38,10 @@ public class PortalRendering {
         BasicGateStates<?> state = stargate.getCurrentState();
 
         if (state.gateState() != BasicGateStates.StateType.CLOSED) {
-            PortalUtil util = new PortalUtil();
+            float time = ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
             RenderSystem.enableDepthTest();
-            util.renderPortalInterior(stack, stargate, state);
+            new PortalUtil().renderPortalInterior(stack, stargate, state, time);
 
             RenderSystem.disableDepthTest();
         }

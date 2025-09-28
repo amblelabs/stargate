@@ -2,11 +2,13 @@ package dev.amble.stargate.api.v3;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Addressable;
 import dev.amble.stargate.api.Disposable;
 import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
 import dev.amble.stargate.api.v3.event.state.StateAddedEvent;
@@ -58,6 +60,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         TEvents.handle(new StargateCreatedEvent(this));
     }
 
+    public static Stargate fromNbt(NbtCompound nbt, boolean isClient) {
+        Identifier id = new Identifier(nbt.getString("Id"));
+        return GateKernelRegistry.get().get(id).loader().load(nbt, isClient);
+    }
+
     public Stargate(NbtCompound nbt, boolean isClient) {
         super(TStateRegistry.createArrayHolder());
 
@@ -68,14 +75,16 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
 
         for (String key : states.getKeys()) {
             if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable)
-                this.addState(serializable.decode(nbt, isClient));
+                this.addState(serializable.decode(states.getCompound(key), isClient));
         }
 
         this.attachState(false, isClient);
 
-        TState.Type<?> type = TStateRegistry.get(new Identifier(nbt.getString("prevState")));
+        Identifier prevStateId = new Identifier(nbt.getString("prevState"));
+        TState.Type<?> type = TStateRegistry.get(prevStateId);
 
-        if (type == null) {
+        if (type == null || this.stateOrNull(type) == null) {
+            StargateMod.LOGGER.warn("Bad state: '{}', fixing", prevStateId);
             TState<?> state = this.createDefaultState();
 
             this.addState(state);
@@ -166,6 +175,22 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
     @Override
     public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
         nbt.putString("Id", this.id().toString());
+        nbt.put("Address", address.toNbt());
+
+        NbtCompound states = new NbtCompound();
+        this.forEachState(state -> stateToNbt(states, state, isClient));
+
+        nbt.put("States", states);
+        nbt.putString("prevState", this.curState.id().toString());
+    }
+
+    private <T extends TState<T>> void stateToNbt(NbtCompound nbt, TState<T> state, boolean isClient) {
+        TState.Type<T> type = state.type();
+
+        if (!(type instanceof TState.NbtBacked backed))
+            return;
+
+        nbt.put(type.id().toString(), backed.encode(state, isClient));
     }
 
     public boolean dirty() {
@@ -183,6 +208,19 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
     protected abstract TState<?> createDefaultState();
 
     public abstract Identifier id();
+
+    private boolean aged;
+
+    @Override
+    public void age() {
+        if (this.isClient())
+            this.aged = true;
+    }
+
+    @Override
+    public boolean isAged() {
+        return aged;
+    }
 
     @Override
     public void dispose() {

@@ -1,5 +1,6 @@
 package dev.drtheo.yaar.state;
 
+import dev.amble.stargate.StargateMod;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
@@ -35,8 +36,6 @@ public interface TState<Self extends TState<Self>> {
         @Contract(pure = true)
         public @NotNull NbtCompound encode(@NotNull T t, boolean isClient) {
             NbtCompound nbt = new NbtCompound();
-            nbt.putString("id", this.id.toString());
-
             t.toNbt(nbt, isClient);
             return nbt;
         }
@@ -44,7 +43,12 @@ public interface TState<Self extends TState<Self>> {
         @Override
         @Contract(pure = true)
         public @NotNull T decode(@NotNull NbtCompound element, boolean isClient) {
-            return this.fromNbt(element, isClient);
+            try {
+                return this.fromNbt(element, isClient);
+            } catch (Exception e) {
+                StargateMod.LOGGER.info(element.toString());
+                throw e;
+            }
         }
     }
 

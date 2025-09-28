@@ -4,6 +4,7 @@ import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
 import dev.amble.stargate.api.v3.state.client.ClientMilkyWayState;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
+import net.minecraft.client.model.ModelPart;
 
 public class ClientMilkyWayBehavior extends ClientGenericGateBehavior {
 
@@ -14,11 +15,15 @@ public class ClientMilkyWayBehavior extends ClientGenericGateBehavior {
 
     @Override
     public void updateChevronVisibility(Stargate stargate, StargateBlockEntityRenderer renderer) {
-        boolean visible = stargate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED;
-        int locked = visible ? -1 : stargate.stateShit(BasicGateStates.Closed.state, closed -> closed.locked, -1);
+        BasicGateStates<?> state = stargate.getCurrentState();
 
-        for (int i = 0; i < renderer.chevrons.length; i++) {
-            renderer.chevrons[i].visible = visible || i < locked;
+        boolean visible = state != null && state.gateState() != BasicGateStates.StateType.CLOSED;
+        int locked = state instanceof BasicGateStates.Closed closed ? closed.locked : -1;
+
+        ModelPart[] chevrons = renderer.chevrons;
+
+        for (int i = 0; i < chevrons.length; i++) {
+            chevrons[i].visible = visible || i < locked;
         }
     }
 }

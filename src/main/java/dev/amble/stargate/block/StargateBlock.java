@@ -111,7 +111,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-		if (!(world.getBlockEntity(pos) instanceof StargateBlockEntity be)) return;
+		if (!(world.getBlockEntity(pos) instanceof StargateBlockEntity be) || !be.isLinked()) return;
 
 		be.gate().ifPresent(stargate -> TEvents.handle(
 				new StargateBlockTickEvent.Random(stargate, world, pos, state, random)

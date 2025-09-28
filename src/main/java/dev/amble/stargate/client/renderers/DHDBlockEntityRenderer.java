@@ -82,46 +82,49 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         if (entity.hasStargate()) {
             var gate = entity.gate().get();
-            GateState state = gate.kernel().state();
-            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6 && closed.hasDialButton()) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
-            this.model.dialbutton.visible = !bl;
-            this.model.dialbuttonlight.visible = bl;
-            if (state instanceof GateState.Closed closed) {
-                String addressText = closed.addressBuilder();
-                if (!addressText.isEmpty()) {
-                    for (int a = 0; a < closed.locked(); a++) {
-                        char target = addressText.charAt(a);
-                        for (int i = 0; i < Glyph.ALL.length; i++) {
-                            if (Glyph.ALL[i] == target) {
-                                allLights.get(i).visible = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else if (state instanceof GateState.PreOpen preOpen) {
-                String address = preOpen.address();
-                for (int i = 0; i < address.length() - 1; i++) {
-                    char target = address.charAt(i);
-                    for (int a = 0; a < Glyph.ALL.length; a++) {
-                        if (Glyph.ALL[a] == target) {
-                            allLights.get(a).visible = true;
-                            break;
-                        }
-                    }
-                }
-            } else if (state instanceof GateState.Open open) {
-                String address = open.target().get().address().text();
-                for (int i = 0; i < address.length() - 1; i++) {
-                    char target = address.charAt(i);
-                    for (int a = 0; a < Glyph.ALL.length; a++) {
-                        if (Glyph.ALL[a] == target) {
-                            allLights.get(a).visible = true;
-                            break;
-                        }
-                    }
-                }
-            }
+//            GateState state = gate.kernel().state();
+//            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6 && closed.hasDialButton()) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
+//            this.model.dialbutton.visible = !bl;
+//            this.model.dialbuttonlight.visible = bl;
+//
+//
+//
+//            if (state instanceof GateState.Closed closed) {
+//                String addressText = closed.addressBuilder();
+//                if (!addressText.isEmpty()) {
+//                    for (int a = 0; a < closed.locked(); a++) {
+//                        char target = addressText.charAt(a);
+//                        for (int i = 0; i < Glyph.ALL.length; i++) {
+//                            if (Glyph.ALL[i] == target) {
+//                                allLights.get(i).visible = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//            } else if (state instanceof GateState.PreOpen preOpen) {
+//                String address = preOpen.address();
+//                for (int i = 0; i < address.length() - 1; i++) {
+//                    char target = address.charAt(i);
+//                    for (int a = 0; a < Glyph.ALL.length; a++) {
+//                        if (Glyph.ALL[a] == target) {
+//                            allLights.get(a).visible = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//            } else if (state instanceof GateState.Open open) {
+//                String address = open.target().get().address().text();
+//                for (int i = 0; i < address.length() - 1; i++) {
+//                    char target = address.charAt(i);
+//                    for (int a = 0; a < Glyph.ALL.length; a++) {
+//                        if (Glyph.ALL[a] == target) {
+//                            allLights.get(a).visible = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
         }
 
         renderGlyphs(matrices, vertexConsumers, entity, 0xf000f0);

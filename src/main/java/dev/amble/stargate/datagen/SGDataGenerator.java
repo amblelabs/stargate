@@ -281,7 +281,8 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             //Blocks
             provider.translateBlocks(StargateBlocks.class);
             provider.addTranslation(StargateBlocks.DHD, "Dial-Home Device");
-            provider.addTranslation(StargateBlocks.MILKY_WAY_STARGATE, "Stargate");
+            provider.addTranslation(StargateBlocks.GENERIC_GATE, "Stargate");
+            provider.addTranslation(StargateBlocks.ORLIN_GATE, "Orlin Stargate");
             provider.addTranslation(StargateBlocks.NAQUADAH_BLOCK, "Block of Naquadah");
             provider.addTranslation(StargateBlocks.RAW_NAQUADAH_BLOCK, "Block of Raw Naquadah");
             provider.addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");

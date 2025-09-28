@@ -6,8 +6,7 @@
   "mixins": [
     "LivingEntityMixin",
     "ServerPlayerEntityMixin",
-    "StructureTemplateMixin",
-    "compat.energy.EnergyStargateMixin"
+    "StructureTemplateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

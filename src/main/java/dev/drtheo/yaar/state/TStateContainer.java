@@ -4,6 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
+
 /**
  * An interface that represents a {@link TState} container.
  */
@@ -59,6 +61,9 @@ public interface TStateContainer {
     @Contract(mutates = "this")
     boolean addState(@NotNull TState<?> state);
 
+    @Contract(pure = true)
+    void forEachState(Consumer<TState<?>> consumer);
+
     /**
      * A basic implementation of {@link TStateContainer} that's backed by an array.
      */
@@ -98,6 +103,12 @@ public interface TStateContainer {
             data[index] = state;
             return true;
         }
+
+        @Override
+        public void forEachState(Consumer<TState<?>> consumer) {
+            for (TState<?> state : this.data)
+                if (state != null) consumer.accept(state);
+        }
     }
 
     /**
@@ -132,6 +143,11 @@ public interface TStateContainer {
         @Contract(mutates = "this")
         public boolean addState(@NotNull TState<?> state) {
             return parent.addState(state);
+        }
+
+        @Override
+        public void forEachState(Consumer<TState<?>> consumer) {
+            parent.forEachState(consumer);
         }
     }
 }

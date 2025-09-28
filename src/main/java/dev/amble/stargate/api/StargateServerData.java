@@ -3,6 +3,7 @@ package dev.amble.stargate.api;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;

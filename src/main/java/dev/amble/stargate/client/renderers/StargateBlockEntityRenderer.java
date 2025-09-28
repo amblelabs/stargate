@@ -6,7 +6,6 @@ import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
 import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
@@ -55,13 +54,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         if (!entity.hasStargate()) return;
         Stargate gate = entity.gate().get();
 
-        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
-
         matrices.push();
-
-        matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-        matrices.scale(1, 1, 1);
 
         TEvents.handle(new StargateRenderEvent(gate, entity, this, matrices, vertexConsumers, light, overlay, tickDelta));
 

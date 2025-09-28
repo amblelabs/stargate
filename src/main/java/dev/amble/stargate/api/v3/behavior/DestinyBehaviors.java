@@ -90,7 +90,7 @@ public interface DestinyBehaviors {
 
             stargate.markDirty();
 
-            if (tPrime == 1 && opening.timer++ > BasicGateStates.Opening.TICKS_PER_KAWOOSH) {
+            if (opening.timer++ > BasicGateStates.Opening.TICKS_PER_KAWOOSH && tPrime == 1) {
                 opening.kawooshHeight = 0;
                 opening.timer = 0;
 

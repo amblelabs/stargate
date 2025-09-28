@@ -44,7 +44,7 @@ public class ClientStargateNetwork extends StargateNetwork<Stargate>
 
 	@Override
 	protected Stargate fromNbt(NbtCompound nbt) {
-		return new Stargate(nbt, true);
+		return Stargate.fromNbt(nbt, true);
 	}
 
 	private void onRemove(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {

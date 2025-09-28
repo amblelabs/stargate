@@ -92,17 +92,14 @@ public interface BasicGateBehaviors {
             box = box.offset(pos);
 
             if (ServerLifecycleHooks.get().getTicks() % BasicGateStates.Open.TELEPORT_FREQUENCY == 0) {
+                BasicGateStates.Open open = stargate.state(BasicGateStates.Open.state);
                 List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
 
                 for (Entity e : entities) {
                     if (e instanceof LivingEntity living)
-                        this.onEnterHitbox(stargate, living, pos);
+                        tryTeleportFrom(stargate, open, living);
                 }
             }
-        }
-
-        public void onEnterHitbox(Stargate stargate, LivingEntity living, BlockPos pos) {
-            // TODO: implement this
         }
 
         public void tryTeleportFrom(Stargate stargate, BasicGateStates.Open open, LivingEntity entity) {

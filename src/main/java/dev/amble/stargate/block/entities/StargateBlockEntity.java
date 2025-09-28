@@ -139,7 +139,8 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 	}
 
 	public void tick(World world, BlockPos pos, BlockState state) {
-		this.gate().ifPresent(stargate -> TEvents.handle(new StargateBlockTickEvent(stargate, this, world, pos, state)));
+		if (this.isLinked())
+			this.gate().ifPresent(stargate -> TEvents.handle(new StargateBlockTickEvent(stargate, this, world, pos, state)));
 
 		if (world.isClient()) age++;
 	}
