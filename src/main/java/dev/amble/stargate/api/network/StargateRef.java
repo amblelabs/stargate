@@ -1,35 +1,31 @@
 package dev.amble.stargate.api.network;
 
-import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Disposable;
 import dev.amble.stargate.api.v3.Stargate;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class StargateRef implements Disposable {
-	private final LoadFunc load;
+public class StargateRef {
 	private final UUID id;
+	private final BooleanSupplier isClient;
 
 	private Stargate cached;
 
-	public StargateRef(UUID id, LoadFunc load) {
+	public StargateRef(UUID id, BooleanSupplier isClient) {
 		this.id = id;
-		this.load = load;
+		this.isClient = isClient;
+	}
+
+	public StargateRef(UUID id, boolean isClient) {
+		this(id, () -> isClient);
 	}
 
 	public StargateRef(Stargate stargate) {
-		this(stargate.address().id(), uuid -> StargateNetwork.getInstance(!stargate.isClient()).get(uuid));
+		this(stargate.address().id(), stargate.isClient());
 		this.cached = stargate;
-	}
-
-	public StargateRef(Address address, LoadFunc load) {
-		this(address.id(), load);
 	}
 
 	public UUID id() {
@@ -37,7 +33,7 @@ public class StargateRef implements Disposable {
 	}
 
 	public Stargate get() {
-		return cached != null ? cached : load.apply(id);
+		return cached != null ? cached : StargateNetwork.getInstance(!isClient.getAsBoolean()).get(id);
 	}
 
 	public boolean isPresent() {
@@ -59,31 +55,5 @@ public class StargateRef implements Disposable {
 	public void ifPresent(Consumer<Stargate> consumer) {
 		if (this.isPresent())
 			consumer.accept(this.get());
-	}
-
-	public static StargateRef createAs(Entity entity, UUID uuid) {
-		return new StargateRef(uuid,
-				real -> StargateNetwork.with(entity, (o, manager) -> manager.get(real)));
-	}
-
-	public static StargateRef createAs(BlockEntity blockEntity, UUID uuid) {
-		return new StargateRef(uuid,
-				real -> StargateNetwork.with(blockEntity, (o, manager) -> manager.get(real)));
-	}
-
-	public static StargateRef createAs(World world, UUID uuid) {
-		return new StargateRef(uuid, real -> StargateNetwork.with(world, (o, manager) -> manager.get(real)));
-	}
-
-	public static StargateRef createAs(boolean isClient, UUID uuid) {
-		return new StargateRef(uuid, real -> StargateNetwork.getInstance(!isClient).get(real));
-	}
-
-	@Override
-	public void dispose() {
-		this.cached = null;
-	}
-
-	public interface LoadFunc extends Function<UUID, Stargate> {
 	}
 }

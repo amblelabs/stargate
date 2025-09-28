@@ -14,7 +14,7 @@ import java.util.UUID;
 
 /**
  * Represents a Stargate address.
- * 7 Characters Long
+ * It <i>MAY BE</i> 7 Characters Long
  * @param text address in string form
  * @param pos the position of the Stargate
  */
@@ -22,6 +22,10 @@ public record Address(UUID id, String text, DirectedGlobalPos pos) {
 	private static final Identifier FONT_ID = StargateMod.id("stargate");
 	private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
+	/**
+	 * @deprecated Do NOT use. Stargates can have 7-9 characters long addresses, so relying on this plain value is SILLY
+	 */
+	@Deprecated(forRemoval = true)
 	public static final int LENGTH = 7;
 
 	/**

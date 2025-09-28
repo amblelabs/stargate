@@ -65,7 +65,10 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
         if (hand != Hand.MAIN_HAND || !(world.getBlockEntity(pos) instanceof StargateBlockEntity be) || !be.isLinked())
             return ActionResult.PASS;
 
+		ItemStack heldItem = player.getStackInHand(hand);
+
 		if (!player.isSneaking()) {
+			if (!heldItem.isEmpty()) return ActionResult.PASS;
 			if (world.isClient()) return ActionResult.SUCCESS;
 
 			// TODO: silly, move this to a result event
@@ -82,7 +85,6 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 			}).orElse(ActionResult.PASS);
 		}
 
-		ItemStack heldItem = player.getStackInHand(hand);
         BlockState newSetState = null;
 
         if (!heldItem.isEmpty() && heldItem.getItem() instanceof BlockItem blockItem)

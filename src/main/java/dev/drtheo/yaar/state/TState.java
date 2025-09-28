@@ -143,5 +143,10 @@ public interface TState<Self extends TState<Self>> {
                     ", id=" + id +
                     '}';
         }
+
+        @Override
+        public int hashCode() {
+            return index;
+        }
     }
 }

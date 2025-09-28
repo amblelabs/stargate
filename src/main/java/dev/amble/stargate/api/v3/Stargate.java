@@ -21,7 +21,9 @@ import dev.drtheo.yaar.state.TStateContainer;
 import dev.drtheo.yaar.state.TStateRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -33,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public abstract class Stargate extends TStateContainer.Delegate implements Addressable, NbtSerializer {
 
@@ -71,8 +72,23 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         this.isClient = isClient;
 
         this.updateStates(nbt, isClient);
-
         this.attachState(false, isClient);
+    }
+
+    public void updateStates(NbtCompound nbt, boolean isClient) {
+        NbtCompound states = nbt.getCompound("States");
+
+        for (String key : states.getKeys()) {
+            if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable) {
+                NbtElement state = states.get(key);
+
+                if (state instanceof NbtCompound compound) {
+                    this.addState(serializable.decode(compound, isClient));
+                } else {
+                    this.removeState(serializable);
+                }
+            }
+        }
 
         Identifier prevStateId = new Identifier(nbt.getString("prevState"));
         TState.Type<?> type = TStateRegistry.get(prevStateId);
@@ -87,15 +103,6 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         }
 
         this.curState = type;
-    }
-
-    public void updateStates(NbtCompound nbt, boolean isClient) {
-        NbtCompound states = nbt.getCompound("States");
-
-        for (String key : states.getKeys()) {
-            if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable)
-                this.addState(serializable.decode(states.getCompound(key), isClient));
-        }
     }
 
     protected void attachState(boolean created, boolean isClient) {
@@ -147,11 +154,6 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         return result;
     }
 
-    public <T extends TState<T>, R> R stateShit(TState.Type<T> type, Function<T, R> f, R def) {
-        T state = stateOrNull(type);
-        return state == null ? def : f.apply(state);
-    }
-
     public abstract GateShape shape();
 
     @Override
@@ -181,13 +183,21 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         nbt.put("Address", address.toNbt());
 
         NbtCompound states = new NbtCompound();
-        this.forEachState(state -> stateToNbt(states, state, isClient));
+        this.forEachState((i, state) -> stateToNbt(states, i, state, isClient));
 
         nbt.put("States", states);
         nbt.putString("prevState", this.curState.id().toString());
     }
 
-    private <T extends TState<T>> void stateToNbt(NbtCompound nbt, TState<T> state, boolean isClient) {
+    @SuppressWarnings("rawtypes")
+    private <T extends TState<T>> void stateToNbt(NbtCompound nbt, int i, @Nullable TState<T> state, boolean isClient) {
+        if (state == null) {
+            if (!isClient) // do the diffing only if we're serializing for client
+                nbt.put(TStateRegistry.get(i).id().toString(), NbtByte.ZERO);
+
+            return;
+        }
+
         TState.Type<T> type = state.type();
 
         if (!(type instanceof TState.NbtBacked backed))

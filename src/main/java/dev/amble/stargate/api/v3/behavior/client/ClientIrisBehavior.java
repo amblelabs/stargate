@@ -35,7 +35,6 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, Starg
             clientIrisState.OPEN_STATE.stop();
             return;
         }
-        System.out.println("e");
 
         AnimationState openState = clientIrisState.OPEN_STATE;
         AnimationState closeState = clientIrisState.CLOSE_STATE;

@@ -4,8 +4,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 /**
  * An interface that represents a {@link TState} container.
  */
@@ -61,34 +59,48 @@ public interface TStateContainer {
     @Contract(mutates = "this")
     boolean addState(@NotNull TState<?> state);
 
+    // TODO: proper javadocs for the methods below
+
     @Contract(pure = true)
     default boolean hasState(@NotNull TState.Type<?> type) {
         return stateOrNull(type) != null;
     }
 
     @Contract(pure = true)
-    void forEachState(@NotNull Consumer<TState<?>> consumer);
+    void forEachState(@NotNull Iterator consumer);
+
+    @FunctionalInterface
+    interface Iterator {
+        void consume(int index, @Nullable TState<?> state);
+    }
 
     /**
      * A basic implementation of {@link TStateContainer} that's backed by an array.
      */
     class ArrayBacked implements TStateContainer {
 
-        private final TState<?>[] data;
+        private static final Object REMOVED = new Object();
+        private final Object[] data;
 
         /**
          * @param maxSize the maximum size of the array.
          */
         @Contract(pure = true)
         protected ArrayBacked(int maxSize) {
-            data = new TState[maxSize];
+            data = new Object[maxSize];
         }
 
         @Override
         @Contract(pure = true)
         @SuppressWarnings("unchecked")
         public <T extends TState<T>> @Nullable T stateOrNull(@NotNull TState.Type<T> type) {
-            return (T) data[type.index];
+            int index = type.index;
+
+            if (index < 0)
+                return null;
+
+            Object res = data[index];
+            return res == REMOVED ? null : (T) res;
         }
 
         @Override
@@ -96,7 +108,7 @@ public interface TStateContainer {
         @SuppressWarnings("unchecked")
         public <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type) {
             T result = (T) data[type.index];
-            data[type.index] = null;
+            data[type.index] = REMOVED;
 
             return result;
         }
@@ -111,9 +123,21 @@ public interface TStateContainer {
 
         @Override
         @Contract(pure = true)
-        public void forEachState(@NotNull Consumer<TState<?>> consumer) {
-            for (TState<?> state : this.data)
-                if (state != null) consumer.accept(state);
+        public void forEachState(@NotNull Iterator consumer) {
+            Object[] objects = this.data;
+            for (int i = 0; i < objects.length; i++) {
+                Object state = objects[i];
+
+                if (state == null)
+                    continue;
+
+                if (state == REMOVED) {
+                    state = null;
+                    objects[i] = null;
+                }
+
+                consumer.consume(i, (TState<?>) state);
+            }
         }
     }
 
@@ -153,7 +177,7 @@ public interface TStateContainer {
 
         @Override
         @Contract(pure = true)
-        public void forEachState(Consumer<TState<?>> consumer) {
+        public void forEachState(@NotNull Iterator consumer) {
             parent.forEachState(consumer);
         }
     }

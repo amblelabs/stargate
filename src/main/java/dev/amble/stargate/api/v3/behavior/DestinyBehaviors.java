@@ -19,6 +19,8 @@ public interface DestinyBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
+            if (stargate.isClient()) return;
+
             BasicGateStates.Closed closed = stargate.state(BasicGateStates.Closed.state);
 
             int length = closed.address.length();
@@ -72,6 +74,8 @@ public interface DestinyBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
+            if (stargate.isClient()) return;
+
             BasicGateStates.Opening opening = stargate.state(BasicGateStates.Opening.state);
 
             // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
@@ -114,6 +118,8 @@ public interface DestinyBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
+            if (stargate.isClient()) return;
+            
             BasicGateStates.Open open = stargate.state(BasicGateStates.Open.state);
 
             // handle abnormal state

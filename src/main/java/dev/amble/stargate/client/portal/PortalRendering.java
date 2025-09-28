@@ -37,6 +37,9 @@ public class PortalRendering {
 
         BasicGateStates<?> state = stargate.getCurrentState();
 
+        if (state == null)
+            System.out.println(stargate.currentStateType());
+
         if (state.gateState() != BasicGateStates.StateType.CLOSED) {
             float time = ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 

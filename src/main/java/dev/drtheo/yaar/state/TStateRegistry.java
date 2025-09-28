@@ -64,7 +64,7 @@ public class TStateRegistry {
      * @implNote the index may very each run, so make sure to not use constants.
      */
     @Contract(pure = true)
-    public TState.Type<?> get(int index) {
+    public static TState.Type<?> get(int index) {
         return comps.get(index);
     }
 

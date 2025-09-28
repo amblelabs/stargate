@@ -1,5 +1,6 @@
 package dev.amble.stargate.api.network;
 
+import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Addressable;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +45,8 @@ public class GateMap<T extends Addressable> {
             Address address = gate.address();
             T prev = this.idMap.put(address.id(), gate);
             this.addrMap.put(address.text(), gate);
+
+            StargateMod.LOGGER.info("Replaced gate", new Throwable());
 
             return prev;
         }

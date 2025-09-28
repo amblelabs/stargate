@@ -22,7 +22,8 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 
         if (!nbt.contains("Address")) return;
 
-        this.ref = StargateRef.createAs(this, nbt.getUuid("Address"));
+        this.ref = new StargateRef(nbt.getUuid("Address"), () -> this.world.isClient);
+
         this.markDirty();
         this.sync();
     }

@@ -37,7 +37,8 @@ public interface AbstractLinkableEntity extends StargateLinkable {
         StargateRef result = this.asRef();
 
         if (result == null) {
-            this.link(StargateRef.createAs((Entity) this, this.getDataTracker().get(this.getTracked()).orElse(null)));
+            UUID id = this.getDataTracker().get(this.getTracked()).orElse(null);
+            this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
             return this.gate();
         }
 
@@ -52,7 +53,8 @@ public interface AbstractLinkableEntity extends StargateLinkable {
         if (!this.getTracked().equals(data))
             return;
 
-        this.link(StargateRef.createAs((Entity) this, this.getDataTracker().get(this.getTracked()).orElse(null)));
+        UUID id = this.getDataTracker().get(this.getTracked()).orElse(null);
+        this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
     }
 
     default void readCustomDataFromNbt(NbtCompound nbt) {
@@ -62,7 +64,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
             return;
 
         UUID id = NbtHelper.toUuid(rawId);
-        this.link(StargateRef.createAs((Entity) this, id));
+        this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
 
         if (this.getWorld() == null)
             return;

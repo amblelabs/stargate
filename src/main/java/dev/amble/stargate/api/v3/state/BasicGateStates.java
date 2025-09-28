@@ -115,7 +115,7 @@ public interface BasicGateStates<T extends TState<T>> extends TState<T> {
                 UUID id = nbt.getUuid("address");
                 boolean caller = nbt.getBoolean("caller");
 
-                return new Open(StargateRef.createAs(isClient, id), caller);
+                return new Open(new StargateRef(id, isClient), caller);
             }
         };
 
