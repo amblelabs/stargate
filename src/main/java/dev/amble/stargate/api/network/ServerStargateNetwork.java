@@ -87,11 +87,6 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		StargateServerData.get().markDirty();
 	}
 
-	private void syncAll() {
-		// TODO: null server handling
-		this.syncAll(PlayerLookup.all(ServerLifecycleHooks.get()).stream());
-	}
-
 	private void syncPartial(Stargate gate, Stream<ServerPlayerEntity> targets) {
 		StargateMod.LOGGER.debug("Syncing stargate {}", gate.address());
 
@@ -99,6 +94,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		gate.toNbt(nbt, true);
 
 		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeUuid(gate.address().id());
 		buf.writeNbt(nbt);
 
 		targets.forEach(player ->

@@ -1,6 +1,5 @@
 package dev.amble.stargate.api.network;
 
-import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.Stargate;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -55,22 +54,21 @@ public class ClientStargateNetwork extends StargateNetwork<Stargate>
 	}
 
 	private void onSyncPartial(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
+		UUID id = buf.readUuid();
 		NbtCompound nbt = buf.readNbt();
-		Stargate gate = this.fromNbt(nbt);
 
-		Stargate existing = this.lookup.put(gate);
+		Stargate stargate = this.lookup.get(id);
 
-		if (existing != null)
-			existing.age();
-
-		StargateMod.LOGGER.debug("Received stargate {}", gate.address());
+		if (stargate != null) {
+			stargate.updateStates(nbt, true);
+		} else {
+			this.lookup.put(this.fromNbt(nbt));
+		}
 	}
 
 	private void onSyncAll(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		NbtCompound nbt = buf.readNbt();
 		this.fromNbt(nbt, true);
-
-		StargateMod.LOGGER.debug("Received {} stargates!", this.lookup.size());
 	}
 
 	private void reset() {

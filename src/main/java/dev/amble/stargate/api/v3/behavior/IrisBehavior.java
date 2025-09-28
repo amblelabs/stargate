@@ -22,7 +22,7 @@ public class IrisBehavior implements TBehavior, StargateEvents, StargateEvents.S
     // TODO: IoC this so we dont have to subscribe to such a shitty event
     @Override
     public void onStateAdded(Stargate stargate, TState<?> state) {
-        if (state instanceof IrisState && stargate.isClient())
+        if (state instanceof IrisState && stargate.isClient() && !stargate.hasState(ClientIrisState.state))
             stargate.addState(new ClientIrisState());
     }
 

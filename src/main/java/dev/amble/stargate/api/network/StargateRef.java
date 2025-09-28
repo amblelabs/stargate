@@ -37,15 +37,7 @@ public class StargateRef implements Disposable {
 	}
 
 	public Stargate get() {
-		if (this.cached != null && !this.shouldInvalidate())
-			return this.cached;
-
-		this.cached = this.load.apply(this.id);
-		return this.cached;
-	}
-
-	private boolean shouldInvalidate() {
-		return this.cached.isAged();
+		return cached != null ? cached : load.apply(id);
 	}
 
 	public boolean isPresent() {

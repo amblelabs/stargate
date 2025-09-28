@@ -5,7 +5,6 @@ import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.Addressable;
-import dev.amble.stargate.api.Disposable;
 import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
@@ -36,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public abstract class Stargate extends TStateContainer.Delegate implements Addressable, NbtSerializer, Disposable {
+public abstract class Stargate extends TStateContainer.Delegate implements Addressable, NbtSerializer {
 
     private final Address address;
     private final boolean isClient;
@@ -72,11 +71,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         this.isClient = isClient;
 
         NbtCompound states = nbt.getCompound("States");
-
-        for (String key : states.getKeys()) {
-            if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable)
-                this.addState(serializable.decode(states.getCompound(key), isClient));
-        }
+        this.updateStates(states, isClient);
 
         this.attachState(false, isClient);
 
@@ -93,6 +88,13 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         }
 
         this.curState = type;
+    }
+
+    public void updateStates(NbtCompound nbt, boolean isClient) {
+        for (String key : nbt.getKeys()) {
+            if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable)
+                this.addState(serializable.decode(nbt.getCompound(key), isClient));
+        }
     }
 
     protected void attachState(boolean created, boolean isClient) {
@@ -209,20 +211,6 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
 
     public abstract Identifier id();
 
-    private boolean aged;
-
-    @Override
-    public void age() {
-        if (this.isClient())
-            this.aged = true;
-    }
-
-    @Override
-    public boolean isAged() {
-        return aged;
-    }
-
-    @Override
     public void dispose() {
         ServerStargateNetwork.get().remove(this.address);
     }
