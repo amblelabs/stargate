@@ -54,6 +54,7 @@ public class IrisBehavior implements TBehavior, StargateEvents, StargateEvents.S
             world.playSound(null, pos, sound, SoundCategory.BLOCKS);
 
             irisState.prevIrisState = newState;
+            stargate.markDirty();
         }
     }
 }

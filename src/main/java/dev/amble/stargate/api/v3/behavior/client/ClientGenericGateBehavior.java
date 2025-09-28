@@ -37,7 +37,7 @@ public class ClientGenericGateBehavior implements TBehavior, StargateRenderEvent
         Identifier texture = StargateBlockEntityRenderer.getTextureForGate(stargate);
         Identifier emission = StargateBlockEntityRenderer.getEmissionForGate(stargate);
 
-        renderer.model.SymbolRing.roll = renderer.renderGlyphs(matrices, vertexConsumers, stargate, light);
+        renderer.model.SymbolRing.roll = renderer.renderGlyphs(matrices, vertexConsumers, stargate, light, entity.age);
         renderer.model.animateStargateModel(entity, stargate, entity.age);
 
         renderer.model.chev_light8.visible = false;

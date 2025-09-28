@@ -66,6 +66,8 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
             return ActionResult.PASS;
 
 		if (!player.isSneaking()) {
+			if (world.isClient()) return ActionResult.SUCCESS;
+
 			// TODO: silly, move this to a result event
 			return be.gate().apply(stargate -> {
 				IrisState s = stargate.stateOrNull(IrisState.state);

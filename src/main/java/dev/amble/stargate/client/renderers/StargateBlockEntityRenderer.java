@@ -43,10 +43,13 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity.getBlockSet() != null) {
-            BlockState blockState = entity.getBlockSet();
             matrices.push();
 
-            MinecraftClient.getInstance().getBlockRenderManager().renderBlock(blockState, entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(blockState)), true, MinecraftClient.getInstance().world.getRandom());
+            BlockState blockState = entity.getBlockSet();
+            MinecraftClient.getInstance().getBlockRenderManager().renderBlock(blockState,
+                    entity.getPos(), entity.getWorld(), matrices, vertexConsumers.getBuffer(
+                            RenderLayers.getBlockLayer(blockState)), true, entity.getWorld().random
+            );
 
             matrices.pop();
         }
@@ -77,7 +80,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         return Vec3d.ofCenter(exteriorBlockEntity.getPos()).multiply(1.0, 0.0, 1.0).isInRange(vec3d.multiply(1.0, 0.0, 1.0), this.getRenderDistance());
     }
 
-    public float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light) {
+    public float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light, int age) {
         ClientGenericGateState glyphState = gate.stateOrNull(ClientGenericGateState.state);
 
         if (glyphState == null) return 0;
@@ -96,9 +99,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.scale(0.025f, 0.025f, 0.025f);
 
         BasicGateStates.Closed closed = gate.stateOrNull(BasicGateStates.Closed.state);
-
         int selectedIndex = closed != null ? closed.locked : -1;
-        float time = MinecraftClient.getInstance().player.age / 200f;
 
         for (int i = 0; i < Glyph.ALL.length; i++) {
             boolean isInDial = closed != null && closed.address.contains(Glyph.ALL[i] + "");
@@ -120,7 +121,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         matrices.pop();
 
-        return (float) MathHelper.wrapDegrees(time * (Math.PI * 2 / Glyph.ALL.length) * Glyph.ALL.length);
+        return (float) MathHelper.wrapDegrees(age / 200f * (Math.PI * 2 / Glyph.ALL.length) * Glyph.ALL.length);
     }
 
     public static Identifier getTextureForGate(Stargate gate) {
