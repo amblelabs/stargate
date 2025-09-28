@@ -2,7 +2,6 @@ package dev.amble.stargate.client.models;
 
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.animation.Animation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 
@@ -831,9 +830,4 @@ public class StargateModel extends BaseStargateModel {
 
 	@Override
 	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {}
-
-	@Override
-	public Animation getAnimationForState(GateState state) {
-		return Animation.Builder.create(0).build();
-	}
 }

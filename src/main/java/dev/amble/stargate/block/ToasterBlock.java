@@ -1,7 +1,6 @@
 package dev.amble.stargate.block;
 
 import dev.amble.lib.block.ABlockSettings;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.block.stargates.OrlinGateBlock;
 import dev.amble.stargate.init.StargateBlocks;
@@ -54,8 +53,6 @@ public class ToasterBlock extends Block {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        boolean isSneaking = ctx.getPlayer() != null && ctx.getPlayer().isSneaking();
-
         return this.getDefaultState()
                 .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }

@@ -4,31 +4,31 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientMilkyWayState;
+import dev.amble.stargate.api.v3.state.client.ClientOrlinState;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-public class MilkyWayGate extends Stargate {
+public class OrlinGate extends Stargate {
 
-    public static Identifier ID = StargateMod.id("milky_way");
+    public static Identifier ID = StargateMod.id("orlin");
 
-    public MilkyWayGate(DirectedGlobalPos pos) {
+    public OrlinGate(DirectedGlobalPos pos) {
         super(pos);
     }
 
-    public MilkyWayGate(NbtCompound nbt, boolean isClient) {
+    public OrlinGate(NbtCompound nbt, boolean isClient) {
         super(nbt, isClient);
     }
 
     @Override
     protected void attachClientState() {
-        this.addState(new ClientMilkyWayState());
+        this.addState(new ClientOrlinState());
     }
 
     @Override
     public GateShape shape() {
-        return GateShape.DEFAULT;
+        return GateShape.EMPTY; // collision handled by the block itself
     }
 
     @Override

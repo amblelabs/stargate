@@ -4,26 +4,26 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientMilkyWayState;
+import dev.amble.stargate.api.v3.state.client.ClientPegasusState;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-public class MilkyWayGate extends Stargate {
+public class PegasusGate extends Stargate {
 
-    public static Identifier ID = StargateMod.id("milky_way");
+    public static Identifier ID = StargateMod.id("pegasus");
 
-    public MilkyWayGate(DirectedGlobalPos pos) {
+    public PegasusGate(DirectedGlobalPos pos) {
         super(pos);
     }
 
-    public MilkyWayGate(NbtCompound nbt, boolean isClient) {
+    public PegasusGate(NbtCompound nbt, boolean isClient) {
         super(nbt, isClient);
     }
 
     @Override
     protected void attachClientState() {
-        this.addState(new ClientMilkyWayState());
+        this.addState(new ClientPegasusState());
     }
 
     @Override

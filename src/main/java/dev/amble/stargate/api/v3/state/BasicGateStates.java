@@ -1,25 +1,19 @@
 package dev.amble.stargate.api.v3.state;
 
-import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v3.Stargate;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface BasicGateStates {
+public interface BasicGateStates<T extends TState<T>> extends TState<T> {
 
-    static Stargate createGate(Identifier id, DirectedGlobalPos pos) {
-        return new Stargate(pos, GateShape.DEFAULT, id, false, created, Closed::new, Closed.state, Opening.state, Open.state);
-    }
+    StateType gateState();
 
-    class Closed implements TState<Closed>, NbtSerializer {
+    class Closed implements BasicGateStates<Closed>, NbtSerializer {
 
         public static final Type<Closed> state = new NbtBacked<>(StargateMod.id("generic/closed")) {
             @Override
@@ -57,9 +51,14 @@ public interface BasicGateStates {
         public Type<Closed> type() {
             return state;
         }
+
+        @Override
+        public StateType gateState() {
+            return StateType.CLOSED;
+        }
     }
 
-    final class Opening implements TState<Opening>, NbtSerializer {
+    final class Opening implements BasicGateStates<Opening>, NbtSerializer {
 
         public static final Type<Opening> state = new NbtBacked<>(StargateMod.id("generic/opening")) {
 
@@ -101,9 +100,14 @@ public interface BasicGateStates {
         public Type<Opening> type() {
             return state;
         }
+
+        @Override
+        public StateType gateState() {
+            return StateType.OPENING;
+        }
     }
 
-    class Open implements TState<Open>, NbtSerializer {
+    class Open implements BasicGateStates<Open>, NbtSerializer {
 
         public static final Type<Open> state = new NbtBacked<>(StargateMod.id("generic/open")) {
             @Override
@@ -139,5 +143,16 @@ public interface BasicGateStates {
         public Type<Open> type() {
             return state;
         }
+
+        @Override
+        public StateType gateState() {
+            return StateType.OPEN;
+        }
+    }
+
+    enum StateType {
+        CLOSED,
+        OPENING,
+        OPEN
     }
 }

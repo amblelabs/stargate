@@ -1,12 +1,11 @@
 package dev.amble.stargate.client.models;
 
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.ClientIrisState;
+import dev.amble.stargate.api.v3.state.client.ClientIrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.animation.Animation;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -41,6 +40,4 @@ public abstract class BaseStargateModel extends SinglePartEntityModel {
     public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw,
                           float headPitch) {
     }
-
-    public abstract Animation getAnimationForState(GateState state);
 }

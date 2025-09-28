@@ -2,54 +2,33 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.kernels.impl.DestinyGateKernel;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.ClientIrisState;
+import dev.amble.stargate.api.v3.state.BasicGateStates;
 import dev.amble.stargate.api.v3.state.IrisState;
-import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
-import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class PortalUtil {
-    public Identifier TEXTURE_LOCATION;
-    public static final Identifier WHITE = StargateMod.id("textures/portal/white.png");
-    private final float scale;
+
+    private static final Identifier BASE = StargateMod.id("textures/portal/");
+
     private float time = 0;
-    private final float radius = 0.08f;
 
-    public PortalUtil(Identifier texture) {
-        TEXTURE_LOCATION = texture;
-        this.scale = 32f;
-    }
-    @ApiStatus.Internal
-    public PortalUtil(String name) {
-        this(StargateMod.id("textures/portal/" + name + ".png"));
-    }
-
-    public void renderPortalInterior(MatrixStack matrixStack, StargateBlockEntity stargate, GateState state) {
-        Stargate gate = stargate.gate().get();
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, BasicGateStates<?> currentState) {
         time += ((MinecraftClient.getInstance().player.age / 200f) * 100f); // Slow down the animation
 
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
-        boolean monochrome = stargate.hasStargate() && gate.kernel() instanceof DestinyGateKernel;
-        Identifier texture = monochrome ? WHITE : TEXTURE_LOCATION;
+
+        Identifier texture = BASE.withSuffixedPath(stargate.stateOrNull(ClientGenericGateState.state).portalType + ".png");
+
         RenderSystem.setShaderTexture(0, texture);
-
-        boolean isOrlin = stargate.hasStargate() && gate.kernel() instanceof OrlinGateKernel;
-
-        if (isOrlin) {
-            matrixStack.translate(0, 2, 0);
-        }
-
-        matrixStack.scale(isOrlin ? 14f : scale, isOrlin ? 14f : scale, isOrlin ? 14f : scale);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
         Tessellator tessellator = Tessellator.getInstance();
@@ -58,7 +37,7 @@ public class PortalUtil {
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
 
         RenderSystem.disableCull();
-        portalTriangles(matrixStack, buffer, stargate, state, gate);
+        portalTriangles(matrixStack, buffer, stargate, currentState);
         tessellator.draw();
         RenderSystem.enableCull();
         matrixStack.pop();
@@ -68,28 +47,23 @@ public class PortalUtil {
         builder.vertex(matrix, x, y, z).color(Math.min(1, r), Math.min(1, g), Math.min(1, b), a).texture(u, v).light(light).next();
     }
 
-    int glow(float x, float y) {
-        float dist = (float)Math.sqrt(x * x + y * y) / radius;
-        return (int) Math.max(0f, (float)Math.pow(1.0f - dist, 6));
-    }
-
-    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, StargateBlockEntity stargate, Stargate gate) {
+    public void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, BasicGateStates<?> currentState) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
-        int rings =36;
+        int rings = 36;
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
-        float minWaveHeight = 0.001f;
-
         // TODO move this outta here
-        IrisState irisState = gate.state(ClientIrisState.state);
+        IrisState irisState = gate.stateOrNull(IrisState.state);
+        float maxWaveHeight = irisState != null && irisState.open ? 0.001f : 0.006f;
 
-        float maxWaveHeight = irisState != null && irisState.open  ?  0.001f : 0.006f;
-
+        float minWaveHeight = 0.001f;
         int rippleCount = 12;
+
         float[][] rippleCenters = new float[rippleCount][2];
         float[] rippleRadii = new float[rippleCount];
         float[] rippleHeights = new float[rippleCount];
+
         for (int i = 0; i < rippleCount; i++) {
             float angle = (float) (2 * Math.PI * i / rippleCount + i * 0.7f);
             float dist = 0.03f + 0.03f * (i % 2);
@@ -103,8 +77,7 @@ public class PortalUtil {
         float waveSpeed = 0.2f;
 
         // Add central big ripple if active
-
-        if (state instanceof GateState.PreOpen) {
+        if (currentState.gateState() == BasicGateStates.StateType.OPENING) {
             triggerCentralRipple(0.05f, 0.6f, 0.01f, 0.2f);
         }
 
@@ -112,6 +85,8 @@ public class PortalUtil {
         boolean hasCentralRipple = central != null;
 
         float[][][] mesh = new float[rings][sides][3];
+        float radius = 0.08f;
+
         for (int r = 0; r < rings; r++) {
             float t = r / (float) (rings - 1);
             float ringRadius = radius * t;
@@ -141,7 +116,7 @@ public class PortalUtil {
                     if (distToCenter <= central.radius) {
                         float norm = 1f - (distToCenter / central.radius);
                         float bulge = (float) Math.pow(norm, 1f);
-                        float wave = getWave(central, angle, bulge, gate);
+                        float wave = getWave(central, angle, bulge, currentState);
                         float effect;
                         if (wave >= 0f) {
                             effect = wave * central.height * bulge * t;
@@ -269,8 +244,9 @@ public class PortalUtil {
         }
     }
 
-    private float getWave(CentralRippleParams central, float angle, float bulge, Stargate gate) {
-        float realHeight = ((BasicStargateKernel) gate.kernel()).getKawooshHeight();
+    private float getWave(CentralRippleParams central, float angle, float bulge, BasicGateStates<?> currentState) {
+        float realHeight = currentState instanceof BasicGateStates.Opening opening ? opening.kawooshHeight : 0;
+
         float mainDuration = 1f;
         float normTime = Math.min(1f, centralRippleTime / mainDuration);
         float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (realHeight * central.speed + central.phaseOffset); // TODO <---- THIS IS THE VALUE BUT FOR SOME REASON THIS WONT DWINDLE AAAAA
@@ -315,8 +291,6 @@ public class PortalUtil {
     /** Returns the current central ripple, or null if none. */
     private CentralRippleParams getCentralRipple() {
         if (centralRipple == null) return null;
-
-
 
         centralRippleTime += dt;
 

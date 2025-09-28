@@ -2,8 +2,7 @@ package dev.amble.stargate.api.v2;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.v3.MilkyWayGate;
-import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DefaultedRegistry;
@@ -22,6 +21,9 @@ public class GateKernelRegistry {
     }
 
     public static Entry MILKY_WAY = register(MilkyWayGate.ID, MilkyWayGate::new, MilkyWayGate::new);
+    public static Entry ORLIN = register(OrlinGate.ID, OrlinGate::new, OrlinGate::new);
+    public static Entry PEGASUS = register(PegasusGate.ID, PegasusGate::new, PegasusGate::new);
+    public static Entry DESTINY = register(DestinyGate.ID, DestinyGate::new, DestinyGate::new);
 
     public static Entry register(String path, GateCreator creator, GateLoader loader) {
         return register(StargateMod.id(path), creator, loader);

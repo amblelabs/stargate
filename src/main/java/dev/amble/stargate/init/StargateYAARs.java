@@ -1,12 +1,19 @@
 package dev.amble.stargate.init;
 
-import dev.amble.stargate.api.v3.behavior.*;
+import dev.amble.stargate.api.v3.behavior.DestinyBehaviors;
+import dev.amble.stargate.api.v3.behavior.GateManagerBehavior;
+import dev.amble.stargate.api.v3.behavior.IrisBehavior;
+import dev.amble.stargate.api.v3.behavior.OrlinBehavior;
+import dev.amble.stargate.api.v3.behavior.client.ClientGenericGateBehavior;
+import dev.amble.stargate.api.v3.behavior.client.ClientIrisBehavior;
+import dev.amble.stargate.api.v3.behavior.client.ClientMilkyWayBehavior;
+import dev.amble.stargate.api.v3.behavior.client.ClientOrlinBehavior;
 import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.ClientIrisState;
 import dev.amble.stargate.api.v3.state.IrisState;
+import dev.amble.stargate.api.v3.state.client.*;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import dev.drtheo.yaar.event.TEventsRegistry;
 import dev.drtheo.yaar.state.TStateRegistry;
@@ -19,7 +26,10 @@ public class StargateYAARs {
         TEventsRegistry.freeze();
 
         initBehavior();
+        TBehaviorRegistry.freeze();
+
         initState();
+        TStateRegistry.freeze();
     }
 
     private static void initBehavior() {
@@ -31,17 +41,27 @@ public class StargateYAARs {
 
         TBehaviorRegistry.register(OrlinBehavior.Open::new);
 
+        TBehaviorRegistry.register(ClientGenericGateBehavior::new);
+        TBehaviorRegistry.register(ClientMilkyWayBehavior::new);
+        TBehaviorRegistry.register(ClientOrlinBehavior::new);
+
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(ClientIrisBehavior::new); // TODO: move to client
     }
 
     private static void initState() {
-        TStateRegistry.register(ClientIrisState.state);
-        TStateRegistry.register(IrisState.state);
-
         TStateRegistry.register(BasicGateStates.Closed.state);
         TStateRegistry.register(BasicGateStates.Opening.state);
         TStateRegistry.register(BasicGateStates.Open.state);
+
+        TStateRegistry.register(ClientGenericGateState.state);
+        TStateRegistry.register(ClientMilkyWayState.state);
+        TStateRegistry.register(ClientOrlinState.state);
+        TStateRegistry.register(ClientPegasusState.state);
+        TStateRegistry.register(ClientDestinyState.state);
+
+        TStateRegistry.register(ClientIrisState.state);
+        TStateRegistry.register(IrisState.state);
     }
 
     private static void initEvents() {

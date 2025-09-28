@@ -11,11 +11,15 @@ import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
 import dev.amble.stargate.api.v3.event.state.StateAddedEvent;
 import dev.amble.stargate.api.v3.event.state.StateRemovedEvent;
+import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import dev.drtheo.yaar.state.TStateContainer;
 import dev.drtheo.yaar.state.TStateRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -28,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public abstract class Stargate extends TStateContainer.Delegate implements Addressable, NbtSerializer, Disposable {
 
@@ -48,6 +53,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         this.addState(state);
         this.curState = state.type();
 
+        this.attachState(true, false);
+
         TEvents.handle(new StargateCreatedEvent(this));
     }
 
@@ -64,6 +71,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
                 this.addState(serializable.decode(nbt, isClient));
         }
 
+        this.attachState(false, isClient);
+
         TState.Type<?> type = TStateRegistry.get(new Identifier(nbt.getString("prevState")));
 
         if (type == null) {
@@ -77,6 +86,17 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         this.curState = type;
     }
 
+    protected void attachState(boolean created, boolean isClient) {
+        if (isClient) {
+            this.attachClientState();
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    protected void attachClientState() {
+        this.addState(new ClientGenericGateState(false));
+    }
+
     public void tick() {
         TEvents.handle(new StargateTickEvent(this));
     }
@@ -85,8 +105,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         return curState;
     }
 
-    public @Nullable TState<?> getCurrentState() {
-        return stateOrNull(curState);
+    public @Nullable BasicGateStates<?> getCurrentState() {
+        return (BasicGateStates<?>) stateOrNull(curState);
     }
 
     public void setCurState(TState.Type<?> state) {
@@ -113,6 +133,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
             TEvents.handle(new StateRemovedEvent(this, result));
 
         return result;
+    }
+
+    public <T extends TState<T>, R> R stateShit(TState.Type<T> type, Function<T, R> f, R def) {
+        T state = stateOrNull(type);
+        return state == null ? def : f.apply(state);
     }
 
     public abstract GateShape shape();

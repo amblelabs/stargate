@@ -95,10 +95,6 @@ public interface TStateContainer {
         @Contract(mutates = "this")
         public boolean addState(@NotNull TState<?> state) {
             int index = state.type().verifyIndex();
-
-            if (data[index] != null)
-                return false;
-
             data[index] = state;
             return true;
         }

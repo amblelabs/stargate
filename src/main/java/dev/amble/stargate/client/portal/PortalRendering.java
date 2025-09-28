@@ -1,8 +1,9 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.kernels.impl.OrlinGateKernel;
-import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,27 +15,33 @@ import java.util.Queue;
 public class PortalRendering {
     public static Queue<StargateBlockEntity> PORTAL_RENDER_QUEUE = new LinkedList<>();
 
-    public static void renderPortal(StargateBlockEntity stargateBlockEntity, GateState state, MatrixStack stack) {
+    public static void renderPortal(StargateBlockEntity stargateBlockEntity, MatrixStack stack) {
         if (MinecraftClient.getInstance().world == null
                 || MinecraftClient.getInstance().player == null) return;
 
-        StargateRef ref = stargateBlockEntity.gate();
+        if (!stargateBlockEntity.hasStargate()) return;
 
-        if (!stargateBlockEntity.hasStargate() && ref.isEmpty()) return;
+        Stargate stargate = stargateBlockEntity.gate().get();
+        ClientGenericGateState clientState = stargate.stateOrNull(ClientGenericGateState.state);
 
-        boolean orlin = ref.get().kernel() instanceof OrlinGateKernel;
+        if (clientState == null) return;
 
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
-        stack.translate(0, orlin ? -1f : -0.9f, 0);
-        if (state instanceof GateState.PreOpen || state instanceof GateState.Open) {
-            PortalUtil util = new PortalUtil("normal");
+
+        stack.translate(0, clientState.portalYOffset, 0);
+        stack.scale(clientState.portalSize, clientState.portalSize, clientState.portalSize);
+
+        BasicGateStates<?> state = stargate.getCurrentState();
+
+        if (state.gateState() != BasicGateStates.StateType.CLOSED) {
+            PortalUtil util = new PortalUtil();
 
             RenderSystem.enableDepthTest();
-            util.renderPortalInterior(stack, stargateBlockEntity, state);
+            util.renderPortalInterior(stack, stargate, state);
 
             RenderSystem.disableDepthTest();
         }

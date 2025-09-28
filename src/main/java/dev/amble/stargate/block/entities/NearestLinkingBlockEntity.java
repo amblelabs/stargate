@@ -1,7 +1,8 @@
 package dev.amble.stargate.block.entities;
 
+import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
@@ -24,8 +25,6 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 		this.sendLinkMessage = sendLinkMessage;
 	}
 
-	public abstract boolean preventLinkingToStargate(Stargate gate);
-
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
 		if (world.isClient()) return;
 
@@ -33,8 +32,6 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 		if (nearest == null) return;
 
 		StargateRef ref = new StargateRef(nearest);
-
-		if (this.preventLinkingToStargate(ref.get())) return;
 
 		this.setStargate(ref);
 

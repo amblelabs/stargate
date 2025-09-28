@@ -2,8 +2,10 @@ package dev.amble.stargate.entities;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.Address;
 import dev.amble.stargate.api.network.StargateRef;
-import dev.amble.stargate.api.v2.Stargate;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.BasicGateStates;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.dhd.DHDArrangement;
 import dev.amble.stargate.dhd.SymbolArrangement;
@@ -275,10 +277,10 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
         if (!this.control.canRun(stargate, (ServerPlayerEntity) player)) return;
 
-        if (this.getControl().getGlyph() != '*' && stargate.state() instanceof GateState.Closed closed) {
-            if (closed.locked() > 6) {
-                closed.setAddress("");
-                closed.setHasDialButton(false);
+        if (this.getControl().getGlyph() != '*' && stargate.getCurrentState() instanceof BasicGateStates.Closed closed) {
+            if (closed.locked >= Address.LENGTH) {
+                closed.address = "";
+
                 stargate.markDirty();
                 ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(stargate.address().pos().getDimension());
                 if (targetWorld != null) {
