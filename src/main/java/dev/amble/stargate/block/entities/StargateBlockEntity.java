@@ -14,19 +14,12 @@ import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -88,26 +81,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 
 	public BlockState getBlockSet() {
 		return this.blockSet;
-	}
-
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!player.isSneaking())
-			return ActionResult.PASS;
-
-        if (!(world.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity))
-            return ActionResult.FAIL;
-
-        ItemStack heldItem = player.getStackInHand(hand);
-		BlockState newSetState = null;
-
-        if (!heldItem.isEmpty() && heldItem.getItem() instanceof BlockItem blockItem) {
-			newSetState = blockItem.getBlock().getPlacementState(new ItemPlacementContext(player, hand, heldItem, hit));
-		}
-
-		blockEntity.setBlockSet(newSetState);
-		blockEntity.markDirty();
-
-        return ActionResult.SUCCESS;
 	}
 
 	public void onBreak(BlockState state) {

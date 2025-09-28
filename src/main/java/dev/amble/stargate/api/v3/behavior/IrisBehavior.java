@@ -2,6 +2,7 @@ package dev.amble.stargate.api.v3.behavior;
 
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.StargateEvents;
+import dev.amble.stargate.api.v3.event.StargateTpEvent;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.state.IrisState;
 import dev.amble.stargate.api.v3.state.client.ClientIrisState;
@@ -10,18 +11,33 @@ import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.yaar.behavior.TBehavior;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class IrisBehavior implements TBehavior, StargateEvents.State, StargateBlockEvents {
+public class IrisBehavior implements TBehavior, StargateEvents, StargateEvents.State, StargateBlockEvents {
 
     // TODO: IoC this so we dont have to subscribe to such a shitty event
     @Override
     public void onStateAdded(Stargate stargate, TState<?> state) {
         if (state instanceof IrisState && stargate.isClient())
             stargate.addState(new ClientIrisState());
+    }
+
+    @Override
+    public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, LivingEntity living) {
+        boolean open = to.state(IrisState.state).open;
+
+        if (open)
+            return StargateTpEvent.Result.ALLOW;
+
+        to.doHere((world, blockPos) -> {
+            living.damage(world.getDamageSources().inWall(), Integer.MAX_VALUE);
+        });
+
+        return StargateTpEvent.Result.DENY;
     }
 
     @Override

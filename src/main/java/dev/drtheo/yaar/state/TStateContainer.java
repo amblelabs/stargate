@@ -62,7 +62,12 @@ public interface TStateContainer {
     boolean addState(@NotNull TState<?> state);
 
     @Contract(pure = true)
-    void forEachState(Consumer<TState<?>> consumer);
+    default boolean hasState(@NotNull TState.Type<?> type) {
+        return stateOrNull(type) != null;
+    }
+
+    @Contract(pure = true)
+    void forEachState(@NotNull Consumer<TState<?>> consumer);
 
     /**
      * A basic implementation of {@link TStateContainer} that's backed by an array.
@@ -105,7 +110,8 @@ public interface TStateContainer {
         }
 
         @Override
-        public void forEachState(Consumer<TState<?>> consumer) {
+        @Contract(pure = true)
+        public void forEachState(@NotNull Consumer<TState<?>> consumer) {
             for (TState<?> state : this.data)
                 if (state != null) consumer.accept(state);
         }
@@ -146,6 +152,7 @@ public interface TStateContainer {
         }
 
         @Override
+        @Contract(pure = true)
         public void forEachState(Consumer<TState<?>> consumer) {
             parent.forEachState(consumer);
         }

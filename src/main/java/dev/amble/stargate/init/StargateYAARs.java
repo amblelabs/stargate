@@ -1,9 +1,6 @@
 package dev.amble.stargate.init;
 
-import dev.amble.stargate.api.v3.behavior.DestinyBehaviors;
-import dev.amble.stargate.api.v3.behavior.GateManagerBehavior;
-import dev.amble.stargate.api.v3.behavior.IrisBehavior;
-import dev.amble.stargate.api.v3.behavior.OrlinBehavior;
+import dev.amble.stargate.api.v3.behavior.*;
 import dev.amble.stargate.api.v3.behavior.client.ClientGenericGateBehavior;
 import dev.amble.stargate.api.v3.behavior.client.ClientIrisBehavior;
 import dev.amble.stargate.api.v3.behavior.client.ClientMilkyWayBehavior;
@@ -44,6 +41,9 @@ public class StargateYAARs {
         TBehaviorRegistry.register(ClientGenericGateBehavior::new);
         TBehaviorRegistry.register(ClientMilkyWayBehavior::new);
         TBehaviorRegistry.register(ClientOrlinBehavior::new);
+
+        TBehaviorRegistry.register(SpacialResistanceBehavior::new);
+        TBehaviorRegistry.register(StargateTpEffectsBehavior::new);
 
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(ClientIrisBehavior::new); // TODO: move to client

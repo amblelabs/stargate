@@ -8,6 +8,7 @@ import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.item.DialerItem;
 import dev.amble.stargate.item.EmptyContainerItem;
+import dev.amble.stargate.item.IrisItem;
 import dev.amble.stargate.item.StargateItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.fluid.Fluids;
@@ -59,7 +60,7 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item IRIS = new Item(new AItemSettings());
+	public static final Item IRIS = new IrisItem(new AItemSettings());
 
 	@AutomaticModel
 	@NoEnglish

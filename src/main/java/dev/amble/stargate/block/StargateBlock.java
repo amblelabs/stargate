@@ -1,9 +1,9 @@
 package dev.amble.stargate.block;
 
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
+import dev.amble.stargate.api.v3.state.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.item.StargateItem;
-import dev.amble.stargate.item.StargateLinkableItem;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -13,6 +13,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
@@ -61,11 +62,38 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		// FIXME: this second condition shouldn't be needed if StargateLinkableItem is implemented correctly
-		if (hand == Hand.MAIN_HAND && !(player.getStackInHand(hand).getItem() instanceof StargateLinkableItem) && world.getBlockEntity(pos) instanceof StargateBlockEntity be)
-            return be.onUse(state, world, pos, player, hand, hit);
+        if (hand != Hand.MAIN_HAND || !(world.getBlockEntity(pos) instanceof StargateBlockEntity be) || !be.isLinked())
+            return ActionResult.PASS;
 
-		return super.onUse(state, world, pos, player, hand, hit);
+		if (!player.isSneaking()) {
+			// TODO: silly, move this to a result event
+			return be.gate().apply(stargate -> {
+				IrisState s = stargate.stateOrNull(IrisState.state);
+
+				if (s == null)
+					return ActionResult.PASS;
+
+				s.open = !s.open;
+
+				stargate.markDirty();
+				return ActionResult.SUCCESS;
+			}).orElse(ActionResult.PASS);
+		}
+
+		ItemStack heldItem = player.getStackInHand(hand);
+        BlockState newSetState = null;
+
+        if (!heldItem.isEmpty() && heldItem.getItem() instanceof BlockItem blockItem)
+            newSetState = blockItem.getBlock().getPlacementState(new ItemPlacementContext(player, hand, heldItem, hit));
+
+        if (newSetState != null || heldItem.isEmpty()) {
+            be.setBlockSet(newSetState);
+            be.markDirty();
+
+			return ActionResult.SUCCESS;
+        }
+
+		return ActionResult.PASS;
 	}
 
 	@Override

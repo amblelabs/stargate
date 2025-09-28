@@ -11,12 +11,21 @@ public class IrisState implements TState<IrisState>, NbtSerializer {
     public static final Type<IrisState> state = new NbtBacked<>(StargateMod.id("iris/common")) {
         @Override
         public IrisState fromNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            return null;
+            return new IrisState(nbt.getBoolean("open"));
         }
     };
 
     public boolean prevIrisState;
     public boolean open;
+
+    public IrisState() {
+        this(true);
+    }
+
+    public IrisState(boolean open) {
+        this.prevIrisState = open;
+        this.open = open;
+    }
 
     @Override
     public Type<IrisState> type() {
@@ -25,6 +34,6 @@ public class IrisState implements TState<IrisState>, NbtSerializer {
 
     @Override
     public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
-
+        nbt.putBoolean("open", open);
     }
 }

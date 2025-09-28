@@ -41,7 +41,7 @@ public class StargateMod implements ModInitializer {
 		});
 
 		StargateYAARs.init();
-		StargateAttachments.init();
+		StargateCriterions.init();
 
 		RegistryContainer.register(StargateItemGroups.class, MOD_ID);
 		RegistryContainer.register(StargateItems.class, MOD_ID);
