@@ -1,4 +1,4 @@
-package dev.amble.stargate.dhd.control;
+package dev.amble.stargate.api.dhd.control;
 
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.init.StargateSounds;

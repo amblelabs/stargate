@@ -1,11 +1,10 @@
-package dev.amble.stargate.dhd;
+package dev.amble.stargate.api.dhd;
 
+import dev.amble.stargate.api.dhd.control.SymbolControl;
 import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.dhd.control.SymbolControl;
 import dev.amble.stargate.entities.DHDControlEntity;
-import org.joml.Vector3f;
-
 import net.minecraft.entity.EntityDimensions;
+import org.joml.Vector3f;
 
 /**
  * Holds a control which will be run when interacted with, an

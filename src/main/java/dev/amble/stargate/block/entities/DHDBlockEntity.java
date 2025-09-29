@@ -1,10 +1,10 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.dhd.DHDArrangement;
+import dev.amble.stargate.api.dhd.SymbolArrangement;
+import dev.amble.stargate.api.dhd.control.SymbolControl;
 import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.dhd.DHDArrangement;
-import dev.amble.stargate.dhd.SymbolArrangement;
-import dev.amble.stargate.dhd.control.SymbolControl;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
 import net.minecraft.block.BlockState;
