@@ -1,4 +1,4 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.address;
 
 import dev.amble.lib.register.datapack.SimpleDatapackRegistry;
 import dev.amble.stargate.StargateMod;

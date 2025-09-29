@@ -1,4 +1,4 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.address;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.data.DistanceInformation;

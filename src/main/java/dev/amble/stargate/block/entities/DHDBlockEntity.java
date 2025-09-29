@@ -1,6 +1,6 @@
 package dev.amble.stargate.block.entities;
 
-import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;

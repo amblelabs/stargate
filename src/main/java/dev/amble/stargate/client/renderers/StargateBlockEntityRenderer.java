@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.renderers;
 
-import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Glyph;
+import dev.amble.stargate.api.address.Address;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
@@ -62,7 +62,9 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         TEvents.handle(new StargateRenderEvent(gate, entity, this, matrices, vertexConsumers, light, overlay, tickDelta));
 
         matrices.pop();
-        PortalRendering.PORTAL_RENDER_QUEUE.add(entity);
+
+        if (gate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED)
+            PortalRendering.QUEUE.add(entity);
     }
 
     @Override

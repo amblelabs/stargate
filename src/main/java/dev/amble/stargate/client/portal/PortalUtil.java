@@ -1,7 +1,6 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
 import dev.amble.stargate.api.v3.state.IrisState;
@@ -16,17 +15,14 @@ import org.joml.Matrix4f;
 
 public class PortalUtil {
 
-    private static final Identifier BASE = StargateMod.id("textures/portal/");
-
-    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, BasicGateStates<?> currentState, float time) {
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, ClientGenericGateState clientState, BasicGateStates<?> currentState, float time) {
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
 
-        Identifier texture = BASE.withSuffixedPath(stargate.stateOrNull(ClientGenericGateState.state).portalType + ".png");
-
+        Identifier texture = clientState.portalType;
         RenderSystem.setShaderTexture(0, texture);
-
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -307,7 +303,5 @@ public class PortalUtil {
         }
         return centralRipple;
     }
-
-
 }
 

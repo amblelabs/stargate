@@ -1,8 +1,8 @@
 package dev.amble.stargate.api.network;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Address;
-import dev.amble.stargate.api.Addressable;
+import dev.amble.stargate.api.address.Address;
+import dev.amble.stargate.api.address.Addressable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

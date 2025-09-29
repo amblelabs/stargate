@@ -2,6 +2,7 @@ package dev.amble.stargate.api.v3.state.client;
 
 import dev.amble.stargate.StargateMod;
 import dev.drtheo.yaar.state.TState;
+import net.minecraft.util.Identifier;
 
 public class ClientGenericGateState implements TState<ClientGenericGateState> {
 
@@ -11,7 +12,7 @@ public class ClientGenericGateState implements TState<ClientGenericGateState> {
 
     public int portalSize = 32;
     public float portalYOffset = -0.9f;
-    public String portalType = "normal";
+    public Identifier portalType = StargateMod.id("textures/portal/normal.png");
 
     public boolean custom;
 

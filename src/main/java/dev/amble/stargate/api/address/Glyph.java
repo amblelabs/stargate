@@ -1,4 +1,4 @@
-package dev.amble.stargate.api;
+package dev.amble.stargate.api.address;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

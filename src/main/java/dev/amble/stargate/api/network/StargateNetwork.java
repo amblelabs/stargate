@@ -2,7 +2,7 @@ package dev.amble.stargate.api.network;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

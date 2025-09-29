@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.v3.behavior;
 
-import dev.amble.stargate.api.Address;
+import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v3.Stargate;
