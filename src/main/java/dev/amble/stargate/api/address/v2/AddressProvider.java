@@ -23,7 +23,10 @@ public class AddressProvider {
         int[] buf = new int[7];
 
         buf[6] = ALPHABET_ALL.indexOf(getPOI(world));
-        AddressPositionHelper.pos2Addr(pos, buf, 6, ALPHABET.length - 1, 2500, buf[6]);
+        int[] posCombed = VectorToUniqueBase36.vectorToUniqueBase36(pos);
+
+        System.out.println(Arrays.toString(posCombed));
+        System.arraycopy(posCombed, 0, buf, 0, posCombed.length);
 
         return pack(buf, ALPHABET.length);
     }
@@ -35,6 +38,7 @@ public class AddressProvider {
             int shift = i * BITS_PER_COORD;
             int num = (int) ((address >> shift) & mask);
 
+            System.out.println(num);
             chars[i] = ALPHABET[num];
         }
     }
@@ -142,5 +146,7 @@ public class AddressProvider {
         System.out.println("6c: " + C6.getAddress(packed));
         System.out.println("7c: " + C7.getAddress(packed, NETHER));
         System.out.println("8c: " + C8.getAddress(packed, NETHER));
+
+
     }
 }
