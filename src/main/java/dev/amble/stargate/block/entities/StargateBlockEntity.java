@@ -89,7 +89,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 			Direction facing = state.get(StargateBlock.FACING);
 
 			gate.shape().destroy(world, pos, facing);
-			gate.dispose();
+			gate.dispose(world);
 		}
 
 		this.ref = null;

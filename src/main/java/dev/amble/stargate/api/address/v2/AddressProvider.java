@@ -1,11 +1,9 @@
 package dev.amble.stargate.api.address.v2;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import dev.amble.stargate.api.GlyphOriginRegistry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.Arrays;
-import java.util.Map;
+import net.minecraft.world.World;
 
 public class AddressProvider {
 
@@ -13,57 +11,33 @@ public class AddressProvider {
     static char[] ALPHABET = ALPHABET_ALL.toCharArray();
 
     static int BITS_PER_COORD = getBitsNeeded(ALPHABET.length);
+    static int MASK = (1 << BITS_PER_COORD) - 1;
 
     private static int getBitsNeeded(int max) {
         return MathHelper.ceil(Math.log(max) / Math.log(2));
     }
 
-    // long (address) = 6 int (∈ La) + self poi (∈ La)
-    public long getAddress(Identifier world, BlockPos pos) {
-        int[] buf = new int[7];
-
-        buf[6] = ALPHABET_ALL.indexOf(getPOI(world));
-        int[] posCombed = VectorToUniqueBase36.vectorToUniqueBase36(pos);
-
-        System.out.println(Arrays.toString(posCombed));
-        System.arraycopy(posCombed, 0, buf, 0, posCombed.length);
-
-        return pack(buf, ALPHABET.length);
+    private static int readAt(long address, int index) {
+        int shift = index * BITS_PER_COORD;
+        return (int) ((address >> shift) & MASK);
     }
 
-    public static void readAddress(long address, char[] chars, int len) {
-        int mask = (1 << BITS_PER_COORD) - 1;
+    public static long pack(String address) {
+        char[] chars = address.toCharArray();
+        int[] nums = new int[chars.length];
 
-        for (int i = 0; i < len; i++) {
-            int shift = i * BITS_PER_COORD;
-            int num = (int) ((address >> shift) & mask);
-
-            System.out.println(num);
-            chars[i] = ALPHABET[num];
+        for (int i = 0; i < chars.length; i++) {
+            nums[i] = ALPHABET_ALL.indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
         }
+
+        return pack(nums, ALPHABET.length);
     }
 
-    /*public static char getPOI(RegistryKey<World> from) {
-        return GlyphOriginRegistry.getInstance().get(from.getValue()).glyph();
+    public static int length(long address) {
+        return Math.toIntExact(address / BITS_PER_COORD);
     }
 
-    public static char getGalaxy(RegistryKey<World> from) {
-        return GlyphOriginRegistry.getInstance().get(from.getValue()).glyph();
-    }*/
-
-    static final Identifier OVERWORLD = new Identifier("minecraft", "overworld");
-    static final Identifier NETHER = new Identifier("minecraft", "nether");
-
-    static final Map<Identifier, Character> MAP = Map.of(
-            OVERWORLD, 'Q',
-            NETHER, 'W'
-    );
-
-    public static char getPOI(Identifier from) {
-        return MAP.get(from);
-    }
-
-    public long pack(int[] numbers, int k) {
+    public static long pack(int[] numbers, int k) {
         if (numbers.length == 0) throw new IllegalArgumentException();
 
         // Validate input
@@ -94,59 +68,60 @@ public class AddressProvider {
         return packed;
     }
 
-    public static class C6 extends AddressProvider {
+    public static class Local extends AddressProvider {
 
-        public static String getAddress(long packed) {
-            char[] c = new char[6];
-            readAddress(packed, c, 6);
-            return new String(c);
+        static int ID_MASK = (1 << BITS_PER_COORD * 6) - 1;
+
+        public static long getId(long packed) {
+            return packed & ID_MASK;
+        }
+
+        // 1 target (z) + 1 origin (y) + 6 id (x)
+        // [xxxxxx][y][z]
+        //  012345  6  7
+        public static char getOriginChar(long packed) {
+            return ALPHABET[AddressProvider.readAt(packed, 6)];
+        }
+
+        public static RegistryKey<World> getOrigin(long packed) {
+            return GlyphOriginRegistry.get().glyph(getOriginChar(packed));
+        }
+
+        public static char getTargetChar(long packed) {
+            return ALPHABET[AddressProvider.readAt(packed, 7)];
+        }
+
+        public static RegistryKey<World> getTarget(long packed) {
+            return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
+        }
+
+        public static long generate() {
+
         }
     }
 
-    /**
-     * 7 character address = 6 points (coordinates coded) + 1 POI
-     */
-    public static class C7 extends AddressProvider {
+    public static class Global extends AddressProvider {
 
-        private static void readAddress(long packed, char[] c, int len, Identifier origin) {
-            readAddress(packed, c, len);
-            c[6] = getPOI(origin);
+        static int ID_MASK = (1 << BITS_PER_COORD * 8) - 1;
+
+        public static long getId(long packed) {
+            return packed & ID_MASK;
         }
 
-        public static String getAddress(long packed, Identifier origin) {
-            char[] c = new char[7];
+        // 1 target (y) + 6 id (x)
+        // [xxxxxxxx][y]
+        //  01234567  8
 
-            // every character has to be unique, so only (36 - 1) characters are available
-            readAddress(packed, c, 6, origin);
-            return new String(c);
+        public static char getTargetChar(long packed) {
+            return ALPHABET[AddressProvider.readAt(packed, 8)];
         }
-    }
 
-    public static class C8 extends AddressProvider {
-
-        public static String getAddress(long packed, Identifier origin) {
-            char[] c = new char[8];
-
-            // every character has to be unique, so only (36 - 1) characters are available
-            readAddress(packed, c, 7);
-
-            c[7] = getPOI(origin);
-
-            return new String(c);
+        public static RegistryKey<World> getTarget(long packed) {
+            return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
         }
-    }
 
-    public static void main(String[] args) {
-        int[] pos = new int[] { 123, 123, 123 };
+        public static long generate() {
 
-        long packed = new AddressProvider().getAddress(OVERWORLD, new BlockPos(pos[0], pos[1], pos[2]));
-
-        System.out.println(Arrays.toString(pos));
-        System.out.println(packed);
-        System.out.println("6c: " + C6.getAddress(packed));
-        System.out.println("7c: " + C7.getAddress(packed, NETHER));
-        System.out.println("8c: " + C8.getAddress(packed, NETHER));
-
-
+        }
     }
 }

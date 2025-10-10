@@ -3,16 +3,17 @@ package dev.amble.stargate.api.v3;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.Address;
-import dev.amble.stargate.api.address.Addressable;
+import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.kernels.GateShape;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
+import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
 import dev.amble.stargate.api.v3.event.state.StateAddedEvent;
 import dev.amble.stargate.api.v3.event.state.StateRemovedEvent;
 import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.GlobalAddressState;
+import dev.amble.stargate.api.v3.state.LocalAddressState;
 import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
@@ -24,30 +25,32 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
+import java.util.Objects;
 
-public abstract class Stargate extends TStateContainer.Delegate implements Addressable, NbtSerializer {
+public abstract class Stargate extends TStateContainer.Delegate implements NbtSerializer {
 
-    private final Address address;
-    private final boolean isClient;
-
+    private final DirectedGlobalPos pos;
     private TState.Type<?> curState;
+
+    private final boolean isClient;
     private boolean dirty;
 
     public Stargate(DirectedGlobalPos pos) {
         super(TStateRegistry.createArrayHolder());
 
-        this.address = new Address(pos);
+        this.pos = pos;
         this.isClient = false;
 
         TState<?> state = this.createDefaultState();
@@ -68,8 +71,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
     public Stargate(NbtCompound nbt, boolean isClient) {
         super(TStateRegistry.createArrayHolder());
 
-        this.address = Address.fromNbt(nbt.getCompound("Address"));
         this.isClient = isClient;
+        this.pos = DirectedGlobalPos.fromNbt(nbt.getCompound("Pos"));
 
         this.updateStates(nbt, isClient);
         this.attachState(false, isClient);
@@ -106,9 +109,13 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
     }
 
     protected void attachState(boolean created, boolean isClient) {
-        if (isClient) {
-            this.attachClientState();
-        }
+        if (created) this.attachAddressState();
+        if (isClient) this.attachClientState();
+    }
+
+    protected void attachAddressState() {
+        this.addState(new GlobalAddressState());
+        this.addState(new LocalAddressState());
     }
 
     @Environment(EnvType.CLIENT)
@@ -154,33 +161,54 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         return result;
     }
 
-    public abstract GateShape shape();
-
-    @Override
-    public Address address() {
-        return address;
+    public boolean isClient() {
+        return isClient;
     }
 
-    public void doHere(BiConsumer<World, BlockPos> consumer) {
-        DirectedGlobalPos pos = this.address.pos();
-        ServerWorld world = ServerLifecycleHooks.get().getWorld(pos.getDimension());
+    // <editor-fold desc="Global position stuff">
+    public RegistryKey<World> dimension() {
+        return pos.getDimension();
+    }
 
-        if (world != null)
-            consumer.accept(world, pos.getPos());
+    // optimize using WeakReference if this causes a bottleneck
+    public @NotNull World world() {
+        // trust.
+        return Objects.requireNonNull(ServerLifecycleHooks.get().getWorld(this.dimension()));
     }
 
     public void playSound(SoundEvent event) {
-        this.doHere((world, blockPos) -> world.playSound(null, blockPos, event, SoundCategory.BLOCKS));
+        this.world().playSound(null, this.pos(), event, SoundCategory.BLOCKS);
     }
 
-    public boolean isClient() {
-        return isClient;
+    public BlockPos pos() {
+        return pos.getPos();
+    }
+
+    public Direction direction() {
+        return pos.getRotationDirection();
+    }
+
+    public DirectedGlobalPos getPos() {
+        return pos;
+    }
+    // </editor-fold>
+
+    public boolean dirty() {
+        return dirty;
+    }
+
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    public void unmarkDirty() {
+        this.dirty = false;
     }
 
     @Override
     public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
         nbt.putString("Id", this.id().toString());
-        nbt.put("Address", address.toNbt());
+        nbt.put("Pos", this.pos.toNbt());
 
         NbtCompound states = new NbtCompound();
         this.forEachState((i, state) -> stateToNbt(states, i, state, isClient));
@@ -206,23 +234,24 @@ public abstract class Stargate extends TStateContainer.Delegate implements Addre
         nbt.put(type.id().toString(), backed.encode(state, isClient));
     }
 
-    public boolean dirty() {
-        return dirty;
-    }
-
-    public void markDirty() {
-        this.dirty = true;
-    }
-
-    public void unmarkDirty() {
-        this.dirty = false;
-    }
+    public abstract GateShape shape();
 
     protected abstract TState<?> createDefaultState();
 
     public abstract Identifier id();
 
-    public void dispose() {
-        ServerStargateNetwork.get().remove(this.address);
+    public void dispose(World world) {
+        GlobalAddressState addressState = this.stateOrNull(GlobalAddressState.state);
+
+        if (addressState == null)
+            return;
+
+        long address = addressState.address();
+
+        if (world.isClient()) {
+            ClientStargateNetwork.get().remove(address);
+        } else {
+            StargateServerData.get((ServerWorld) world).removeGlobal(address);
+        }
     }
 }

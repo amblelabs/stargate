@@ -2,7 +2,7 @@ package dev.amble.stargate.client;
 
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.GlyphOriginRegistry;
+import dev.amble.stargate.api.address.GlyphOriginRegistryOld;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
@@ -32,7 +32,7 @@ public class StargateModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         AmbleRegistries.getInstance().registerAll(
-                GlyphOriginRegistry.getInstance()
+                GlyphOriginRegistryOld.getInstance()
         );
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {

@@ -9,14 +9,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class GlyphOriginRegistry extends SimpleDatapackRegistry<Glyph> {
+public class GlyphOriginRegistryOld extends SimpleDatapackRegistry<Glyph> {
 
 	private final Set<Character> unusedCharacters = new HashSet<>();
 	private boolean unusedInitialized = false;
 
 	private final Glyph fallback = new Glyph(World.OVERWORLD, 'Q');
 
-	private GlyphOriginRegistry() {
+	private GlyphOriginRegistryOld() {
 		super(Glyph::fromInputStream, Glyph.CODEC, "point_of_origin", true, StargateMod.MOD_ID);
 	}
 
@@ -32,7 +32,7 @@ public class GlyphOriginRegistry extends SimpleDatapackRegistry<Glyph> {
 
 	@Override
 	public Glyph get(Identifier id) {
-		// TODO: each run will produce a different fallback glyph!
+		// FIXME: each run will produce a different fallback glyph!
 		return REGISTRY.computeIfAbsent(id, key ->
 				new Glyph(key, this.pickUnused()));
 	}
@@ -57,9 +57,9 @@ public class GlyphOriginRegistry extends SimpleDatapackRegistry<Glyph> {
 		return unused;
 	}
 
-	private static GlyphOriginRegistry instance;
+	private static GlyphOriginRegistryOld instance;
 
-	public static GlyphOriginRegistry getInstance() {
-		return instance == null ? instance = new GlyphOriginRegistry() : instance;
+	public static GlyphOriginRegistryOld getInstance() {
+		return instance == null ? instance = new GlyphOriginRegistryOld() : instance;
 	}
 }

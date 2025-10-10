@@ -38,6 +38,6 @@ public class SpacialResistanceBehavior implements TBehavior, StargateEvents {
                 return StargateTpEvent.Result.DENY;
         }
 
-        return StargateTpEvent.Result.ALLOW;
+        return StargateTpEvent.Result.PASS;
     }
 }

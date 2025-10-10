@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.amble.lib.api.Identifiable;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.World;
@@ -16,20 +17,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicReference;
 
-public record Glyph(Identifier world, char glyph) implements Identifiable {
+public record Glyph(RegistryKey<World> world, char glyph) implements Identifiable {
     public static final Codec<Glyph> CODEC = Codecs.exceptionCatching(RecordCodecBuilder.create(instance -> instance.group(
-            Identifier.CODEC.fieldOf("dimension").forGetter(Glyph::world),
+            Identifier.CODEC.fieldOf("dimension").forGetter(g -> g.world.getValue()),
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
     public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%".toCharArray();
 
-    private Glyph(Identifier dimension, String glyph) {
+    public Glyph(Identifier dimension, String glyph) {
         this(dimension, glyph.charAt(0));
     }
 
-    public Glyph(RegistryKey<World> dimension, char glyph) {
-        this(dimension.getValue(), validate(glyph));
+    public Glyph(Identifier dimension, char glyph) {
+        this(RegistryKey.of(RegistryKeys.WORLD, dimension), glyph);
+    }
+
+    public Glyph(RegistryKey<World> world, char glyph) {
+        this.world = world;
+        this.glyph = validate(glyph);
     }
 
     public static char pickRandom() {
@@ -73,6 +79,6 @@ public record Glyph(Identifier world, char glyph) implements Identifiable {
 
     @Override
     public Identifier id() {
-        return world;
+        return world.getValue();
     }
 }

@@ -3,7 +3,7 @@ package dev.amble.stargate;
 import dev.amble.lib.container.RegistryContainer;
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.api.address.GlyphOriginRegistry;
+import dev.amble.stargate.api.address.GlyphOriginRegistryOld;
 import dev.amble.stargate.command.StargateDataCommand;
 import dev.amble.stargate.command.StargateDialCommand;
 import dev.amble.stargate.command.StargateSyncCommand;
@@ -29,7 +29,7 @@ public class StargateMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AmbleRegistries.getInstance().registerAll(
-				GlyphOriginRegistry.getInstance()
+				GlyphOriginRegistryOld.getInstance()
 		);
 
 		StargateArgumentTypes.register();

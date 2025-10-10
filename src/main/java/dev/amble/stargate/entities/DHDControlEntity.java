@@ -2,7 +2,6 @@ package dev.amble.stargate.entities;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;

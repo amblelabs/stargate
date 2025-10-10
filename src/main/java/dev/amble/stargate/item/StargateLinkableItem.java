@@ -2,7 +2,6 @@ package dev.amble.stargate.item;
 
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.api.WorldUtil;
-import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.network.StargateNetwork;
 import dev.amble.stargate.api.v3.Stargate;

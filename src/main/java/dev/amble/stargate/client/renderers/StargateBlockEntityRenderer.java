@@ -1,6 +1,5 @@
 package dev.amble.stargate.client.renderers;
 
-import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;

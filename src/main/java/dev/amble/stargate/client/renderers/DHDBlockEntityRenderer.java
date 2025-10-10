@@ -1,7 +1,6 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.Address;
 import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.block.StargateBlock;

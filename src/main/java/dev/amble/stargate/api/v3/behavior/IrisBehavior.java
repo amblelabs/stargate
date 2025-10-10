@@ -31,12 +31,9 @@ public class IrisBehavior implements TBehavior, StargateEvents, StargateEvents.S
         boolean open = to.state(IrisState.state).open;
 
         if (open)
-            return StargateTpEvent.Result.ALLOW;
+            return StargateTpEvent.Result.PASS;
 
-        to.doHere((world, blockPos) -> {
-            living.damage(world.getDamageSources().inWall(), Integer.MAX_VALUE);
-        });
-
+        living.damage(to.world().getDamageSources().inWall(), Integer.MAX_VALUE);
         return StargateTpEvent.Result.DENY;
     }
 

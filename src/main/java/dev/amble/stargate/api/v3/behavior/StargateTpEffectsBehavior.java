@@ -40,6 +40,6 @@ public class StargateTpEffectsBehavior implements TBehavior, StargateEvents {
         if (living.canFreeze())
             living.setFrozenTicks(100);
 
-        return StargateTpEvent.Result.ALLOW;
+        return StargateTpEvent.Result.PASS;
     }
 }

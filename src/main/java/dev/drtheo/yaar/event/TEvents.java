@@ -3,8 +3,7 @@ package dev.drtheo.yaar.event;
 import dev.drtheo.yaar.behavior.TBehavior;
 import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Base interface for all event groups.
@@ -73,7 +72,7 @@ public interface TEvents {
      * @param handlers a list of subscribed event handlers.
      * @param <T> the event group.
      */
-    record Type<T extends TEvents>(Class<T> clazz, List<T> handlers) implements BaseType<T> {
+    record Type<T extends TEvents>(Class<T> clazz, Deque<T> handlers) implements BaseType<T> {
 
         /**
          * A helper constructor for the object, initiates with an empty {@link ArrayList} for the handlers.
@@ -81,7 +80,7 @@ public interface TEvents {
          * @param clazz the class of the event group.
          */
         public Type(Class<T> clazz) {
-            this(clazz, new ArrayList<>());
+            this(clazz, new ArrayDeque<>());
         }
 
         @Override
