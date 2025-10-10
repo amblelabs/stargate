@@ -29,6 +29,6 @@ public abstract class TriStateTEvent<T extends TEvents> implements TEvent.Result
     public enum Result {
         DENY,
         PASS,
-        ALLOW;
+        ALLOW
     }
 }

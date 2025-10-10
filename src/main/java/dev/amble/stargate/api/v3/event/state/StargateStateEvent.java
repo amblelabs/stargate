@@ -6,7 +6,6 @@ import dev.amble.stargate.api.v3.state.GateState;
 import dev.drtheo.yaar.event.TEvent;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.StateResolveError;
-import dev.drtheo.yaar.state.TState;
 
 public record StargateStateEvent(Stargate stargate, GateState<?> oldState, GateState<?> newState) implements TEvent.Notify<StargateEvents> {
     @Override

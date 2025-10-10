@@ -150,6 +150,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
 
     @Override
     @Contract(mutates = "this")
+    @SuppressWarnings("UnstableApiUsage")
     public boolean addState(@NotNull TState<?> state) {
         boolean result = super.addState(state);
 
@@ -161,6 +162,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
 
     @Override
     @Contract(mutates = "this")
+    @SuppressWarnings("UnstableApiUsage")
     public <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type) {
         T result = super.removeState(type);
 
