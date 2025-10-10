@@ -3,7 +3,7 @@ package dev.amble.stargate.api.v3.behavior;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.StargateTpEvent;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.init.StargateAttributes;
 import dev.amble.stargate.init.StargateDamages;
 import dev.drtheo.yaar.behavior.TBehavior;
@@ -17,7 +17,7 @@ public class SpacialResistanceBehavior implements TBehavior, StargateEvents {
 
     @Override
     public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, LivingEntity living) {
-        BasicGateStates.Open open = from.state(BasicGateStates.Open.state);
+        GateState.Open open = from.state(GateState.Open.state);
 
         World world = living.getWorld();
         DamageSource flow = StargateDamages.flow(world);

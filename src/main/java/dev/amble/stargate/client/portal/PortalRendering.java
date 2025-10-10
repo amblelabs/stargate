@@ -2,8 +2,8 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -58,7 +58,7 @@ public class PortalRendering {
         stack.translate(0, clientState.portalYOffset, 0);
         stack.scale(clientState.portalSize, clientState.portalSize, clientState.portalSize);
 
-        BasicGateStates<?> state = stargate.getCurrentState();
+        GateState<?> state = stargate.getCurrentState();
 
         // can this be moved outside the loop?
         RenderSystem.enableDepthTest();

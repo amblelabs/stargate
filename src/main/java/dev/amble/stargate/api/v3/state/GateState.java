@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface BasicGateStates<T extends TState<T>> extends TState<T> {
+public interface GateState<T extends TState<T>> extends TState<T> {
 
     StateType gateState();
 
-    class Closed implements BasicGateStates<Closed>, NbtSerializer {
+    class Closed implements GateState<Closed>, NbtSerializer {
 
         public static final Type<Closed> state = new NbtBacked<>(StargateMod.id("generic/closed")) {
             @Override
@@ -58,7 +58,7 @@ public interface BasicGateStates<T extends TState<T>> extends TState<T> {
         }
     }
 
-    final class Opening implements BasicGateStates<Opening>, NbtSerializer {
+    final class Opening implements GateState<Opening>, NbtSerializer {
 
         public static final Type<Opening> state = new NbtBacked<>(StargateMod.id("generic/opening")) {
 
@@ -108,7 +108,7 @@ public interface BasicGateStates<T extends TState<T>> extends TState<T> {
         }
     }
 
-    class Open implements BasicGateStates<Open>, NbtSerializer {
+    class Open implements GateState<Open>, NbtSerializer {
 
         public static final Type<Open> state = new NbtBacked<>(StargateMod.id("generic/open")) {
             @Override

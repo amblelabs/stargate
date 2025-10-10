@@ -3,8 +3,8 @@ package dev.amble.stargate.client.renderers;
 import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
@@ -62,7 +62,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         matrices.pop();
 
-        if (gate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED)
+        if (gate.getCurrentState().gateState() != GateState.StateType.CLOSED)
             PortalRendering.QUEUE.add(entity);
     }
 
@@ -99,7 +99,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         matrices.translate(xOffset, 0.05f, zOffset);
         matrices.scale(0.025f, 0.025f, 0.025f);
 
-        BasicGateStates.Closed closed = gate.stateOrNull(BasicGateStates.Closed.state);
+        GateState.Closed closed = gate.stateOrNull(GateState.Closed.state);
         int selectedIndex = closed != null ? closed.locked : -1;
 
         for (int i = 0; i < Glyph.ALL.length; i++) {

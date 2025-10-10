@@ -1,8 +1,8 @@
 package dev.amble.stargate.api.v3.behavior.client;
 
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientOrlinState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientOrlinState;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
@@ -28,7 +28,7 @@ public class ClientOrlinBehavior extends ClientGenericGateBehavior {
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         matrices.scale(1, 1, 1);
 
-        boolean bl = stargate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED;
+        boolean bl = stargate.getCurrentState().gateState() != GateState.StateType.CLOSED;
 
         Identifier texture = StargateBlockEntityRenderer.getTextureForGate(stargate);
         Identifier emission = StargateBlockEntityRenderer.getEmissionForGate(stargate);

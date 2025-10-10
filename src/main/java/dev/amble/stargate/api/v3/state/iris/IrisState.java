@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v3.state;
+package dev.amble.stargate.api.v3.state.iris;
 
 import dev.amble.stargate.StargateMod;
 import dev.drtheo.yaar.state.NbtSerializer;

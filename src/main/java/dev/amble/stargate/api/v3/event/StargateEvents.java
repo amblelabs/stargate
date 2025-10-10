@@ -1,6 +1,7 @@
 package dev.amble.stargate.api.v3.event;
 
 import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.GateState;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.entity.LivingEntity;
@@ -11,7 +12,7 @@ public interface StargateEvents extends TEvents {
 
     default void onCreated(Stargate stargate) { }
 
-    default void onStateChanged(Stargate stargate, TState<?> oldState, TState<?> newState) { }
+    default void onStateChanged(Stargate stargate, GateState<?> oldState, GateState<?> newState) { }
 
     default void tick(Stargate stargate) { }
 

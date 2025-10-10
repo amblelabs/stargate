@@ -9,14 +9,14 @@ import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.StargateTpEvent;
 import dev.amble.stargate.api.v3.event.address.AddressResolveEvent;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.yaar.behavior.Resolve;
 import dev.drtheo.yaar.behavior.TBehavior;
 import dev.drtheo.yaar.event.TEvents;
-import dev.drtheo.yaar.state.TState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -39,7 +39,7 @@ public interface BasicGateBehaviors {
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
-            BasicGateStates.Closed closed = stargate.state(BasicGateStates.Closed.state);
+            GateState.Closed closed = stargate.state(GateState.Closed.state);
 
             int length = closed.address.length();
             closed.locking = length > closed.locked;
@@ -53,7 +53,7 @@ public interface BasicGateBehaviors {
                 return;
             }
 
-            if (!closed.locking || closed.timer++ < BasicGateStates.Closed.TICKS_PER_CHEVRON) return;
+            if (!closed.locking || closed.timer++ < GateState.Closed.TICKS_PER_CHEVRON) return;
 
             closed.timer = 0;
             closed.locked++;
@@ -65,30 +65,28 @@ public interface BasicGateBehaviors {
 
             // TODO: add energy handling.
             resolved.ifRoute(route -> {
-                manager.set(stargate, new BasicGateStates.Opening(new StargateRef(route.stargate()), true));
-                manager.set(route.stargate(), new BasicGateStates.Opening(null, false));
+                manager.set(stargate, new GateState.Opening(new StargateRef(route.stargate()), true));
+                manager.set(route.stargate(), new GateState.Opening(null, false));
 
                 route.stargate().markDirty();
             }).ifFail(() -> {
                 stargate.playSound(StargateSounds.GATE_FAIL);
-                manager.set(stargate, new BasicGateStates.Closed());
+                manager.set(stargate, new GateState.Closed());
             });
         }
-
     }
 
     class Opening implements TBehavior, StargateEvents {
 
-        static final float p0 = 0f;
-        static final float p1 = 22f;
-        static final float p2 = -12f;
+        static final float p0 = 0;
+        static final float p1 = 22;
+        static final float p2 = -12;
         static final float p3 = 0;
 
         @Override
-        public void onStateChanged(Stargate stargate, TState<?> oldState, TState<?> newState) {
-            if (!(newState instanceof BasicGateStates.Opening)) return;
-
-            stargate.playSound(StargateSounds.GATE_OPEN);
+        public void onStateChanged(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
+            if (newState.gateState() == GateState.StateType.OPENING)
+                stargate.playSound(StargateSounds.GATE_OPEN);
         }
 
         @Resolve
@@ -98,10 +96,10 @@ public interface BasicGateBehaviors {
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
-            BasicGateStates.Opening opening = stargate.state(BasicGateStates.Opening.state);
+            GateState.Opening opening = stargate.state(GateState.Opening.state);
 
             // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
-            float t = (float) opening.timer / ((float) BasicGateStates.Opening.TICKS_PER_KAWOOSH * 1.25f);
+            float t = (float) opening.timer / ((float) GateState.Opening.TICKS_PER_KAWOOSH * 1.25f);
 
             // Remap t to ease in and out, spending more time near p1 and p2
             // Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle
@@ -116,65 +114,50 @@ public interface BasicGateBehaviors {
 
             stargate.markDirty();
 
-            if (opening.timer++ <= BasicGateStates.Opening.TICKS_PER_KAWOOSH || tPrime != 1) return;
+            if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH || tPrime != 1) return;
 
             opening.kawooshHeight = 0;
             opening.timer = 0;
 
             // Handle missing gates by address gracefully
             if (opening.caller && opening.target != null) { // TODO: add distance/protocol compat checks here
-                manager.set(stargate, new BasicGateStates.Open(opening.target, true));
-                manager.set(opening.target.get(), new BasicGateStates.Open(new StargateRef(stargate), false));
+                manager.set(stargate, new GateState.Open(opening.target, true));
+                manager.set(opening.target.get(), new GateState.Open(new StargateRef(stargate), false));
             } else {
-                manager.set(stargate, new BasicGateStates.Closed());
+                manager.set(stargate, new GateState.Closed());
             }
         }
     }
 
     class Open implements TBehavior, StargateEvents, StargateBlockEvents {
 
-        public static final Box NS_DEFAULT = new Box(BlockPos.ORIGIN).expand(2, 2, 0).expand(0, 3, 0);
-        public static final Box WE_DEFAULT = new Box(BlockPos.ORIGIN).expand(0, 2, 2).expand(0, 3, 0);
-
         @Resolve
         private final GateManagerBehavior manager = behavior();
 
-        private final Box northSouth;
-        private final Box westEast;
-
-        public Open(Box northSouth, Box westEast) {
-            this.northSouth = northSouth;
-            this.westEast = westEast;
-        }
-
-        public Open() {
-            this(NS_DEFAULT, WE_DEFAULT);
-        }
-
         @Override
-        public void onStateChanged(Stargate stargate, TState<?> oldState, TState<?> newState) {
-            if (oldState instanceof BasicGateStates.Open && newState instanceof BasicGateStates.Closed) {
+        public void onStateChanged(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
+            if (oldState.gateState() == GateState.StateType.OPEN
+                    && newState.gateState() == GateState.StateType.CLOSED)
                 stargate.playSound(StargateSounds.GATE_CLOSE);
-            }
         }
 
         @Override
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
-            BasicGateStates.Open open = stargate.state(BasicGateStates.Open.state);
+            GateState.Open open = stargate.state(GateState.Open.state);
 
             // handle abnormal state
             if (open.target.isEmpty()) {
-                manager.set(stargate, new BasicGateStates.Closed());
+                manager.set(stargate, new GateState.Closed());
                 return;
             }
 
-            if (open.timer++ > BasicGateStates.Open.TICKS_PER_OPEN) {
+            if (open.timer++ > GateState.Open.TICKS_PER_OPEN) {
                 open.timer = 0;
 
-                manager.set(stargate, new BasicGateStates.Closed());
-                manager.set(open.target.get(), new BasicGateStates.Closed());
+                manager.set(stargate, new GateState.Closed());
+                manager.set(open.target.get(), new GateState.Closed());
             }
         }
 
@@ -188,24 +171,23 @@ public interface BasicGateBehaviors {
         @Override
         public void block$tick(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) {
             if (world.isClient()) return;
+            if (ServerLifecycleHooks.get().getTicks() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
+            GateIdentityState identityState = stargate.state(GateIdentityState.state);
             Direction facing = state.get(StargateBlock.FACING);
 
-            Box box = facing == Direction.WEST || facing == Direction.EAST ? westEast : northSouth;
-            box = box.offset(pos);
+            Box box = identityState.forDirection(facing).offset(pos);
 
-            if (ServerLifecycleHooks.get().getTicks() % BasicGateStates.Open.TELEPORT_FREQUENCY == 0) {
-                BasicGateStates.Open open = stargate.state(BasicGateStates.Open.state);
-                List<Entity> entities = world.getOtherEntities(null, box, e -> e != null && e.isAlive() && !e.isSpectator());
+            GateState.Open open = stargate.state(GateState.Open.state);
+            List<Entity> entities = world.getOtherEntities(null, box, e -> e.isAlive() && !e.isSpectator());
 
-                for (Entity e : entities) {
-                    if (e instanceof LivingEntity living)
-                        tryTeleportFrom(stargate, open, living);
-                }
+            for (Entity e : entities) {
+                if (e instanceof LivingEntity living)
+                    tryTeleportFrom(stargate, open, living);
             }
         }
 
-        public void tryTeleportFrom(Stargate stargate, BasicGateStates.Open open, LivingEntity entity) {
+        public void tryTeleportFrom(Stargate stargate, GateState.Open open, LivingEntity entity) {
             if (!(entity instanceof TeleportableEntity holder))
                 return;
 
@@ -226,6 +208,7 @@ public interface BasicGateBehaviors {
             BlockPos pos = stargate.pos();
             Vec3d offset = entity.getPos().subtract(pos.toCenterPos().subtract(0, 0.5, 0));
 
+            // FIXME uh oh! this sucks!
             double yOffset = 0;
             for (int y = 1; y <= 5; y++) {
                 boolean bottomIsAir = targetWorld.getBlockState(targetBlockPos.up(y)).isAir();
@@ -253,7 +236,7 @@ public interface BasicGateBehaviors {
             );
 
             entity.setVelocity(newVelocity);
-            holder.stargate$setTicks(BasicGateStates.Open.TELEPORT_DELAY);
+            holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
         }
     }
 }

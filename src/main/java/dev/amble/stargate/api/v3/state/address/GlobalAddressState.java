@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v3.state;
+package dev.amble.stargate.api.v3.state.address;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.v2.AddressProvider;

@@ -3,8 +3,8 @@ package dev.amble.stargate.api.v3;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.kernels.GateShape;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientDestinyState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientDestinyState;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -33,7 +33,7 @@ public class DestinyGate extends Stargate {
 
     @Override
     protected TState<?> createDefaultState() {
-        return new BasicGateStates.Closed();
+        return new GateState.Closed();
     }
 
     @Override

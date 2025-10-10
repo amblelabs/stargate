@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.v3.state.client;
+package dev.amble.stargate.api.v3.state.stargate.client;
 
 import dev.amble.stargate.StargateMod;
 

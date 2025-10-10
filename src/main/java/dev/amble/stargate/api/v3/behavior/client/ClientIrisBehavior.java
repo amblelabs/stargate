@@ -3,9 +3,9 @@ package dev.amble.stargate.api.v3.behavior.client;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvents;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.IrisState;
-import dev.amble.stargate.api.v3.state.client.ClientIrisState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.iris.IrisState;
+import dev.amble.stargate.api.v3.state.iris.ClientIrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import dev.amble.stargate.client.models.BaseStargateModel;
@@ -28,7 +28,7 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, Starg
         IrisState irisState = stargate.state(IrisState.state);
         ClientIrisState clientIrisState = stargate.state(ClientIrisState.state);
 
-        BasicGateStates.Closed closed = stargate.stateOrNull(BasicGateStates.Closed.state);
+        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
 
         if (closed != null && closed.locking) {
             clientIrisState.CLOSE_STATE.stop();

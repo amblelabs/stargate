@@ -9,9 +9,11 @@ import dev.amble.stargate.api.v3.behavior.client.ClientOrlinBehavior;
 import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvents;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.IrisState;
-import dev.amble.stargate.api.v3.state.client.*;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
+import dev.amble.stargate.api.v3.state.iris.ClientIrisState;
+import dev.amble.stargate.api.v3.state.iris.IrisState;
+import dev.amble.stargate.api.v3.state.stargate.client.*;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import dev.drtheo.yaar.event.TEventsRegistry;
 import dev.drtheo.yaar.state.TStateRegistry;
@@ -37,9 +39,6 @@ public class StargateYAARs {
         TBehaviorRegistry.register(BasicGateBehaviors.Opening::new);
         TBehaviorRegistry.register(BasicGateBehaviors.Open::new);
 
-        // TODO; replace with state
-        TBehaviorRegistry.register(OrlinBehavior.Open::new);
-
         TBehaviorRegistry.register(ClientGenericGateBehavior::new);
         TBehaviorRegistry.register(ClientMilkyWayBehavior::new);
         TBehaviorRegistry.register(ClientOrlinBehavior::new);
@@ -54,9 +53,10 @@ public class StargateYAARs {
     }
 
     private static void initState() {
-        TStateRegistry.register(BasicGateStates.Closed.state);
-        TStateRegistry.register(BasicGateStates.Opening.state);
-        TStateRegistry.register(BasicGateStates.Open.state);
+        TStateRegistry.register(GateState.Closed.state);
+        TStateRegistry.register(GateState.Opening.state);
+        TStateRegistry.register(GateState.Open.state);
+        TStateRegistry.register(GateIdentityState.state);
 
         TStateRegistry.register(ClientGenericGateState.state);
         TStateRegistry.register(ClientMilkyWayState.state);

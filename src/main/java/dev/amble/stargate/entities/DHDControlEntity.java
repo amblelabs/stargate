@@ -7,7 +7,7 @@ import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;
@@ -276,7 +276,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
         if (!this.control.canRun(stargate, (ServerPlayerEntity) player)) return;
 
-        if (this.getControl().getGlyph() != '*' && stargate.getCurrentState() instanceof BasicGateStates.Closed closed) {
+        if (this.getControl().getGlyph() != '*' && stargate.getCurrentState() instanceof GateState.Closed closed) {
             if (closed.locked >= Address.LENGTH) {
                 closed.address = "";
 

@@ -1,7 +1,7 @@
 package dev.amble.stargate.block;
 
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
-import dev.amble.stargate.api.v3.state.IrisState;
+import dev.amble.stargate.api.v3.state.iris.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.item.StargateItem;
 import dev.drtheo.yaar.event.TEvents;

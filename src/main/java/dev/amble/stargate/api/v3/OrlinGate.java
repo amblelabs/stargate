@@ -3,8 +3,9 @@ package dev.amble.stargate.api.v3;
 import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.kernels.GateShape;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientOrlinState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.OrlinState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientOrlinState;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -22,6 +23,11 @@ public class OrlinGate extends Stargate {
     }
 
     @Override
+    protected void attachIdentity() {
+        this.addState(new OrlinState());
+    }
+
+    @Override
     protected void attachClientState() {
         this.addState(new ClientOrlinState());
     }
@@ -33,7 +39,7 @@ public class OrlinGate extends Stargate {
 
     @Override
     protected TState<?> createDefaultState() {
-        return new BasicGateStates.Closed();
+        return new GateState.Closed();
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.behavior.GateManagerBehavior;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
+import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.command.argumenttypes.StargateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -38,7 +38,7 @@ public class StargateDialCommand {
         closeIfForce(ctx, stargate, force);
         closeIfForce(ctx, targetGate, force);
 
-        BasicGateStates.Closed closed = stargate.stateOrNull(BasicGateStates.Closed.state);
+        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
 
         if (closed == null) {
             ctx.getSource().sendFeedback(() -> Text.translatable("command.stargate.generic.unavailable"), false);
@@ -53,8 +53,8 @@ public class StargateDialCommand {
     }
 
     private static void closeIfForce(CommandContext<ServerCommandSource> ctx, Stargate stargate, boolean force) {
-        if (force && stargate.stateOrNull(BasicGateStates.Closed.state) == null) {
-            GateManagerBehavior.INSTANCE.set(stargate, new BasicGateStates.Closed());
+        if (force && stargate.stateOrNull(GateState.Closed.state) == null) {
+            GateManagerBehavior.INSTANCE.set(stargate, new GateState.Closed());
         }
     }
 }

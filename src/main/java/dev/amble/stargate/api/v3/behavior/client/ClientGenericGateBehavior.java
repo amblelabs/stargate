@@ -2,8 +2,8 @@ package dev.amble.stargate.api.v3.behavior.client;
 
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.render.StargateRenderEvents;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
@@ -45,7 +45,7 @@ public class ClientGenericGateBehavior implements TBehavior, StargateRenderEvent
 
         this.updateChevronVisibility(stargate, renderer);
 
-        boolean bl = stargate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED;
+        boolean bl = stargate.getCurrentState().gateState() != GateState.StateType.CLOSED;
 
         renderer.model.chev_light7.visible = bl;
         renderer.model.chev_light7bottom.visible = bl;
@@ -67,7 +67,7 @@ public class ClientGenericGateBehavior implements TBehavior, StargateRenderEvent
     }
 
     public void updateChevronVisibility(Stargate stargate, StargateBlockEntityRenderer renderer) {
-        boolean visible = stargate.getCurrentState().gateState() != BasicGateStates.StateType.CLOSED;
+        boolean visible = stargate.getCurrentState().gateState() != GateState.StateType.CLOSED;
 
         for (ModelPart chevron : renderer.chevrons) {
             chevron.visible = visible;

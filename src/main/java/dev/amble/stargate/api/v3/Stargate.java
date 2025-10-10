@@ -11,10 +11,11 @@ import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
 import dev.amble.stargate.api.v3.event.state.StateAddedEvent;
 import dev.amble.stargate.api.v3.event.state.StateRemovedEvent;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.GlobalAddressState;
-import dev.amble.stargate.api.v3.state.LocalAddressState;
-import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
+import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
+import dev.amble.stargate.api.v3.state.address.LocalAddressState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
@@ -109,8 +110,16 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     }
 
     protected void attachState(boolean created, boolean isClient) {
-        if (created) this.attachAddressState();
-        if (isClient) this.attachClientState();
+        if (created) {
+            this.attachAddressState();
+            this.attachIdentity();
+
+            if (isClient) this.attachClientState();
+        }
+    }
+
+    protected void attachIdentity() {
+        this.addState(new GateIdentityState());
     }
 
     protected void attachAddressState() {
@@ -131,8 +140,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         return curState;
     }
 
-    public @Nullable BasicGateStates<?> getCurrentState() {
-        return (BasicGateStates<?>) stateOrNull(curState);
+    public @Nullable GateState<?> getCurrentState() {
+        return (GateState<?>) stateOrNull(curState);
     }
 
     public void setCurState(TState.Type<?> state) {

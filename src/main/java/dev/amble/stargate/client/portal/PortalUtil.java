@@ -2,9 +2,9 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.BasicGateStates;
-import dev.amble.stargate.api.v3.state.IrisState;
-import dev.amble.stargate.api.v3.state.client.ClientGenericGateState;
+import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.iris.IrisState;
+import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 
 public class PortalUtil {
 
-    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, ClientGenericGateState clientState, BasicGateStates<?> currentState, float time) {
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, ClientGenericGateState clientState, GateState<?> currentState, float time) {
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
 
@@ -39,7 +39,7 @@ public class PortalUtil {
         builder.vertex(matrix, x, y, z).color(Math.min(1, r), Math.min(1, g), Math.min(1, b), a).texture(u, v).light(light).next();
     }
 
-    private void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, BasicGateStates<?> currentState, float time) {
+    private void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, GateState<?> currentState, float time) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
         int sides = 18;
         int rings = 36;
@@ -69,7 +69,7 @@ public class PortalUtil {
         float waveSpeed = 0.2f;
 
         // Add central big ripple if active
-        if (currentState.gateState() == BasicGateStates.StateType.OPENING) {
+        if (currentState.gateState() == GateState.StateType.OPENING) {
             triggerCentralRipple(0.05f, 0.6f, 0.01f, 0.2f);
         }
 
@@ -236,8 +236,8 @@ public class PortalUtil {
         }
     }
 
-    private float getWave(CentralRippleParams central, float angle, float bulge, BasicGateStates<?> currentState, float time) {
-        float realHeight = currentState instanceof BasicGateStates.Opening opening ? opening.kawooshHeight : 0;
+    private float getWave(CentralRippleParams central, float angle, float bulge, GateState<?> currentState, float time) {
+        float realHeight = currentState instanceof GateState.Opening opening ? opening.kawooshHeight : 0;
 
         float mainDuration = 1f;
         float normTime = Math.min(1f, centralRippleTime / mainDuration);
