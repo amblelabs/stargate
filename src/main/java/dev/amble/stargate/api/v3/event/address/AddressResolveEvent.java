@@ -7,9 +7,9 @@ import dev.drtheo.yaar.event.TEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.function.Consumer;
 
-public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, Optional<AddressResolveEvent.Result>> {
+public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, AddressResolveEvent.Result> {
 
     private final Stargate stargate;
     private final long address;
@@ -41,21 +41,38 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
     }
 
     @Override
-    public Optional<Result> result() {
-        return Optional.ofNullable(result);
+    public Result result() {
+        return result;
     }
 
     public interface Result {
 
-        Type type();
-
-        enum Type {
-            FAIL,
-            ROUTE;
+        default Result ifFail(Runnable runnable) {
+            return this;
         }
 
-        Result PASS = null;
-        Result FAIL = () -> Type.FAIL;
+        default Result ifPass(Runnable runnable) {
+            return this;
+        }
+
+        default Result ifRoute(Consumer<Route> consumer) {
+            return this;
+        }
+
+        Result PASS = new Result() {
+            @Override
+            public Result ifPass(Runnable runnable) {
+                runnable.run();
+                return this;
+            }
+        };
+        Result FAIL = new Result() {
+            @Override
+            public Result ifFail(Runnable runnable) {
+                runnable.run();
+                return this;
+            }
+        };
 
         static Result route(@NotNull Stargate stargate, long openCost, long costPerTick) {
             return new Route(stargate, openCost, costPerTick);
@@ -65,13 +82,12 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
             return stargate == null ? FAIL : route(stargate, openCost, costPerTick);
         }
 
-        record Empty(Type type) implements Result { }
-
         record Route(Stargate stargate, long openCost, long costPerTick) implements Result {
 
             @Override
-            public Type type() {
-                return Type.FAIL;
+            public Result ifRoute(Consumer<Route> consumer) {
+                consumer.accept(this);
+                return this;
             }
         }
     }

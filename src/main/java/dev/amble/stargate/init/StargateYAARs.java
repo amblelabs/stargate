@@ -33,10 +33,11 @@ public class StargateYAARs {
     private static void initBehavior() {
         TBehaviorRegistry.register(GateManagerBehavior::new);
 
-        TBehaviorRegistry.register(DestinyBehaviors.Closed::new);
-        TBehaviorRegistry.register(DestinyBehaviors.Opening::new);
-        TBehaviorRegistry.register(DestinyBehaviors.Open::new);
+        TBehaviorRegistry.register(BasicGateBehaviors.Closed::new);
+        TBehaviorRegistry.register(BasicGateBehaviors.Opening::new);
+        TBehaviorRegistry.register(BasicGateBehaviors.Open::new);
 
+        // TODO; replace with state
         TBehaviorRegistry.register(OrlinBehavior.Open::new);
 
         TBehaviorRegistry.register(ClientGenericGateBehavior::new);

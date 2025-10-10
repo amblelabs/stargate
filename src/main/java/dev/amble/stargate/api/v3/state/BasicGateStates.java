@@ -64,34 +64,35 @@ public interface BasicGateStates<T extends TState<T>> extends TState<T> {
 
             @Override
             public Opening fromNbt(@NotNull NbtCompound nbt, boolean isClient) {
-                String id = nbt.getString("address");
+                UUID id = nbt.getUuid("address");
                 boolean caller = nbt.getBoolean("caller");
                 float kawooshHeight = nbt.getFloat("kawooshHeight");
-                return new Opening(id, caller, kawooshHeight);
+
+                return new Opening(new StargateRef(id, isClient), caller, kawooshHeight);
             }
         };
 
         public static final int TICKS_PER_KAWOOSH = 4 * 20;
 
-        public final String address;
+        public final StargateRef target;
         public final boolean caller;
 
         public float kawooshHeight;
         public int timer;
 
-        public Opening(String address, boolean caller) {
-            this(address, caller, 0);
+        public Opening(StargateRef target, boolean caller) {
+            this(target, caller, 0);
         }
 
-        private Opening(String address, boolean caller, float kawooshHeight) {
-            this.address = address;
+        private Opening(StargateRef target, boolean caller, float kawooshHeight) {
+            this.target = target;
             this.caller = caller;
             this.kawooshHeight = kawooshHeight;
         }
 
         @Override
         public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            nbt.putString("address", address);
+            nbt.putUuid("address", target.id());
             nbt.putBoolean("caller", caller);
             nbt.putFloat("kawooshHeight", kawooshHeight);
         }
