@@ -6,20 +6,42 @@ import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.address.AddressResolveEvent;
 import dev.amble.stargate.api.v3.event.address.AddressResolveEvents;
+import dev.amble.stargate.api.v3.event.address.StargateRemoveEvents;
+import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
+import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.drtheo.yaar.behavior.TBehavior;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 
-public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
+public interface AddressBehaviors {
 
     static void registerAll() {
         TBehaviorRegistry.register(C7::new);
         TBehaviorRegistry.register(C8::new);
         TBehaviorRegistry.register(C9::new);
+
+        TBehaviorRegistry.register(LocalAddressBehavior::new);
+        TBehaviorRegistry.register(GlobalAddressBehavior::new);
     }
 
-    class C7 implements AddressBehaviors {
+    class LocalAddressBehavior implements TBehavior, StargateRemoveEvents {
+
+        @Override
+        public void remove(StargateServerData data, Stargate stargate) {
+            data.removeLocal(stargate.state(LocalAddressState.state).address());
+        }
+    }
+
+    class GlobalAddressBehavior implements TBehavior, StargateRemoveEvents {
+
+        @Override
+        public void remove(StargateServerData data, Stargate stargate) {
+            data.removeGlobal(stargate.state(GlobalAddressState.state).address());
+        }
+    }
+
+    class C7 implements TBehavior, AddressResolveEvents {
 
         public static long COST_PT = 2 * 100_000;
 
@@ -34,7 +56,7 @@ public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
         }
     }
 
-    class C8 implements AddressBehaviors {
+    class C8 implements TBehavior, AddressResolveEvents {
 
         public static long COST_PT = 2 * 1_000_000;
 
@@ -52,7 +74,7 @@ public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
         }
     }
 
-    class C9 implements AddressBehaviors {
+    class C9 implements TBehavior, AddressResolveEvents {
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long address, int length) {

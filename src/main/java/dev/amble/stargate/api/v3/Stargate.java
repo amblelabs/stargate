@@ -9,6 +9,7 @@ import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
+import dev.amble.stargate.api.v3.event.address.StargateRemoveEvent;
 import dev.amble.stargate.api.v3.event.state.StateAddedEvent;
 import dev.amble.stargate.api.v3.event.state.StateRemovedEvent;
 import dev.amble.stargate.api.v3.state.GateState;
@@ -247,15 +248,20 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         nbt.put(type.id().toString(), backed.encode(state, isClient));
     }
 
-    public abstract GateShape shape();
+    public GateShape shape() {
+        return GateShape.DEFAULT;
+    }
 
-    protected abstract TState<?> createDefaultState();
+    protected TState<?> createDefaultState() {
+        return new GateState.Closed();
+    }
 
     public abstract Identifier id();
 
+    // TODO: does this only get called on server? or not?
     public void dispose(World world) {
         if (world instanceof ServerWorld serverWorld) {
-            StargateServerData.tryGet(serverWorld, data -> data.remove(this));
+            TEvents.handle(new StargateRemoveEvent(StargateServerData.get(serverWorld), this));
         } else {
             ClientStargateNetwork.get().remove(this);
         }
