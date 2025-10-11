@@ -50,15 +50,13 @@ public class ClientGenericGateBehavior implements TBehavior, StargateRenderEvent
         renderer.model.chev_light7.visible = bl;
         renderer.model.chev_light7bottom.visible = bl;
 
-        if (DependencyChecker.hasIris()) {
+        if (DependencyChecker.hasIris())
             renderer.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, 1, 1, 1);
-        }
 
         renderer.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), light, overlay, 1, 1, 1, 1);
 
-        if (!DependencyChecker.hasIris()) {
+        if (!DependencyChecker.hasIris())
             renderer.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, 1, 1, 1);
-        }
     }
 
     public boolean shouldOverride(Stargate stargate) {

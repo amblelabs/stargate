@@ -5,6 +5,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
+import java.security.SecureRandom;
+
 public class AddressProvider {
 
     static String ALPHABET_ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
@@ -20,6 +22,15 @@ public class AddressProvider {
     private static int readAt(long address, int index) {
         int shift = index * BITS_PER_COORD;
         return (int) ((address >> shift) & MASK);
+    }
+
+    private static long packI(int index, int value) {
+        return packI(index, (long) value);
+    }
+
+    private static long packI(int index, long value) {
+        int shift = index * BITS_PER_COORD;
+        return (value << shift);
     }
 
     public static long pack(String address) {
@@ -61,30 +72,24 @@ public class AddressProvider {
 
         // Pack numbers from right to left (least significant to most significant)
         for (int i = 0; i < numbers.length; i++) {
-            int shift = i * BITS_PER_COORD;
-            packed |= ((long) numbers[i] << shift);
+            packed |= packI(i, numbers[i]);
         }
 
         return packed;
     }
 
+    // 1 target (z) + 1 origin (y) + 6 id (x)
+    // [xxxxxx][y][z]
+    //  012345  6  7
     public static class Local extends AddressProvider {
+
+        // TODO: set random seed to world seed maybe?
+        private static final SecureRandom RANDOM = new SecureRandom();
 
         static int ID_MASK = (1 << BITS_PER_COORD * 6) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;
-        }
-
-        // 1 target (z) + 1 origin (y) + 6 id (x)
-        // [xxxxxx][y][z]
-        //  012345  6  7
-        public static char getOriginChar(long packed) {
-            return ALPHABET[AddressProvider.readAt(packed, 6)];
-        }
-
-        public static RegistryKey<World> getOrigin(long packed) {
-            return GlyphOriginRegistry.get().glyph(getOriginChar(packed));
         }
 
         public static char getTargetChar(long packed) {
@@ -95,22 +100,35 @@ public class AddressProvider {
             return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
         }
 
-        public static long generate() {
+        public static char getOriginChar(long packed) {
+            return ALPHABET[AddressProvider.readAt(packed, length(packed) - 1)];
+        }
 
+        public static long generate(RegistryKey<World> world) {
+            long packed = 0;
+
+            for (int i = 0; i < 6; i++) {
+                packed |= AddressProvider.packI(i, RANDOM.nextLong(ALPHABET.length));
+            }
+
+            char poi = GlyphOriginRegistry.get().glyph(world);
+            return packed |= AddressProvider.packI(6, poi);
         }
     }
 
+    // 1 target (y) + 6 id (x)
+    // [xxxxxxxx][y]
+    //  01234567  8
     public static class Global extends AddressProvider {
+
+        // TODO: set random seed to world seed maybe?
+        private static final SecureRandom RANDOM = new SecureRandom();
 
         static int ID_MASK = (1 << BITS_PER_COORD * 8) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;
         }
-
-        // 1 target (y) + 6 id (x)
-        // [xxxxxxxx][y]
-        //  01234567  8
 
         public static char getTargetChar(long packed) {
             return ALPHABET[AddressProvider.readAt(packed, 8)];
@@ -121,7 +139,13 @@ public class AddressProvider {
         }
 
         public static long generate() {
+            long packed = 0;
 
+            for (int i = 0; i < 8; i++) {
+                packed |= AddressProvider.packI(i, RANDOM.nextLong(ALPHABET.length));
+            }
+
+            return packed;
         }
     }
 }

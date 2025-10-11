@@ -114,9 +114,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         if (created) {
             this.attachAddressState();
             this.attachIdentity();
-
-            if (isClient) this.attachClientState();
         }
+        if (isClient) this.attachClientState();
     }
 
     protected void attachIdentity() {
@@ -124,8 +123,10 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     }
 
     protected void attachAddressState() {
-        this.addState(new GlobalAddressState());
-        this.addState(new LocalAddressState());
+        StargateServerData data = StargateServerData.getOrCreate((ServerWorld) this.world());
+
+        this.addState(data.generateAddress(this.pos, GlobalAddressState::new));
+        this.addState(data.generateAddress(this.pos, LocalAddressState::new));
     }
 
     @Environment(EnvType.CLIENT)
@@ -253,17 +254,10 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     public abstract Identifier id();
 
     public void dispose(World world) {
-        GlobalAddressState addressState = this.stateOrNull(GlobalAddressState.state);
-
-        if (addressState == null)
-            return;
-
-        long address = addressState.address();
-
-        if (world.isClient()) {
-            ClientStargateNetwork.get().remove(address);
+        if (world instanceof ServerWorld serverWorld) {
+            StargateServerData.tryGet(serverWorld, data -> data.remove(this));
         } else {
-            StargateServerData.get((ServerWorld) world).removeGlobal(address);
+            ClientStargateNetwork.get().remove(this);
         }
     }
 }

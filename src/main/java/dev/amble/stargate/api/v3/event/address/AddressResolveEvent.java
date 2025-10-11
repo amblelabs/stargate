@@ -7,14 +7,12 @@ import dev.drtheo.yaar.event.TEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, AddressResolveEvent.Result> {
 
     private final Stargate stargate;
     private final long address;
 
-    private Result result;
+    private Result result = Result.FAIL;
 
     public AddressResolveEvent(Stargate stargate, String address) {
         this.stargate = stargate;
@@ -45,50 +43,21 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
         return result;
     }
 
-    public interface Result {
+    public static final Result PASS = null;
+    public static final Result FAIL = new Result.Fail();
 
-        default Result ifFail(Runnable runnable) {
-            return this;
-        }
+    public static Result route(@NotNull Stargate stargate, long openCost, long costPerTick) {
+        return new Result.Route(stargate, openCost, costPerTick);
+    }
 
-        default Result ifPass(Runnable runnable) {
-            return this;
-        }
+    public static Result routeOrFail(@Nullable Stargate stargate, long openCost, long costPerTick) {
+        return stargate == null ? FAIL : route(stargate, openCost, costPerTick);
+    }
 
-        default Result ifRoute(Consumer<Route> consumer) {
-            return this;
-        }
+    public sealed interface Result {
 
-        Result PASS = new Result() {
-            @Override
-            public Result ifPass(Runnable runnable) {
-                runnable.run();
-                return this;
-            }
-        };
-        Result FAIL = new Result() {
-            @Override
-            public Result ifFail(Runnable runnable) {
-                runnable.run();
-                return this;
-            }
-        };
+        record Fail() implements Result { }
 
-        static Result route(@NotNull Stargate stargate, long openCost, long costPerTick) {
-            return new Route(stargate, openCost, costPerTick);
-        }
-
-        static Result routeOrFail(@Nullable Stargate stargate, long openCost, long costPerTick) {
-            return stargate == null ? FAIL : route(stargate, openCost, costPerTick);
-        }
-
-        record Route(Stargate stargate, long openCost, long costPerTick) implements Result {
-
-            @Override
-            public Result ifRoute(Consumer<Route> consumer) {
-                consumer.accept(this);
-                return this;
-            }
-        }
+        record Route(Stargate stargate, long openCost, long costPerTick) implements Result { }
     }
 }

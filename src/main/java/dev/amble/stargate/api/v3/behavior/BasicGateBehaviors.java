@@ -3,6 +3,7 @@ package dev.amble.stargate.api.v3.behavior;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.TeleportableEntity;
+import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.StargateEvents;
@@ -10,6 +11,7 @@ import dev.amble.stargate.api.v3.event.StargateTpEvent;
 import dev.amble.stargate.api.v3.event.address.AddressResolveEvent;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.state.GateState;
+import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
@@ -61,18 +63,29 @@ public interface BasicGateBehaviors {
             stargate.playSound(StargateSounds.CHEVRON_LOCK);
             stargate.markDirty();
 
-            AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address));
+            LocalAddressState localAddressState = stargate.state(LocalAddressState.state);
+
+            // cheaper than doing a map lookup...!
+            char originChar = AddressProvider.Local.getOriginChar(localAddressState.address());
+            if (closed.address.charAt(closed.address.length() - 1) != originChar) return;
 
             // TODO: add energy handling.
-            resolved.ifRoute(route -> {
-                manager.set(stargate, new GateState.Opening(new StargateRef(route.stargate()), true));
-                manager.set(route.stargate(), new GateState.Opening(null, false));
+            AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address));
 
-                route.stargate().markDirty();
-            }).ifFail(() -> {
-                stargate.playSound(StargateSounds.GATE_FAIL);
-                manager.set(stargate, new GateState.Closed());
-            });
+            if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
+                this.fail(stargate);
+                return;
+            }
+
+            manager.set(stargate, new GateState.Opening(new StargateRef(route.stargate()), true));
+            manager.set(route.stargate(), new GateState.Opening(null, false));
+
+            route.stargate().markDirty();
+        }
+
+        public void fail(Stargate stargate) {
+            stargate.playSound(StargateSounds.GATE_FAIL);
+            manager.set(stargate, new GateState.Closed());
         }
     }
 

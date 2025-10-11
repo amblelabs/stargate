@@ -1,27 +1,34 @@
 package dev.amble.stargate.api.v3.state.address;
 
+import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtLong;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public record LocalAddressState(long address) implements TState<LocalAddressState>, NbtSerializer {
+import java.util.function.LongSupplier;
+
+public record LocalAddressState(long address) implements TState<LocalAddressState>, NbtSerializer, LongSupplier {
 
     public static final Type<LocalAddressState> state = new NbtBacked<>(StargateMod.id("address/local")) {
 
         @Override
         public LocalAddressState fromNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            NbtElement element = nbt.get("address");
-            return element != null ? new LocalAddressState(((NbtLong) element).longValue()) : new LocalAddressState();
+            return new LocalAddressState(nbt.getLong("address"));
         }
     };
 
-    public LocalAddressState() {
-        this(AddressProvider.Local.generate());
+    public LocalAddressState(DirectedGlobalPos directedPos) {
+        this(directedPos.getDimension(), directedPos.getPos());
+    }
+
+    public LocalAddressState(RegistryKey<World> world, BlockPos pos) {
+        this(AddressProvider.Local.generate(world));
     }
 
     @Override
@@ -32,5 +39,10 @@ public record LocalAddressState(long address) implements TState<LocalAddressStat
     @Override
     public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
         nbt.putLong("address", address);
+    }
+
+    @Override
+    public long getAsLong() {
+        return AddressProvider.Local.getId(address);
     }
 }

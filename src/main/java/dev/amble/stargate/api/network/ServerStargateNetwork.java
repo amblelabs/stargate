@@ -42,7 +42,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		Optional<Stargate> removed = super.remove(address);
 		removed.ifPresent(s -> this.removePartial(address));
 
-		StargateServerData.get().markDirty();
+		StargateServerData.getOrCreate().markDirty();
 		return removed;
 	}
 
@@ -51,7 +51,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		boolean success = super.add(stargate);
 		if (success) this.syncPartial(stargate);
 
-		StargateServerData.get().markDirty();
+		StargateServerData.getOrCreate().markDirty();
 		return success;
 	}
 
@@ -68,7 +68,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		targets.forEach(player ->
 				ServerPlayNetworking.send(player, SYNC_ALL, buf));
 
-		StargateServerData.get().markDirty();
+		StargateServerData.getOrCreate().markDirty();
 	}
 
 	private void syncPartial(Stargate gate, Stream<ServerPlayerEntity> targets) {
@@ -84,7 +84,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		targets.forEach(player ->
 				ServerPlayNetworking.send(player, SYNC, buf));
 
-		StargateServerData.get().markDirty();
+		StargateServerData.getOrCreate().markDirty();
 	}
 
 	private void removePartial(Address address, Stream<ServerPlayerEntity> targets) {
@@ -95,7 +95,7 @@ public class ServerStargateNetwork extends StargateNetwork<Stargate>
 		targets.forEach(player ->
 				ServerPlayNetworking.send(player, REMOVE, buf));
 
-		StargateServerData.get().markDirty();
+		StargateServerData.getOrCreate().markDirty();
 	}
 
 	private void removePartial(Address address) {

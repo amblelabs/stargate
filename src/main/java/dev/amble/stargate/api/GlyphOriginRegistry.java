@@ -61,6 +61,10 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
         return (RegistryKey<World>) REGISTRY[c];
     }
 
+    public char glyph(RegistryKey<World> key) {
+
+    }
+
     public void allocate(RegistryKey<World> key) {
         Character free = null;
 

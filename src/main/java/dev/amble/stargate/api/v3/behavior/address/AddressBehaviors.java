@@ -25,12 +25,12 @@ public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long address, int length) {
-            if (length != 7) return AddressResolveEvent.Result.PASS;
+            if (length != 7) return AddressResolveEvent.PASS;
 
             ServerWorld world = (ServerWorld) stargate.world();
 
-            Stargate target = StargateServerData.get(world).getLocal(address);
-            return AddressResolveEvent.Result.routeOrFail(target, 0, COST_PT);
+            Stargate target = StargateServerData.getOrCreate(world).getLocal(address);
+            return AddressResolveEvent.routeOrFail(target, 0, COST_PT);
         }
     }
 
@@ -40,15 +40,15 @@ public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long address, int length) {
-            if (length != 8) return AddressResolveEvent.Result.PASS;
+            if (length != 8) return AddressResolveEvent.PASS;
 
             ServerWorld world = ServerLifecycleHooks.get().getWorld(AddressProvider.Local.getTarget(address));
 
             if (world == null)
-                return AddressResolveEvent.Result.FAIL;
+                return AddressResolveEvent.FAIL;
 
-            Stargate target = StargateServerData.get(world).getLocal(address);
-            return AddressResolveEvent.Result.routeOrFail(target, 0, COST_PT);
+            Stargate target = StargateServerData.getOrCreate(world).getLocal(address);
+            return AddressResolveEvent.routeOrFail(target, 0, COST_PT);
         }
     }
 
@@ -56,20 +56,23 @@ public interface AddressBehaviors extends TBehavior, AddressResolveEvents {
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long address, int length) {
-            if (length != 9) return AddressResolveEvent.Result.PASS;
+            if (length != 9) return AddressResolveEvent.PASS;
 
             ServerWorld world = ServerLifecycleHooks.get().getWorld(AddressProvider.Global.getTarget(address));
 
             if (world == null)
-                return AddressResolveEvent.Result.FAIL;
+                return AddressResolveEvent.FAIL;
 
-            Stargate target = StargateServerData.get(world).getGlobal(address);
+            Stargate target = StargateServerData.getOrCreate(world).getGlobal(address);
+
+            if (target == null)
+                return AddressResolveEvent.FAIL;
 
             // 200 kFE/t + 200 * distance to destination / 2000
             float distance = MathHelper.sqrt((float) target.pos().getSquaredDistance(target.pos()));
             long cost = C7.COST_PT + MathHelper.floor(distance / 10);
 
-            return AddressResolveEvent.Result.routeOrFail(target, 0, cost);
+            return AddressResolveEvent.routeOrFail(target, 0, cost);
         }
     }
 }
