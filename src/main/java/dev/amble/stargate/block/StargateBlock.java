@@ -1,5 +1,6 @@
 package dev.amble.stargate.block;
 
+import dev.amble.stargate.api.NonNull;
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
 import dev.amble.stargate.api.v3.state.iris.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
@@ -72,7 +73,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 			if (world.isClient()) return ActionResult.SUCCESS;
 
 			// TODO: silly, move this to a result event
-			return be.gate().apply(stargate -> {
+			return NonNull.get(be.applyGate(stargate -> {
 				IrisState s = stargate.stateOrNull(IrisState.state);
 
 				if (s == null)
@@ -82,7 +83,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 
 				stargate.markDirty();
 				return ActionResult.SUCCESS;
-			}).orElse(ActionResult.PASS);
+			}), ActionResult.PASS);
 		}
 
         BlockState newSetState = null;
@@ -145,7 +146,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
 		if (!(world.getBlockEntity(pos) instanceof StargateBlockEntity be) || !be.isLinked()) return;
 
-		be.gate().ifPresent(stargate -> TEvents.handle(
+		be.acceptGate(stargate -> TEvents.handle(
 				new StargateBlockTickEvent.Random(stargate, world, pos, state, random)
 		));
 	}

@@ -82,9 +82,7 @@ public class DHDBlock extends HorizontalFacingBlock implements BlockEntityProvid
 	public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
 		super.onBroken(world, pos, state);
 
-		if (world.getBlockEntity(pos) instanceof DHDBlockEntity dhd) {
-			dhd.onBroken();
-		}
+		if (world.getBlockEntity(pos) instanceof DHDBlockEntity dhd) dhd.onBroken();
 	}
 
 	@Override

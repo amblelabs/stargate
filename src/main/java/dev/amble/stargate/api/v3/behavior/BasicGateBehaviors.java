@@ -245,7 +245,7 @@ public interface BasicGateBehaviors {
 
             TeleportUtil.teleport(entity, targetWorld,
                     targetBlockPos.toCenterPos().add(offset).add(0, yOffset, 0),
-                    target.direction().asRotation()
+                    target.facing().asRotation()
             );
 
             entity.setVelocity(newVelocity);

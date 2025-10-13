@@ -1,5 +1,6 @@
 package dev.amble.stargate.api.network;
 
+import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.v3.Stargate;
 
 import java.util.Optional;
@@ -9,22 +10,22 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class StargateRef {
-	private final UUID id;
+	private final long id;
 	private final BooleanSupplier isClient;
 
 	private Stargate cached;
 
-	public StargateRef(UUID id, BooleanSupplier isClient) {
+	public StargateRef(long id, BooleanSupplier isClient) {
 		this.id = id;
 		this.isClient = isClient;
 	}
 
-	public StargateRef(UUID id, boolean isClient) {
+	public StargateRef(long id, boolean isClient) {
 		this(id, () -> isClient);
 	}
 
 	public StargateRef(Stargate stargate) {
-		this(stargate.address().id(), stargate.isClient());
+		this(StargateServerData.getAnyId(stargate), stargate.isClient());
 		this.cached = stargate;
 	}
 

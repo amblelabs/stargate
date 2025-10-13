@@ -4,6 +4,7 @@ import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
+import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
@@ -13,35 +14,38 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEntityTicker<DHDBlockEntity> {
+
     public final List<DHDControlEntity> symbolControlEntities = new ArrayList<>();
     private boolean needsSymbols = true;
+
+    static {
+        DHDArrangement.reloadArrangement(Glyph.ALL);
+    }
+
     public DHDBlockEntity(BlockPos pos, BlockState state) {
         super(StargateBlockEntities.DHD, pos, state, true);
     }
 
     @Override
-    public void onLinked() {
-        super.onLinked();
+    public void link(@NotNull Stargate gate) {
+        super.link(gate);
         this.markNeedsControl();
     }
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-        if (!this.hasStargate()) return ActionResult.FAIL;
+        if (!this.isLinked()) return ActionResult.FAIL;
         //if (world.isClient()) return ActionResult.SUCCESS;
 
         /*Stargate target = this.gate().get();
@@ -59,13 +63,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     @Override
     public NbtCompound toInitialChunkDataNbt() {
         this.markNeedsControl();
-        return createNbt();
-    }
-
-    @Nullable
-    @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+        return super.toInitialChunkDataNbt();
     }
 
     @Override
@@ -91,14 +89,13 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
 
         this.killControls();
 
-        if (!this.isLinked()) return;
-
-        DHDArrangement.reloadArrangement(Glyph.ALL);
+        Stargate stargate = this.asGate();
+        if (stargate == null) return;
 
         List<SymbolArrangement> controls = DHDControlEntity.getSymbolArrangement();
 
         for (SymbolArrangement control : controls) {
-            DHDControlEntity controlEntity = DHDControlEntity.create(this.world, this.gate().get());
+            DHDControlEntity controlEntity = DHDControlEntity.create(this.world, stargate);
 
             Vector3f position = current.toCenterPos().toVector3f();
             Direction direction = this.world.getBlockState(this.getPos()).get(DHDBlock.FACING);
@@ -124,7 +121,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
             this.symbolControlEntities.add(controlEntity);
         }
 
-        DHDControlEntity dialButtonEntity = DHDControlEntity.create(this.world, this.gate().get());
+        DHDControlEntity dialButtonEntity = DHDControlEntity.create(this.world, stargate);
         dialButtonEntity.setPosition(current.getX() + 0.5, current.getY() + 0.9625015230849385f, current.getZ() + 0.5);
         dialButtonEntity.setYaw(0.0f);
         dialButtonEntity.setPitch(0.0f);
@@ -145,15 +142,5 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity implements BlockEn
     public void tick(World world, BlockPos pos, BlockState state, DHDBlockEntity blockEntity) {
         if (this.needsSymbols)
             this.spawnControls();
-    }
-
-    @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-    }
-
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
     }
 }

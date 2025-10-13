@@ -5,10 +5,12 @@ import dev.amble.stargate.api.network.StargateRef;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -20,11 +22,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
 
     DataTracker getDataTracker();
 
-    TrackedData<Optional<UUID>> getTracked();
-
-    StargateRef asRef();
-
-    void setRef(StargateRef ref);
+    TrackedData<Optional<Long>> getTracked();
 
     @Override
     default void setStargate(StargateRef stargate) {
@@ -79,7 +77,9 @@ public interface AbstractLinkableEntity extends StargateLinkable {
             nbt.putUuid("Stargate", ref.id());
     }
 
-    static <T extends Entity & AbstractLinkableEntity> TrackedData<Optional<UUID>> register(Class<T> self) {
-        return DataTracker.registerData(self, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+    TrackedDataHandler<Optional<Long>> OPTIONAL_LONG = TrackedDataHandler.ofOptional(PacketByteBuf::writeVarLong, PacketByteBuf::readVarLong);
+
+    static <T extends Entity & AbstractLinkableEntity> TrackedData<Optional<Long>> register(Class<T> self) {
+        return DataTracker.registerData(self, OPTIONAL_LONG);
     }
 }

@@ -1,11 +1,10 @@
 package dev.amble.stargate.api.v3;
 
-import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.kernels.GateShape;
-import dev.amble.stargate.api.network.ClientStargateNetwork;
+import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
@@ -17,6 +16,7 @@ import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
 import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.init.StargateBlocks;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
@@ -27,7 +27,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -43,17 +45,25 @@ import java.util.Objects;
 
 public abstract class Stargate extends TStateContainer.Delegate implements NbtSerializer {
 
-    private final DirectedGlobalPos pos;
+    private final RegistryKey<World> dimension;
+    private final BlockPos pos;
+    private final Direction facing;
+
     private TState.Type<?> curState;
 
     private final boolean isClient;
     private boolean dirty;
 
-    public Stargate(DirectedGlobalPos pos) {
+    public Stargate(ServerWorld world, BlockPos pos, Direction direction) {
         super(TStateRegistry.createArrayHolder());
 
+        this.dimension = world.getRegistryKey();
         this.pos = pos;
+        this.facing = direction;
+
         this.isClient = false;
+
+        this.shape().place(StargateBlocks.RING.getDefaultState(), world, pos, direction);
 
         TState<?> state = this.createDefaultState();
 
@@ -61,20 +71,25 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         this.curState = state.type();
 
         this.attachState(true, false);
-
         TEvents.handle(new StargateCreatedEvent(this));
+
+        ServerStargateNetwork.get().add(this);
     }
 
     public static Stargate fromNbt(NbtCompound nbt, boolean isClient) {
         Identifier id = new Identifier(nbt.getString("Id"));
-        return GateKernelRegistry.get().get(id).loader().load(nbt, isClient);
+        return GateKernelRegistry.get().get(id).load(nbt, isClient);
     }
 
     public Stargate(NbtCompound nbt, boolean isClient) {
         super(TStateRegistry.createArrayHolder());
 
         this.isClient = isClient;
-        this.pos = DirectedGlobalPos.fromNbt(nbt.getCompound("Pos"));
+
+        NbtCompound pos = nbt.getCompound("Pos");
+        this.dimension = RegistryKey.of(RegistryKeys.WORLD, new Identifier(pos.getString("dimension")));
+        this.pos = NbtHelper.toBlockPos(pos);
+        this.facing = Direction.byId(pos.getByte("facing"));
 
         this.updateStates(nbt, isClient);
         this.attachState(false, isClient);
@@ -126,8 +141,8 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     protected void attachAddressState() {
         StargateServerData data = StargateServerData.getOrCreate((ServerWorld) this.world());
 
-        this.addState(data.generateAddress(this.pos, GlobalAddressState::new));
-        this.addState(data.generateAddress(this.pos, LocalAddressState::new));
+        this.addState(data.generateAddress(this.dimension, this.pos, GlobalAddressState::new));
+        this.addState(data.generateAddress(this.dimension, this.pos, LocalAddressState::new));
     }
 
     @Environment(EnvType.CLIENT)
@@ -181,7 +196,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
 
     // <editor-fold desc="Global position stuff">
     public RegistryKey<World> dimension() {
-        return pos.getDimension();
+        return dimension;
     }
 
     // optimize using WeakReference if this causes a bottleneck
@@ -195,15 +210,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     }
 
     public BlockPos pos() {
-        return pos.getPos();
-    }
-
-    public Direction direction() {
-        return pos.getRotationDirection();
-    }
-
-    public DirectedGlobalPos getPos() {
         return pos;
+    }
+
+    public Direction facing() {
+        return facing;
     }
     // </editor-fold>
 
@@ -222,7 +233,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     @Override
     public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
         nbt.putString("Id", this.id().toString());
-        nbt.put("Pos", this.pos.toNbt());
+
+        NbtCompound pos = NbtHelper.fromBlockPos(this.pos);
+        pos.putString("dimension", this.dimension.getValue().toString());
+        pos.putByte("facing", (byte) this.facing.getId());
+        nbt.put("Pos", pos);
 
         NbtCompound states = new NbtCompound();
         this.forEachState((i, state) -> stateToNbt(states, i, state, isClient));
@@ -248,6 +263,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         nbt.put(type.id().toString(), backed.encode(state, isClient));
     }
 
+    // TODO: move this to gate identity state
     public GateShape shape() {
         return GateShape.DEFAULT;
     }
@@ -258,12 +274,18 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
 
     public abstract Identifier id();
 
-    // TODO: does this only get called on server? or not?
-    public void dispose(World world) {
-        if (world instanceof ServerWorld serverWorld) {
-            TEvents.handle(new StargateRemoveEvent(StargateServerData.get(serverWorld), this));
-        } else {
-            ClientStargateNetwork.get().remove(this);
-        }
+    public void remove(ServerWorld world) {
+        this.shape().destroy(world, pos, facing);
+        TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
+    }
+
+    @Override
+    public int hashCode() {
+        return pos.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || (this.getClass() == o.getClass() && this.pos.equals(((Stargate) o).pos()));
     }
 }

@@ -48,6 +48,17 @@ public class AddressProvider {
         return Math.toIntExact(address / BITS_PER_COORD);
     }
 
+    public static String asString(long packed) {
+        int length = length(packed);
+        char[] chars = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            chars[i] = ALPHABET[AddressProvider.readAt(packed, i)];
+        }
+
+        return new String(chars);
+    }
+
     public static long pack(int[] numbers, int k) {
         if (numbers.length == 0) throw new IllegalArgumentException();
 

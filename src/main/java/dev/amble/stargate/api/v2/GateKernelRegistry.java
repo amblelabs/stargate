@@ -8,7 +8,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class GateKernelRegistry {
 
@@ -30,18 +33,26 @@ public class GateKernelRegistry {
     }
 
     public static Entry register(Identifier id, GateCreator creator, GateLoader loader) {
-        return Registry.register(REGISTRY, id, new Entry(creator, loader));
+        return Registry.register(REGISTRY, id, new Entry() {
+            @Override
+            public Stargate load(NbtCompound nbt, boolean isClient) {
+                return loader.load(nbt, isClient);
+            }
+
+            @Override
+            public Stargate create(ServerWorld world, BlockPos pos, Direction direction) {
+                return creator.create(world, pos, direction);
+            }
+        });
     }
 
     public interface GateCreator {
-        Stargate create(DirectedGlobalPos pos);
+        Stargate create(ServerWorld world, BlockPos pos, Direction direction);
     }
 
     public interface GateLoader {
         Stargate load(NbtCompound nbt, boolean isClient);
     }
 
-    public record Entry(GateCreator creator, GateLoader loader) {
-
-    }
+    public abstract static class Entry implements GateCreator, GateLoader { }
 }

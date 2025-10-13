@@ -1,6 +1,5 @@
 package dev.amble.stargate.api.v3.state.address;
 
-import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.drtheo.yaar.state.NbtSerializer;
@@ -22,10 +21,6 @@ public record GlobalAddressState(long address) implements TState<GlobalAddressSt
             return new GlobalAddressState(nbt.getLong("address"));
         }
     };
-
-    public GlobalAddressState(DirectedGlobalPos directedPos) {
-        this(directedPos.getDimension(), directedPos.getPos());
-    }
 
     public GlobalAddressState(RegistryKey<World> world, BlockPos pos) {
         this(AddressProvider.Global.generate());

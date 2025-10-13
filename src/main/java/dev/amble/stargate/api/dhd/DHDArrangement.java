@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DHDArrangement {
-    private static List<SymbolArrangement> symbolArrangement = new ArrayList<>();
+    private static final List<SymbolArrangement> symbolArrangement = new ArrayList<>();
 
     public static void reloadArrangement(char[] glyphs) {
         symbolArrangement.clear();

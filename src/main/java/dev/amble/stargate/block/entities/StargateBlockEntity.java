@@ -1,33 +1,23 @@
 package dev.amble.stargate.block.entities;
 
 import com.mojang.serialization.DataResult;
-import dev.amble.lib.data.DirectedGlobalPos;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
-import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.init.StargateBlockEntities;
-import dev.amble.stargate.init.StargateBlocks;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.AnimationState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity {
-
-	public AnimationState CHEVRON_LOCK_STATE = new AnimationState();
 
 	// TODO: move to a client state
 	public int age;
@@ -41,21 +31,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 
 	public StargateBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
 		super(blockEntityType, pos, state);
-	}
-
-	@Nullable @Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return createNbt();
-	}
-
-	@Override
-	public @Nullable Object getRenderData() {
-		return this;
 	}
 
 	@Override
@@ -84,36 +59,25 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 	}
 
 	public void onBreak(BlockState state) {
-		if (this.hasStargate()) {
-			Stargate gate = this.gate().get();
-			Direction facing = state.get(StargateBlock.FACING);
-
-			gate.shape().destroy(world, pos, facing);
-			gate.dispose(world);
-		}
-
-		this.ref = null;
+		this.acceptGate(gate -> gate.remove((ServerWorld) world));
+		this.unlink();
 	}
 
 	public void onPlacedWithKernel(World world, BlockPos pos, GateKernelRegistry.Entry entry) {
-		if (world.isClient()) return;
+		if (!(world instanceof ServerWorld serverWorld)) return;
 
 		this.requiresPlacement = false;
 
 		Direction facing = world.getBlockState(pos).get(StargateBlock.FACING);
-		DirectedGlobalPos globalPos = DirectedGlobalPos.create(world.getRegistryKey(), this.getPos(), DirectedGlobalPos.getGeneralizedRotation(facing));
 
-		Stargate stargate = entry.creator().create(globalPos);
-		ServerStargateNetwork.get().add(stargate);
-
-		this.setStargate(new StargateRef(stargate));
-
-		stargate.shape().place(StargateBlocks.RING.getDefaultState(), world, this.pos, facing);
+		Stargate stargate = entry.create(serverWorld, this.getPos(), facing);
+		this.link(stargate);
 	}
 
 	public void tick(World world, BlockPos pos, BlockState state) {
-		if (this.isLinked())
-			this.gate().ifPresent(stargate -> TEvents.handle(new StargateBlockTickEvent(stargate, this, world, pos, state)));
+		this.acceptGate(stargate -> TEvents.handle(
+				new StargateBlockTickEvent(stargate, this, world, pos, state)
+		));
 
 		if (world.isClient()) age++;
 	}

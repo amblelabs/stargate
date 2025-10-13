@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implements AbstractLinkableEntity {
 
-    private static final TrackedData<Optional<UUID>> STARGATE = AbstractLinkableEntity
+    private static final TrackedData<Optional<Long>> STARGATE = AbstractLinkableEntity
             .register(LinkableDummyLivingEntity.class);
 
     private StargateRef stargate;

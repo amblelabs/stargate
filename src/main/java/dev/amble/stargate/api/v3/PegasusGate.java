@@ -4,14 +4,17 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientPegasusState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class PegasusGate extends Stargate {
 
     public static Identifier ID = StargateMod.id("pegasus");
 
-    public PegasusGate(DirectedGlobalPos pos) {
-        super(pos);
+    public PegasusGate(ServerWorld world, BlockPos pos, Direction direction) {
+        super(world, pos, direction);
     }
 
     public PegasusGate(NbtCompound nbt, boolean isClient) {
