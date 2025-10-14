@@ -40,11 +40,6 @@ public class StargateRingBlock extends BlockWithEntity implements ICantBreak, Wa
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return super.getOutlineShape(state, world, pos, context);
-	}
-
-	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (blockEntity instanceof StargateRingBlockEntity ringBlockEntity) {

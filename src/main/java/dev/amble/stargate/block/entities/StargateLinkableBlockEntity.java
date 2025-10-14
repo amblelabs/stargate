@@ -1,5 +1,6 @@
 package dev.amble.stargate.block.entities;
 
+import dev.amble.lib.blockentity.StructurePlaceableBlockEntity;
 import dev.amble.stargate.api.StargateData;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.network.StargateLinkable;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public abstract class StargateLinkableBlockEntity extends BlockEntity implements StargateLinkable {
+public abstract class StargateLinkableBlockEntity extends BlockEntity implements StargateLinkable, StructurePlaceableBlockEntity {
 
 	protected long address = -1;
 	protected Stargate stargate;
@@ -99,6 +100,11 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 	@Nullable @Override
 	public Packet<ClientPlayPacketListener> toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.create(this);
+	}
+
+	@Override
+	public void amble$onStructurePlaced(NbtCompound nbt) {
+		nbt.remove("Address");
 	}
 
 	protected void sync() {

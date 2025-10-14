@@ -8,6 +8,7 @@ import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -48,6 +49,11 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 		super.readNbt(nbt);
 	}
 
+	@Override
+	public void amble$onStructurePlaced(NbtCompound nbt) {
+		super.amble$onStructurePlaced(nbt);
+	}
+
 	public void setBlockSet(BlockState state) {
 		this.blockSet = state;
 		this.markDirty();
@@ -74,7 +80,11 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 		this.link(stargate);
 	}
 
-	public void tick(World world, BlockPos pos, BlockState state) {
+	public static void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+		((StargateBlockEntity) blockEntity).internalTick(world, pos, state);
+	}
+
+	private void internalTick(World world, BlockPos pos, BlockState state) {
 		this.acceptGate(stargate -> TEvents.handle(
 				new StargateBlockTickEvent(stargate, this, world, pos, state)
 		));

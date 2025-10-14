@@ -39,7 +39,7 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	public StargateBlock(Settings settings) {
 		super(settings);
 
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+		this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
 
 	@Nullable
@@ -136,10 +136,8 @@ public class StargateBlock extends HorizontalFacingBlock implements BlockEntityP
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull World world, @NotNull BlockState state,
 																  @NotNull BlockEntityType<T> type) {
-		return (world1, blockPos, blockState, ticker) -> {
-			if (ticker instanceof StargateBlockEntity exterior)
-				exterior.tick(world1, blockPos, blockState);
-		};
+
+		return StargateBlockEntity::tick;
 	}
 
 	@Override
