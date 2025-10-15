@@ -71,7 +71,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 	@Override
 	public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
 		this.acceptGate(gate -> gate.remove((ServerWorld) world));
-		this.link(null);
+		super.onBreak(state, world, pos, newState); // unlink the gate, free the chunk
 	}
 
 	@Override

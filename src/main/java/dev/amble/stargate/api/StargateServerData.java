@@ -138,7 +138,10 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 	@Override
 	public void removeId(long id) {
-		lookup.remove(id);
+		Stargate stargate = lookup.remove(id);
+		Collection<Stargate> meta = this.chunk2Gates.get(ChunkPos.toLong(stargate.pos()));
+
+		meta.remove(stargate);
 	}
 
 	@Override

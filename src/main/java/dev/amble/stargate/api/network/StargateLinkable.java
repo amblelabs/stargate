@@ -30,6 +30,10 @@ public interface StargateLinkable extends StargateLike {
 		return asGate() != null;
 	}
 
-	void link(@NotNull Stargate gate);
+	void link(@Nullable Stargate gate);
 	void link(long address);
+
+	default void unlink() {
+		this.link(null);
+	}
 }

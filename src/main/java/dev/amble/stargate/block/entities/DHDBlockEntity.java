@@ -1,8 +1,6 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
 import dev.amble.stargate.api.v3.Stargate;
@@ -31,10 +29,6 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
     public final List<DHDControlEntity> symbolControlEntities = new ArrayList<>();
     private boolean needsSymbols = true;
-
-    static {
-        DHDArrangement.reloadArrangement(Glyph.ALL);
-    }
 
     public DHDBlockEntity(BlockPos pos, BlockState state) {
         super(StargateBlockEntities.DHD, pos, state, true);

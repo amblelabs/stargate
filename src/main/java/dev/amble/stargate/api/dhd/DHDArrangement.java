@@ -1,5 +1,6 @@
 package dev.amble.stargate.api.dhd;
 
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.control.impl.Symbol;
 import net.minecraft.entity.EntityDimensions;
 import org.joml.Vector3f;
@@ -9,6 +10,10 @@ import java.util.List;
 
 public class DHDArrangement {
     private static final List<SymbolArrangement> symbolArrangement = new ArrayList<>();
+
+    static {
+        reloadArrangement(Glyph.ALL);
+    }
 
     public static void reloadArrangement(char[] glyphs) {
         symbolArrangement.clear();

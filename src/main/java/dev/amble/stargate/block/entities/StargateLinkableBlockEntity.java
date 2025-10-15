@@ -14,10 +14,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
+
 public abstract class StargateLinkableBlockEntity extends ABlockEntity implements StargateLinkable, StructurePlaceableBlockEntity {
 
 	protected long address = -1;
-	protected Stargate stargate;
+	protected WeakReference<Stargate> stargate;
 
 	public StargateLinkableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -25,7 +27,7 @@ public abstract class StargateLinkableBlockEntity extends ABlockEntity implement
 
 	@Override
 	public @Nullable Stargate asGate() {
-		return stargate != null ? stargate : StargateData.apply(world, data -> data.getById(address));
+		return stargate != null ? stargate.get() : StargateData.apply(world, data -> data.getById(address));
 	}
 
 	@Override
@@ -51,9 +53,9 @@ public abstract class StargateLinkableBlockEntity extends ABlockEntity implement
 
 	@Override
 	public void link(@Nullable Stargate gate) {
-		Stargate oldGate = this.stargate;
+		Stargate oldGate = this.stargate != null ? this.stargate.get() : null;
 
-		this.stargate = gate;
+		this.stargate = gate != null ? new WeakReference<>(gate) : null;
 		this.address = gate != null ? StargateServerData.getAnyId(gate) : -1;
 
 		if (world instanceof ServerWorld serverWorld) {
@@ -78,7 +80,7 @@ public abstract class StargateLinkableBlockEntity extends ABlockEntity implement
 
 	@Override
 	public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
-		this.link(null); // frees the dangling stargate mark
+		this.unlink(); // frees the dangling stargate mark
 	}
 
 	@Override
