@@ -1,9 +1,8 @@
 package dev.amble.stargate.client.renderers;
 
+import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.client.models.DHDModel;
 import net.minecraft.block.BlockState;
@@ -27,20 +26,25 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntity> {
+
     public static final Identifier TEXTURE = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd.png");
     public static final Identifier EMISSION = new Identifier(StargateMod.MOD_ID, "textures/blockentities/dhd_emission.png");
+
     private final DHDModel model;
+
     private final ModelPart[] bottomlights;
     private final ModelPart[] toplights;
 
     public DHDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.model = new DHDModel(DHDModel.getTexturedModelData().createModel());
+
         this.bottomlights = new ModelPart[] {
                 this.model.button6, this.model.button7, this.model.button8, this.model.button9,
                 this.model.button10, this.model.button11, this.model.button12, this.model.button13, this.model.button14,
                 this.model.button15, this.model.button16, this.model.button17, this.model.button18,
                 this.model.button1, this.model.button2, this.model.button3, this.model.button4, this.model.button5
         };
+
         this.toplights = new ModelPart[] {
                 this.model.button19, this.model.button20, this.model.button21, this.model.button22,
                 this.model.button23, this.model.button24, this.model.button25, this.model.button26,
@@ -64,7 +68,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
-        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
+        float k = HorizontalBlockBehavior.getFacing(entity.getCachedState()).asRotation();
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         /*this.model.toplights.visible = true;
@@ -79,8 +83,8 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             lights.visible = false;
         }
 
-        if (entity.hasStargate()) {
-            var gate = entity.gate().get();
+        if (entity.isLinked()) {
+            var gate = entity.asGate();
 //            GateState state = gate.kernel().state();
 //            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6 && closed.hasDialButton()) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
 //            this.model.dialbutton.visible = !bl;
@@ -135,7 +139,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     private float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, DHDBlockEntity dhd, int light) {
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
-        Direction direction = dhd.getCachedState().get(DHDBlock.FACING);
+        Direction direction = HorizontalBlockBehavior.getFacing(dhd.getCachedState());
         boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
         int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
         float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;

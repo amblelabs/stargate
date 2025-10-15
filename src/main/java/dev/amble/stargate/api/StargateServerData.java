@@ -6,6 +6,8 @@ import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -33,10 +35,12 @@ import java.util.function.LongSupplier;
 
 public class StargateServerData extends PersistentState implements StargateData {
 
+	// FIXME: might be not needed. Hopefully.
 	private static final Deque<WeakReference<StargateServerData>> ALL = new ArrayDeque<>();
 
 	public static void init() {
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
+			// FIXME: instead of ticking all gates, it might be better to tick only loaded gates...
 			StargateServerData data = StargateServerData.get(world);
 
 			if (data != null)
@@ -45,7 +49,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	private final Long2ObjectMap<Stargate> lookup = new Long2ObjectOpenHashMap<>();
-	private final Long2ObjectMap<Set<Stargate>> chunk2Gates = new Long2ObjectOpenHashMap<>();
+	private final Long2ObjectMap<ReferenceSet<Stargate>> chunk2Gates = new Long2ObjectOpenHashMap<>();
 	private final WeakReference<ServerWorld> world;
 
 	private StargateServerData(ServerWorld world) {
@@ -58,7 +62,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 		if (stargate != null)
 			chunk2Gates.computeIfAbsent(ChunkPos.toLong(stargate.pos()),
-					l -> new HashSet<>()).add(stargate);
+					l -> new ReferenceOpenHashSet<>()).add(stargate);
 	}
 
 	public void unmark(StargateLike gateLike) {

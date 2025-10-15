@@ -1,5 +1,6 @@
 package dev.amble.stargate.api.v3.behavior;
 
+import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.TeleportableEntity;
@@ -13,7 +14,6 @@ import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.yaar.behavior.Resolve;
@@ -187,7 +187,7 @@ public interface BasicGateBehaviors {
             if (ServerLifecycleHooks.get().getTicks() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
             GateIdentityState identityState = stargate.state(GateIdentityState.state);
-            Direction facing = state.get(StargateBlock.FACING);
+            Direction facing = HorizontalBlockBehavior.getFacing(state);
 
             Box box = identityState.forDirection(facing).offset(pos);
 

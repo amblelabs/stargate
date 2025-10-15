@@ -2,6 +2,7 @@ package dev.amble.stargate.api.v3;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.StargateLike;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.network.ServerStargateNetwork;
@@ -43,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public abstract class Stargate extends TStateContainer.Delegate implements NbtSerializer {
+public abstract class Stargate extends TStateContainer.Delegate implements NbtSerializer, StargateLike {
 
     private final RegistryKey<World> dimension;
     private final BlockPos pos;
@@ -190,6 +191,11 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         return result;
     }
 
+    @Override
+    public @Nullable Stargate asGate() {
+        return this;
+    }
+
     public boolean isClient() {
         return isClient;
     }
@@ -286,6 +292,6 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (this.getClass() == o.getClass() && this.pos.equals(((Stargate) o).pos()));
+        return this == o;
     }
 }

@@ -32,6 +32,4 @@ public interface StargateLinkable extends StargateLike {
 
 	void link(@NotNull Stargate gate);
 	void link(long address);
-
-	void unlink();
 }

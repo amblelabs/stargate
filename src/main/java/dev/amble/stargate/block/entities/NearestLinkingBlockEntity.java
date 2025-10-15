@@ -22,6 +22,15 @@ import java.util.Collection;
  */
 public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEntity {
 
+	/**
+	 * Covers a 3x3 chunk area in this order:
+	 * </br>
+	 * 517
+	 * </br>
+	 * 306
+	 * </br>
+	 * 428
+	 */
 	private static final int[] OFFSETS = new int[] { 0, -1, 1 };
 
 	private final boolean sendLinkMessage;
@@ -41,6 +50,11 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 
         for (int offsetX : OFFSETS) {
             for (int offsetZ : OFFSETS) {
+				// this uses the sync map to find gates by chunk.
+				// Has a couple of problems, though:
+				// - if the chunk wasn't loaded, it won't find anything
+				// 		(which is why the chunk find range is only 3x3)
+				// - any linkable will get marked as a gate in that chunk
                 Collection<Stargate> collection = data.findByChunk(chunkPos.x + offsetX, chunkPos.z + offsetZ);
 
                 if (collection == null || collection.isEmpty())

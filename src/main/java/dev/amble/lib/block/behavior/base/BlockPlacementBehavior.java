@@ -1,4 +1,4 @@
-package dev.amble.lib.block;
+package dev.amble.lib.block.behavior.base;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;

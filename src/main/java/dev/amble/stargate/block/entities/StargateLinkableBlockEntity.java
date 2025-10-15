@@ -1,26 +1,20 @@
 package dev.amble.stargate.block.entities;
 
+import dev.amble.lib.blockentity.ABlockEntity;
 import dev.amble.lib.blockentity.StructurePlaceableBlockEntity;
 import dev.amble.stargate.api.StargateData;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
-public abstract class StargateLinkableBlockEntity extends BlockEntity implements StargateLinkable, StructurePlaceableBlockEntity {
+public abstract class StargateLinkableBlockEntity extends ABlockEntity implements StargateLinkable, StructurePlaceableBlockEntity {
 
 	protected long address = -1;
 	protected Stargate stargate;
@@ -56,18 +50,21 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
     }
 
 	@Override
-	public void link(@NotNull Stargate gate) {
-		Objects.requireNonNull(gate);
-
-		if (this.address == -1)
-			this.address = StargateServerData.getAnyId(gate);
+	public void link(@Nullable Stargate gate) {
+		Stargate oldGate = this.stargate;
 
 		this.stargate = gate;
+		this.address = gate != null ? StargateServerData.getAnyId(gate) : -1;
 
-		if (!this.isLinked()) return;
+		if (world instanceof ServerWorld serverWorld) {
+			StargateServerData data = StargateServerData.getOrCreate(serverWorld);
 
-		if (world instanceof ServerWorld serverWorld)
-			StargateServerData.get(serverWorld).mark(this);
+			if (oldGate != null)
+				data.unmark(oldGate);
+
+			if (!this.isLinked()) return;
+			data.mark(this);
+		} else if (!this.isLinked()) return;
 
 		this.markDirty();
 		this.sync();
@@ -75,18 +72,13 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 
 	@Override
 	public void link(long address) {
-		Stargate stargate = StargateData.get(world).getById(address);
-
-		if (stargate != null)
-			this.address = address;
-
+		Stargate stargate = StargateData.apply(world, data -> data.getById(address));
 		this.link(stargate);
 	}
 
 	@Override
-	public void unlink() {
-		this.address = -1;
-		this.stargate = null;
+	public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
+		this.link(null); // frees the dangling stargate mark
 	}
 
 	@Override
@@ -97,18 +89,8 @@ public abstract class StargateLinkableBlockEntity extends BlockEntity implements
 		return createNbt();
 	}
 
-	@Nullable @Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
-	@Override
+    @Override
 	public void amble$onStructurePlaced(NbtCompound nbt) {
 		nbt.remove("Address");
-	}
-
-	protected void sync() {
-		if (this.world != null && this.world.getChunkManager() instanceof ServerChunkManager chunkManager)
-			chunkManager.markForUpdate(this.pos);
 	}
 }

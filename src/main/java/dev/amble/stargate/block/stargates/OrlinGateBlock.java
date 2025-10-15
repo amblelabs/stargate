@@ -1,5 +1,6 @@
 package dev.amble.stargate.block.stargates;
 
+import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
@@ -35,12 +36,12 @@ public class OrlinGateBlock extends StargateBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return VoxelShapeUtil.rotateShapeH(Direction.NORTH, state.get(FACING), SHAPE);
+        return VoxelShapeUtil.rotateShapeH(Direction.NORTH, HorizontalBlockBehavior.getFacing(state), SHAPE);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return VoxelShapeUtil.rotateShapeH(Direction.NORTH, state.get(FACING), SHAPE);
+        return VoxelShapeUtil.rotateShapeH(Direction.NORTH, HorizontalBlockBehavior.getFacing(state), SHAPE);
     }
 
     // This is Orlin gate specific. - Loqor
@@ -48,7 +49,7 @@ public class OrlinGateBlock extends StargateBlock {
     public static void setBlockAndCreateStargate(World world, BlockPos pos, GateKernelRegistry.Entry entry, Direction facing) {
         if (world.isClient()) return;
 
-        BlockState state = StargateBlocks.ORLIN_GATE.getDefaultState().with(StargateBlock.FACING, facing);
+        BlockState state = StargateBlocks.ORLIN_GATE.getDefaultState().with(HorizontalBlockBehavior.FACING, facing);
 
         world.setBlockState(pos, state, 3);
 

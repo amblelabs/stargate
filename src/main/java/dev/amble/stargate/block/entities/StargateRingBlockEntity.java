@@ -1,29 +1,19 @@
 package dev.amble.stargate.block.entities;
 
+import dev.amble.lib.blockentity.ABlockEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
 
-public class StargateRingBlockEntity extends BlockEntity {
+public class StargateRingBlockEntity extends ABlockEntity {
 
     private BlockState blockSet;
 
     public StargateRingBlockEntity(BlockPos pos, BlockState state) {
         super(StargateBlockEntities.RING, pos, state);
-    }
-
-    @Override
-    public @Nullable Object getRenderData() {
-        return this;
     }
 
     @Override
@@ -40,23 +30,9 @@ public class StargateRingBlockEntity extends BlockEntity {
         super.readNbt(nbt);
     }
 
-    protected void sync() {
-        if (this.world != null && this.world.getChunkManager() instanceof ServerChunkManager chunkManager)
-            chunkManager.markForUpdate(this.pos);
-    }
-
-    @Nullable @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }
-
-    @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
-    }
-
     public void setBlockSet(BlockState state) {
         this.blockSet = state;
+
         this.markDirty();
         this.sync();
     }

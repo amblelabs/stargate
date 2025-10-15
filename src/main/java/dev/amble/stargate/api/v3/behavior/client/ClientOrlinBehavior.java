@@ -1,9 +1,9 @@
 package dev.amble.stargate.api.v3.behavior.client;
 
+import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientOrlinState;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateRenderLayers;
@@ -22,7 +22,7 @@ public class ClientOrlinBehavior extends ClientGenericGateBehavior {
     protected void customRender(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
         matrices.translate(0.5f, 1.5f, 0.5f);
 
-        float k = entity.getCachedState().get(StargateBlock.FACING).asRotation();
+        float k = HorizontalBlockBehavior.getFacing(entity.getCachedState()).asRotation();
 
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));

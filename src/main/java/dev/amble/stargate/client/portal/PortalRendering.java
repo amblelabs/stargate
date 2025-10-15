@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
-import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -28,9 +28,14 @@ public class PortalRendering {
 
         while (!PortalRendering.QUEUE.isEmpty()) {
             StargateBlockEntity gate = PortalRendering.QUEUE.poll();
-            if (gate == null || !gate.hasStargate()) continue;
 
-            Stargate stargate = gate.gate().get();
+            if (gate == null) continue;
+
+            Stargate stargate = gate.asGate();
+
+            if (stargate == null)
+                continue;
+
             ClientGenericGateState clientState = stargate.stateOrNull(ClientGenericGateState.state);
 
             if (clientState == null) continue;
@@ -46,7 +51,7 @@ public class PortalRendering {
         stack.push();
         stack.translate(pos.getX(), pos.getY(), pos.getZ());
         stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(entity.getCachedState().get(StargateBlock.FACING).asRotation()));
+        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(HorizontalBlockBehavior.getFacing(entity.getCachedState()).asRotation()));
         stack.translate(0, -2f, 0);
 
         stack.push();
