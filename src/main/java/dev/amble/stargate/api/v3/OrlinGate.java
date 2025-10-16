@@ -6,14 +6,17 @@ import dev.amble.stargate.api.kernels.GateShape;
 import dev.amble.stargate.api.v3.state.stargate.OrlinState;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientOrlinState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class OrlinGate extends Stargate {
 
     public static Identifier ID = StargateMod.id("orlin");
 
-    public OrlinGate(DirectedGlobalPos pos) {
-        super(pos);
+    public OrlinGate(ServerWorld world, BlockPos pos, Direction direction) {
+        super(world, pos, direction);
     }
 
     public OrlinGate(NbtCompound nbt, boolean isClient) {

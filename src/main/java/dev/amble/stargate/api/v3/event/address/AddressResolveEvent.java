@@ -12,7 +12,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
     private final Stargate stargate;
     private final long address;
 
-    private Result result = Result.FAIL;
+    private Result result = PASS;
 
     public AddressResolveEvent(Stargate stargate, String address) {
         this.stargate = stargate;
@@ -31,7 +31,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
         for (AddressResolveEvents e : subscribed) {
             Result result = e.resolve(stargate, address, length);
 
-            if (result == null) continue;
+            if (result == PASS) continue;
 
             this.result = result;
             return;
@@ -43,7 +43,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
         return result;
     }
 
-    public static final Result PASS = null;
+    public static final Result PASS = new Result.Pass();
     public static final Result FAIL = new Result.Fail();
 
     public static Result route(@NotNull Stargate stargate, long openCost, long costPerTick) {
@@ -59,5 +59,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
         record Fail() implements Result { }
 
         record Route(Stargate stargate, long openCost, long costPerTick) implements Result { }
+
+        record Pass() implements Result { }
     }
 }

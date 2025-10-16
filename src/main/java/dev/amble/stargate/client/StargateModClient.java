@@ -3,7 +3,6 @@ package dev.amble.stargate.client;
 import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.GlyphOriginRegistryOld;
-import dev.amble.stargate.api.network.ClientStargateNetwork;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
 import dev.amble.stargate.client.overlays.WormholeOverlay;
@@ -40,7 +39,6 @@ public class StargateModClient implements ClientModInitializer {
             ClientStargateDumpCommand.register(dispatcher);
         });
 
-        ClientStargateNetwork.get();
         registerBlockEntityRenderers();
         setupBlockRendering();
         registerEntityRenderers();

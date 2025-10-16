@@ -7,5 +7,5 @@ public interface AddressResolveEvents extends TEvents {
 
     Type<AddressResolveEvents> event = new Type<>(AddressResolveEvents.class);
 
-    AddressResolveEvent.Result resolve(Stargate stargate, long address, int length);
+    AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length);
 }

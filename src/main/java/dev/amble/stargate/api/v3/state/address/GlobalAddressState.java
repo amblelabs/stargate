@@ -40,4 +40,9 @@ public record GlobalAddressState(long address) implements TState<GlobalAddressSt
     public long getAsLong() {
         return AddressProvider.Global.getId(address);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "G:" + AddressProvider.Global.asString(this.address);
+    }
 }

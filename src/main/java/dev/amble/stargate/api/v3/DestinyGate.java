@@ -4,14 +4,17 @@ import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientDestinyState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class DestinyGate extends Stargate {
 
     public static Identifier ID = StargateMod.id("destiny");
 
-    public DestinyGate(DirectedGlobalPos pos) {
-        super(pos);
+    public DestinyGate(ServerWorld world, BlockPos pos, Direction direction) {
+        super(world, pos, direction);
     }
 
     public DestinyGate(NbtCompound nbt, boolean isClient) {

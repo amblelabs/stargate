@@ -2,6 +2,7 @@ package dev.amble.stargate.block.entities;
 
 import com.mojang.serialization.DataResult;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
+import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
 import dev.amble.stargate.init.StargateBlockEntities;
@@ -78,10 +79,14 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		if (!(world instanceof ServerWorld serverWorld) || !(stack.getItem() instanceof StargateItem item)) return;
 
+		this.onPlacedWithKernel(serverWorld, state, item.getCreator());
+	}
+
+	public void onPlacedWithKernel(ServerWorld world, BlockState state, GateKernelRegistry.Entry entry) {
 		this.requiresPlacement = false;
 
 		Direction facing = HorizontalBlockBehavior.getFacing(state);
-		Stargate stargate = item.getCreator().create(serverWorld, pos, facing);
+		Stargate stargate = entry.create(world, pos, facing);
 
 		this.link(stargate);
 	}

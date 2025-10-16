@@ -6,6 +6,7 @@ import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.entity.LivingEntity;
 
+// TODO: separate events
 public interface StargateEvents extends TEvents {
 
     Type<StargateEvents> event = new Type<>(StargateEvents.class);

@@ -5,7 +5,6 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.StargateLike;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.kernels.GateShape;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.api.v3.event.StargateCreatedEvent;
 import dev.amble.stargate.api.v3.event.StargateTickEvent;
@@ -18,11 +17,11 @@ import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateYAARs;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import dev.drtheo.yaar.state.TStateContainer;
-import dev.drtheo.yaar.state.TStateRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtByte;
@@ -56,7 +55,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     private boolean dirty;
 
     public Stargate(ServerWorld world, BlockPos pos, Direction direction) {
-        super(TStateRegistry.createArrayHolder());
+        super(StargateYAARs.States.createArrayHolder());
 
         this.dimension = world.getRegistryKey();
         this.pos = pos;
@@ -74,7 +73,6 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         this.attachState(true, false);
         TEvents.handle(new StargateCreatedEvent(this));
 
-        ServerStargateNetwork.get().add(this);
     }
 
     public static Stargate fromNbt(NbtCompound nbt, boolean isClient) {
@@ -83,7 +81,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     }
 
     public Stargate(NbtCompound nbt, boolean isClient) {
-        super(TStateRegistry.createArrayHolder());
+        super(StargateYAARs.States.createArrayHolder());
 
         this.isClient = isClient;
 
@@ -96,11 +94,20 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         this.attachState(false, isClient);
     }
 
+    public <T extends TState<T>> T resolve(TState.Type<T> type) {
+        T res = stateOrNull(type);
+
+        if (res == null)
+            throw new IllegalStateException("Expected " + type.id());
+
+        return res;
+    }
+
     public void updateStates(NbtCompound nbt, boolean isClient) {
         NbtCompound states = nbt.getCompound("States");
 
         for (String key : states.getKeys()) {
-            if (TStateRegistry.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable) {
+            if (StargateYAARs.States.get(new Identifier(key)) instanceof TState.NbtBacked<?> serializable) {
                 NbtElement state = states.get(key);
 
                 if (state instanceof NbtCompound compound) {
@@ -112,7 +119,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         }
 
         Identifier prevStateId = new Identifier(nbt.getString("prevState"));
-        TState.Type<?> type = TStateRegistry.get(prevStateId);
+        TState.Type<?> type = StargateYAARs.States.get(prevStateId);
 
         if (type == null || this.stateOrNull(type) == null) {
             StargateMod.LOGGER.warn("Bad state: '{}', fixing", prevStateId);
@@ -256,7 +263,7 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     private <T extends TState<T>> void stateToNbt(NbtCompound nbt, int i, @Nullable TState<T> state, boolean isClient) {
         if (state == null) {
             if (!isClient) // do the diffing only if we're serializing for client
-                nbt.put(TStateRegistry.get(i).id().toString(), NbtByte.ZERO);
+                nbt.put(StargateYAARs.States.get(i).id().toString(), NbtByte.ZERO);
 
             return;
         }
@@ -288,10 +295,5 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
     @Override
     public int hashCode() {
         return pos.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
     }
 }

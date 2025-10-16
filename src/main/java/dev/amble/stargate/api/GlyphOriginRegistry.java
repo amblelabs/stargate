@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 
 public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
 
-    private final RegistryKey<?>[] REGISTRY = new RegistryKey[Glyph.ALL.length];
+    private final RegistryKey<World>[] REGISTRY = new RegistryKey[Glyph.ALL.length];
 
     private static GlyphOriginRegistry instance;
 
@@ -58,11 +58,16 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
     }
 
     public RegistryKey<World> glyph(char c) {
-        return (RegistryKey<World>) REGISTRY[c];
+        return REGISTRY[c];
     }
 
     public char glyph(RegistryKey<World> key) {
+        for (char i = 0; i < REGISTRY.length; i++) {
+            RegistryKey<World> dim = REGISTRY[i];
+            if (key.equals(dim)) return i;
+        }
 
+        return '*';
     }
 
     public void allocate(RegistryKey<World> key) {

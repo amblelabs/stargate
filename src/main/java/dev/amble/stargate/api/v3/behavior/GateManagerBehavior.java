@@ -3,6 +3,7 @@ package dev.amble.stargate.api.v3.behavior;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.state.StargateStateEvent;
+import dev.amble.stargate.api.v3.state.GateState;
 import dev.drtheo.yaar.behavior.TBehavior;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.TState;
@@ -27,6 +28,7 @@ public class GateManagerBehavior implements TBehavior, StargateEvents {
 
         stargate.markDirty();
 
-        TEvents.handle(new StargateStateEvent(stargate, oldState, newState));
+        // FIXME: silly
+        TEvents.handle(new StargateStateEvent(stargate, (GateState<?>) oldState, (GateState<?>) newState));
     }
 }

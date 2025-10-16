@@ -53,8 +53,8 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.pop();
         }
 
-        if (!entity.hasStargate()) return;
-        Stargate gate = entity.gate().get();
+        Stargate gate = entity.asGate();
+        if (gate == null) return;
 
         matrices.push();
 
@@ -88,7 +88,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
-        Direction direction = gate.address().pos().getRotationDirection();
+        Direction direction = gate.facing();
         boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
         int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
         float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;
@@ -112,7 +112,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             double angle = 2 * Math.PI * i / Glyph.ALL.length;
             matrices.translate(Math.sin(angle) * 117, Math.cos(angle) * 117, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
+            OrderedText text = Glyph.asText(Glyph.ALL[i]).asOrderedText();
 
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, color, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);

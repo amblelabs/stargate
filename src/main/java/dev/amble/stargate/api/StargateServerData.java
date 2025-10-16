@@ -1,6 +1,8 @@
 package dev.amble.stargate.api;
 
+import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import dev.amble.stargate.api.v3.state.address.LocalAddressState;
@@ -55,6 +57,10 @@ public class StargateServerData extends PersistentState implements StargateData 
 	private StargateServerData(ServerWorld world) {
 		ALL.add(new WeakReference<>(this));
 		this.world = new WeakReference<>(world);
+	}
+
+	public void add(long address, Stargate stargate) {
+		this.lookup.put(address, stargate);
 	}
 
 	public void mark(StargateLike gateLike) {
@@ -189,6 +195,13 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 	public static @Nullable StargateServerData get(ServerWorld world) {
 		return world.getPersistentStateManager().get(nbt -> loadNbt(world, nbt), StargateMod.MOD_ID);
+	}
+
+	public static @Nullable StargateServerData getByGlobal(long globalAddress) {
+		RegistryKey<World> key = AddressProvider.Global.getTarget(globalAddress);
+		ServerWorld world = ServerLifecycleHooks.get().getWorld(key);
+
+		return world != null ? StargateServerData.get(world) : null;
 	}
 
 	public static void accept(ServerWorld world, Consumer<StargateServerData> consumer) {

@@ -1,9 +1,10 @@
 package dev.amble.stargate.block;
 
 import dev.amble.lib.api.ICantBreak;
+import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.AWaterloggableBlock;
-import dev.amble.lib.block.behavior.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.InvisibleBlockBehavior;
+import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.stargate.block.entities.StargateRingBlockEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -20,7 +21,7 @@ import net.minecraft.world.World;
 @SuppressWarnings("deprecation")
 public class StargateRingBlock extends AWaterloggableBlock implements ICantBreak {
 
-	public StargateRingBlock(Settings settings) {
+	public StargateRingBlock(ABlockSettings settings) {
 		super(settings,
 				new InvisibleBlockBehavior(), new BlockWithEntityBehavior(StargateRingBlockEntity::new)
 		);

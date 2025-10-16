@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import dev.amble.stargate.api.network.ServerStargateNetwork;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -34,12 +33,14 @@ public class StargateArgumentType implements ArgumentType<StargateArgumentType.S
                 if (!(blockEntity instanceof StargateBlockEntity linkable))
                     throw INVALID_UUID.create();
 
-                return linkable.gate().get();
+                throw new IllegalStateException("todo");
+                //return linkable.gate().get();
             };
         }
 
         String address = reader.readString();
-        return context -> ServerStargateNetwork.get().get(address);
+        throw new IllegalStateException("todo");
+        //return context -> ServerStargateNetwork.get().get(address);
     }
 
     public static StargateContext getGate(CommandContext<ServerCommandSource> context, String name) {

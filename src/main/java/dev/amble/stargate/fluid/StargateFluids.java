@@ -1,6 +1,6 @@
 package dev.amble.stargate.fluid;
 
-import dev.amble.lib.container.FluidContainer;
+import dev.amble.lib.container.impl.FluidContainer;
 import net.minecraft.fluid.FlowableFluid;
 
 public class StargateFluids implements FluidContainer {

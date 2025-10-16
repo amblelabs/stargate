@@ -1,6 +1,5 @@
 package dev.amble.stargate.api.v2;
 
-import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;

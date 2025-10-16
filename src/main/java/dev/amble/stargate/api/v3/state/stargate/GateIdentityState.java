@@ -16,6 +16,8 @@ public class GateIdentityState implements TState<GateIdentityState> {
     public final Box northSouthBox;
     public final Box westEastBox;
 
+    public final int maxChevrons = 9;
+
     public GateIdentityState(Box northSouthBox, Box westEastBox) {
         this.northSouthBox = northSouthBox;
         this.westEastBox = westEastBox;

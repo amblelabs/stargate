@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 
 public class AddressProvider {
 
+    // TODO: use alphabet from Glyph class
     static String ALPHABET_ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
     static char[] ALPHABET = ALPHABET_ALL.toCharArray();
 
@@ -104,7 +105,7 @@ public class AddressProvider {
         }
 
         public static char getTargetChar(long packed) {
-            return ALPHABET[AddressProvider.readAt(packed, 7)];
+            return ALPHABET[AddressProvider.readAt(packed, 6)];
         }
 
         public static RegistryKey<World> getTarget(long packed) {

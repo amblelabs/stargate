@@ -1,13 +1,14 @@
 package dev.amble.stargate.api.v3.state;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.StargateRef;
+import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 public interface GateState<T extends TState<T>> extends TState<T> {
 
@@ -64,27 +65,27 @@ public interface GateState<T extends TState<T>> extends TState<T> {
 
             @Override
             public Opening fromNbt(@NotNull NbtCompound nbt, boolean isClient) {
-                UUID id = nbt.getUuid("address");
+                long address = nbt.getLong("address");
                 boolean caller = nbt.getBoolean("caller");
-                float kawooshHeight = nbt.getFloat("kawooshHeight");
+                //float kawooshHeight = nbt.getFloat("kawooshHeight");
 
-                return new Opening(new StargateRef(id, isClient), caller, kawooshHeight);
+                return new Opening(StargateRef.resolveGlobal(address, isClient), caller, 0);
             }
         };
 
         public static final int TICKS_PER_KAWOOSH = 4 * 20;
 
-        public final StargateRef target;
+        public final Stargate target;
         public final boolean caller;
 
         public float kawooshHeight;
         public int timer;
 
-        public Opening(StargateRef target, boolean caller) {
+        public Opening(Stargate target, boolean caller) {
             this(target, caller, 0);
         }
 
-        private Opening(StargateRef target, boolean caller, float kawooshHeight) {
+        private Opening(Stargate target, boolean caller, float kawooshHeight) {
             this.target = target;
             this.caller = caller;
             this.kawooshHeight = kawooshHeight;
@@ -92,9 +93,9 @@ public interface GateState<T extends TState<T>> extends TState<T> {
 
         @Override
         public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            nbt.putUuid("address", target.id());
+            nbt.putLong("address", target.resolve(GlobalAddressState.state).address());
             nbt.putBoolean("caller", caller);
-            nbt.putFloat("kawooshHeight", kawooshHeight);
+            //nbt.putFloat("kawooshHeight", kawooshHeight);
         }
 
         @Override
@@ -113,10 +114,10 @@ public interface GateState<T extends TState<T>> extends TState<T> {
         public static final Type<Open> state = new NbtBacked<>(StargateMod.id("generic/open")) {
             @Override
             public Open fromNbt(@NotNull NbtCompound nbt, boolean isClient) {
-                UUID id = nbt.getUuid("address");
+                long address = nbt.getLong("address");
                 boolean caller = nbt.getBoolean("caller");
 
-                return new Open(new StargateRef(id, isClient), caller);
+                return new Open(StargateRef.resolveGlobal(address, isClient), caller);
             }
         };
 
@@ -124,19 +125,19 @@ public interface GateState<T extends TState<T>> extends TState<T> {
         public static final int TELEPORT_FREQUENCY = 10;
         public static final int TELEPORT_DELAY = 20;
 
-        public final @NotNull StargateRef target;
+        public final Stargate target;
         public final boolean caller;
 
         public int timer;
 
-        public Open(@NotNull StargateRef target, boolean caller) {
+        public Open(Stargate target, boolean caller) {
             this.target = target;
             this.caller = caller;
         }
 
         @Override
         public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            nbt.putUuid("address", this.target.id());
+            nbt.putLong("address", target.resolve(GlobalAddressState.state).address());
             nbt.putBoolean("caller", this.caller);
         }
 

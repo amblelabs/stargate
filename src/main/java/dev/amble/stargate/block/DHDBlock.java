@@ -1,7 +1,8 @@
 package dev.amble.stargate.block;
 
 import dev.amble.lib.block.ABlock;
-import dev.amble.lib.block.behavior.BlockWithEntityBehavior;
+import dev.amble.lib.block.ABlockSettings;
+import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.item.StargateLinkableItem;
@@ -19,7 +20,7 @@ public class DHDBlock extends ABlock implements BlockEntityProvider {
 
 	public static final VoxelShape DHDSHAPE = Block.createCuboidShape(4.0F, 0.0F, 4.0F, 12.0F, 14.0F, 12.0F);
 
-	public DHDBlock(Settings settings) {
+	public DHDBlock(ABlockSettings settings) {
 		super(settings, HorizontalBlockBehavior.withPlacement(true),
 				BlockWithEntityBehavior.Ticking.withInvisibleModel(DHDBlockEntity::new));
 	}

@@ -1,17 +1,19 @@
 package dev.amble.stargate.api.v3;
 
-import dev.amble.lib.data.DirectedGlobalPos;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.v3.state.stargate.client.ClientMilkyWayState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class MilkyWayGate extends Stargate {
 
     public static Identifier ID = StargateMod.id("milky_way");
 
-    public MilkyWayGate(DirectedGlobalPos pos) {
-        super(pos);
+    public MilkyWayGate(ServerWorld world, BlockPos pos, Direction direction) {
+        super(world, pos, direction);
     }
 
     public MilkyWayGate(NbtCompound nbt, boolean isClient) {

@@ -45,7 +45,7 @@ public class StargateDialCommand {
             return 0;
         }
 
-        closed.address = targetGate.address().text();
+        //closed.address = targetGate.address().text();
 
         stargate.markDirty();
         targetGate.markDirty();

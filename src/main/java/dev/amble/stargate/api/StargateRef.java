@@ -1,8 +1,11 @@
 package dev.amble.stargate.api;
 
+import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.api.address.v2.AddressProvider;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -71,5 +74,18 @@ public class StargateRef implements StargateLinkable {
 
     public long address() {
         return address;
+    }
+
+    public static @Nullable Stargate resolveGlobal(long globalAddress, boolean isClient) {
+        if (isClient)
+            return StargateClientData.get().getGlobal(globalAddress);
+
+        RegistryKey<World> key = AddressProvider.Global.getTarget(globalAddress);
+        ServerWorld world = ServerLifecycleHooks.get().getWorld(key);
+
+        if (world != null)
+            return StargateServerData.apply(world, data -> data.getGlobal(globalAddress));
+
+        return null;
     }
 }

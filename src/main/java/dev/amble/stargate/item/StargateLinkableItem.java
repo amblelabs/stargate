@@ -1,18 +1,21 @@
 package dev.amble.stargate.item;
 
-import dev.amble.lib.data.DirectedGlobalPos;
+import dev.amble.stargate.api.StargateClientData;
+import dev.amble.stargate.api.StargateData;
 import dev.amble.stargate.api.WorldUtil;
-import dev.amble.stargate.api.network.ClientStargateNetwork;
-import dev.amble.stargate.api.network.StargateNetwork;
 import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +30,11 @@ public abstract class StargateLinkableItem extends Item {
 	}
 
 	public void link(ItemStack stack, Stargate gate) {
-		this.link(stack, gate.address().text());
+		this.link(stack, gate.resolve(GlobalAddressState.state).address());
 	}
 
-	public void link(ItemStack stack, String address) {
-		stack.getOrCreateNbt().putString("Address", address);
+	public void link(ItemStack stack, long address) {
+		stack.getOrCreateNbt().putLong("Address", address);
 	}
 
 	public static boolean isLinked(ItemStack stack) {
@@ -48,9 +51,9 @@ public abstract class StargateLinkableItem extends Item {
 		if (!showTooltip)
 			return;
 
-		String id = StargateLinkableItem.getStargateAddressFromKey(stack, "Address");
+		long id = StargateLinkableItem.getStargateAddressFromKey(stack, "Address");
 
-		if (id == null)
+		if (id == -1)
 			return;
 
 		if (!Screen.hasShiftDown()) {
@@ -59,20 +62,21 @@ public abstract class StargateLinkableItem extends Item {
 			return;
 		}
 
-		Stargate stargate = ClientStargateNetwork.get().get(id);
+		Stargate stargate = StargateClientData.get().getGlobal(id);
 
 		if (stargate != null) {
 			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));
 
-			Address address = stargate.address();
-			DirectedGlobalPos pos = address.pos();
+			RegistryKey<World> dim = stargate.dimension();
+			BlockPos pos = stargate.pos();
+			Direction direction = stargate.facing();
 
-			tooltip.add(Text.literal("> ").append(address.asText())
+			tooltip.add(Text.literal("> ").append(stargate.stateOrNull(GlobalAddressState.state) + "")
 					.formatted(Formatting.DARK_GRAY));
-			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(pos.getDimension())).formatted(Formatting.DARK_GRAY));
-			tooltip.add(Text.literal("> " + pos.getPos().getX() + ", " + pos.getPos().getY() + ", " + pos.getPos().getZ())
+			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(dim)).formatted(Formatting.DARK_GRAY));
+			tooltip.add(Text.literal("> " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ())
 					.formatted(Formatting.DARK_GRAY));
-			tooltip.add(Text.literal("> " + pos.getRotationDirection().name()).formatted(Formatting.DARK_GRAY));
+			tooltip.add(Text.literal("> " + direction).formatted(Formatting.DARK_GRAY));
 		}
 	}
 
@@ -84,21 +88,21 @@ public abstract class StargateLinkableItem extends Item {
 		return StargateLinkableItem.getStargateFromKey(world, stack, "Address");
 	}
 
-	public static String getStargateAddressFromKey(ItemStack stack, String path) {
+	public static long getStargateAddressFromKey(ItemStack stack, String path) {
 		NbtCompound nbt = stack.getOrCreateNbt();
 		NbtElement element = nbt.get(path);
 
 		if (element == null)
-			return null;
+			return -1;
 
-		return nbt.getString(path);
+		return nbt.getLong(path);
 	}
 
 	public static Stargate getStargateFromKey(World world, ItemStack stack, String path) {
 		return StargateLinkableItem.getStargate(world, StargateLinkableItem.getStargateAddressFromKey(stack, path));
 	}
 
-	public static Stargate getStargate(World world, String address) {
-		return StargateNetwork.with(world, (o, manager) -> manager.get(address));
+	public static Stargate getStargate(World world, long address) {
+		return StargateData.apply(world, data -> data.getGlobal(address));
 	}
 }

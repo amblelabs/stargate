@@ -9,6 +9,8 @@ import dev.amble.lib.api.Identifiable;
 import dev.amble.stargate.StargateMod;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.World;
@@ -24,6 +26,17 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
     ).apply(instance, Glyph::new)));
 
     public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%".toCharArray();
+
+    private static final Identifier FONT_ID = StargateMod.id("stargate");
+    private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
+
+    public static Text asText(String s) {
+        return Text.literal(s).setStyle(STYLE);
+    }
+
+    public static Text asText(char c) {
+        return Text.literal(String.valueOf(c)).setStyle(STYLE);
+    }
 
     public Glyph(Identifier dimension, String glyph) {
         this(dimension, glyph.charAt(0));

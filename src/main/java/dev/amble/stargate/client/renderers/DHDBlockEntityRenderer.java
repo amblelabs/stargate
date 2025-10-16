@@ -180,7 +180,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.scale(0.4f, 0.4f, 0.4f);
             matrices.translate(Math.sin(angle) * 18.95 * 2.35f, Math.cos(angle) * 18.95 * 2.35f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[i]));*/Address.asText(String.valueOf(Glyph.ALL[i])).asOrderedText();
+            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[i]));*/Glyph.asText(Glyph.ALL[i]).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, 0x6f7287, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0,  light);
             matrices.pop();
@@ -207,7 +207,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             matrices.scale(0.4f, 0.4f, 0.4f);
             matrices.translate(Math.sin(angle) * 18.95 * 1.55f, Math.cos(angle) * 18.95 * 1.55f, 0);
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
-            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[18 + i]));*/Address.asText(String.valueOf(Glyph.ALL[18 + i])).asOrderedText();
+            OrderedText text = /*Text.literal(String.valueOf(Glyph.ALL[18 + i]));*/Glyph.asText(Glyph.ALL[18 + i]).asOrderedText();
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, colour, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, light);
             matrices.pop();

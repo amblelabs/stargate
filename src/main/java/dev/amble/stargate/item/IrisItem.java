@@ -20,7 +20,7 @@ public class IrisItem extends Item {
         if (!(context.getWorld().getBlockEntity(context.getBlockPos()) instanceof StargateBlockEntity be) || !be.isLinked())
             return ActionResult.PASS;
 
-        Stargate stargate = be.gate().get();
+        Stargate stargate = be.asGate();
 
         if (stargate.hasState(IrisState.state))
             return ActionResult.PASS;

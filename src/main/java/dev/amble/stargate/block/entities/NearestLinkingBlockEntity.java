@@ -78,6 +78,6 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 
 		// FIXME: use translations
 		if (sendLinkMessage && placer instanceof ServerPlayerEntity player)
-            player.sendMessage(Text.literal("Linked to G:" + AddressProvider.Global.asString(this.ref.address())), true);
+            player.sendMessage(Text.literal("Linked to " + AddressProvider.Global.asString(this.ref.address())), true);
 	}
 }

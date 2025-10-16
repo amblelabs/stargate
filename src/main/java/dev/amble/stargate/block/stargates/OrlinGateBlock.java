@@ -1,5 +1,6 @@
 package dev.amble.stargate.block.stargates;
 
+import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.v2.GateKernelRegistry;
 import dev.amble.stargate.block.StargateBlock;
@@ -11,6 +12,7 @@ import dev.amble.stargate.util.VoxelShapeUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,7 +27,7 @@ public class OrlinGateBlock extends StargateBlock {
 
     private static final VoxelShape SHAPE = VoxelShapes.cuboid(0.0F, 0.0F, 0.0F, 16.0F / 16, 8.0F / 16f, 1.0f);
 
-    public OrlinGateBlock(Settings settings) {
+    public OrlinGateBlock(ABlockSettings settings) {
         super(settings);
     }
 
@@ -54,7 +56,7 @@ public class OrlinGateBlock extends StargateBlock {
         world.setBlockState(pos, state, 3);
 
         if (world.getBlockEntity(pos) instanceof StargateBlockEntity stargateBe) {
-            stargateBe.onPlacedWithKernel(world, pos, entry);
+            stargateBe.onPlacedWithKernel((ServerWorld) world, state, entry);
             world.playSound(null, pos, StargateSounds.DING, SoundCategory.BLOCKS, 1.0f, 1.0f);
         }
     }

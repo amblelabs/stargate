@@ -1,7 +1,8 @@
 package dev.amble.stargate.block;
 
+import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.AWaterloggableBlock;
-import dev.amble.lib.block.behavior.*;
+import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.NonNull;
 import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
@@ -23,7 +24,7 @@ import net.minecraft.world.World;
 @SuppressWarnings("deprecation")
 public class StargateBlock extends AWaterloggableBlock implements BlockEntityProvider {
 
-	public StargateBlock(Settings settings) {
+	public StargateBlock(ABlockSettings settings) {
 		super(settings,
 				BlockWithEntityBehavior.Ticking.withInvisibleModel(StargateBlockEntity::new),
 				HorizontalBlockBehavior.withPlacement(true)

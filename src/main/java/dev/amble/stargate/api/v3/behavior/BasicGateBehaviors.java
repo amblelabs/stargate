@@ -4,15 +4,12 @@ import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.lib.util.TeleportUtil;
 import dev.amble.stargate.api.TeleportableEntity;
-import dev.amble.stargate.api.address.v2.AddressProvider;
-import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.event.StargateEvents;
 import dev.amble.stargate.api.v3.event.StargateTpEvent;
 import dev.amble.stargate.api.v3.event.address.AddressResolveEvent;
 import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.v3.state.GateState;
-import dev.amble.stargate.api.v3.state.address.LocalAddressState;
 import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
@@ -63,21 +60,18 @@ public interface BasicGateBehaviors {
             stargate.playSound(StargateSounds.CHEVRON_LOCK);
             stargate.markDirty();
 
-            LocalAddressState localAddressState = stargate.state(LocalAddressState.state);
-
-            // cheaper than doing a map lookup...!
-            char originChar = AddressProvider.Local.getOriginChar(localAddressState.address());
-            if (closed.address.charAt(closed.address.length() - 1) != originChar) return;
-
             // TODO: add energy handling.
             AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address));
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
-                this.fail(stargate);
+                // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
+                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.address.length() >= stargate.resolve(GateIdentityState.state).maxChevrons)
+                    this.fail(stargate);
+
                 return;
             }
 
-            manager.set(stargate, new GateState.Opening(new StargateRef(route.stargate()), true));
+            manager.set(stargate, new GateState.Opening(route.stargate(), true));
             manager.set(route.stargate(), new GateState.Opening(null, false));
 
             route.stargate().markDirty();
@@ -107,7 +101,7 @@ public interface BasicGateBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
-            if (stargate.isClient()) return;
+            //if (stargate.isClient()) return;
 
             GateState.Opening opening = stargate.state(GateState.Opening.state);
 
@@ -125,7 +119,7 @@ public interface BasicGateBehaviors {
                             Math.pow(tPrime, 3) * p3
             );
 
-            stargate.markDirty();
+            //stargate.markDirty();
 
             if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH || tPrime != 1) return;
 
@@ -133,9 +127,10 @@ public interface BasicGateBehaviors {
             opening.timer = 0;
 
             // Handle missing gates by address gracefully
-            if (opening.caller && opening.target != null) { // TODO: add distance/protocol compat checks here
+            if (opening.caller && opening.target != null) {
+                // TODO: add distance/protocol compat checks here
                 manager.set(stargate, new GateState.Open(opening.target, true));
-                manager.set(opening.target.get(), new GateState.Open(new StargateRef(stargate), false));
+                manager.set(opening.target, new GateState.Open(stargate, false));
             } else {
                 manager.set(stargate, new GateState.Closed());
             }
@@ -161,7 +156,7 @@ public interface BasicGateBehaviors {
             GateState.Open open = stargate.state(GateState.Open.state);
 
             // handle abnormal state
-            if (open.target.isEmpty()) {
+            if (open.target == null) {
                 manager.set(stargate, new GateState.Closed());
                 return;
             }
@@ -170,7 +165,7 @@ public interface BasicGateBehaviors {
                 open.timer = 0;
 
                 manager.set(stargate, new GateState.Closed());
-                manager.set(open.target.get(), new GateState.Closed());
+                manager.set(open.target, new GateState.Closed());
             }
         }
 
@@ -204,7 +199,7 @@ public interface BasicGateBehaviors {
             if (!(entity instanceof TeleportableEntity holder))
                 return;
 
-            Stargate target = open.target.get();
+            Stargate target = open.target;
 
             // this is most likely false, since we do a check every tick, but just in case...
             if (target == null)
