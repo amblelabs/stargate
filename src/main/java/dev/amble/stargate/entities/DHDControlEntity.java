@@ -1,16 +1,13 @@
 package dev.amble.stargate.entities;
 
-import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
 import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;
-import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -267,19 +264,6 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         }
 
         if (!this.control.canRun(stargate, (ServerPlayerEntity) player)) return;
-
-        if (this.getControl().getGlyph() != '*' && stargate.getCurrentState() instanceof GateState.Closed closed) {
-            if (closed.locked >= Address.LENGTH) {
-                closed.address = "";
-
-                stargate.markDirty();
-                ServerWorld targetWorld = ServerLifecycleHooks.get().getWorld(stargate.address().pos().getDimension());
-                if (targetWorld != null) {
-                    targetWorld.playSound(null, stargate.address().pos().getPos(), StargateSounds.GATE_FAIL,
-                            SoundCategory.BLOCKS, 1.0f, 1.0f);
-                }
-            }
-        }
 
         this.control.runServer(stargate, (ServerPlayerEntity) player, (ServerWorld) world, this.dhdBlockPos,
                 leftClick);
