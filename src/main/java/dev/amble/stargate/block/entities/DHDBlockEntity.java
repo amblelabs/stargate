@@ -35,9 +35,9 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
     }
 
     @Override
-    public void link(Stargate gate) {
-        super.link(gate);
+    public boolean link(Stargate gate) {
         this.markNeedsControl();
+        return super.link(gate);
     }
 
     @Override

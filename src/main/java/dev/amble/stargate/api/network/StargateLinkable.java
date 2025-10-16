@@ -2,7 +2,6 @@ package dev.amble.stargate.api.network;
 
 import dev.amble.stargate.api.StargateLike;
 import dev.amble.stargate.api.v3.Stargate;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -30,10 +29,8 @@ public interface StargateLinkable extends StargateLike {
 		return asGate() != null;
 	}
 
-	void link(@Nullable Stargate gate);
-	void link(long address);
+	boolean link(@Nullable Stargate gate);
+	boolean link(long address);
 
-	default void unlink() {
-		this.link(null);
-	}
+	void unlink();
 }

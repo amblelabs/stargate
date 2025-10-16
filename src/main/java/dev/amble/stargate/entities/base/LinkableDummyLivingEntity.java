@@ -1,6 +1,6 @@
 package dev.amble.stargate.entities.base;
 
-import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.StargateRef;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
@@ -9,17 +9,21 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implements AbstractLinkableEntity {
 
     private static final TrackedData<Optional<Long>> STARGATE = AbstractLinkableEntity
             .register(LinkableDummyLivingEntity.class);
 
-    private StargateRef stargate;
+    private final StargateRef stargate = new StargateRef(this::getWorld);
 
     public LinkableDummyLivingEntity(EntityType<? extends LivingEntity> type, World world, boolean hasBrain) {
         super(type, world, hasBrain);
+    }
+
+    @Override
+    public StargateRef gateRef() {
+        return stargate;
     }
 
     @Override
@@ -33,18 +37,8 @@ public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implem
     }
 
     @Override
-    public TrackedData<Optional<UUID>> getTracked() {
+    public TrackedData<Optional<Long>> getTracked() {
         return STARGATE;
-    }
-
-    @Override
-    public StargateRef asRef() {
-        return this.stargate;
-    }
-
-    @Override
-    public void setRef(StargateRef ref) {
-        this.stargate = ref;
     }
 
     @Override

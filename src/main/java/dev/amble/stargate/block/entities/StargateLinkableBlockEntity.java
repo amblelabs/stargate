@@ -2,7 +2,7 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.blockentity.ABlockEntity;
 import dev.amble.lib.blockentity.StructurePlaceableBlockEntity;
-import dev.amble.stargate.api.StargateData;
+import dev.amble.stargate.api.StargateRef;
 import dev.amble.stargate.api.StargateServerData;
 import dev.amble.stargate.api.network.StargateLinkable;
 import dev.amble.stargate.api.v3.Stargate;
@@ -14,12 +14,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
-
 public abstract class StargateLinkableBlockEntity extends ABlockEntity implements StargateLinkable, StructurePlaceableBlockEntity {
 
-	protected long address = -1;
-	protected WeakReference<Stargate> stargate;
+	protected final StargateRef ref = new StargateRef(this::getWorld);
 
 	public StargateLinkableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -27,55 +24,51 @@ public abstract class StargateLinkableBlockEntity extends ABlockEntity implement
 
 	@Override
 	public @Nullable Stargate asGate() {
-		return stargate != null ? stargate.get() : StargateData.apply(world, data -> data.getById(address));
+		return ref.asGate();
 	}
 
 	@Override
 	public boolean isLinked() {
-		return address != -1 && StargateLinkable.super.isLinked();
+		return ref.isLinked();
 	}
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 
-        if (!nbt.contains("Address")) return;
-		this.link(nbt.getLong("Address"));
+		this.ref.readNbt(nbt);
     }
 
 	@Override
 	protected void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
-
-        if (!this.isLinked()) return;
-        nbt.putLong("Address", this.address);
+		this.ref.writeNbt(nbt);
     }
 
 	@Override
-	public void link(@Nullable Stargate gate) {
-		Stargate oldGate = this.stargate != null ? this.stargate.get() : null;
-
-		this.stargate = gate != null ? new WeakReference<>(gate) : null;
-		this.address = gate != null ? StargateServerData.getAnyId(gate) : -1;
-
-		if (world instanceof ServerWorld serverWorld) {
-			StargateServerData data = StargateServerData.getOrCreate(serverWorld);
-
-			if (oldGate != null)
-				data.unmark(oldGate);
-
-			if (!this.isLinked()) return;
-			data.mark(this);
-		} else if (!this.isLinked()) return;
+	public boolean link(@Nullable Stargate gate) {
+		if (!ref.link(gate))
+			return false;
 
 		this.markDirty();
 		this.sync();
+		return true;
 	}
 
 	@Override
-	public void link(long address) {
-		Stargate stargate = StargateData.apply(world, data -> data.getById(address));
-		this.link(stargate);
+	public boolean link(long address) {
+		if (!ref.link(address)) return false;
+
+		this.markDirty();
+		this.sync();
+		return true;
+	}
+
+	@Override
+	public void unlink() {
+		ref.unlink();
+		this.markDirty();
+		this.sync();
 	}
 
 	@Override

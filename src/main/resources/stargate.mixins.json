@@ -5,8 +5,7 @@
   "plugin": "dev.amble.stargate.compat.SGMixinPlugin",
   "mixins": [
     "LivingEntityMixin",
-    "ServerPlayerEntityMixin",
-    "StructureTemplateMixin"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

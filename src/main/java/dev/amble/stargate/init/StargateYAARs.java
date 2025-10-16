@@ -20,6 +20,15 @@ import dev.drtheo.yaar.state.TStateRegistry;
 
 public class StargateYAARs {
 
+    static class States extends TStateRegistry {
+
+        private static final States INSTANCE = new States();
+
+        public static States get() {
+            return INSTANCE;
+        }
+    }
+
     // TODO: move to a registry
     public static void init() {
         initEvents();
@@ -29,7 +38,7 @@ public class StargateYAARs {
         TBehaviorRegistry.freeze();
 
         initState();
-        TStateRegistry.freeze();
+        States.get().freeze();
     }
 
     private static void initBehavior() {
@@ -53,19 +62,21 @@ public class StargateYAARs {
     }
 
     private static void initState() {
-        TStateRegistry.register(GateState.Closed.state);
-        TStateRegistry.register(GateState.Opening.state);
-        TStateRegistry.register(GateState.Open.state);
-        TStateRegistry.register(GateIdentityState.state);
+        States states = States.get();
 
-        TStateRegistry.register(ClientGenericGateState.state);
-        TStateRegistry.register(ClientMilkyWayState.state);
-        TStateRegistry.register(ClientOrlinState.state);
-        TStateRegistry.register(ClientPegasusState.state);
-        TStateRegistry.register(ClientDestinyState.state);
+        states.register(GateState.Closed.state);
+        states.register(GateState.Opening.state);
+        states.register(GateState.Open.state);
+        states.register(GateIdentityState.state);
 
-        TStateRegistry.register(ClientIrisState.state);
-        TStateRegistry.register(IrisState.state);
+        states.register(ClientGenericGateState.state);
+        states.register(ClientMilkyWayState.state);
+        states.register(ClientOrlinState.state);
+        states.register(ClientPegasusState.state);
+        states.register(ClientDestinyState.state);
+
+        states.register(ClientIrisState.state);
+        states.register(IrisState.state);
     }
 
     private static void initEvents() {

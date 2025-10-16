@@ -1,22 +1,22 @@
 package dev.amble.stargate.entities.base;
 
+import dev.amble.stargate.api.StargateRef;
 import dev.amble.stargate.api.network.StargateLinkable;
-import dev.amble.stargate.api.network.StargateRef;
+import dev.amble.stargate.api.v3.Stargate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandler;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface AbstractLinkableEntity extends StargateLinkable {
+
+    StargateRef gateRef();
 
     World getWorld();
 
@@ -25,22 +25,30 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     TrackedData<Optional<Long>> getTracked();
 
     @Override
-    default void setStargate(StargateRef stargate) {
-        this.setRef(stargate);
-        this.getDataTracker().set(this.getTracked(), Optional.of(stargate.id()));
+    default @Nullable Stargate asGate() {
+        return gateRef().asGate();
     }
 
     @Override
-    default StargateRef gate() {
-        StargateRef result = this.asRef();
+    default boolean link(@Nullable Stargate gate) {
+        if (!gateRef().link(gate)) return false;
 
-        if (result == null) {
-            UUID id = this.getDataTracker().get(this.getTracked()).orElse(null);
-            this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
-            return this.gate();
-        }
+        this.getDataTracker().set(this.getTracked(), Optional.of(gateRef().address()));
+        return true;
+    }
 
-        return result;
+    @Override
+    default boolean link(long address) {
+        if (!gateRef().link(address)) return false;
+
+        this.getDataTracker().set(this.getTracked(), Optional.of(gateRef().address()));
+        return true;
+    }
+
+    @Override
+    default void unlink() {
+        gateRef().unlink();
+        this.getDataTracker().set(this.getTracked(), Optional.empty());
     }
 
     default void initDataTracker() {
@@ -51,30 +59,15 @@ public interface AbstractLinkableEntity extends StargateLinkable {
         if (!this.getTracked().equals(data))
             return;
 
-        UUID id = this.getDataTracker().get(this.getTracked()).orElse(null);
-        this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
+        this.getDataTracker().get(this.getTracked()).ifPresent(this::link);
     }
 
     default void readCustomDataFromNbt(NbtCompound nbt) {
-        NbtElement rawId = nbt.get("Stargate");
-
-        if (rawId == null)
-            return;
-
-        UUID id = NbtHelper.toUuid(rawId);
-        this.link(new StargateRef(id, ((Entity) this).getWorld().isClient()));
-
-        if (this.getWorld() == null)
-            return;
-
-        this.onLinked();
+        gateRef().readNbt(nbt);
     }
 
     default void writeCustomDataToNbt(NbtCompound nbt) {
-        StargateRef ref = this.asRef();
-
-        if (ref != null && ref.id() != null)
-            nbt.putUuid("Stargate", ref.id());
+        gateRef().writeNbt(nbt);
     }
 
     TrackedDataHandler<Optional<Long>> OPTIONAL_LONG = TrackedDataHandler.ofOptional(PacketByteBuf::writeVarLong, PacketByteBuf::readVarLong);

@@ -5,7 +5,6 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
-import dev.amble.stargate.api.network.StargateRef;
 import dev.amble.stargate.api.v3.Stargate;
 import dev.amble.stargate.api.v3.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
@@ -58,7 +57,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     private DHDControlEntity(World world, Stargate stargate) {
         this(StargateEntities.DHD_CONTROL_TYPE, world);
-        this.setStargate(new StargateRef(stargate));
+        this.link(stargate);
     }
 
     @Override
@@ -103,10 +102,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
-        StargateRef ref = this.asRef();
-
-        if (ref != null && ref.id() != null)
-            nbt.putUuid("Stargate", ref.id());
+        super.writeCustomDataToNbt(nbt);
 
         if (dhdBlockPos != null)
             nbt.put("dhd", NbtHelper.fromBlockPos(this.dhdBlockPos));
@@ -165,16 +161,12 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-
-        if (source.getAttacker() instanceof TntEntity) {
-            return false;
-        }
+        if (source.getAttacker() instanceof TntEntity) return false;
 
         if (source.getAttacker() instanceof PlayerEntity player) {
             if (player.getOffHandStack().getItem() == Items.COMMAND_BLOCK) {
                 controlEditorHandler(player);
-            } else
-                this.run((PlayerEntity) source.getAttacker(), source.getAttacker().getWorld(), true);
+            } else this.run(player, player.getWorld(), true);
         }
 
         return super.damage(source, amount);
@@ -259,7 +251,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         if (world.isClient())
             return;
 
-        Stargate stargate = this.gate().get();
+        Stargate stargate = this.asGate();
 
         if (stargate == null) {
             StargateMod.LOGGER.warn("Discarding invalid control entity at {}; dhd pos: {}", this.getPos(),
