@@ -320,6 +320,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
             provider.addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
 
             provider.addTranslation("text.stargate.gate", "STARGATE");
+            provider.addTranslation("text.stargate.linked", "Linked to: ");
 
             provider.addTranslation("death.attack.stargate_flow", "%s went against the flow");
             provider.addTranslation("attribute.stargate.spacial_resistance", "Spacial Resistance");

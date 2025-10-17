@@ -1,10 +1,9 @@
 package dev.amble.stargate.client;
 
-import dev.amble.lib.register.AmbleRegistries;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.GlyphOriginRegistryOld;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
+import dev.amble.stargate.client.init.StargateClientYAARs;
 import dev.amble.stargate.client.overlays.WormholeOverlay;
 import dev.amble.stargate.client.portal.PortalRendering;
 import dev.amble.stargate.client.renderers.DHDBlockEntityRenderer;
@@ -30,10 +29,6 @@ public class StargateModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        AmbleRegistries.getInstance().registerAll(
-                GlyphOriginRegistryOld.getInstance()
-        );
-
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
             ClientStargateDataCommand.register(dispatcher);
             ClientStargateDumpCommand.register(dispatcher);
@@ -55,6 +50,8 @@ public class StargateModClient implements ClientModInitializer {
                 StargateFluids.STILL_LIQUID_NAQUADAH, StargateFluids.FLOWING_LIQUID_NAQUADAH);
 
         HudRenderCallback.EVENT.register(new WormholeOverlay());
+
+        StargateClientYAARs.init();
     }
 
     public void registerBlockEntityRenderers() {

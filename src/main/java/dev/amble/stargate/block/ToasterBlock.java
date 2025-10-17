@@ -3,7 +3,7 @@ package dev.amble.stargate.block;
 import dev.amble.lib.block.ABlock;
 import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.block.stargates.OrlinGateBlock;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItems;

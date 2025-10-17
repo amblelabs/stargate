@@ -1,6 +1,6 @@
 package dev.amble.stargate.mixins;
 
-import dev.amble.stargate.api.TeleportableEntity;
+import dev.amble.stargate.api.util.TeleportableEntity;
 import dev.amble.stargate.init.StargateAttributes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;

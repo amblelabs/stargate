@@ -4,7 +4,7 @@ import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
-import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.item.DialerItem;
 import dev.amble.stargate.item.EmptyContainerItem;

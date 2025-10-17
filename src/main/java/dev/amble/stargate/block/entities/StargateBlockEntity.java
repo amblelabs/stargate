@@ -2,9 +2,9 @@ package dev.amble.stargate.block.entities;
 
 import com.mojang.serialization.DataResult;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.v2.GateKernelRegistry;
-import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.event.block.StargateBlockTickEvent;
+import dev.amble.stargate.api.GateKernelRegistry;
+import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.gates.event.block.StargateBlockTickEvent;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.item.StargateItem;
 import dev.drtheo.yaar.event.TEvents;

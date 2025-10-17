@@ -1,6 +1,6 @@
 package dev.amble.stargate.item;
 
-import dev.amble.stargate.api.v2.GateKernelRegistry;
+import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.init.StargateBlocks;
 import net.minecraft.item.BlockItem;

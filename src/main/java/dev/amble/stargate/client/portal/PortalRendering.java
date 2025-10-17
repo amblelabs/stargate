@@ -2,9 +2,9 @@ package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.GateState;
-import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.gates.state.GateState;
+import dev.amble.stargate.api.gates.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;

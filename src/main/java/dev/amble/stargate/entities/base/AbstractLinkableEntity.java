@@ -1,8 +1,8 @@
 package dev.amble.stargate.entities.base;
 
-import dev.amble.stargate.api.StargateRef;
-import dev.amble.stargate.api.network.StargateLinkable;
-import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.data.StargateRef;
+import dev.amble.stargate.api.data.StargateLinkable;
+import dev.amble.stargate.api.gates.Stargate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;

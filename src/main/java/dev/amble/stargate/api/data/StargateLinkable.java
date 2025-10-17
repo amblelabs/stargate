@@ -1,0 +1,36 @@
+package dev.amble.stargate.api.data;
+
+import dev.amble.stargate.api.StargateLike;
+import dev.amble.stargate.api.gates.Stargate;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+/**
+ * Indicates that this class holds a stargate
+ */
+public interface StargateLinkable extends StargateLike {
+
+	@Override
+	@Nullable Stargate asGate();
+
+	default void acceptGate(Consumer<Stargate> consumer) {
+		Stargate gate = this.asGate();
+		if (gate != null) consumer.accept(gate);
+	}
+
+	default <R> @Nullable R applyGate(Function<Stargate, R> func) {
+		Stargate gate = this.asGate();
+		return gate != null ? func.apply(gate) : null;
+	}
+
+	default boolean isLinked() {
+		return asGate() != null;
+	}
+
+	boolean link(@Nullable Stargate gate);
+	boolean link(long address);
+
+	void unlink();
+}

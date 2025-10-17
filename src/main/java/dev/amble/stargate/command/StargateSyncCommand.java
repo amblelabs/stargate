@@ -2,7 +2,7 @@ package dev.amble.stargate.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.gates.Stargate;
 import dev.amble.stargate.command.argumenttypes.StargateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 

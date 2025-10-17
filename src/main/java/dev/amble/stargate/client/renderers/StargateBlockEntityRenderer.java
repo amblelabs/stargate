@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.event.render.StargateRenderEvent;
-import dev.amble.stargate.api.v3.state.GateState;
-import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.gates.event.render.StargateRenderEvent;
+import dev.amble.stargate.api.gates.state.GateState;
+import dev.amble.stargate.api.gates.state.stargate.client.ClientGenericGateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;

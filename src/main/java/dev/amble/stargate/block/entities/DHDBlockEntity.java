@@ -1,12 +1,13 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.GlyphOriginRegistry;
+import dev.amble.stargate.api.address.GlyphOriginRegistry;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
-import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.gates.Stargate;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
+import dev.amble.stargate.item.StargateLinkableItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -16,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -47,7 +50,11 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
         this.markNeedsControl();
     }
 
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.getStackInHand(hand).getItem() instanceof StargateLinkableItem || hand != Hand.MAIN_HAND)
+            return ActionResult.PASS;
+
         if (!this.isLinked()) return ActionResult.FAIL;
         //if (world.isClient()) return ActionResult.SUCCESS;
 
@@ -61,6 +68,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
             closed.setAddress(target.address().text());*/
 
         return ActionResult.SUCCESS;
+
     }
 
     @Override

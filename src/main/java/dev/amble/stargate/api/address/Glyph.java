@@ -25,7 +25,8 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
-    public static final char[] ALL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%".toCharArray();
+    public static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
+    public static final char[] ALL = ALPHABET.toCharArray();
 
     private static final Identifier FONT_ID = StargateMod.id("stargate");
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
@@ -51,28 +52,12 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
         this.glyph = validate(glyph);
     }
 
-    public static char pickRandom() {
-        // FIXME: don't use java.util.Random
-        return ALL[StargateMod.RANDOM.nextInt(ALL.length)];
-    }
-
     // Validate that the input is present in ALL, otherwise return ALL[0].
     public static char validate(char input) {
         for (char c : ALL) {
             if (c == input) return c;
         }
         return ALL[0];
-    }
-
-    // FIXME: this should be done in constant time.
-    public static int indexOf(char input) {
-        input = validate(input);
-
-        for (int i = 0; i < Glyph.ALL.length; i++) {
-            if (Glyph.ALL[i] == input) return i;
-        }
-
-        return -1;
     }
 
     public static Glyph fromInputStream(InputStream stream) {

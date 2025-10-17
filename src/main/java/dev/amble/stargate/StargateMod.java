@@ -1,9 +1,7 @@
 package dev.amble.stargate;
 
 import dev.amble.lib.container.RegistryContainer;
-import dev.amble.lib.register.AmbleRegistries;
-import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.api.address.GlyphOriginRegistryOld;
+import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.command.StargateDataCommand;
 import dev.amble.stargate.command.StargateDialCommand;
 import dev.amble.stargate.command.StargateSyncCommand;
@@ -16,22 +14,13 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Random;
-
 public class StargateMod implements ModInitializer {
 
 	public static final String MOD_ID = "stargate";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	// FIXME: get rid of this
-	public static final Random RANDOM = new Random();
-
 	@Override
 	public void onInitialize() {
-		AmbleRegistries.getInstance().registerAll(
-				GlyphOriginRegistryOld.getInstance()
-		);
-
 		StargateArgumentTypes.register();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, env) -> {

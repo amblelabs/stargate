@@ -2,10 +2,10 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.blockentity.ABlockEntity;
 import dev.amble.lib.blockentity.StructurePlaceableBlockEntity;
-import dev.amble.stargate.api.StargateRef;
-import dev.amble.stargate.api.StargateServerData;
-import dev.amble.stargate.api.network.StargateLinkable;
-import dev.amble.stargate.api.v3.Stargate;
+import dev.amble.stargate.api.data.StargateRef;
+import dev.amble.stargate.api.data.StargateServerData;
+import dev.amble.stargate.api.data.StargateLinkable;
+import dev.amble.stargate.api.gates.Stargate;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;

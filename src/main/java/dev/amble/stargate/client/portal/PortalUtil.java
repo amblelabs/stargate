@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.GateState;
-import dev.amble.stargate.api.v3.state.iris.IrisState;
-import dev.amble.stargate.api.v3.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.gates.state.GateState;
+import dev.amble.stargate.api.gates.state.iris.IrisState;
+import dev.amble.stargate.api.gates.state.stargate.client.ClientGenericGateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;

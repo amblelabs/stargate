@@ -1,10 +1,10 @@
 package dev.amble.stargate.item;
 
-import dev.amble.stargate.api.StargateClientData;
-import dev.amble.stargate.api.StargateData;
-import dev.amble.stargate.api.WorldUtil;
-import dev.amble.stargate.api.v3.Stargate;
-import dev.amble.stargate.api.v3.state.address.GlobalAddressState;
+import dev.amble.lib.api.WorldUtil;
+import dev.amble.stargate.api.data.StargateClientData;
+import dev.amble.stargate.api.data.StargateData;
+import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.gates.state.address.GlobalAddressState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;

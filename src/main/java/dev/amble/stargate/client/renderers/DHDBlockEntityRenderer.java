@@ -55,7 +55,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     }
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-                // TODO add a snow state so the snow block renders under the DHD for fun purposes
+        // TODO add biome overlays so the snow block renders under the DHD for fun purposes
         if (entity == null) return;
         if (entity.getWorld().getBlockState(entity.getPos().north()).getBlock() instanceof SnowBlock) {
             BlockState snowState = Blocks.SNOW.getDefaultState();

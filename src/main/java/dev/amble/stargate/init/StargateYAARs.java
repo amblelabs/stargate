@@ -1,37 +1,38 @@
 package dev.amble.stargate.init;
 
-import dev.amble.stargate.api.v3.behavior.*;
-import dev.amble.stargate.api.v3.behavior.address.AddressBehaviors;
-import dev.amble.stargate.api.v3.behavior.client.ClientGenericGateBehavior;
-import dev.amble.stargate.api.v3.behavior.client.ClientIrisBehavior;
-import dev.amble.stargate.api.v3.behavior.client.ClientMilkyWayBehavior;
-import dev.amble.stargate.api.v3.behavior.client.ClientOrlinBehavior;
-import dev.amble.stargate.api.v3.event.StargateEvents;
-import dev.amble.stargate.api.v3.event.block.StargateBlockEvents;
-import dev.amble.stargate.api.v3.event.render.StargateRenderEvents;
-import dev.amble.stargate.api.v3.state.GateState;
-import dev.amble.stargate.api.v3.state.stargate.GateIdentityState;
-import dev.amble.stargate.api.v3.state.iris.ClientIrisState;
-import dev.amble.stargate.api.v3.state.iris.IrisState;
-import dev.amble.stargate.api.v3.state.stargate.client.*;
+import dev.amble.stargate.api.gates.behavior.*;
+import dev.amble.stargate.api.gates.behavior.address.AddressBehaviors;
+import dev.amble.stargate.api.gates.event.state.StargateTStateEvents;
+import dev.amble.stargate.api.gates.event.tick.StargateTickEvents;
+import dev.amble.stargate.api.gates.event.block.StargateBlockEvents;
+import dev.amble.stargate.api.gates.event.state.gate.StargateGateStateEvents;
+import dev.amble.stargate.api.gates.event.tp.StargateTpEvents;
+import dev.amble.stargate.api.gates.state.GateState;
+import dev.amble.stargate.api.gates.state.stargate.GateIdentityState;
+import dev.amble.stargate.api.gates.state.iris.IrisState;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import dev.drtheo.yaar.event.TEventsRegistry;
 import dev.drtheo.yaar.state.TStateRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class StargateYAARs {
 
     public static final TStateRegistry States = new TStateRegistry();
 
-    // TODO: move to a registry
     public static void init() {
         initEvents();
-        TEventsRegistry.freeze();
+        if (shouldFreeze()) TEventsRegistry.freeze();
 
         initBehavior();
-        TBehaviorRegistry.freeze();
+        if (shouldFreeze()) TBehaviorRegistry.freeze();
 
         initState();
-        States.freeze();
+        if (shouldFreeze()) States.freeze();
+    }
+
+    private static boolean shouldFreeze() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
     }
 
     private static void initBehavior() {
@@ -41,15 +42,10 @@ public class StargateYAARs {
         TBehaviorRegistry.register(BasicGateBehaviors.Opening::new);
         TBehaviorRegistry.register(BasicGateBehaviors.Open::new);
 
-        TBehaviorRegistry.register(ClientGenericGateBehavior::new);
-        TBehaviorRegistry.register(ClientMilkyWayBehavior::new);
-        TBehaviorRegistry.register(ClientOrlinBehavior::new);
-
         TBehaviorRegistry.register(SpacialResistanceBehavior::new);
         TBehaviorRegistry.register(StargateTpEffectsBehavior::new);
 
         TBehaviorRegistry.register(IrisBehavior::new);
-        TBehaviorRegistry.register(ClientIrisBehavior::new); // TODO: move to client
 
         AddressBehaviors.registerAll();
     }
@@ -60,22 +56,14 @@ public class StargateYAARs {
         States.register(GateState.Open.state);
         States.register(GateIdentityState.state);
 
-        States.register(ClientGenericGateState.state);
-        States.register(ClientMilkyWayState.state);
-        States.register(ClientOrlinState.state);
-        States.register(ClientPegasusState.state);
-        States.register(ClientDestinyState.state);
-
-        States.register(ClientIrisState.state);
         States.register(IrisState.state);
     }
 
     private static void initEvents() {
-        TEventsRegistry.register(StargateEvents.event);
-        TEventsRegistry.register(StargateEvents.State.event);
+        TEventsRegistry.register(StargateTStateEvents.event);
         TEventsRegistry.register(StargateBlockEvents.event);
-
-        // TODO: move to client
-        TEventsRegistry.register(StargateRenderEvents.event);
+        TEventsRegistry.register(StargateGateStateEvents.event);
+        TEventsRegistry.register(StargateTpEvents.event);
+        TEventsRegistry.register(StargateTickEvents.event);
     }
 }
