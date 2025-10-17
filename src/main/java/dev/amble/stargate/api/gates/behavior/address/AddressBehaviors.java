@@ -10,6 +10,7 @@ import dev.amble.stargate.api.gates.event.address.AddressResolveEvents;
 import dev.amble.stargate.api.gates.event.address.StargateRemoveEvents;
 import dev.amble.stargate.api.gates.state.address.GlobalAddressState;
 import dev.amble.stargate.api.gates.state.address.LocalAddressState;
+import dev.amble.stargate.api.gates.state.stargate.C8Gates;
 import dev.drtheo.yaar.behavior.TBehavior;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import net.minecraft.server.world.ServerWorld;
@@ -81,7 +82,11 @@ public interface AddressBehaviors {
             ServerWorld world = (ServerWorld) stargate.world();
 
             Stargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
-            return AddressResolveEvent.routeOrFail(target, 0, COST_PT);
+
+            if (target == null || stargate.identity().getClass() != target.identity().getClass())
+                return AddressResolveEvent.FAIL;
+
+            return AddressResolveEvent.route(target, 0, COST_PT);
         }
     }
 
@@ -91,7 +96,7 @@ public interface AddressBehaviors {
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {
-            if (length != 8) return AddressResolveEvent.PASS;
+            if (length != 8 || !(stargate instanceof C8Gates)) return AddressResolveEvent.PASS;
 
             long ownAddress = stargate.state(LocalAddressState.state).address();
 
@@ -107,6 +112,10 @@ public interface AddressBehaviors {
                 return AddressResolveEvent.PASS; // do not fail in case it is an incomplete 9c address.
 
             Stargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
+
+            if (target == null || !(target.identity() instanceof C8Gates))
+                return AddressResolveEvent.FAIL;
+
             return AddressResolveEvent.routeOrFail(target, 0, COST_PT);
         }
     }

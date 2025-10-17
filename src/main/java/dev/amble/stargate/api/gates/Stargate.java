@@ -139,6 +139,10 @@ public abstract class Stargate extends TStateContainer.Delegate implements NbtSe
         this.curState = (TState.Type<? extends GateState<?>>) type;
     }
 
+    public GateIdentityState identity() {
+        return resolve(GateIdentityState.state);
+    }
+
     // TODO: migrate all this to behavior event stuff
     protected void attachState(boolean created, boolean isClient) {
         if (created) {
