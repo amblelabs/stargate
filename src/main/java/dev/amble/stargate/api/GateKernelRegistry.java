@@ -1,7 +1,7 @@
 package dev.amble.stargate.api;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.gates.*;
+import dev.amble.stargate.api.state.stargate.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DefaultedRegistry;
@@ -12,46 +12,39 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
+import java.util.function.Supplier;
+
 public class GateKernelRegistry {
 
     private static final RegistryKey<Registry<Entry>> KEY = RegistryKey.ofRegistry(StargateMod.id("kernel"));
     private static final DefaultedRegistry<Entry> REGISTRY = FabricRegistryBuilder
-            .createDefaulted(KEY, MilkyWayGate.ID).buildAndRegister();
+            .createDefaulted(KEY, MilkyWayState.ID).buildAndRegister();
 
     public static DefaultedRegistry<Entry> get() {
         return REGISTRY;
     }
 
-    public static Entry MILKY_WAY = register(MilkyWayGate.ID, MilkyWayGate::new, MilkyWayGate::new);
-    public static Entry ORLIN = register(OrlinGate.ID, OrlinGate::new, OrlinGate::new);
-    public static Entry PEGASUS = register(PegasusGate.ID, PegasusGate::new, PegasusGate::new);
-    public static Entry DESTINY = register(DestinyGate.ID, DestinyGate::new, DestinyGate::new);
+    public static Entry MILKY_WAY = register(MilkyWayState.ID, MilkyWayState::new);
+    public static Entry ORLIN = register(OrlinState.ID, OrlinState::new);
+    public static Entry PEGASUS = register(PegasusState.ID, PegasusState::new);
+    public static Entry DESTINY = register(DestinyState.ID, DestinyState::new);
 
-    public static Entry register(String path, GateCreator creator, GateLoader loader) {
-        return register(StargateMod.id(path), creator, loader);
+    public static Entry register(String path, Supplier<GateIdentityState> creator) {
+        return register(StargateMod.id(path), creator);
     }
 
-    public static Entry register(Identifier id, GateCreator creator, GateLoader loader) {
-        return Registry.register(REGISTRY, id, new Entry() {
-            @Override
-            public Stargate load(NbtCompound nbt, boolean isClient) {
-                return loader.load(nbt, isClient);
-            }
-
-            @Override
-            public Stargate create(ServerWorld world, BlockPos pos, Direction direction) {
-                return creator.create(world, pos, direction);
-            }
-        });
+    public static Entry register(Identifier id, Supplier<GateIdentityState> creator) {
+        return Registry.register(REGISTRY, id, new Entry(creator));
     }
 
-    public interface GateCreator {
-        Stargate create(ServerWorld world, BlockPos pos, Direction direction);
-    }
+    public record Entry(Supplier<GateIdentityState> creator) {
 
-    public interface GateLoader {
-        Stargate load(NbtCompound nbt, boolean isClient);
-    }
+        public Stargate create(ServerWorld world, BlockPos pos, Direction direction) {
+            return new Stargate(creator.get(), world, pos, direction);
+        }
 
-    public abstract static class Entry implements GateCreator, GateLoader { }
+        public Stargate load(NbtCompound nbt, boolean isClient) {
+            return new Stargate(creator.get(), nbt, isClient);
+        }
+    }
 }

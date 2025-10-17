@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.state.GateState;
-import dev.amble.stargate.api.gates.state.iris.IrisState;
-import dev.amble.stargate.api.gates.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.iris.IrisState;
+import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 
 public class PortalUtil {
 
-    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, ClientGenericGateState clientState, GateState<?> currentState, float time) {
+    public void renderPortalInterior(MatrixStack matrixStack, Stargate stargate, ClientAbstractStargateState clientState, GateState<?> currentState, float time) {
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
 

@@ -2,7 +2,7 @@ package dev.amble.stargate.api.data;
 
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.AddressProvider;
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -50,6 +50,14 @@ public interface StargateData {
         removeId(AddressProvider.Global.getId(address));
     }
 
+    default void addLocal(long address, Stargate stargate) {
+        addId(AddressProvider.Local.getId(address), stargate);
+    }
+
+    default void addGlobal(long address, Stargate stargate) {
+        addId(AddressProvider.Global.getId(address), stargate);
+    }
+
     default @Nullable Stargate getLocal(long address) {
         return getById(AddressProvider.Local.getId(address));
     }
@@ -58,6 +66,7 @@ public interface StargateData {
         return getById(AddressProvider.Global.getId(address));
     }
 
+    void addId(long id, Stargate stargate);
     void removeId(long id);
     boolean containsId(long id);
     @Nullable Stargate getById(long id);

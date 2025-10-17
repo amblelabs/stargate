@@ -2,9 +2,9 @@ package dev.amble.stargate.item;
 
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.data.StargateLinkable;
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.state.GateState;
-import dev.amble.stargate.api.gates.state.address.GlobalAddressState;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -52,7 +52,7 @@ public class DialerItem extends StargateLinkableItem {
 			GateState.Closed closed = gate.stateOrNull(GateState.Closed.state);
 
 			if (closed != null) {
-				closed.address = AddressProvider.Global.asString(target.state(GlobalAddressState.state).address());
+				closed.address = AddressProvider.Global.asString(target.globalAddress());
 				gate.markDirty();
 			}
 

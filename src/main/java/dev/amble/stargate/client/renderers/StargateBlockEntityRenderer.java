@@ -1,10 +1,10 @@
 package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.event.render.StargateRenderEvent;
-import dev.amble.stargate.api.gates.state.GateState;
-import dev.amble.stargate.api.gates.state.stargate.client.ClientGenericGateState;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.event.render.StargateRenderEvent;
+import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
@@ -62,7 +62,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         matrices.pop();
 
-        if (gate.getCurrentState().gateState() != GateState.StateType.CLOSED)
+        if (gate.getGateState().gateState() != GateState.StateType.CLOSED)
             PortalRendering.QUEUE.add(entity);
     }
 
@@ -82,7 +82,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light, int age) {
-        ClientGenericGateState glyphState = gate.stateOrNull(ClientGenericGateState.state);
+        ClientAbstractStargateState glyphState = gate.stateOrNull(ClientAbstractStargateState.state);
 
         if (glyphState == null) return 0;
 
@@ -126,10 +126,10 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public static Identifier getTextureForGate(Stargate gate) {
-        return gate.id().withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + ".png");
+        return gate.kernel().id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + ".png");
     }
 
     public static Identifier getEmissionForGate(Stargate gate) {
-        return gate.id().withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + "_emission.png");
+        return gate.kernel().id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + "_emission.png");
     }
 }

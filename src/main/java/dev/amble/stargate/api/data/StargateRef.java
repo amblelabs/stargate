@@ -2,7 +2,8 @@ package dev.amble.stargate.api.data;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.address.AddressProvider;
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -34,7 +35,7 @@ public class StargateRef implements StargateLinkable {
         Stargate oldGate = this.stargate != null ? this.stargate.get() : null;
 
         this.stargate = gate != null ? new WeakReference<>(gate) : null;
-        this.address = gate != null ? StargateServerData.getAnyId(gate) : -1;
+        this.address = gate != null ? gate.globalAddress() : -1;
 
         if (world.get() instanceof ServerWorld serverWorld) {
             StargateServerData data = StargateServerData.getOrCreate(serverWorld);

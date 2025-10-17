@@ -145,14 +145,15 @@ public class AddressProvider {
             return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
         }
 
-        public static long generate() {
+        public static long generate(RegistryKey<World> dim) {
             long packed = 0;
 
             for (int i = 0; i < 8; i++) {
                 packed |= AddressProvider.packI(i, RANDOM.nextLong(Glyph.ALL.length));
             }
 
-            return packed;
+            char poi = GlyphOriginRegistry.get().glyph(dim);
+            return packed | AddressProvider.packI(8, poi);
         }
     }
 }

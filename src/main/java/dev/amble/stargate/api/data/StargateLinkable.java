@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.data;
 
 import dev.amble.stargate.api.StargateLike;
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;

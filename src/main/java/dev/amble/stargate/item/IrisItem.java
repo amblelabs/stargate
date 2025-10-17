@@ -1,7 +1,7 @@
 package dev.amble.stargate.item;
 
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.state.iris.IrisState;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.iris.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;

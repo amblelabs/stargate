@@ -3,8 +3,8 @@ package dev.amble.stargate.item;
 import dev.amble.lib.api.WorldUtil;
 import dev.amble.stargate.api.data.StargateClientData;
 import dev.amble.stargate.api.data.StargateData;
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.state.address.GlobalAddressState;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -30,7 +30,7 @@ public abstract class StargateLinkableItem extends Item {
 	}
 
 	public void link(ItemStack stack, Stargate gate) {
-		this.link(stack, gate.resolve(GlobalAddressState.state).address());
+		this.link(stack, gate.globalAddress());
 	}
 
 	public void link(ItemStack stack, long address) {

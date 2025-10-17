@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.data;
 
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

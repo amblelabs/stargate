@@ -4,7 +4,7 @@ import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;

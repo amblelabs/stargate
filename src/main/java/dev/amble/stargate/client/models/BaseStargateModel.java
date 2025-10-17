@@ -1,7 +1,7 @@
 package dev.amble.stargate.client.models;
 
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.event.render.StargateAnimateEvent;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.event.render.StargateAnimateEvent;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.client.model.ModelPart;

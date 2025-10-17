@@ -4,7 +4,7 @@ import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.address.GlyphOriginRegistry;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.SymbolControl;
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.item.StargateLinkableItem;

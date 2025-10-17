@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.dhd.control;
 
-import dev.amble.stargate.api.gates.Stargate;
+import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;

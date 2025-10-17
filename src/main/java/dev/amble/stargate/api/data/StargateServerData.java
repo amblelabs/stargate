@@ -1,12 +1,8 @@
 package dev.amble.stargate.api.data;
 
-import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.StargateLike;
-import dev.amble.stargate.api.address.AddressProvider;
-import dev.amble.stargate.api.gates.Stargate;
-import dev.amble.stargate.api.gates.state.address.GlobalAddressState;
-import dev.amble.stargate.api.gates.state.address.LocalAddressState;
+import dev.amble.stargate.api.Stargate;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -31,10 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.LongSupplier;
+import java.util.function.*;
 
 public class StargateServerData extends PersistentState implements StargateData {
 
@@ -58,10 +51,6 @@ public class StargateServerData extends PersistentState implements StargateData 
 	private StargateServerData(ServerWorld world) {
 		ALL.add(new WeakReference<>(this));
 		this.world = new WeakReference<>(world);
-	}
-
-	public void add(long address, Stargate stargate) {
-		this.lookup.put(address, stargate);
 	}
 
 	public void mark(StargateLike gateLike) {
@@ -98,16 +87,6 @@ public class StargateServerData extends PersistentState implements StargateData 
 		}
 	}
 
-	public static long getAnyId(Stargate stargate) {
-		LongSupplier supplier = stargate.stateOrNull(GlobalAddressState.state);
-		if (supplier != null) return supplier.getAsLong();
-
-		supplier = stargate.stateOrNull(LocalAddressState.state);
-		if (supplier != null) return supplier.getAsLong();
-
-		throw new IllegalStateException("Gate " + stargate + " doesn't have an address state! What the fuck?");
-	}
-
 	@Override
 	public boolean isDirty() {
 		return true;
@@ -118,7 +97,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 		gate.toNbt(nbt, true);
 
 		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeVarLong(getAnyId(gate));
+		buf.writeVarLong(gate.globalAddress());
 		buf.writeNbt(nbt);
 
 		targets.forEach(player ->
@@ -127,7 +106,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 	private void removePartial(Stargate gate, Collection<ServerPlayerEntity> targets) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeVarLong(getAnyId(gate));
+		buf.writeVarLong(gate.globalAddress());
 
 		targets.forEach(player ->
 				ServerPlayNetworking.send(player, REMOVE, buf));
@@ -141,6 +120,11 @@ public class StargateServerData extends PersistentState implements StargateData 
 		}
 
 		return address;
+	}
+
+	@Override
+	public void addId(long address, Stargate stargate) {
+		this.lookup.put(address, stargate);
 	}
 
 	@Override
@@ -196,13 +180,6 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 	public static @Nullable StargateServerData get(ServerWorld world) {
 		return world.getPersistentStateManager().get(nbt -> loadNbt(world, nbt), StargateMod.MOD_ID);
-	}
-
-	public static @Nullable StargateServerData getByGlobal(long globalAddress) {
-		RegistryKey<World> key = AddressProvider.Global.getTarget(globalAddress);
-		ServerWorld world = ServerLifecycleHooks.get().getWorld(key);
-
-		return world != null ? StargateServerData.get(world) : null;
 	}
 
 	public static void accept(ServerWorld world, Consumer<StargateServerData> consumer) {
