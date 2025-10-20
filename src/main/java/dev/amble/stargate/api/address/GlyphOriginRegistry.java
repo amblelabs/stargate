@@ -1,20 +1,13 @@
 package dev.amble.stargate.api.address;
 
-import com.google.gson.JsonParser;
-import dev.amble.lib.AmbleKit;
 import dev.amble.stargate.StargateMod;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -28,17 +21,21 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
         return instance;
     }
 
-    static {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
+    public static void init() {
+        instance = new GlyphOriginRegistry();
+        //TODO: fix this
+        //ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
     }
 
-    private GlyphOriginRegistry() { }
+    private GlyphOriginRegistry() {
+        register(World.OVERWORLD, 'Q');
+    }
 
     @Override
     public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
         register(World.OVERWORLD, 'Q');
 
-        for (Identifier id : manager.findResources("poi", f -> f.getPath().endsWith(".json")).keySet()) {
+        /*for (Identifier id : manager.findResources("poi", f -> f.getPath().endsWith(".json")).keySet()) {
             try (InputStream stream = manager.getResource(id).get().getInputStream()) {
                 char created = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject()
                         .getAsJsonPrimitive("glyph").getAsCharacter();
@@ -47,23 +44,24 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
             } catch (Exception e) {
                 AmbleKit.LOGGER.error("Error occurred while loading resource json {}", id.toString(), e);
             }
-        }
+        }*/
 
         return CompletableFuture.completedFuture(null);
     }
 
     public void register(RegistryKey<World> key, char c) {
-        REGISTRY[c] = key;
+        REGISTRY[AddressProvider.indexOf(c)] = key;
     }
 
     public RegistryKey<World> glyph(char c) {
-        return REGISTRY[c];
+        return REGISTRY[AddressProvider.indexOf(c)];
     }
 
+    // TODO: allocate chars
     public char glyph(RegistryKey<World> key) {
         for (char i = 0; i < REGISTRY.length; i++) {
             RegistryKey<World> dim = REGISTRY[i];
-            if (key.equals(dim)) return i;
+            if (key.equals(dim)) return Glyph.ALL[i];
         }
 
         return '*';

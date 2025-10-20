@@ -68,7 +68,8 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
                 int timer = nbt.getInt("timer");
                 float kawooshHeight = nbt.getFloat("kawooshHeight");
 
-                return new Opening(StargateRef.resolveGlobal(address, isClient), caller, timer, kawooshHeight);
+                return new Opening(address != 0 ? StargateRef.resolveGlobal(address, isClient) : null,
+                        caller, timer, kawooshHeight);
             }
         };
 
@@ -94,11 +95,11 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
 
         @Override
         public void toNbt(@NotNull NbtCompound nbt, boolean isClient) {
-            nbt.putLong("address", target.globalAddress());
+            if (target != null)
+                nbt.putLong("address", target.globalAddress());
             nbt.putBoolean("caller", caller);
             nbt.putInt("timer", timer);
             nbt.putFloat("kawooshHeight", kawooshHeight);
-            //nbt.putFloat("kawooshHeight", kawooshHeight);
         }
 
         @Override

@@ -1,6 +1,7 @@
 package dev.amble.stargate;
 
 import dev.amble.lib.container.RegistryContainer;
+import dev.amble.stargate.api.address.GlyphOriginRegistry;
 import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.command.StargateDataCommand;
 import dev.amble.stargate.command.StargateDialCommand;
@@ -41,6 +42,7 @@ public class StargateMod implements ModInitializer {
 		RegistryContainer.register(StargateAttributes.class, MOD_ID);
 		RegistryContainer.register(StargateStatusEffects.class, MOD_ID);
 		RegistryContainer.register(StargateFluids.class, MOD_ID);
+		GlyphOriginRegistry.init();
 
 		StargateWorldGeneration.generateStargateWorldGen();
 		StargateServerData.init();

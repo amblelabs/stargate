@@ -19,7 +19,7 @@ public class AddressProvider {
 
     private static int readAt(long address, int index) {
         int shift = index * BITS_PER_COORD;
-        return (int) ((address >> shift) & MASK);
+        return (int) ((address >> shift) & MASK) - 1;
     }
 
     private static long packI(int index, int value) {
@@ -28,7 +28,7 @@ public class AddressProvider {
 
     private static long packI(int index, long value) {
         int shift = index * BITS_PER_COORD;
-        return (value << shift);
+        return ((value + 1) << shift);
     }
 
     public static long pack(String address) {
@@ -36,7 +36,7 @@ public class AddressProvider {
         int[] nums = new int[chars.length];
 
         for (int i = 0; i < chars.length; i++) {
-            nums[i] = Glyph.ALPHABET.indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
+            nums[i] = indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
         }
 
         return pack(nums, Glyph.ALL.length);
@@ -47,7 +47,7 @@ public class AddressProvider {
     }
 
     public static int length(long address) {
-        return Math.toIntExact(address / BITS_PER_COORD);
+        return (63 - Long.numberOfLeadingZeros(address)) / BITS_PER_COORD + 1;
     }
 
     public static String asString(long packed, int len) {
@@ -58,6 +58,10 @@ public class AddressProvider {
         }
 
         return new String(chars);
+    }
+
+    protected static int indexOf(char c) {
+        return Glyph.ALPHABET.indexOf(c); // TODO(perf): use a math trick or something
     }
 
     public static long pack(int[] numbers, int k) {
@@ -158,13 +162,14 @@ public class AddressProvider {
             IntSet set = new IntArraySet();
 
             while (set.size() != 8) {
-                set.add(RANDOM.nextInt(Glyph.ALL.length));
+                int a = RANDOM.nextInt(Glyph.ALL.length);
+                set.add(a);
             }
 
             long packed = pack(set.toArray(new int[0]));
 
             char poi = GlyphOriginRegistry.get().glyph(dim);
-            return packed | AddressProvider.packI(8, poi);
+            return packed | AddressProvider.packI(8, indexOf(poi));
         }
 
         public static String asString(long packed) {

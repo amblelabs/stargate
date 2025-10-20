@@ -67,11 +67,11 @@ public interface GenericGateBehaviors {
             stargate.markDirty();
 
             // TODO: add energy handling.
-            AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address));
+            AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address, closed.locked));
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
                 // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
-                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.address.length() >= stargate.kernel().maxChevrons)
+                if (resolved instanceof AddressResolveEvent.Result.Fail || length >= stargate.kernel().maxChevrons)
                     this.fail(stargate);
 
                 return;
