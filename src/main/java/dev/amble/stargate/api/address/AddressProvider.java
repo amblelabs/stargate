@@ -50,11 +50,10 @@ public class AddressProvider {
         return Math.toIntExact(address / BITS_PER_COORD);
     }
 
-    public static String asString(long packed) {
-        int length = length(packed);
-        char[] chars = new char[length];
+    public static String asString(long packed, int len) {
+        char[] chars = new char[len];
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < len; i++) {
             chars[i] = Glyph.ALL[AddressProvider.readAt(packed, i)];
         }
 
@@ -166,6 +165,10 @@ public class AddressProvider {
 
             char poi = GlyphOriginRegistry.get().glyph(dim);
             return packed | AddressProvider.packI(8, poi);
+        }
+
+        public static String asString(long packed) {
+            return AddressProvider.asString(packed, 9);
         }
     }
 }

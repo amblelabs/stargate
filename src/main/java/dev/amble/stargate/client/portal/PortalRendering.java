@@ -12,11 +12,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class PortalRendering {
-    public static Queue<StargateBlockEntity> QUEUE = new LinkedList<>();
+    public static Queue<StargateBlockEntity> QUEUE = new ArrayDeque<>();
 
     public static void render(WorldRenderContext context) {
         MinecraftClient client = MinecraftClient.getInstance();

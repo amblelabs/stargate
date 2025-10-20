@@ -25,6 +25,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiler.Profiler;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
 
@@ -41,6 +42,9 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        Profiler profiler = MinecraftClient.getInstance().getProfiler();
+        profiler.push("stargate");
+
         if (entity.getBlockSet() != null) {
             matrices.push();
 
@@ -64,6 +68,8 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         if (gate.getGateState().gateState() != GateState.StateType.CLOSED)
             PortalRendering.QUEUE.add(entity);
+
+        profiler.pop();
     }
 
     @Override
