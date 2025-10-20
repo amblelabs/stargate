@@ -14,6 +14,8 @@ public class OrlinState extends GateIdentityState {
     public static final Box WE_BOX = new Box(BlockPos.ORIGIN).expand(0, 0, 0).expand(0, 1, 0);
 
     public OrlinState() {
+        super(ID);
+
         this.northSouthBox = NS_BOX;
         this.westEastBox = WE_BOX;
 

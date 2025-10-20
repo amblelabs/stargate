@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public final class Stargate extends TStateContainer.Delegate implements NbtSerializer, StargateLike {
+public class Stargate extends TStateContainer.Delegate implements NbtSerializer, StargateLike {
 
     private final RegistryKey<World> dimension;
     private final BlockPos pos;
@@ -112,6 +112,10 @@ public final class Stargate extends TStateContainer.Delegate implements NbtSeria
 
     public long globalAddress() {
         return resolveState(GlobalAddressState.state).address();
+    }
+
+    public long globalId() {
+        return resolveState(GlobalAddressState.state).getAsLong();
     }
 
     //region Gate state

@@ -17,8 +17,11 @@ import net.minecraft.util.math.RotationAxis;
 
 import static dev.amble.stargate.client.renderers.StargateBlockEntityRenderer.ORLIN_GATE;
 
-public class ClientOrlinBehavior extends ClientAbstractStargateBehavior implements StargateLoadedEvents {
+public class ClientOrlinBehavior extends ClientAbstractStargateBehavior<ClientOrlinState> implements StargateLoadedEvents {
 
+    public ClientOrlinBehavior() {
+        super(ClientOrlinState.state, ClientOrlinState::new);
+    }
 
     @Override
     public void onLoaded(Stargate stargate) {

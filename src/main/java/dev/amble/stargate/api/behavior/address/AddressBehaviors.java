@@ -4,6 +4,7 @@ import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.event.address.AddressIdsListEvents;
 import dev.amble.stargate.api.event.init.StargateCreatedEvents;
 import dev.amble.stargate.api.event.address.AddressResolveEvent;
 import dev.amble.stargate.api.event.address.AddressResolveEvents;
@@ -27,7 +28,7 @@ public interface AddressBehaviors {
         TBehaviorRegistry.register(GlobalAddressBehavior::new);
     }
 
-    class LocalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents {
+    class LocalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents, AddressIdsListEvents {
 
         @Override
         public void remove(StargateServerData data, Stargate stargate) {
@@ -42,9 +43,14 @@ public interface AddressBehaviors {
             stargate.addState(address);
             data.addLocal(address.address(), stargate);
         }
+
+        @Override
+        public long findAddressId(Stargate stargate) {
+            return stargate.state(LocalAddressState.state).getAsLong();
+        }
     }
 
-    class GlobalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents {
+    class GlobalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents, AddressIdsListEvents {
 
         @Override
         public void remove(StargateServerData data, Stargate stargate) {
@@ -58,6 +64,11 @@ public interface AddressBehaviors {
 
             stargate.addState(address);
             data.addGlobal(address.address(), stargate);
+        }
+
+        @Override
+        public long findAddressId(Stargate stargate) {
+            return stargate.state(GlobalAddressState.state).getAsLong();
         }
     }
 

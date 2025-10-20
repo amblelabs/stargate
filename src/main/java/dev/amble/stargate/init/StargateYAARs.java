@@ -27,22 +27,19 @@ public class StargateYAARs {
     public static final TAbstractStateRegistry States = new TAbstractStateRegistry() { };
 
     public static void init() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
+
         initEvents();
-        if (shouldFreeze()) TEventsRegistry.freeze();
+        TEventsRegistry.freeze();
 
         initBehavior();
-        if (shouldFreeze()) TBehaviorRegistry.freeze();
+        TBehaviorRegistry.freeze();
 
         initState();
-        if (shouldFreeze()) States.freeze();
+        States.freeze();
     }
 
-    // this is needed so we don't freeze registries before client has registered its own stuff
-    private static boolean shouldFreeze() {
-        return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
-    }
-
-    private static void initBehavior() {
+    public static void initBehavior() {
         TBehaviorRegistry.register(GateManagerBehavior::new);
 
         GenericGateBehaviors.registerAll();
@@ -55,7 +52,7 @@ public class StargateYAARs {
         AddressBehaviors.registerAll();
     }
 
-    private static void initState() {
+    public static void initState() {
         States.register(GateState.Closed.state);
         States.register(GateState.Opening.state);
         States.register(GateState.Open.state);
@@ -65,7 +62,7 @@ public class StargateYAARs {
         States.register(IrisState.state);
     }
 
-    private static void initEvents() {
+    public static void initEvents() {
         // base events
         TEventsRegistry.register(StargateCreatedEvents.event);
         TEventsRegistry.register(StargateLoadedEvents.event);

@@ -35,7 +35,7 @@ public class StargateRef implements StargateLinkable {
         Stargate oldGate = this.stargate != null ? this.stargate.get() : null;
 
         this.stargate = gate != null ? new WeakReference<>(gate) : null;
-        this.address = gate != null ? gate.globalAddress() : -1;
+        this.address = gate != null ? gate.globalId() : -1;
 
         if (world.get() instanceof ServerWorld serverWorld) {
             StargateServerData data = StargateServerData.getOrCreate(serverWorld);

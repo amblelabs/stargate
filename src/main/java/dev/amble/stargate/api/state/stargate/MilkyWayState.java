@@ -6,4 +6,8 @@ import net.minecraft.util.Identifier;
 public class MilkyWayState extends GateIdentityState implements C8Gates {
 
     public static final Identifier ID = StargateMod.id("milky_way");
+
+    public MilkyWayState() {
+        super(ID);
+    }
 }

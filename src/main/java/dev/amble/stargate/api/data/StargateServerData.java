@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -41,6 +42,14 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 			if (data != null)
 				data.tick();
+		});
+
+		ServerPlayConnectionEvents.JOIN.register((networkHandler, packetSender, minecraftServer) -> {
+			ServerPlayerEntity player = networkHandler.player;
+			StargateServerData data = StargateServerData.get((ServerWorld) player.getWorld());
+
+			if (data != null)
+				data.syncAll(List.of(networkHandler.player));
 		});
 	}
 
@@ -92,12 +101,20 @@ public class StargateServerData extends PersistentState implements StargateData 
 		return true;
 	}
 
+	public void syncAll(Collection<ServerPlayerEntity> targets) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeNbt(this.toNbt(true));
+
+		targets.forEach(player ->
+				ServerPlayNetworking.send(player, SYNC_ALL, buf));
+	}
+
 	public void syncPartial(Stargate gate, Collection<ServerPlayerEntity> targets) {
 		NbtCompound nbt = new NbtCompound();
 		gate.toNbt(nbt, true);
 
 		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeVarLong(gate.globalAddress());
+		buf.writeVarLong(gate.globalId());
 		buf.writeNbt(nbt);
 
 		targets.forEach(player ->
@@ -125,6 +142,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 	@Override
 	public void addId(long address, Stargate stargate) {
 		this.lookup.put(address, stargate);
+		this.syncPartial(stargate, tracking(stargate));
 	}
 
 	@Override
@@ -133,6 +151,8 @@ public class StargateServerData extends PersistentState implements StargateData 
 		Collection<Stargate> meta = this.chunk2Gates.get(ChunkPos.toLong(stargate.pos()));
 
 		meta.remove(stargate);
+
+		this.removePartial(stargate, tracking(stargate));
 	}
 
 	@Override
@@ -143,6 +163,11 @@ public class StargateServerData extends PersistentState implements StargateData 
 	@Override
 	public @Nullable Stargate getById(long id) {
 		return lookup.get(id);
+	}
+
+	@Override
+	public NbtCompound writeNbt(NbtCompound nbt) {
+		return this.toNbt(false);
 	}
 
 	private NbtCompound toNbt(boolean sync) {
@@ -158,11 +183,6 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 		nbt.put("Network", list);
 		return nbt;
-	}
-
-	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
-		return this.toNbt(false);
 	}
 
 	public static StargateServerData loadNbt(ServerWorld world, NbtCompound nbt) {

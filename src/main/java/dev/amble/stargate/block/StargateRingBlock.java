@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @SuppressWarnings("deprecation")
-public class StargateRingBlock extends AWaterloggableBlock implements ICantBreak {
+public class StargateRingBlock extends AWaterloggableBlock implements BlockEntityProvider, ICantBreak {
 
 	public StargateRingBlock(ABlockSettings settings) {
 		super(settings,
