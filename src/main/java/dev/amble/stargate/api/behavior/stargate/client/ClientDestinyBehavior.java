@@ -5,6 +5,6 @@ import dev.amble.stargate.api.state.stargate.client.ClientDestinyState;
 public class ClientDestinyBehavior extends ClientAbstractStargateBehavior<ClientDestinyState> {
 
     public ClientDestinyBehavior() {
-        super(ClientDestinyState.state, ClientDestinyState::new);
+        super(ClientDestinyState.class, ClientDestinyState.state, ClientDestinyState::new);
     }
 }

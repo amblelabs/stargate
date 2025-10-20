@@ -10,7 +10,7 @@ import net.minecraft.client.model.ModelPart;
 public class ClientMilkyWayBehavior extends ClientAbstractStargateBehavior<ClientMilkyWayState> implements StargateLoadedEvents {
 
     public ClientMilkyWayBehavior() {
-        super(ClientMilkyWayState.state, ClientMilkyWayState::new);
+        super(ClientMilkyWayState.class, ClientMilkyWayState.state, ClientMilkyWayState::new);
     }
 
     @Override

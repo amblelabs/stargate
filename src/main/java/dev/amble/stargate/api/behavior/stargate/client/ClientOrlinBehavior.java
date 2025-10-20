@@ -20,7 +20,7 @@ import static dev.amble.stargate.client.renderers.StargateBlockEntityRenderer.OR
 public class ClientOrlinBehavior extends ClientAbstractStargateBehavior<ClientOrlinState> implements StargateLoadedEvents {
 
     public ClientOrlinBehavior() {
-        super(ClientOrlinState.state, ClientOrlinState::new);
+        super(ClientOrlinState.class, ClientOrlinState.state, ClientOrlinState::new);
     }
 
     @Override
@@ -51,10 +51,5 @@ public class ClientOrlinBehavior extends ClientAbstractStargateBehavior<ClientOr
 
         if (bl && !DependencyChecker.hasIris())
             ORLIN_GATE.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, 1, 1, 1);
-    }
-
-    @Override
-    public boolean shouldRender(Stargate stargate) {
-        return stargate.stateOrNull(ClientOrlinState.state) instanceof ClientOrlinState;
     }
 }

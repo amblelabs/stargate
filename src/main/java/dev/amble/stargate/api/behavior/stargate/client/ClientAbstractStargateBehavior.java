@@ -23,10 +23,12 @@ import java.util.function.Supplier;
 
 public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractStargateState> implements TBehavior, StargateRenderEvents, StargateLoadedEvents {
 
+    private final Class<T> clazz;
     private final TState.Type<? super T> type;
     private final Supplier<T> stateSupplier;
 
-    public ClientAbstractStargateBehavior(TState.Type<? super T> type, Supplier<T> supplier) {
+    public ClientAbstractStargateBehavior(Class<T> clazz, TState.Type<? super T> type, Supplier<T> supplier) {
+        this.clazz = clazz;
         this.type = type;
         this.stateSupplier = supplier;
     }
@@ -79,7 +81,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
     }
 
     public boolean shouldRender(Stargate stargate) {
-        return stargate.state(type).type() == type;
+        return clazz.isInstance(stargate.state(type));
     }
 
     public void updateChevronVisibility(Stargate stargate, StargateBlockEntityRenderer renderer) {
