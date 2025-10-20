@@ -79,7 +79,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
     }
 
     public boolean shouldRender(Stargate stargate) {
-        return stargate.hasState(type);
+        return stargate.state(type).type() == type;
     }
 
     public void updateChevronVisibility(Stargate stargate, StargateBlockEntityRenderer renderer) {
