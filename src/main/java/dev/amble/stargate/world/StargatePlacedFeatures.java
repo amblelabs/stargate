@@ -15,8 +15,8 @@ import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import java.util.List;
 
 public class StargatePlacedFeatures {
-    public static final RegistryKey<PlacedFeature> NAQUADAH_ORE_PLACED_KEY = registerKey("naquadah_ore_placed");
 
+    public static final RegistryKey<PlacedFeature> NAQUADAH_ORE_PLACED_KEY = registerKey("naquadah_ore_placed");
 
     public static void bootstrap(Registerable<PlacedFeature> context) {
         var configuredFeatureRegistryEntryLookup = context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
@@ -34,6 +34,4 @@ public class StargatePlacedFeatures {
                                  List<PlacementModifier> modifiers) {
         context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
     }
-
-
 }

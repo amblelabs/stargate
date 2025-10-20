@@ -14,6 +14,8 @@ import dev.amble.stargate.api.event.block.StargateBlockEvents;
 import dev.amble.stargate.api.event.state.gate.StargateGateStateEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvents;
 import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.address.GlobalAddressState;
+import dev.amble.stargate.api.state.address.LocalAddressState;
 import dev.amble.stargate.api.state.stargate.*;
 import dev.amble.stargate.api.state.iris.IrisState;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
@@ -53,6 +55,9 @@ public class StargateYAARs {
     }
 
     public static void initState() {
+        States.register(GlobalAddressState.state);
+        States.register(LocalAddressState.state);
+
         States.register(GateState.Closed.state);
         States.register(GateState.Opening.state);
         States.register(GateState.Open.state);
