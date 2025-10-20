@@ -3,7 +3,6 @@ package dev.amble.stargate.api.data;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -26,18 +25,31 @@ public class StargateRef implements StargateLinkable {
 
     @Override
     public @Nullable Stargate asGate() {
-        return stargate != null ? stargate.get() : address != -1
-                ? StargateData.apply(world.get(), data -> data.getById(address)) : null;
+        if (stargate != null)
+            return stargate.get();
+
+        if (address != -1) {
+            System.out.println("fallback for A=" + address + "; client? " + world.get().isClient);
+            Stargate found = StargateData.apply(world.get(), data -> data.getById(address));
+
+            if (found != null) {
+                System.out.println("found!");
+                this.stargate = new WeakReference<>(found);
+                return found;
+            }
+        }
+
+        return null;
     }
 
-    @Override
-    public boolean link(@Nullable Stargate gate) {
-        Stargate oldGate = this.stargate != null ? this.stargate.get() : null;
+    private boolean link(long id, @Nullable Stargate gate) {
+        System.out.println("Linking: " + id + "/" + gate + ": client? " + world.get().isClient);
+        Stargate oldGate = this.asGate();
 
         this.stargate = gate != null ? new WeakReference<>(gate) : null;
-        this.address = gate != null ? gate.globalId() : -1;
+        this.address = id;
 
-        if (world.get() instanceof ServerWorld serverWorld) {
+        if (oldGate != this.asGate() && world.get() instanceof ServerWorld serverWorld) {
             StargateServerData data = StargateServerData.getOrCreate(serverWorld);
 
             if (oldGate != null)
@@ -51,9 +63,13 @@ public class StargateRef implements StargateLinkable {
     }
 
     @Override
+    public boolean link(@Nullable Stargate gate) {
+        return link(gate != null ? gate.globalId() : -1, gate);
+    }
+
+    @Override
     public boolean link(long address) {
-        Stargate stargate = StargateData.apply(world.get(), data -> data.getById(address));
-        return this.link(stargate);
+        return link(address, null);
     }
 
     @Override

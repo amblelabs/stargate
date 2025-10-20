@@ -90,7 +90,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 			stargate.tick();
 
 			if (stargate.dirty()) {
-				this.syncPartial(stargate, tracking(stargate));
+				this.syncPartial(stargate.globalId(), stargate, tracking(stargate));
 				stargate.unmarkDirty();
 			}
 		}
@@ -109,12 +109,12 @@ public class StargateServerData extends PersistentState implements StargateData 
 				ServerPlayNetworking.send(player, SYNC_ALL, buf));
 	}
 
-	public void syncPartial(Stargate gate, Collection<ServerPlayerEntity> targets) {
+	public void syncPartial(long id, Stargate gate, Collection<ServerPlayerEntity> targets) {
 		NbtCompound nbt = new NbtCompound();
 		gate.toNbt(nbt, true);
 
 		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeVarLong(gate.globalId());
+		buf.writeVarLong(id);
 		buf.writeNbt(nbt);
 
 		targets.forEach(player ->
@@ -140,9 +140,9 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	@Override
-	public void addId(long address, Stargate stargate) {
-		this.lookup.put(address, stargate);
-		this.syncPartial(stargate, tracking(stargate));
+	public void addId(long id, Stargate stargate) {
+		this.lookup.put(id, stargate);
+		this.syncPartial(id, stargate, tracking(stargate));
 	}
 
 	@Override

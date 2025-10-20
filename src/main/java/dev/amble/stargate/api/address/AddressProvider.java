@@ -1,5 +1,7 @@
 package dev.amble.stargate.api.address;
 
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -38,6 +40,10 @@ public class AddressProvider {
         }
 
         return pack(nums, Glyph.ALL.length);
+    }
+
+    public static long pack(int[] numbers) {
+        return pack(numbers, Glyph.ALL.length);
     }
 
     public static int length(long address) {
@@ -111,12 +117,15 @@ public class AddressProvider {
             return Glyph.ALL[AddressProvider.readAt(packed, length(packed) - 1)];
         }
 
+        /// FIXME: make this better, maybe?
         public static long generate(RegistryKey<World> world) {
-            long packed = 0;
+            IntSet set = new IntArraySet();
 
-            for (int i = 0; i < 6; i++) {
-                packed |= AddressProvider.packI(i, RANDOM.nextLong(Glyph.ALL.length));
+            while (set.size() != 5) {
+                set.add(RANDOM.nextInt(Glyph.ALL.length));
             }
+
+            long packed = pack(set.toArray(new int[0]));
 
             char poi = GlyphOriginRegistry.get().glyph(world);
             return packed | AddressProvider.packI(6, poi);
@@ -145,12 +154,15 @@ public class AddressProvider {
             return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
         }
 
+        /// FIXME: make this better, maybe?
         public static long generate(RegistryKey<World> dim) {
-            long packed = 0;
+            IntSet set = new IntArraySet();
 
-            for (int i = 0; i < 8; i++) {
-                packed |= AddressProvider.packI(i, RANDOM.nextLong(Glyph.ALL.length));
+            while (set.size() != 8) {
+                set.add(RANDOM.nextInt(Glyph.ALL.length));
             }
+
+            long packed = pack(set.toArray(new int[0]));
 
             char poi = GlyphOriginRegistry.get().glyph(dim);
             return packed | AddressProvider.packI(8, poi);

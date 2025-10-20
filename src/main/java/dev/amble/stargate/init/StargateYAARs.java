@@ -3,6 +3,7 @@ package dev.amble.stargate.init;
 import dev.amble.stargate.api.behavior.*;
 import dev.amble.stargate.api.behavior.address.AddressBehaviors;
 import dev.amble.stargate.api.behavior.iris.IrisBehavior;
+import dev.amble.stargate.api.event.address.AddressIdsListEvents;
 import dev.amble.stargate.api.event.address.AddressResolveEvents;
 import dev.amble.stargate.api.event.address.StargateRemoveEvents;
 import dev.amble.stargate.api.event.init.StargateCreatedEvents;
@@ -29,6 +30,7 @@ public class StargateYAARs {
     public static final TAbstractStateRegistry States = new TAbstractStateRegistry() { };
 
     public static void init() {
+        // FIXME: this looks silly...
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
 
         initEvents();
@@ -84,5 +86,6 @@ public class StargateYAARs {
         // address shit
         TEventsRegistry.register(StargateRemoveEvents.event);
         TEventsRegistry.register(AddressResolveEvents.event);
+        TEventsRegistry.register(AddressIdsListEvents.event);
     }
 }

@@ -41,6 +41,9 @@ public interface AddressBehaviors {
             LocalAddressState address = data.generateAddress(stargate.dimension(), stargate.pos(), LocalAddressState::new);
 
             stargate.addState(address);
+
+            // FIXME: this causes a sync. a double sync because of globaladdressbehavior, in fact.
+            // TODO: make StargateServerData#add use AddressIdsListEvent
             data.addLocal(address.address(), stargate);
         }
 

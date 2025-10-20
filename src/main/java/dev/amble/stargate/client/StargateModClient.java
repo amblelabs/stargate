@@ -1,6 +1,7 @@
 package dev.amble.stargate.client;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.data.StargateClientData;
 import dev.amble.stargate.client.command.ClientStargateDataCommand;
 import dev.amble.stargate.client.command.ClientStargateDumpCommand;
 import dev.amble.stargate.client.init.StargateClientYAARs;
@@ -52,6 +53,7 @@ public class StargateModClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(new WormholeOverlay());
 
         StargateClientYAARs.init();
+        StargateClientData.init();
     }
 
     public void registerBlockEntityRenderers() {

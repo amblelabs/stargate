@@ -1,14 +1,12 @@
 package dev.amble.stargate.api.data;
 
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.event.address.AddressListEvent;
 import dev.drtheo.yaar.event.TEvents;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,18 +16,18 @@ public class StargateClientData implements StargateData {
     private static StargateClientData INSTANCE;
 
     public static void init() {
-        ServerTickEvents.END_WORLD_TICK.register(world -> {
-            StargateClientData.get().tick();
-        });
+        ClientTickEvents.END_CLIENT_TICK.register(world -> StargateClientData.get().tick());
 
-        ServerPlayNetworking.registerGlobalReceiver(SYNC, (server, player, networkHandler, buf, sender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(SYNC, (client, networkHandler, buf, sender) -> {
             long globalId = buf.readVarLong();
             NbtCompound nbt = buf.readNbt();
 
-            StargateClientData data = StargateClientData.get();
+            System.out.println("Received sg " + globalId);
 
+            StargateClientData data = StargateClientData.get();
             final Stargate stargate = data.getById(globalId);
-            server.execute(() -> {
+
+            client.execute(() -> {
                 if (stargate != null) {
                     stargate.updateStates(nbt, true);
                 } else {
@@ -53,13 +51,6 @@ public class StargateClientData implements StargateData {
 
     @Override
     public void addId(long id, Stargate stargate) {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            int length = AddressProvider.length(id);
-
-            if (length != 6 || length != 8)
-                throw new IllegalStateException("Tried to use an address as an id!");
-        }
-
         this.lookup.put(id, stargate);
     }
 
@@ -75,6 +66,7 @@ public class StargateClientData implements StargateData {
 
     @Override
     public @Nullable Stargate getById(long id) {
+        System.out.println("> getting sg by id " + id);
         return lookup.get(id);
     }
 
