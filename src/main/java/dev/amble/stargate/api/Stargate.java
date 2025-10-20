@@ -86,16 +86,32 @@ public final class Stargate extends TStateContainer.Delegate implements NbtSeria
         StargateLoadedEvents.handleLoad(this);
     }
 
+    public void tick() {
+        TEvents.handle(new StargateTickEvent(this));
+    }
+
+    public void remove() {
+        ServerWorld world = (ServerWorld) this.world();
+
+        this.kernel().shape.destroy(world, pos, facing);
+        TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
+    }
+
+    @Override
+    public @NotNull Stargate asGate() {
+        return this;
+    }
+
+    public boolean isClient() {
+        return isClient;
+    }
+
     public GateIdentityState kernel() {
         return resolveState(GateIdentityState.state);
     }
 
     public long globalAddress() {
         return resolveState(GlobalAddressState.state).address();
-    }
-
-    public void tick() {
-        TEvents.handle(new StargateTickEvent(this));
     }
 
     //region Gate state
@@ -112,15 +128,6 @@ public final class Stargate extends TStateContainer.Delegate implements NbtSeria
         this.addState(state);
     }
     //endregion
-
-    @Override
-    public @NotNull Stargate asGate() {
-        return this;
-    }
-
-    public boolean isClient() {
-        return isClient;
-    }
 
     //region Global position stuff
     public RegistryKey<World> dimension() {
@@ -252,13 +259,6 @@ public final class Stargate extends TStateContainer.Delegate implements NbtSeria
         nbt.put(type.id().toString(), backed.encode(state, isClient));
     }
     //endregion
-
-    public void remove() {
-        ServerWorld world = (ServerWorld) this.world();
-
-        this.kernel().shape.destroy(world, pos, facing);
-        TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
-    }
 
     @Override
     public int hashCode() {
