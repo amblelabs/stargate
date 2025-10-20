@@ -5,13 +5,13 @@ import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.stargate.GateIdentityState;
 import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amble.stargate.client.renderers.StargateRenderLayers;
 import dev.amble.stargate.compat.DependencyChecker;
 import dev.drtheo.yaar.behavior.TBehavior;
-import dev.drtheo.yaar.state.TState;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -19,24 +19,22 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
-import java.util.function.Supplier;
-
 public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractStargateState> implements TBehavior, StargateRenderEvents, StargateLoadedEvents {
 
     private final Class<T> clazz;
-    private final TState.Type<? super T> type;
-    private final Supplier<T> stateSupplier;
+    private final Class<? extends GateIdentityState> identity;
 
-    public ClientAbstractStargateBehavior(Class<T> clazz, TState.Type<? super T> type, Supplier<T> supplier) {
+    public ClientAbstractStargateBehavior(Class<? extends GateIdentityState> identity, Class<T> clazz) {
         this.clazz = clazz;
-        this.type = type;
-        this.stateSupplier = supplier;
+        this.identity = identity;
     }
+
+    protected abstract T createClientState(Stargate stargate);
 
     @Override
     public void onLoaded(Stargate stargate) {
-        if (stargate.isClient())
-            stargate.addState(this.stateSupplier.get());
+        if (stargate.isClient() && identity.isInstance(stargate.state(GateIdentityState.state)))
+            stargate.addState(this.createClientState(stargate));
     }
 
     @Override
@@ -81,7 +79,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
     }
 
     public boolean shouldRender(Stargate stargate) {
-        return clazz.isInstance(stargate.state(type));
+        return clazz.isInstance(stargate.state(ClientAbstractStargateState.state));
     }
 
     public void updateChevronVisibility(Stargate stargate, StargateBlockEntityRenderer renderer) {

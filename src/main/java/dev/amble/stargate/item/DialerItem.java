@@ -4,7 +4,6 @@ import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.data.StargateLinkable;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.state.GateState;
-import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;

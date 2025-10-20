@@ -4,6 +4,7 @@ import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.stargate.OrlinState;
 import dev.amble.stargate.api.state.stargate.client.ClientOrlinState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
@@ -20,13 +21,12 @@ import static dev.amble.stargate.client.renderers.StargateBlockEntityRenderer.OR
 public class ClientOrlinBehavior extends ClientAbstractStargateBehavior<ClientOrlinState> implements StargateLoadedEvents {
 
     public ClientOrlinBehavior() {
-        super(ClientOrlinState.class, ClientOrlinState.state, ClientOrlinState::new);
+        super(OrlinState.class, ClientOrlinState.class);
     }
 
     @Override
-    public void onLoaded(Stargate stargate) {
-        if (!stargate.isClient()) return;
-        stargate.addState(new ClientOrlinState());
+    protected ClientOrlinState createClientState(Stargate stargate) {
+        return new ClientOrlinState();
     }
 
     @Override

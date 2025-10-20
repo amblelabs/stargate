@@ -3,6 +3,7 @@ package dev.amble.stargate.api.behavior.stargate.client;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.state.GateState;
+import dev.amble.stargate.api.state.stargate.MilkyWayState;
 import dev.amble.stargate.api.state.stargate.client.ClientMilkyWayState;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import net.minecraft.client.model.ModelPart;
@@ -10,13 +11,12 @@ import net.minecraft.client.model.ModelPart;
 public class ClientMilkyWayBehavior extends ClientAbstractStargateBehavior<ClientMilkyWayState> implements StargateLoadedEvents {
 
     public ClientMilkyWayBehavior() {
-        super(ClientMilkyWayState.class, ClientMilkyWayState.state, ClientMilkyWayState::new);
+        super(MilkyWayState.class, ClientMilkyWayState.class);
     }
 
     @Override
-    public void onLoaded(Stargate stargate) {
-        if (!stargate.isClient()) return;
-        stargate.addState(new ClientMilkyWayState());
+    protected ClientMilkyWayState createClientState(Stargate stargate) {
+        return new ClientMilkyWayState();
     }
 
     @Override
