@@ -9,28 +9,28 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public record StargateBlockTickEvent(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) implements TEvent.Notify<StargateBlockEvents> {
+public record StargateBlockTickEvent(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) implements TEvent.Notify<StargateBlockTickEvents> {
 
     @Override
-    public TEvents.BaseType<StargateBlockEvents> type() {
-        return StargateBlockEvents.event;
+    public TEvents.BaseType<StargateBlockTickEvents> type() {
+        return StargateBlockTickEvents.event;
     }
 
     @Override
-    public void handle(StargateBlockEvents handler) throws StateResolveError {
+    public void handle(StargateBlockTickEvents handler) throws StateResolveError {
         handler.block$tick(stargate, entity, world, pos, state);
     }
 
-    public record Random(Stargate stargate, World world, BlockPos pos, BlockState state, net.minecraft.util.math.random.Random random) implements TEvent.Notify<StargateBlockEvents> {
+    public record Random(Stargate stargate, World world, BlockPos pos, BlockState state, net.minecraft.util.math.random.Random random) implements TEvent.Notify<StargateBlockTickEvents> {
 
         @Override
-        public void handle(StargateBlockEvents handler) throws StateResolveError {
+        public void handle(StargateBlockTickEvents handler) throws StateResolveError {
             handler.block$randomDisplayTick(stargate, world, pos, state, random);
         }
 
         @Override
-        public TEvents.BaseType<StargateBlockEvents> type() {
-            return StargateBlockEvents.event;
+        public TEvents.BaseType<StargateBlockTickEvents> type() {
+            return StargateBlockTickEvents.event;
         }
     }
 }

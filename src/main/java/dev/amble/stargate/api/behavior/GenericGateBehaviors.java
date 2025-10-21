@@ -7,7 +7,7 @@ import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.tick.StargateTickEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvent;
 import dev.amble.stargate.api.event.address.AddressResolveEvent;
-import dev.amble.stargate.api.event.block.StargateBlockEvents;
+import dev.amble.stargate.api.event.block.StargateBlockTickEvents;
 import dev.amble.stargate.api.event.state.gate.StargateGateStateEvents;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
@@ -143,7 +143,7 @@ public interface GenericGateBehaviors {
         }
     }
 
-    class Open implements TBehavior, StargateTickEvents, StargateBlockEvents, StargateGateStateEvents {
+    class Open implements TBehavior, StargateTickEvents, StargateBlockTickEvents, StargateGateStateEvents {
 
         @Resolve
         private final GateManagerBehavior manager = behavior();

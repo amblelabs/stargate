@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.behavior.iris;
 
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.event.block.StargateBlockEvents;
+import dev.amble.stargate.api.event.block.StargateBlockTickEvents;
 import dev.amble.stargate.api.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.api.state.iris.IrisState;
@@ -19,7 +19,7 @@ import net.minecraft.entity.AnimationState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, StargateRenderEvents {
+public class ClientIrisBehavior implements TBehavior, StargateBlockTickEvents, StargateRenderEvents {
 
     @Override
     public void block$tick(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) {

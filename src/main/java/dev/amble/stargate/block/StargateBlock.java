@@ -4,9 +4,9 @@ import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.AWaterloggableBlock;
 import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.util.NonNull;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.event.block.StargateBlockUseEvent;
 import dev.amble.stargate.api.event.block.StargateBlockTickEvent;
-import dev.amble.stargate.api.state.iris.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.*;
@@ -21,7 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-@SuppressWarnings("deprecation")
+// uses unstable amblekit feat/ports block behavior api
+@SuppressWarnings("UnstableApiUsage")
 public class StargateBlock extends AWaterloggableBlock implements BlockEntityProvider {
 
 	public StargateBlock(ABlockSettings settings) {
@@ -33,35 +34,28 @@ public class StargateBlock extends AWaterloggableBlock implements BlockEntityPro
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (hand != Hand.MAIN_HAND || !(world.getBlockEntity(pos) instanceof StargateBlockEntity be) || !be.isLinked())
+        if (hand != Hand.MAIN_HAND || !(world.getBlockEntity(pos) instanceof StargateBlockEntity be))
             return ActionResult.PASS;
 
+		Stargate stargate = be.asGate();
+
+		if (stargate == null)
+			return ActionResult.PASS;
+
+		boolean success = TEvents.handle(new StargateBlockUseEvent(stargate, be, player, world, state, pos, hand, hit));
+
+		if (success)
+			return ActionResult.SUCCESS;
+
+		if (!player.isSneaking() || world.isClient()) return ActionResult.PASS;
+
 		ItemStack heldItem = player.getStackInHand(hand);
-
-		if (!player.isSneaking()) {
-			if (!heldItem.isEmpty()) return ActionResult.PASS;
-			if (world.isClient()) return ActionResult.SUCCESS;
-
-			// TODO: silly, move this to a result event
-			return NonNull.get(be.applyGate(stargate -> {
-				IrisState s = stargate.stateOrNull(IrisState.state);
-
-				if (s == null)
-					return ActionResult.PASS;
-
-				s.open = !s.open;
-
-				stargate.markDirty();
-				return ActionResult.SUCCESS;
-			}), ActionResult.PASS);
-		}
-
         BlockState newSetState = null;
 
         if (!heldItem.isEmpty() && heldItem.getItem() instanceof BlockItem blockItem)
             newSetState = blockItem.getBlock().getPlacementState(new ItemPlacementContext(player, hand, heldItem, hit));
 
-        if (newSetState != null || heldItem.isEmpty()) {
+        if (newSetState != null) {
             be.setBlockSet(newSetState);
             be.markDirty();
 

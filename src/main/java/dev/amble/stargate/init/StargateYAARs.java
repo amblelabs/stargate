@@ -6,12 +6,13 @@ import dev.amble.stargate.api.behavior.iris.IrisBehavior;
 import dev.amble.stargate.api.event.address.AddressIdsListEvents;
 import dev.amble.stargate.api.event.address.AddressResolveEvents;
 import dev.amble.stargate.api.event.address.StargateRemoveEvents;
+import dev.amble.stargate.api.event.block.StargateBlockUseEvents;
 import dev.amble.stargate.api.event.init.StargateCreatedEvents;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.event.init.StargateUpdateEvents;
 import dev.amble.stargate.api.event.state.StargateTStateEvents;
 import dev.amble.stargate.api.event.tick.StargateTickEvents;
-import dev.amble.stargate.api.event.block.StargateBlockEvents;
+import dev.amble.stargate.api.event.block.StargateBlockTickEvents;
 import dev.amble.stargate.api.event.state.gate.StargateGateStateEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvents;
 import dev.amble.stargate.api.state.GateState;
@@ -77,7 +78,8 @@ public class StargateYAARs {
         TEventsRegistry.register(StargateTStateEvents.event);
 
         TEventsRegistry.register(StargateTickEvents.event);
-        TEventsRegistry.register(StargateBlockEvents.event);
+        TEventsRegistry.register(StargateBlockTickEvents.event);
+        TEventsRegistry.register(StargateBlockUseEvents.event);
 
         // gate state
         TEventsRegistry.register(StargateGateStateEvents.event);

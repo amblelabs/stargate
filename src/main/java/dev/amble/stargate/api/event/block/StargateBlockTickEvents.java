@@ -8,11 +8,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public interface StargateBlockEvents extends TEvents {
+public interface StargateBlockTickEvents extends TEvents {
 
-    Type<StargateBlockEvents> event = new Type<>(StargateBlockEvents.class);
+    Type<StargateBlockTickEvents> event = new Type<>(StargateBlockTickEvents.class);
 
-    default void block$tick(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) { }
+    void block$tick(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state);
 
     default void block$randomDisplayTick(Stargate stargate, World world, BlockPos pos, BlockState state, Random random) { }
 }
