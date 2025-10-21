@@ -3,7 +3,6 @@ package dev.amble.stargate.client.portal;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.state.GateState;
-import dev.amble.stargate.api.state.iris.IrisState;
 import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;

@@ -1,7 +1,6 @@
 package dev.amble.stargate.api.state.stargate.client;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Stargate;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.util.Identifier;
 
