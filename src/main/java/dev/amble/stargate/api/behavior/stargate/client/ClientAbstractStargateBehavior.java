@@ -4,22 +4,20 @@ import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.event.render.StargateRenderEvents;
+import dev.amble.stargate.api.event.tick.StargateTickEvents;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.api.state.stargate.GateIdentityState;
 import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
-import dev.amble.stargate.client.renderers.StargateRenderLayers;
-import dev.amble.stargate.compat.DependencyChecker;
+import dev.amble.stargate.client.util.EmissionUtil;
 import dev.drtheo.yaar.behavior.TBehavior;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
-public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractStargateState> implements TBehavior, StargateRenderEvents, StargateLoadedEvents {
+public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractStargateState> implements TBehavior, StargateRenderEvents, StargateLoadedEvents, StargateTickEvents {
 
     private final Class<T> clazz;
     private final Class<? extends GateIdentityState> identity;
@@ -38,13 +36,22 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
     }
 
     @Override
-    public void render(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
-        if (!shouldRender(stargate)) return;
+    public void tick(Stargate stargate) {
+        if (!stargate.isClient()) return;
 
-        this.customRender(stargate, entity, renderer, matrices, vertexConsumers, light, overlay, tickDelta);
+        stargate.resolveState(ClientAbstractStargateState.state).age++;
     }
 
-    protected void customRender(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
+    @Override
+    public void render(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
+        ClientAbstractStargateState clientState = stargate.resolveState(ClientAbstractStargateState.state);
+
+        if (!shouldRender(stargate, clientState)) return;
+
+        this.customRender(stargate, entity, renderer, clientState, matrices, vertexConsumers, light, overlay, tickDelta);
+    }
+
+    protected void customRender(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, ClientAbstractStargateState clientState, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
         matrices.translate(0.5f, 1.4f, 0.5f);
 
         float k = HorizontalBlockBehavior.getFacing(entity.getCachedState()).asRotation();
@@ -53,11 +60,8 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
         matrices.scale(1, 1, 1);
 
-        Identifier texture = StargateBlockEntityRenderer.getTextureForGate(stargate);
-        Identifier emission = StargateBlockEntityRenderer.getEmissionForGate(stargate);
-
-        renderer.model.SymbolRing.roll = renderer.renderGlyphs(matrices, vertexConsumers, stargate, light, entity.age);
-        renderer.model.animateStargateModel(entity, stargate, entity.age);
+        renderer.model.SymbolRing.roll = renderer.renderGlyphs(matrices, vertexConsumers, stargate, light, clientState.age);
+        renderer.model.animateStargateModel(entity, stargate, clientState.age);
 
         renderer.model.chev_light8.visible = false;
         renderer.model.chev_light9.visible = false;
@@ -69,16 +73,10 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
         renderer.model.chev_light7.visible = bl;
         renderer.model.chev_light7bottom.visible = bl;
 
-        if (DependencyChecker.hasIris())
-            renderer.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, 1, 1, 1);
-
-        renderer.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture)), light, overlay, 1, 1, 1, 1);
-
-        if (!DependencyChecker.hasIris())
-            renderer.model.render(matrices, vertexConsumers.getBuffer(StargateRenderLayers.emissiveCullZOffset(emission, true)), 0xF000F0, overlay, 1, 1, 1, 1);
+        EmissionUtil.render2Layers(renderer.model, clientState.texture, clientState.emission, true, matrices, vertexConsumers, light, overlay);
     }
 
-    public boolean shouldRender(Stargate stargate) {
+    public boolean shouldRender(Stargate stargate, ClientAbstractStargateState state) {
         return clazz.isInstance(stargate.state(ClientAbstractStargateState.state));
     }
 

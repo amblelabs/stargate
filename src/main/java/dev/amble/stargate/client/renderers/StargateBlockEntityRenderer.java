@@ -130,12 +130,4 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
         return (float) MathHelper.wrapDegrees(age / 200f * (Math.PI * 2 / Glyph.ALL.length) * Glyph.ALL.length);
     }
-
-    public static Identifier getTextureForGate(Stargate gate) {
-        return gate.kernel().id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + ".png");
-    }
-
-    public static Identifier getEmissionForGate(Stargate gate) {
-        return gate.kernel().id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + "_emission.png");
-    }
 }

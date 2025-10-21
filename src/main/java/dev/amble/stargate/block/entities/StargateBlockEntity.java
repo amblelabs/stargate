@@ -23,9 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class StargateBlockEntity extends StargateLinkableBlockEntity {
 
-	// TODO: move to a client state
-	public int age;
-
 	public boolean requiresPlacement = false;
 	private BlockState blockSet;
 
@@ -96,7 +93,5 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 		this.acceptGate(stargate -> TEvents.handle(
 				new StargateBlockTickEvent(stargate, this, world, blockPos, blockState)
 		));
-
-		if (world.isClient()) age++;
 	}
 }

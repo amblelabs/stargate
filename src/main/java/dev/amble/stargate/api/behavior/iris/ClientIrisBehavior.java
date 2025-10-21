@@ -6,6 +6,7 @@ import dev.amble.stargate.api.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.api.state.iris.IrisState;
 import dev.amble.stargate.api.state.iris.ClientIrisState;
+import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import dev.amble.stargate.client.models.BaseStargateModel;
@@ -25,6 +26,8 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, Starg
         if (!world.isClient())
             return;
 
+        ClientAbstractStargateState clientState = stargate.resolveState(ClientAbstractStargateState.state);
+
         IrisState irisState = stargate.state(IrisState.state);
         ClientIrisState clientIrisState = stargate.state(ClientIrisState.state);
 
@@ -38,7 +41,7 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockEvents, Starg
 
         AnimationState openState = clientIrisState.OPEN_STATE;
         AnimationState closeState = clientIrisState.CLOSE_STATE;
-        int age = entity.age;
+        int age = clientState.age;
 
         if (irisState.open) {
             closeState.startIfNotRunning(age);
