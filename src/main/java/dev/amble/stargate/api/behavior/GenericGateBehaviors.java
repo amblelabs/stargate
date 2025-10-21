@@ -71,7 +71,7 @@ public interface GenericGateBehaviors {
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
                 // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
-                if (resolved instanceof AddressResolveEvent.Result.Fail || length >= stargate.kernel().maxChevrons)
+                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.kernel().maxChevrons)
                     this.fail(stargate);
 
                 return;
@@ -200,7 +200,7 @@ public interface GenericGateBehaviors {
         }
 
         public void tryTeleportFrom(Stargate stargate, GateState.Open open, LivingEntity entity) {
-            if (!(entity instanceof TeleportableEntity holder))
+            if (!(entity instanceof TeleportableEntity holder) || holder.stargate$updateAndGetTicks(GateState.Open.TELEPORT_DELAY) != 0)
                 return;
 
             Stargate target = open.target;
@@ -220,7 +220,7 @@ public interface GenericGateBehaviors {
             BlockPos pos = stargate.pos();
             Vec3d offset = entity.getPos().subtract(pos.toCenterPos().subtract(0, 0.5, 0));
 
-//            // FIXME uh oh! this sucks!
+            // FIXME uh oh! this sucks!
 //            double yOffset = 0;
 //            for (int y = 1; y <= 5; y++) {
 //                boolean bottomIsAir = targetWorld.getBlockState(targetBlockPos.up(y)).isAir();
@@ -234,7 +234,6 @@ public interface GenericGateBehaviors {
             entity.getWorld().playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
             targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
 
-            // Check for blocks above the target position and adjust the Y offset accordingly
             // Retain entity velocity but reorient it towards the target stargate
             Vec3d velocity = entity.getVelocity();
             Vec3d direction = targetBlockPos.toCenterPos().subtract(pos.toCenterPos()).normalize();
@@ -248,7 +247,6 @@ public interface GenericGateBehaviors {
             );
 
             entity.setVelocity(newVelocity);
-            holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
         }
     }
 }
