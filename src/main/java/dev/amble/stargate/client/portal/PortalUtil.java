@@ -45,11 +45,9 @@ public class PortalUtil {
         int rings = 36;
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
-        // TODO move this outta here
-        IrisState irisState = gate.stateOrNull(IrisState.state);
-        float maxWaveHeight = irisState != null && irisState.open ? 0.001f : 0.006f;
-
+        float maxWaveHeight = 0.006f;
         float minWaveHeight = 0.001f;
+
         int rippleCount = 12;
 
         float[][] rippleCenters = new float[rippleCount][2];
