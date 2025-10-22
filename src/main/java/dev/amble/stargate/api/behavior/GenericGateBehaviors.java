@@ -247,6 +247,7 @@ public interface GenericGateBehaviors {
             );
 
             entity.setVelocity(newVelocity);
+            holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
         }
     }
 }
