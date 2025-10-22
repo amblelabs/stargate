@@ -26,14 +26,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.*;
 
 public class StargateServerData extends PersistentState implements StargateData {
-
-	// FIXME: might be not needed. Hopefully.
-	private static final Deque<WeakReference<StargateServerData>> ALL = new ArrayDeque<>();
 
 	public static void init() {
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
@@ -55,11 +51,10 @@ public class StargateServerData extends PersistentState implements StargateData 
 
 	private final Long2ObjectMap<Stargate> lookup = new Long2ObjectOpenHashMap<>();
 	private final Long2ObjectMap<ReferenceSet<Stargate>> chunk2Gates = new Long2ObjectOpenHashMap<>();
-	private final WeakReference<ServerWorld> world;
+	private final ServerWorld world; // lives just as long as the world, shouldn't explode
 
 	private StargateServerData(ServerWorld world) {
-		ALL.add(new WeakReference<>(this));
-		this.world = new WeakReference<>(world);
+		this.world = world;
 	}
 
 	public void mark(StargateLike gateLike) {
@@ -82,11 +77,14 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	private Collection<ServerPlayerEntity> tracking(Stargate stargate) {
-		return PlayerLookup.tracking(world.get(), stargate.pos());
+		return PlayerLookup.tracking(world, stargate.pos());
 	}
 
 	private void tick() {
 		for (Stargate stargate : this.lookup.values()) {
+			if (!world.shouldTick(stargate.pos()))
+				continue;
+
 			stargate.tick();
 
 			if (stargate.dirty()) {

@@ -55,15 +55,14 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     }
 
     // FIXME: oh my gawd bruh, this shit SUCKS ASS
-    // TODO add biome overlays so the snow block renders under the DHD for fun purposes
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        Stargate gate = entity.asGate();
+        if (gate == null) return;
+
         for (ModelPart lights : allLights) {
             lights.visible = false;
         }
-
-        Stargate gate = entity.asGate();
-        if (gate == null) return;
 
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
@@ -90,7 +89,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
             this.updateGlow(address, address.length() - 1);
         }
 
-        renderGlyphs(matrices, vertexConsumers, entity, 0xf000f0);
+        renderGlyphs(matrices, vertexConsumers, entity);
 
         EmissionUtil.render2Layers(model, TEXTURE, EMISSION, true, matrices, vertexConsumers, light, overlay);
 
@@ -111,7 +110,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
         }
     }
 
-    private void renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, DHDBlockEntity dhd, int light) {
+    private void renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, DHDBlockEntity dhd) {
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
         Direction direction = HorizontalBlockBehavior.getFacing(dhd.getCachedState());
@@ -144,7 +143,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
             Text text = Glyph.asText(Glyph.ALL[i]);
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, 0x6f7287, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0,  light);
+                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 15728880);
 
             matrices.pop();
         }
@@ -164,7 +163,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
             Text text = Glyph.asText(Glyph.ALL[18 + i]);
             renderer.draw(text, -renderer.getWidth(text) / 2f, -4, 0x6f7287, false,
-                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, light);
+                    matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, 15728880);
 
             matrices.pop();
         }

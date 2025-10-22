@@ -33,6 +33,8 @@ public class IrisBehavior implements TBehavior, StargateTpEvents, StargateBlockT
             return StargateTpEvent.Result.PASS;
 
         living.damage(to.world().getDamageSources().inWall(), Integer.MAX_VALUE);
+        to.world().playSound(null, to.pos(), StargateSounds.IRIS_HIT, SoundCategory.BLOCKS);
+
         return StargateTpEvent.Result.DENY;
     }
 

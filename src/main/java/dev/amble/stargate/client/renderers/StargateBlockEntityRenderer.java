@@ -24,10 +24,11 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
+
+    public static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
 
     public final StargateModel model = new StargateModel(StargateModel.getTexturedModelData().createModel());
 
@@ -36,9 +37,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             model.chev_light5, model.chev_light6, model.chev_light7, model.chev_light7bottom
     };
 
-    public static final OrlinGateModel ORLIN_GATE = new OrlinGateModel(OrlinGateModel.getTexturedModelData().createModel());
-
-    public StargateBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public StargateBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) { }
 
     @Override
     public void render(StargateBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
@@ -73,22 +72,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
     }
 
     public void animate(StargateBlockEntity stargateBlockEntity, Stargate stargate, int age) {
-        TEvents.handle(new StargateAnimateEvent(stargateBlockEntity, stargate, this, age));
-    }
-
-    @Override
-    public boolean rendersOutsideBoundingBox(StargateBlockEntity stargateBlockEntity) {
-        return true;
-    }
-
-    @Override
-    public int getRenderDistance() {
-        return 256;
-    }
-
-    @Override
-    public boolean isInRenderDistance(StargateBlockEntity exteriorBlockEntity, Vec3d vec3d) {
-        return Vec3d.ofCenter(exteriorBlockEntity.getPos()).multiply(1.0, 0.0, 1.0).isInRange(vec3d.multiply(1.0, 0.0, 1.0), this.getRenderDistance());
+        TEvents.handle(new StargateAnimateEvent(stargateBlockEntity, stargate, this.model, age));
     }
 
     public float renderGlyphs(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light, int age) {
@@ -97,10 +81,11 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         if (glyphState == null) return 0;
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-
         Direction direction = gate.facing();
-        boolean northern = direction == Direction.NORTH || direction == Direction.SOUTH;
-        int multiplier = (direction == Direction.WEST || direction == Direction.NORTH) ? 1 : -1;
+
+        boolean northern = direction.getAxis() == Direction.Axis.Z;
+        int multiplier = direction.getDirection().getOpposite().offset();
+
         float xOffset = northern ? direction.getOffsetX() * 0.3f * multiplier : direction.getOffsetZ() * 0.3f * multiplier;
         float zOffset = northern ? direction.getOffsetZ() * 0.24f * multiplier : direction.getOffsetX() * 0.24f * multiplier;
 
@@ -113,7 +98,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
         int selectedIndex = closed != null ? closed.locked : -1;
 
         for (int i = 0; i < Glyph.ALL.length; i++) {
-            boolean isInDial = closed != null && closed.address.contains(Glyph.ALL[i] + "");
+            boolean isInDial = closed != null && closed.address.contains(Glyph.ALL[i] + ""); // FIXME: #contains on address
             boolean isSelected = i == selectedIndex;
 
             int color = isInDial ? 0x5c5c73 : glyphState.glyphColor;
@@ -124,7 +109,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
             OrderedText text = Glyph.asText(Glyph.ALL[i]).asOrderedText();
 
-            renderer.draw(text, -renderer.getWidth(text) / 2f, -4, color, false,
+            renderer.draw(text, renderer.getWidth(text) / -2f, -4, color, false,
                     matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, isSelected ? 0xf000f0 : light);
 
             matrices.pop();

@@ -19,6 +19,8 @@ import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import dev.drtheo.yaar.state.TStateContainer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -91,7 +93,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     public void remove() {
-        ServerWorld world = (ServerWorld) this.world();
+        ServerWorld world = this.world$server();
 
         this.kernel().shape.destroy(world, pos, facing);
         TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
@@ -139,8 +141,17 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     // optimize using WeakReference if this causes a bottleneck
-    public @NotNull World world() {
+    public @Nullable World world() {
         // trust.
+        if (isClient) {
+            ClientWorld world = MinecraftClient.getInstance().world;
+            return world != null && this.dimension.equals(world.getRegistryKey()) ? world : null;
+        }
+
+        return world$server();
+    }
+
+    public @NotNull ServerWorld world$server() {
         return Objects.requireNonNull(ServerLifecycleHooks.get().getWorld(this.dimension()));
     }
 

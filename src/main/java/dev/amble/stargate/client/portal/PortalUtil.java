@@ -9,7 +9,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class PortalUtil {
@@ -34,14 +33,16 @@ public class PortalUtil {
         matrixStack.pop();
     }
 
-    private static void addVertexGlow(VertexConsumer builder, Matrix4f matrix, Matrix3f normalMatrix, float x, float y, float z, float u, float v, float r, float g, float b, float a, int light) {
+    private static void addVertexGlow(VertexConsumer builder, Matrix4f matrix, float x, float y, float z, float u, float v, float r, float g, float b, float a, int light) {
         builder.vertex(matrix, x, y, z).color(Math.min(1, r), Math.min(1, g), Math.min(1, b), a).texture(u, v).light(light).next();
     }
 
     private void portalTriangles(MatrixStack matrixStack, VertexConsumer buffer, Stargate gate, GateState<?> currentState, float time) {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
+
         int sides = 18;
         int rings = 36;
+
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 
         float maxWaveHeight = 0.006f;
@@ -66,9 +67,7 @@ public class PortalUtil {
         float waveSpeed = 0.2f;
 
         // Add central big ripple if active
-        if (currentState.gateState() == GateState.StateType.OPENING) {
-            triggerCentralRipple(0.05f, 0.6f, 0.01f, 0.2f);
-        }
+        if (currentState.gateState() == GateState.StateType.OPENING) triggerCentralRipple(0.05f, 0.6f, 0.01f, 0.2f);
 
         CentralRippleParams central = getCentralRipple();
         boolean hasCentralRipple = central != null;
@@ -163,9 +162,9 @@ public class PortalUtil {
                     intensity0 = Math.min(1f, intensity0 + 1.0f);
                     intensity1 = Math.min(1f, intensity1 + 1.0f);
                     intensity2 = Math.min(1f, intensity2 + 1.0f);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, 1 * intensity0, 1 * intensity0, 1 *intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, 1 * intensity1, 1 * intensity1, 1 *intensity1, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, 1 * intensity2, 1 * intensity2, 1 *intensity2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, 1 * intensity0, 1 * intensity0, 1 *intensity0, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v1[0], v1[1], v1[2], u1, v1t, 1 * intensity1, 1 * intensity1, 1 *intensity1, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, 1 * intensity2, 1 * intensity2, 1 *intensity2, 1f, 0xf000f0);
                 } else if (centerTriangle) {
                     // Larger center: blueish, softer, brightness based on distance from center
                     float centerDist0 = (float) Math.sqrt(v0[0]*v0[0] + v0[1]*v0[1]);
@@ -177,13 +176,13 @@ public class PortalUtil {
                     intensity0 = Math.min(1f, intensity0 + 0.6f * centerNorm0);
                     intensity1 = Math.min(1f, intensity1 + 0.6f * centerNorm1);
                     intensity2 = Math.min(1f, intensity2 + 0.6f * centerNorm2);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1,  intensity1, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1,  intensity1, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
                 } else {
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1, intensity1, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v1[0], v1[1], v1[2], u1, v1t, intensity1, intensity1, intensity1, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
                 }
 
                 float[] v3 = mesh[r][next];
@@ -203,9 +202,9 @@ public class PortalUtil {
                     intensity0_2 = Math.min(1f, intensity0_2 + 1.0f);
                     intensity2_2 = Math.min(1f, intensity2_2 + 1.0f);
                     intensity3_2 = Math.min(1f, intensity3_2 + 1.0f);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2,  intensity0_2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2,  intensity2_2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2,  intensity3_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2,  intensity0_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2,  intensity2_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2,  intensity3_2, 1f, 0xf000f0);
                 } else if (centerTriangle2) {
                     // Larger center: blueish, softer, brightness based on distance from center
                     float centerDist0 = (float) Math.sqrt(v0[0]*v0[0] + v0[1]*v0[1]);
@@ -221,13 +220,13 @@ public class PortalUtil {
                     intensity2_2 = Math.min(1f, intensity2_2);
                     intensity3_2 = Math.min(1f, intensity3_2);
 
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2, intensity0_2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2, intensity2_2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2, intensity3_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0_2, intensity0_2, intensity0_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2_2, intensity2_2, intensity2_2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v3[0], v3[1], v3[2], u3, v3t, intensity3_2, intensity3_2, intensity3_2, 1f, 0xf000f0);
                 } else {
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
-                    addVertexGlow(buffer, matrix, matrixStack.peek().getNormalMatrix(), v3[0], v3[1], v3[2], u3, v3t, intensity3, intensity3, intensity3, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v0[0], v0[1], v0[2], u0, v0t, intensity0, intensity0, intensity0, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v2[0], v2[1], v2[2], u2, v2t, intensity2, intensity2, intensity2, 1f, 0xf000f0);
+                    addVertexGlow(buffer, matrix, v3[0], v3[1], v3[2], u3, v3t, intensity3, intensity3, intensity3, 1f, 0xf000f0);
                 }
             }
         }
@@ -238,7 +237,7 @@ public class PortalUtil {
 
         float mainDuration = 1f;
         float normTime = Math.min(1f, centralRippleTime / mainDuration);
-        float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (realHeight * central.speed + central.phaseOffset); // TODO <---- THIS IS THE VALUE BUT FOR SOME REASON THIS WONT DWINDLE AAAAA
+        float phase = (1f - 2f * normTime) * (float) Math.pow(1f - normTime, 2) * (realHeight * central.speed + central.phaseOffset);
         float twist = (float) Math.sin(time * 0.7f + angle * 2.5f) * 0.1f;
         return (float) Math.sin(bulge * central.frequency + phase + twist);
     }
