@@ -58,6 +58,13 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     // TODO add biome overlays so the snow block renders under the DHD for fun purposes
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        for (ModelPart lights : allLights) {
+            lights.visible = false;
+        }
+
+        Stargate gate = entity.asGate();
+        if (gate == null) return;
+
         matrices.push();
         matrices.translate(0.5f, 1.5f, 0.5f);
 
@@ -65,13 +72,6 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(k));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f));
-
-        for (ModelPart lights : allLights) {
-            lights.visible = false;
-        }
-
-        Stargate gate = entity.asGate();
-        if (gate == null) return;
 
         GateState<?> state = gate.getGateState();
         boolean bl = (state instanceof GateState.Closed closed && closed.locked > 6) || state instanceof GateState.Opening || state instanceof GateState.Open;
