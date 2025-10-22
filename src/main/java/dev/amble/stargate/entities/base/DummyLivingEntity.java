@@ -22,6 +22,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Arm;
 import net.minecraft.world.World;
 
+@Deprecated(since = "0.0.0", forRemoval = true)
 public abstract class DummyLivingEntity extends LivingEntity {
 
     protected static final Iterable<ItemStack> ARMOR = Collections.singleton(ItemStack.EMPTY);

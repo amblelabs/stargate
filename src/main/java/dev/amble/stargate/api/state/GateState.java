@@ -7,6 +7,7 @@ import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface GateState<T extends TState<T> & GateState<T>> extends TState<T> {
 
@@ -75,7 +76,7 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
 
         public static final int TICKS_PER_KAWOOSH = 4 * 20;
 
-        public final Stargate target;
+        public final @Nullable Stargate target;
         public final boolean caller;
 
         public int timer;
@@ -129,7 +130,7 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
         public static final int TELEPORT_FREQUENCY = 10;
         public static final int TELEPORT_DELAY = 20;
 
-        public final Stargate target;
+        public final @Nullable Stargate target;
         public final boolean caller;
 
         public int timer;

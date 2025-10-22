@@ -31,11 +31,11 @@ public class AddressProvider {
         return ((value + 1) << shift);
     }
 
-    public static long pack(String address) {
+    public static long pack(String address, int len) {
         char[] chars = address.toCharArray();
-        int[] nums = new int[chars.length];
+        int[] nums = new int[len];
 
-        for (int i = 0; i < chars.length; i++) {
+        for (int i = 0; i < len; i++) {
             nums[i] = indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
         }
 

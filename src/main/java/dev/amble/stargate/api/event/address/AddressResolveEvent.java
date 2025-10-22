@@ -17,7 +17,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
 
     public AddressResolveEvent(Stargate stargate, String address, int length) {
         this.stargate = stargate;
-        this.address = AddressProvider.pack(address);
+        this.address = AddressProvider.pack(address, length);
         this.length = length;
     }
 
@@ -29,7 +29,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
     @Override
     public void handleAll(Iterable<AddressResolveEvents> subscribed) {
         for (AddressResolveEvents e : subscribed) {
-            Result result = e.resolve(stargate, address, length);
+            Result result = TEvent.handleSilent(this, e, () -> e.resolve(stargate, address, length), PASS);
 
             if (result == PASS) continue;
 

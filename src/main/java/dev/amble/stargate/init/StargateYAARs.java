@@ -31,6 +31,8 @@ public class StargateYAARs {
     public static final TAbstractStateRegistry States = new TAbstractStateRegistry() { };
 
     public static void init() {
+        TAbstractStateRegistry.debug = FabricLoader.getInstance().isDevelopmentEnvironment();
+
         // FIXME: this looks silly...
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
 

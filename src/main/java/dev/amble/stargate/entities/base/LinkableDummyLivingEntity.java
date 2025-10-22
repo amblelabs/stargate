@@ -8,6 +8,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
+@Deprecated(since = "0.0.0", forRemoval = true)
 public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implements AbstractLinkableEntity {
 
     private static final TrackedData<Long> STARGATE = AbstractLinkableEntity
@@ -53,13 +54,11 @@ public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implem
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
         AbstractLinkableEntity.super.readCustomDataFromNbt(nbt);
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
         AbstractLinkableEntity.super.writeCustomDataToNbt(nbt);
     }
 }

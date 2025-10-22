@@ -111,7 +111,7 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
                         }
                     }
                 }
-            } else if (state instanceof GateState.Opening preOpen) {
+            } else if (state instanceof GateState.Opening preOpen && preOpen.target != null) {
                 String address = AddressProvider.Global.asString(preOpen.target.globalAddress());
                 for (int i = 0; i < address.length() - 1; i++) {
                     char target = address.charAt(i);
