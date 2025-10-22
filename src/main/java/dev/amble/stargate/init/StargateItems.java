@@ -23,10 +23,10 @@ public class StargateItems extends ItemContainer {
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1));
 
 	// Stargates
-	public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
-	public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.ORLIN);
-	public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.DESTINY);
-	public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.PEGASUS);
+	@NoEnglish public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
+	@NoEnglish public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.ORLIN);
+	@NoEnglish public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.DESTINY);
+	@NoEnglish public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.PEGASUS);
 
 	//Naquadah
 	@AutomaticModel

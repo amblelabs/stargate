@@ -13,9 +13,14 @@ public class StargateItem extends BlockItem {
         this(settings, StargateBlocks.GENERIC_GATE, creator);
     }
 
-    public StargateItem(Settings settings, StargateBlock block, GateKernelRegistry.Entry entry) {
+    private StargateItem(Settings settings, StargateBlock block, GateKernelRegistry.Entry entry) {
         super(block, settings);
         this.creator = entry;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return this.getOrCreateTranslationKey();
     }
 
     public GateKernelRegistry.Entry getCreator() {
