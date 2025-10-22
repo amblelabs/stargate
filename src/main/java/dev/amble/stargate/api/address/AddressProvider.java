@@ -124,14 +124,20 @@ public class AddressProvider {
         public static long generate(RegistryKey<World> world) {
             IntSet set = new IntArraySet();
 
+            char poi = GlyphOriginRegistry.get().glyph(world);
+            int poiI = indexOf(poi);
+
             while (set.size() != 5) {
-                set.add(RANDOM.nextInt(Glyph.ALL.length));
+                int a = RANDOM.nextInt(Glyph.ALL.length);
+
+                if (a == poiI)
+                    continue;
+
+                set.add(a);
             }
 
             long packed = pack(set.toArray(new int[0]));
-
-            char poi = GlyphOriginRegistry.get().glyph(world);
-            return packed | AddressProvider.packI(6, poi);
+            return packed | AddressProvider.packI(6, poiI);
         }
     }
 
@@ -161,15 +167,20 @@ public class AddressProvider {
         public static long generate(RegistryKey<World> dim) {
             IntSet set = new IntArraySet();
 
+            char poi = GlyphOriginRegistry.get().glyph(dim);
+            int poiI = indexOf(poi);
+
             while (set.size() != 8) {
                 int a = RANDOM.nextInt(Glyph.ALL.length);
+
+                if (a == poiI)
+                    continue;
+
                 set.add(a);
             }
 
             long packed = pack(set.toArray(new int[0]));
-
-            char poi = GlyphOriginRegistry.get().glyph(dim);
-            return packed | AddressProvider.packI(8, indexOf(poi));
+            return packed | AddressProvider.packI(8, poiI);
         }
 
         public static String asString(long packed) {

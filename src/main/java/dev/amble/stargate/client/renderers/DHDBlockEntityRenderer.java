@@ -2,7 +2,9 @@ package dev.amble.stargate.client.renderers;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.address.Glyph;
+import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.client.models.DHDModel;
 import net.minecraft.block.BlockState;
@@ -53,10 +55,13 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
                 this.model.button35, this.model.button36
         };
     }
+
+    // FIXME: oh my gawd bruh, this shit SUCKS ASS
     @Override
     public void render(DHDBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         // TODO add biome overlays so the snow block renders under the DHD for fun purposes
         if (entity == null) return;
+
         if (entity.getWorld().getBlockState(entity.getPos().north()).getBlock() instanceof SnowBlock) {
             BlockState snowState = Blocks.SNOW.getDefaultState();
             matrices.push();
@@ -85,49 +90,50 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
 
         if (entity.isLinked()) {
             var gate = entity.asGate();
-//            GateState state = gate.kernel().state();
-//            boolean bl = (state instanceof GateState.Closed closed && closed.locked() > 6 && closed.hasDialButton()) || state instanceof GateState.PreOpen || state instanceof GateState.Open;
-//            this.model.dialbutton.visible = !bl;
-//            this.model.dialbuttonlight.visible = bl;
-//
-//
-//
-//            if (state instanceof GateState.Closed closed) {
-//                String addressText = closed.addressBuilder();
-//                if (!addressText.isEmpty()) {
-//                    for (int a = 0; a < closed.locked(); a++) {
-//                        char target = addressText.charAt(a);
-//                        for (int i = 0; i < Glyph.ALL.length; i++) {
-//                            if (Glyph.ALL[i] == target) {
-//                                allLights.get(i).visible = true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//            } else if (state instanceof GateState.PreOpen preOpen) {
-//                String address = preOpen.address();
-//                for (int i = 0; i < address.length() - 1; i++) {
-//                    char target = address.charAt(i);
-//                    for (int a = 0; a < Glyph.ALL.length; a++) {
-//                        if (Glyph.ALL[a] == target) {
-//                            allLights.get(a).visible = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//            } else if (state instanceof GateState.Open open) {
-//                String address = open.target().get().address().text();
-//                for (int i = 0; i < address.length() - 1; i++) {
-//                    char target = address.charAt(i);
-//                    for (int a = 0; a < Glyph.ALL.length; a++) {
-//                        if (Glyph.ALL[a] == target) {
-//                            allLights.get(a).visible = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
+
+            GateState<?> state = gate.getGateState();
+            boolean bl = (state instanceof GateState.Closed closed && closed.locked > 6) || state instanceof GateState.Opening || state instanceof GateState.Open;
+
+            this.model.dialbutton.visible = !bl;
+            this.model.dialbuttonlight.visible = bl;
+
+            if (state instanceof GateState.Closed closed) {
+                String addressText = closed.address;
+
+                if (!addressText.isEmpty()) {
+                    for (int a = 0; a < closed.locked; a++) {
+                        char target = addressText.charAt(a);
+                        for (int i = 0; i < Glyph.ALL.length; i++) {
+                            if (Glyph.ALL[i] == target) {
+                                allLights.get(i).visible = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else if (state instanceof GateState.Opening preOpen) {
+                String address = AddressProvider.Global.asString(preOpen.target.globalAddress());
+                for (int i = 0; i < address.length() - 1; i++) {
+                    char target = address.charAt(i);
+                    for (int a = 0; a < Glyph.ALL.length; a++) {
+                        if (Glyph.ALL[a] == target) {
+                            allLights.get(a).visible = true;
+                            break;
+                        }
+                    }
+                }
+            } else if (state instanceof GateState.Open open) {
+                String address = AddressProvider.Global.asString(open.target.globalAddress());
+                for (int i = 0; i < address.length() - 1; i++) {
+                    char target = address.charAt(i);
+                    for (int a = 0; a < Glyph.ALL.length; a++) {
+                        if (Glyph.ALL[a] == target) {
+                            allLights.get(a).visible = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         renderGlyphs(matrices, vertexConsumers, entity, 0xf000f0);

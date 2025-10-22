@@ -1,9 +1,8 @@
 package dev.amble.stargate.entities;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
-import dev.amble.stargate.api.dhd.control.SymbolControl;
+import dev.amble.stargate.api.dhd.control.Symbol;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
@@ -46,7 +45,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
             TrackedDataHandlerRegistry.VECTOR3F);
 
     public BlockPos dhdBlockPos;
-    private SymbolControl control;
+    private Symbol control;
 
     public DHDControlEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world, false);
@@ -60,10 +59,6 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
     @Override
     public boolean addStatusEffect(StatusEffectInstance effect, @Nullable Entity source) {
         return false;
-    }
-
-    public static List<SymbolArrangement> getSymbolArrangement() {
-        return DHDArrangement.getSymbolArrangement();
     }
 
     public static DHDControlEntity create(World world, Stargate stargate) {
@@ -228,7 +223,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         this.dataTracker.set(HEIGHT, height);
     }
 
-    public SymbolControl getControl() {
+    public Symbol getControl() {
         return control;
     }
 

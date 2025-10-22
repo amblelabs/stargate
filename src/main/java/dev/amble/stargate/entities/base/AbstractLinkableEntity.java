@@ -6,13 +6,10 @@ import dev.amble.stargate.api.Stargate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandler;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public interface AbstractLinkableEntity extends StargateLinkable {
 
@@ -22,7 +19,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
 
     DataTracker getDataTracker();
 
-    TrackedData<Optional<Long>> getTracked();
+    TrackedData<Long> getTracked();
 
     @Override
     default @Nullable Stargate asGate() {
@@ -33,7 +30,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     default boolean link(@Nullable Stargate gate) {
         if (!gateRef().link(gate)) return false;
 
-        this.getDataTracker().set(this.getTracked(), Optional.of(gateRef().address()));
+        this.getDataTracker().set(this.getTracked(), gateRef().address());
         return true;
     }
 
@@ -41,25 +38,25 @@ public interface AbstractLinkableEntity extends StargateLinkable {
     default boolean link(long address) {
         if (!gateRef().link(address)) return false;
 
-        this.getDataTracker().set(this.getTracked(), Optional.of(gateRef().address()));
+        this.getDataTracker().set(this.getTracked(), gateRef().address());
         return true;
     }
 
     @Override
     default void unlink() {
         gateRef().unlink();
-        this.getDataTracker().set(this.getTracked(), Optional.empty());
+        this.getDataTracker().set(this.getTracked(), -1L);
     }
 
     default void initDataTracker() {
-        this.getDataTracker().startTracking(this.getTracked(), Optional.empty());
+        this.getDataTracker().startTracking(this.getTracked(), -1L);
     }
 
     default void onTrackedDataSet(TrackedData<?> data) {
         if (!this.getTracked().equals(data))
             return;
 
-        this.getDataTracker().get(this.getTracked()).ifPresent(this::link);
+        this.link(this.getDataTracker().get(this.getTracked()));
     }
 
     default void readCustomDataFromNbt(NbtCompound nbt) {
@@ -70,9 +67,7 @@ public interface AbstractLinkableEntity extends StargateLinkable {
         gateRef().writeNbt(nbt);
     }
 
-    TrackedDataHandler<Optional<Long>> OPTIONAL_LONG = TrackedDataHandler.ofOptional(PacketByteBuf::writeVarLong, PacketByteBuf::readVarLong);
-
-    static <T extends Entity & AbstractLinkableEntity> TrackedData<Optional<Long>> register(Class<T> self) {
-        return DataTracker.registerData(self, OPTIONAL_LONG);
+    static <T extends Entity & AbstractLinkableEntity> TrackedData<Long> register(Class<T> self) {
+        return DataTracker.registerData(self, TrackedDataHandlerRegistry.LONG);
     }
 }

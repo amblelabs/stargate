@@ -1,10 +1,11 @@
 package dev.amble.stargate.item;
 
 import dev.amble.lib.api.WorldUtil;
+import dev.amble.stargate.api.address.AddressProvider;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.data.StargateClientData;
 import dev.amble.stargate.api.data.StargateData;
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.state.address.GlobalAddressState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -71,7 +72,7 @@ public abstract class StargateLinkableItem extends Item {
 			BlockPos pos = stargate.pos();
 			Direction direction = stargate.facing();
 
-			tooltip.add(Text.literal("> ").append(stargate.stateOrNull(GlobalAddressState.state) + "")
+			tooltip.add(Text.literal("> ").append(Glyph.asText(AddressProvider.Global.asString(stargate.globalAddress())))
 					.formatted(Formatting.DARK_GRAY));
 			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(dim)).formatted(Formatting.DARK_GRAY));
 			tooltip.add(Text.literal("> " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ())

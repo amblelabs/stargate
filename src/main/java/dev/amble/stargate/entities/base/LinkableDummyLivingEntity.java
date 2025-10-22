@@ -8,11 +8,9 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
-import java.util.Optional;
-
 public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implements AbstractLinkableEntity {
 
-    private static final TrackedData<Optional<Long>> STARGATE = AbstractLinkableEntity
+    private static final TrackedData<Long> STARGATE = AbstractLinkableEntity
             .register(LinkableDummyLivingEntity.class);
 
     private final StargateRef stargate = new StargateRef(this::getWorld);
@@ -37,7 +35,7 @@ public abstract class LinkableDummyLivingEntity extends DummyLivingEntity implem
     }
 
     @Override
-    public TrackedData<Optional<Long>> getTracked() {
+    public TrackedData<Long> getTracked() {
         return STARGATE;
     }
 

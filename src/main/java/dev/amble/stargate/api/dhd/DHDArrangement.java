@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.dhd;
 
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.dhd.control.impl.Symbol;
+import dev.amble.stargate.api.dhd.control.Symbol;
 import net.minecraft.entity.EntityDimensions;
 import org.joml.Vector3f;
 

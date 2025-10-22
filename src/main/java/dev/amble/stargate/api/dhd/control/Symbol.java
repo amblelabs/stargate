@@ -1,17 +1,18 @@
 package dev.amble.stargate.api.dhd.control;
 
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
-public class SymbolControl {
+public class Symbol {
 
     public char glyph; // a glyph to represent the control
 
-    public SymbolControl(char glyph) {
+    public Symbol(char glyph) {
         this.setGlyph(glyph);
     }
 
@@ -23,13 +24,17 @@ public class SymbolControl {
         this.glyph = glyph;
     }
 
-    public boolean runServer(Stargate stargate, ServerPlayerEntity player, ServerWorld world, BlockPos console) {
-        return false;
-    }
-
     public boolean runServer(Stargate stargate, ServerPlayerEntity player, ServerWorld world, BlockPos console,
                              boolean leftClick) {
-        return runServer(stargate, player, world, console);
+        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
+
+        if (closed != null) {
+            closed.address += glyph;
+            stargate.markDirty();
+            return true;
+        }
+
+        return false;
     }
 
     public SoundEvent getSound() {
@@ -53,7 +58,7 @@ public class SymbolControl {
         if (o == null || this.getClass() != o.getClass())
             return false;
 
-        SymbolControl symbolControl = (SymbolControl) o;
+        Symbol symbolControl = (Symbol) o;
         return symbolControl.glyph == symbolControl.getGlyph();
     }
 

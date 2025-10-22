@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.dhd;
 
-import dev.amble.stargate.api.dhd.control.SymbolControl;
+import dev.amble.stargate.api.dhd.control.Symbol;
 import dev.amble.stargate.block.DHDBlock;
 import dev.amble.stargate.entities.DHDControlEntity;
 import net.minecraft.entity.EntityDimensions;
@@ -18,11 +18,11 @@ import org.joml.Vector3f;
  * @see DHDControlEntity
  */
 public class SymbolArrangement {
-    private final SymbolControl symbolControl;
+    private final Symbol symbolControl;
     private EntityDimensions scale;
     private Vector3f offset;
 
-    public SymbolArrangement(SymbolControl symbolControl, EntityDimensions scaling, Vector3f offset) {
+    public SymbolArrangement(Symbol symbolControl, EntityDimensions scaling, Vector3f offset) {
         this.symbolControl = symbolControl;
         this.scale = scaling;
         this.offset = offset;
@@ -33,7 +33,7 @@ public class SymbolArrangement {
         return "ControlTypes{" + "control=" + symbolControl + ", scale=" + scale + ", offset=" + offset + '}';
     }
 
-    public SymbolControl getControl() {
+    public Symbol getControl() {
         return this.symbolControl;
     }
 

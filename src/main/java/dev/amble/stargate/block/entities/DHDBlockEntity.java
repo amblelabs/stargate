@@ -2,8 +2,9 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.address.GlyphOriginRegistry;
+import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
-import dev.amble.stargate.api.dhd.control.SymbolControl;
+import dev.amble.stargate.api.dhd.control.Symbol;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
@@ -68,7 +69,6 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
             closed.setAddress(target.address().text());*/
 
         return ActionResult.SUCCESS;
-
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
         Stargate stargate = this.asGate();
         if (stargate == null) return;
 
-        List<SymbolArrangement> controls = DHDControlEntity.getSymbolArrangement();
+        List<SymbolArrangement> controls = DHDArrangement.getSymbolArrangement();
         Direction direction = HorizontalBlockBehavior.getFacing(this.world.getBlockState(this.getPos()));
 
         for (SymbolArrangement control : controls) {
@@ -139,7 +139,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
         char poi = GlyphOriginRegistry.get().glyph(world.getRegistryKey());
 
-        dialButtonEntity.setControlData(new SymbolArrangement(new SymbolControl(poi),
+        dialButtonEntity.setControlData(new SymbolArrangement(new Symbol(poi),
                 EntityDimensions.fixed(0.2f, 0.2f), new Vector3f(0, 0, 0)), this.getPos());
 
         serverWorld.spawnEntity(dialButtonEntity);
