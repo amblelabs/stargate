@@ -12,12 +12,7 @@ import net.minecraft.util.Util;
 import java.util.function.BiFunction;
 
 @Environment(EnvType.CLIENT)
-public class StargateRenderLayers extends RenderLayer {
-    private StargateRenderLayers(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode,
-                            int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction,
-                            Runnable endAction) {
-        super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);
-    }
+public abstract class StargateRenderLayers extends RenderLayer {
 
     private static final BiFunction<Identifier, Boolean, RenderLayer> EMISSIVE_CULL_Z_OFFSET = Util
             .memoize((texture, affectsOutline) -> {
@@ -36,6 +31,10 @@ public class StargateRenderLayers extends RenderLayer {
                         VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256,
                         false, true, multiPhaseParameters);
             });
+
+    public StargateRenderLayers(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
+        super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);
+    }
 
     public static RenderLayer emissiveCullZOffset(Identifier texture, boolean affectsOutline) {
         return EMISSIVE_CULL_Z_OFFSET.apply(texture, affectsOutline);

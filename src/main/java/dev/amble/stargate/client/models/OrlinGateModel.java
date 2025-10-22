@@ -1,9 +1,6 @@
 package dev.amble.stargate.client.models;
 
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 
 public class OrlinGateModel extends BaseStargateModel {
 	public final ModelPart stargate;
@@ -39,6 +36,7 @@ public class OrlinGateModel extends BaseStargateModel {
 		this.outerlayer = this.gate.getChild("outerlayer");
 		this.steps = this.stargate.getChild("steps");
 	}
+
 	public static TexturedModelData getTexturedModelData() {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
@@ -174,16 +172,9 @@ public class OrlinGateModel extends BaseStargateModel {
 		.uv(105, 85).cuboid(7.0F, -6.0F, -4.0F, 1.0F, 6.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 		return TexturedModelData.of(modelData, 128, 128);
 	}
-	@Override
-	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-		stargate.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-	}
 
 	@Override
 	public ModelPart getPart() {
 		return stargate;
 	}
-
-	@Override
-	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {}
 }

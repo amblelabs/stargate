@@ -5,13 +5,12 @@ import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.block.StargateBlock;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
-import dev.amble.stargate.init.StargateBlockEntities;
-import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateSounds;
 import dev.amble.stargate.util.VoxelShapeUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -22,18 +21,13 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "UnstableApiUsage"})
 public class OrlinGateBlock extends StargateBlock {
 
     private static final VoxelShape SHAPE = VoxelShapes.cuboid(0.0F, 0.0F, 0.0F, 16.0F / 16, 8.0F / 16f, 1.0f);
 
     public OrlinGateBlock(ABlockSettings settings) {
         super(settings);
-    }
-
-    @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new StargateBlockEntity(StargateBlockEntities.ORLIN_GATE, pos, state);
     }
 
     @Override
@@ -46,17 +40,12 @@ public class OrlinGateBlock extends StargateBlock {
         return VoxelShapeUtil.rotateShapeH(Direction.NORTH, HorizontalBlockBehavior.getFacing(state), SHAPE);
     }
 
-    // This is Orlin gate specific. - Loqor
-    // this is stupid
-    public static void setBlockAndCreateStargate(World world, BlockPos pos, GateKernelRegistry.Entry entry, Direction facing) {
-        if (world.isClient()) return;
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.onPlaced(world, pos, state, placer, stack);
 
-        BlockState state = StargateBlocks.ORLIN_GATE.getDefaultState().with(HorizontalBlockBehavior.FACING, facing);
-
-        world.setBlockState(pos, state, 3);
-
-        if (world.getBlockEntity(pos) instanceof StargateBlockEntity stargateBe) {
-            stargateBe.onPlacedWithKernel((ServerWorld) world, state, entry);
+        if (world instanceof ServerWorld serverWorld && world.getBlockEntity(pos) instanceof StargateBlockEntity sg) {
+            sg.onPlacedWithKernel(serverWorld, state, GateKernelRegistry.ORLIN);
             world.playSound(null, pos, StargateSounds.DING, SoundCategory.BLOCKS, 1.0f, 1.0f);
         }
     }

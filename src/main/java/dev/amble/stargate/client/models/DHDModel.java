@@ -1,12 +1,10 @@
 package dev.amble.stargate.client.models;
 
+import dev.amble.lib.client.model.BlockEntityModel;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 
-public class DHDModel extends SinglePartEntityModel {
+public class DHDModel extends BlockEntityModel {
 	public final ModelPart dhd;
 	public final ModelPart main;
 	public final ModelPart area;
@@ -486,18 +484,9 @@ public class DHDModel extends SinglePartEntityModel {
 		ModelPartData cube_r59 = bone3.addChild("cube_r59", ModelPartBuilder.create().uv(94, 29).cuboid(-1.5F, -8.0F, -1.5F, 3.0F, 9.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
 		return TexturedModelData.of(modelData, 128, 128);
 	}
-	@Override
-	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-		dhd.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-	}
 
 	@Override
 	public ModelPart getPart() {
 		return dhd;
-	}
-
-	@Override
-	public void setAngles(Entity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-
 	}
 }

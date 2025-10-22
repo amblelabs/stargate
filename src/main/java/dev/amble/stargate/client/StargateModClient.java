@@ -58,7 +58,6 @@ public class StargateModClient implements ClientModInitializer {
 
     public void registerBlockEntityRenderers() {
         BlockEntityRendererFactories.register(StargateBlockEntities.GENERIC_STARGATE, StargateBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(StargateBlockEntities.ORLIN_GATE, StargateBlockEntityRenderer::new);
 
         BlockEntityRendererFactories.register(StargateBlockEntities.DHD, DHDBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(StargateBlockEntities.RING, RingBlockEntityRenderer::new);

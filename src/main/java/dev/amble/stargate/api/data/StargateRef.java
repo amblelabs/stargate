@@ -57,7 +57,7 @@ public class StargateRef implements StargateLinkable {
 
             if (this.isLinked())
                 data.mark(this);
-        };
+        }
 
         return this.isLinked();
     }

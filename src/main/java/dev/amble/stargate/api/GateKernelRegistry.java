@@ -24,10 +24,10 @@ public class GateKernelRegistry {
         return REGISTRY;
     }
 
-    public static Entry MILKY_WAY = register(MilkyWayState.ID, MilkyWayState::new);
-    public static Entry ORLIN = register(OrlinState.ID, OrlinState::new);
-    public static Entry PEGASUS = register(PegasusState.ID, PegasusState::new);
-    public static Entry DESTINY = register(DestinyState.ID, DestinyState::new);
+    public static final Entry MILKY_WAY = register(MilkyWayState.ID, MilkyWayState::new);
+    public static final Entry ORLIN = register(OrlinState.ID, OrlinState::new);
+    public static final Entry PEGASUS = register(PegasusState.ID, PegasusState::new);
+    public static final Entry DESTINY = register(DestinyState.ID, DestinyState::new);
 
     public static Entry register(String path, Supplier<GateIdentityState> creator) {
         return register(StargateMod.id(path), creator);

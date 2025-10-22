@@ -6,7 +6,5 @@ public class StargateCriterions {
 
     public static final SimpleCriterion PASSED_THROUGH = SimpleCriterion.create("passed_through").register();
 
-    public static void init() {
-
-    }
+    public static void init() { }
 }

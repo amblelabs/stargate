@@ -8,14 +8,11 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public interface AbstractLinkableEntity extends StargateLinkable {
 
     StargateRef gateRef();
-
-    World getWorld();
 
     DataTracker getDataTracker();
 

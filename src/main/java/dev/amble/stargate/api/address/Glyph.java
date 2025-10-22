@@ -25,7 +25,7 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
-    public static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
+    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
     public static final char[] ALL = ALPHABET.toCharArray();
 
     private static final Identifier FONT_ID = StargateMod.id("stargate");

@@ -1,17 +1,22 @@
 package dev.amble.stargate.datagen;
 
+import dev.amble.lib.datagen.advancement.AmbleAdvancementProvider;
 import dev.amble.lib.datagen.lang.AmbleLanguageProvider;
 import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.lib.datagen.loot.AmbleBlockLootTable;
 import dev.amble.lib.datagen.model.AmbleModelProvider;
+import dev.amble.lib.datagen.recipe.AmbleRecipeProvider;
 import dev.amble.lib.datagen.sound.AmbleSoundProvider;
 import dev.amble.lib.datagen.tag.AmbleBlockTagProvider;
 import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateCriterions;
 import dev.amble.stargate.init.StargateItems;
 import dev.amble.stargate.world.StargateConfiguredFeature;
 import dev.amble.stargate.world.StargatePlacedFeatures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
@@ -39,22 +44,51 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
         genModels(pack);
         generateRecipes(pack);
         generateAdvancements(pack);
+
         pack.addProvider(StargateWorldGenerator::new);
-       }
+   }
 
     private void genModels(FabricDataGenerator.Pack pack) {
-        pack.addProvider((((output, registriesFuture) -> {
-            AmbleModelProvider provider = new AmbleModelProvider(output);
-
-            provider.withBlocks(StargateBlocks.class);
-            provider.withItems(StargateItems.class);
-
-            return provider;
-        })));
+        pack.addProvider((((output, registriesFuture) ->
+                new AmbleModelProvider(output)
+                        .withBlocks(StargateBlocks.class)
+                        .withItems(StargateItems.class))));
     }
 
     private void generateAdvancements(FabricDataGenerator.Pack pack) {
-        pack.addProvider(StargateAchievementProvider::new);
+        pack.addProvider((output, registriesFuture) -> {
+            AmbleAdvancementProvider provider = new AmbleAdvancementProvider(output);
+
+            Advancement root = provider.create("root").icon(StargateBlocks.GENERIC_GATE)
+                    .noToast().silent().background("textures/block/raw_naquadah_block.png")
+                    .condition("root", InventoryChangedCriterion.Conditions.items(StargateBlocks.GENERIC_GATE))
+                    .build();
+
+            Advancement rawNaquadah = provider.challenge(root, "obtain_raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
+                    .condition("obtain_raw_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.RAW_NAQUADAH))
+                    .hidden().build();
+
+            Advancement addressCartouche = provider.goal(root, "obtain_address_cartouche").icon(StargateItems.ADDRESS_CARTOUCHE)
+                    .condition("obtain_address_cartouche", InventoryChangedCriterion.Conditions.items(StargateItems.ADDRESS_CARTOUCHE))
+                    .hidden().build();
+
+            Advancement liquidNaquadah = provider.goal(rawNaquadah, "obtain_liquid_naquadah").icon(StargateItems.LIQUID_NAQUADAH)
+                    .condition("obtain_liquid_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.LIQUID_NAQUADAH))
+                    .hidden().build();
+
+            Advancement toaster = provider.goal(root, "obtain_toaster").icon(StargateBlocks.TOASTER)
+                    .condition("obtain_toaster", InventoryChangedCriterion.Conditions.items(StargateBlocks.TOASTER))
+                    .hidden().build();
+
+            Advancement burntToast = provider.challenge(toaster, "obtain_burnt_toast").icon(StargateItems.BURNT_TOAST)
+                    .condition("obtain_burnt_toast", InventoryChangedCriterion.Conditions.items(StargateItems.BURNT_TOAST))
+                    .hidden().build();
+
+            Advancement passedThrough = provider.challenge(root, "passed_through").icon(StargateItems.DESTINY_STARGATE)
+                    .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
+
+            return provider;
+        });
     }
 
     @Override
@@ -66,22 +100,23 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
     private void genTags(FabricDataGenerator.Pack pack) {
         pack.addProvider((((output, registriesFuture) -> new AmbleBlockTagProvider(output, registriesFuture).withBlocks(StargateBlocks.class))));
     }
+
     private void genLoot(FabricDataGenerator.Pack pack) {
          pack.addProvider((((output, registriesFuture) -> new AmbleBlockLootTable(output).withBlocks(StargateBlocks.class))));
     }
 
     public void generateRecipes(FabricDataGenerator.Pack pack) {
         pack.addProvider((((output, registriesFuture) -> {
-            StargateRecipeProvider provider = new StargateRecipeProvider(output);
+            AmbleRecipeProvider provider = new AmbleRecipeProvider(output);
 
-            provider.addShapelessRecipe (ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.ADDRESS_CARTOUCHE, 1)
+            provider.addShapelessRecipe(ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.ADDRESS_CARTOUCHE, 1)
                     .input(Items.PAPER)
                     .input(Items.ENDER_PEARL)
                     .criterion(hasItem(Items.PAPER), conditionsFromItem(Items.PAPER))
                     .criterion(hasItem(Items.ENDER_PEARL), conditionsFromItem(Items.ENDER_PEARL)));
 
             provider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.IRIS_BLADE, 1)
-                            .group("iris")
+                    .group("iris")
                     .pattern("II ")
                     .pattern("  N")
                     .pattern("   ")
@@ -355,11 +390,7 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
     private void genSounds(FabricDataGenerator.Pack pack) {
         pack.addProvider((((output, registriesFuture) -> {
-            AmbleSoundProvider provider = new AmbleSoundProvider(output);
-
-            return provider;
+            return new AmbleSoundProvider(output);
         })));
     }
-
-
 }

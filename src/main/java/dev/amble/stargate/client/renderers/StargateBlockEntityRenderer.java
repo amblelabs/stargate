@@ -2,6 +2,7 @@ package dev.amble.stargate.client.renderers;
 
 import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.event.render.StargateAnimateEvent;
 import dev.amble.stargate.api.event.render.StargateRenderEvent;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
@@ -69,6 +70,10 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             PortalRendering.QUEUE.add(entity);
 
         profiler.pop();
+    }
+
+    public void animate(StargateBlockEntity stargateBlockEntity, Stargate stargate, int age) {
+        TEvents.handle(new StargateAnimateEvent(stargateBlockEntity, stargate, this, age));
     }
 
     @Override

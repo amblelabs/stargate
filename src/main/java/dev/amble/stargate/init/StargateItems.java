@@ -43,7 +43,7 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item EMPTY_CONTAINER = new EmptyContainerItem(Fluids.EMPTY, (new AItemSettings().maxCount(16)));
+	public static final Item EMPTY_CONTAINER = new EmptyContainerItem(Fluids.EMPTY, new AItemSettings().maxCount(16));
 
 	@AutomaticModel
 	@NoEnglish

@@ -2,9 +2,12 @@ package dev.amble.stargate.client.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
+import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.data.StargateClientData;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -13,11 +16,16 @@ public class ClientStargateDataCommand {
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(literal("stargate-client")
-                .then(literal("data").then(argument("address", StringArgumentType.string()).executes(context -> {
-                    String address = StringArgumentType.getString(context, "address");
+                .then(literal("data").then(argument("address", LongArgumentType.longArg(0)).executes(context -> {
+                    long address = LongArgumentType.getLong(context, "address");
                     NbtCompound nbt = new NbtCompound();
-                    //StargateClientData.get().getGlobal(address).toNbt(nbt, true);
-                    //context.getSource().sendFeedback(NbtHelper.toPrettyPrintedText(nbt));
+
+                    Stargate stargate = StargateClientData.get().getById(address);
+                    if (stargate == null) return -1;
+
+                    stargate.toNbt(nbt, true);
+
+                    context.getSource().sendFeedback(NbtHelper.toPrettyPrintedText(nbt));
                     return Command.SINGLE_SUCCESS;
                 })))
         );

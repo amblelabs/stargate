@@ -9,7 +9,6 @@ import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.item.StargateItem;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -28,10 +27,6 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 
 	public StargateBlockEntity(BlockPos pos, BlockState state) {
 		super(StargateBlockEntities.GENERIC_STARGATE, pos, state);
-	}
-
-	public StargateBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
-		super(blockEntityType, pos, state);
 	}
 
 	@Override

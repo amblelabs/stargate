@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.behavior.stargate.client;
+package dev.amble.stargate.api.behavior.client;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.Stargate;

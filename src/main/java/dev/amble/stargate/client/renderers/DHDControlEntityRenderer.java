@@ -43,5 +43,4 @@ public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEnt
     public Identifier getTexture(DHDControlEntity controlEntity) {
         return TextureManager.MISSING_IDENTIFIER;
     }
-
 }

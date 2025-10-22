@@ -8,10 +8,8 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
-import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
@@ -48,10 +46,10 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
             Direction direction = blockHitResult.getSide();
             BlockPos blockPos2 = blockPos.offset(direction);
             if (world.canPlayerModifyAt(user, blockPos) && user.canPlaceOn(blockPos2, direction, itemStack)) {
+                BlockState blockState = world.getBlockState(blockPos);
+
                 if (this.fluid == Fluids.EMPTY) {
-                    BlockState blockState = world.getBlockState(blockPos);
-                    if (blockState.getBlock() instanceof FluidDrainable) {
-                        FluidDrainable fluidDrainable = (FluidDrainable)blockState.getBlock();
+                    if (blockState.getBlock() instanceof FluidDrainable fluidDrainable) {
                         ItemStack itemStack2 = fluidDrainable.tryDrainFluid(world, blockPos, blockState);
                         if (!itemStack2.isEmpty()) {
                             user.incrementStat(Stats.USED.getOrCreateStat(this));
@@ -66,7 +64,6 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
                     }
                     return TypedActionResult.fail(itemStack);
                 } else {
-                    BlockState blockState = world.getBlockState(blockPos);
                     BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable && this.fluid == Fluids.WATER ? blockPos : blockPos2;
                     if (this.placeFluid(user, world, blockPos3, blockHitResult)) {
                         this.onEmptied(user, world, itemStack, blockPos3);
@@ -89,21 +86,15 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
         return !player.getAbilities().creativeMode ? new ItemStack(StargateItems.EMPTY_CONTAINER) : stack;
     }
 
-    public void onEmptied(@Nullable PlayerEntity player, World world, ItemStack stack, BlockPos pos) {
-    }
-
     @Override
     public boolean placeFluid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nullable BlockHitResult hitResult) {
-        if (!(this.fluid instanceof FlowableFluid)) {
-            return false;
-        }
+        if (!(this.fluid instanceof FlowableFluid)) return false;
+
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
 
         // Prevent replacing water
-        if (block == Blocks.WATER) {
-            return false;
-        }
+        if (block == Blocks.WATER) return false;
 
         boolean bl = blockState.canBucketPlace(this.fluid);
         boolean bl2 = blockState.isAir() || bl || (block instanceof FluidFillable && ((FluidFillable)block).canFillWithFluid(world, pos, blockState, this.fluid));
@@ -129,8 +120,7 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
     }
 
     protected void playEmptyingSound(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos) {
-        SoundEvent soundEvent = this.fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BOTTLE_EMPTY : SoundEvents.ITEM_BOTTLE_EMPTY;
-        world.playSound(player, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(player, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
         world.emitGameEvent(player, GameEvent.FLUID_PLACE, pos);
     }
 }

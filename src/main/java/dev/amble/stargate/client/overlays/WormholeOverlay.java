@@ -20,6 +20,8 @@ import org.lwjgl.opengl.GL11;
 
 public class WormholeOverlay implements HudRenderCallback {
 
+    private final MinecraftClient client = MinecraftClient.getInstance();
+
     @Override
     public void onHudRender(DrawContext drawContext, float v) {
         if (!MinecraftClient.getInstance().player.getMainHandStack().isOf(Items.DIAMOND_SWORD)) return;
@@ -41,10 +43,10 @@ public class WormholeOverlay implements HudRenderCallback {
         stack.push();
         stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-405f));
         stack.scale(100, 100, 100);
-        renderSpace(stack/*, () -> BackgroundRenderer.setFogBlack(), MinecraftClient.getInstance().worldRenderer.getStarsBuffer()*/, MinecraftClient.getInstance().world, v, projectionMatrix);
+        renderSpace(stack/*, () -> BackgroundRenderer.setFogBlack(), MinecraftClient.getInstance().worldRenderer.getStarsBuffer()*/, client.world, v, projectionMatrix);
         stack.pop();
         stack.push();
-        stack.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2, 5000);
+        stack.translate(drawContext.getScaledWindowWidth() / 2f, drawContext.getScaledWindowHeight() / 2f, 5000);
         stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MinecraftClient.getInstance().player.age / 50f * 360f));
         stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) Math.sin(MinecraftClient.getInstance().player.age / 50f * 2f)));
         stack.scale(11f, 12f, 5.5f);

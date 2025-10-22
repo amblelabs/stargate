@@ -77,7 +77,7 @@ public interface AddressBehaviors {
 
     class C7 implements TBehavior, AddressResolveEvents {
 
-        public static long COST_PT = 2 * 100_000;
+        public static final long COST_PT = 2 * 100_000;
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {
@@ -104,7 +104,7 @@ public interface AddressBehaviors {
 
     class C8 implements TBehavior, AddressResolveEvents {
 
-        public static long COST_PT = 2 * 1_000_000;
+        public static final long COST_PT = 2 * 1_000_000;
 
         @Override
         public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {

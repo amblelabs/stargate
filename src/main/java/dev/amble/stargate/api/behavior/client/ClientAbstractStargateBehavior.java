@@ -1,8 +1,9 @@
-package dev.amble.stargate.api.behavior.stargate.client;
+package dev.amble.stargate.api.behavior.client;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
+import dev.amble.stargate.api.event.render.StargateAnimateEvent;
 import dev.amble.stargate.api.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.event.tick.StargateTickEvents;
 import dev.amble.stargate.api.state.GateState;
@@ -12,6 +13,7 @@ import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amble.stargate.client.util.EmissionUtil;
 import dev.drtheo.yaar.behavior.TBehavior;
+import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -61,7 +63,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
         matrices.scale(1, 1, 1);
 
         renderer.model.SymbolRing.roll = renderer.renderGlyphs(matrices, vertexConsumers, stargate, light, clientState.age);
-        renderer.model.animateStargateModel(entity, stargate, clientState.age);
+        renderer.animate(entity, stargate, clientState.age);
 
         renderer.model.chev_light8.visible = false;
         renderer.model.chev_light9.visible = false;
