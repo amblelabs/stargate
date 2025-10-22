@@ -36,7 +36,7 @@ public abstract class DummyLivingEntity extends LivingEntity {
             )
     )));
 
-    private boolean hasBrain;
+    private final boolean hasBrain;
 
     protected DummyLivingEntity(EntityType<? extends LivingEntity> entityType, World world, boolean hasBrain) {
         super(entityType, world);
