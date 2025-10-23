@@ -95,8 +95,6 @@ jar {
 	}
 }
 
-System.out.println(System.getProperty("CI_MAVEN_PATH"));
-
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
@@ -108,7 +106,7 @@ publishing {
 	repositories {
 		maven {
 			name = "ci"
-			url = providers.systemProperty("CI_MAVEN_PATH")
+			url = providers.environmentVariable("CI_MAVEN_PATH")
 		}
 	}
 }
