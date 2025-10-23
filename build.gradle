@@ -14,23 +14,22 @@ base {
 }
 
 repositories {
-	maven {
-		url "https://jitpack.io"
-
-		metadataSources {
-			artifact() // Look directly for artifact
-		}
-	}
-
-	maven {
-		url "https://cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-
 	// For the scheduler library
-	maven { url "https://theo.is-a.dev/maven/" }
+	maven {
+		url "https://theo.is-a.dev/maven/"
+
+		content {
+			includeGroup "dev.drtheo"
+		}
+	}
+
+	maven {
+		url "https://amblelabs.github.io/maven"
+
+		content {
+			includeGroup "dev.amble"
+		}
+	}
 }
 
 sourceSets {
@@ -47,14 +46,15 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modApi("com.github.amblelabs:modkit:${project.amblekit_version}") {
+	modApi("dev.amble:lib:${project.amblekit_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	modCompileOnlyApi ("teamreborn:energy:${project.tech_version}")
+	modCompileOnlyApi "teamreborn:energy:${project.tech_version}"
 }
 
 processResources {
