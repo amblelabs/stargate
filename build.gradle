@@ -83,15 +83,20 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// withSourcesJar()
+	withSourcesJar()
 
 	sourceCompatibility = JavaVersion.VERSION_22
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+
+	// needed because inputs.properties.archivesName is not accessible configuration time
+	def archivesNameValue = project.base.archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${archivesNameValue.get()}" }
 	}
 }
 
