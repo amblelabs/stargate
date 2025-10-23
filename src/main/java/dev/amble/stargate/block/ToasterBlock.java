@@ -6,10 +6,7 @@ import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.block.entities.ToasterBlockEntity;
 import dev.amble.stargate.init.StargateBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -22,7 +19,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 @SuppressWarnings({"deprecation", "UnstableApiUsage"})
-public class ToasterBlock extends ABlock {
+public class ToasterBlock extends ABlock implements BlockEntityProvider {
 
     protected static final VoxelShape SHAPE = Block.createCuboidShape(5, 1, 5, 11, 7, 11);
 
