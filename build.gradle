@@ -64,11 +64,17 @@ processResources {
 	inputs.property "loader_version", project.loader_version
 	inputs.property "amblekit_version", project.amblekit_version
 
+	exclude '.cache'
+
+	def expansionVars = [
+			"version": project.version,
+			"minecraft_version": project.minecraft_version,
+			"loader_version": project.loader_version,
+			"amblekit_version": project.amblekit_version
+	]
+
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version,
-				"minecraft_version": project.minecraft_version,
-				"loader_version": project.loader_version,
-				"amblekit_version": project.amblekit_version
+		expand expansionVars
 	}
 }
 
