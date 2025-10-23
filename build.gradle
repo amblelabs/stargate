@@ -50,10 +50,6 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	include(modApi("dev.drtheo:scheduler:${project.scheduler_version}")) {
-		exclude(group: "net.fabricmc.fabric-api")
-		transitive = true
-	}
 	modApi("com.github.amblelabs:modkit:${project.amblekit_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}

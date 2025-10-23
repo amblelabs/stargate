@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.BOT_TOKEN }}
-      - run: git clone https://github.com/amblelabs/maven ${{ env.CI_MAVEN_PATH }}
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -44,19 +44,12 @@ jobs:
           ./gradlew --configuration-cache runDatagen
           ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
-      - run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          cd ${{ env.CI_MAVEN_PATH }}
-
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git add .
-            git commit -m "chore: publish artifacts for Stargate"
-            git push origin main
-          else
-            echo "No changes to commit."
-          fi
+      - name: Publish
+        uses: drtheodor/static-file-server-actions/upload@main
+        with:
+          repo: amblelabs/maven
+          token: ${{ secrets.BOT_TOKEN }}
+          path: ${{ env.CI_MAVEN_PATH }}
 
       - name: Cache save
         id: cache-save
