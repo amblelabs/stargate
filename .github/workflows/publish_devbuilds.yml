@@ -1,4 +1,4 @@
-name: Automated donator builds
+name: Automated Builds
 
 on:
   workflow_dispatch:
