@@ -12,28 +12,39 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      token: ${{ secrets.BOT_TOKEN }}
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Make Gradle Wrapper Executable
-      if: ${{ runner.os != 'Windows' }}
-      run: chmod +x ./gradlew
+        cache: 'gradle'
 
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
+    - name: Cache restore
+      id: cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: src/main/generated
+        key: datagen-${{ github.run_id }}
+        restore-keys:
+          datagen-
+
     - name: Run datagen
-      run: ./gradlew runDatagen
+      run: ./gradlew --configuration-cache runDatagen
 
     - name: Build
-      run: ./gradlew build
-      #env:
-      #  BETA: 1 # exclude assets if it's a beta dev build
+      run: ./gradlew --configuration-cache build
+
+    - name: Cache save
+      id: cache-save
+      uses: actions/cache/save@v4
+      with:
+        path: src/main/generated
+        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
     - name: Publish artifacts
       uses: drtheodor/discord-webhook-upload-action@v0.2
@@ -45,3 +56,9 @@ jobs:
         message_commit: '> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
         message_header: |
           <:new1:1253371736510959636><:new2:1253371805734015006> New `${{ github.repository }}` dev build `#${{ github.run_number }}`:
+
+    - name: Publish
+      uses: drtheodor/static-file-server-actions/upload@main
+      with:
+        repo: amblelabs/maven
+        path: ${{ runner.temp }}/maven
