@@ -95,6 +95,8 @@ jar {
 	}
 }
 
+System.out.println(System.getProperty("CI_MAVEN_PATH"));
+
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
