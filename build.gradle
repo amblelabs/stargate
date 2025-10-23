@@ -106,7 +106,7 @@ publishing {
 	repositories {
 		maven {
 			name = "ci"
-			url = layout.projectDirectory.dir(System.getProperty("CI_MAVEN_PATH"))
+			url = providers.systemProperty("CI_MAVEN_PATH")
 		}
 	}
 }
