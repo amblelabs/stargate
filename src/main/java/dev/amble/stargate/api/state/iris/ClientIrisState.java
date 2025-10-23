@@ -10,6 +10,8 @@ public class ClientIrisState implements TState<ClientIrisState> {
 
     public final AnimationState CLOSE_STATE = new AnimationState();
     public final AnimationState OPEN_STATE = new AnimationState();
+
+    public int ticks;
     public boolean stopOpening;
 
     @Override

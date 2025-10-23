@@ -11,8 +11,6 @@ import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.animations.StargateAnimations;
 import dev.amble.stargate.client.models.BaseStargateModel;
 import dev.amble.stargate.client.models.StargateModel;
-import dev.drtheo.scheduler.api.TimeUnit;
-import dev.drtheo.scheduler.api.client.ClientScheduler;
 import dev.drtheo.yaar.behavior.TBehavior;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AnimationState;
@@ -30,6 +28,9 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockTickEvents, S
 
         IrisState irisState = stargate.state(IrisState.state);
         ClientIrisState clientIrisState = stargate.state(ClientIrisState.state);
+
+        if (clientIrisState.ticks > 0) clientIrisState.ticks--;
+        else clientIrisState.stopOpening = true;
 
         GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
 
@@ -53,12 +54,7 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockTickEvents, S
                 openState.startIfNotRunning(age);
             }
 
-            if (openState.isRunning()) {
-                ClientScheduler.get().runTaskLater(() -> {
-                    openState.stop();
-                    clientIrisState.stopOpening = true;
-                }, TimeUnit.SECONDS, 3);
-            }
+            if (openState.isRunning()) clientIrisState.ticks = 3 * 20;
         }
     }
 
