@@ -25,7 +25,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-    - name: Cache restore
+    - name: Restore DataGen cache
       id: cache-restore
       uses: actions/cache/restore@v4
       with:
@@ -34,23 +34,31 @@ jobs:
         restore-keys:
           datagen-
 
-    - name: Run datagen
+    - name: Run DataGen
       run: ./gradlew --configuration-cache runDatagen
 
-    - name: Build
-      run: ./gradlew --configuration-cache build
-
-    - name: Cache save
+    - name: Save DataGen cache
       id: cache-save
       uses: actions/cache/save@v4
       with:
         path: src/main/generated
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
+    - name: Build
+      run: ./gradlew --configuration-cache build
+
     - name: Build for Maven
+      env:
+        CI_MAVEN_PATH: ${{ runner.temp }}/maven
       run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
-    - name: Publish artifacts
+    - name: Publish to Amble Maven
+      uses: drtheodor/static-file-server-actions/upload@main
+      with:
+        repo: amblelabs/maven
+        path: ${{ runner.temp }}/maven
+
+    - name: Publish to Discord
       uses: drtheodor/discord-webhook-upload-action@v0.2
       with:
         url: ${{ secrets.DEV_BUILDS }}
@@ -60,9 +68,3 @@ jobs:
         message_commit: '> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
         message_header: |
           <:new1:1253371736510959636><:new2:1253371805734015006> New `${{ github.repository }}` dev build `#${{ github.run_number }}`:
-
-    - name: Publish
-      uses: drtheodor/static-file-server-actions/upload@main
-      with:
-        repo: amblelabs/maven
-        path: ${{ runner.temp }}/maven
