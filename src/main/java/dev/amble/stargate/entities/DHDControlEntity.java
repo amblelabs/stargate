@@ -1,6 +1,7 @@
 package dev.amble.stargate.entities;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.dhd.control.Symbol;
 import dev.amble.stargate.api.Stargate;
@@ -19,8 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -265,9 +264,6 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
             closed.address += control.getGlyph();
             stargate.markDirty();
         }
-
-        this.control.runServer(stargate, (ServerPlayerEntity) player, (ServerWorld) world, this.dhdBlockPos,
-                leftClick);
     }
 
     public void setScaleAndCalculate(float width, float height) {
@@ -283,7 +279,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         this.setIdentity(this.control.getClass().getSimpleName());
         this.setControlWidth(type.getScale().width);
         this.setControlHeight(type.getScale().height);
-        this.setCustomName(Text.translatable(String.valueOf(type.getControl().glyph)));
+        super.setCustomName(Glyph.asText(type.getControl().getGlyph()));
     }
 
     public void controlEditorHandler(PlayerEntity player) {
@@ -319,11 +315,6 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
 
     @Override
     public void setCustomName(@Nullable Text name) {
-        if (name == null) return;
-        if (this.getControl() == null) return;
-        Text text = Text.translatable(String.valueOf(this.control.glyph));
-        if (name.equals(text)) {
-            super.setCustomName(name);
-        }
+        return;
     }
 }
