@@ -12,8 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.BOT_TOKEN }}
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -21,9 +22,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: 'gradle'
-
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
     - name: Restore DataGen cache
       id: cache-restore
@@ -37,13 +35,6 @@ jobs:
     - name: Run DataGen
       run: ./gradlew --configuration-cache runDatagen
 
-    - name: Save DataGen cache
-      id: cache-save
-      uses: actions/cache/save@v4
-      with:
-        path: src/main/generated
-        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-
     - name: Build
       run: ./gradlew --configuration-cache build
 
@@ -52,11 +43,19 @@ jobs:
         CI_MAVEN_PATH: ${{ runner.temp }}/maven
       run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
+    - name: Save DataGen cache
+      id: cache-save
+      uses: actions/cache/save@v4
+      with:
+        path: src/main/generated
+        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+
     - name: Publish to Amble Maven
       uses: drtheodor/static-file-server-actions/upload@main
       with:
         repo: amblelabs/maven
         path: ${{ runner.temp }}/maven
+        token: ${{ secrets.BOT_TOKEN }}
 
     - name: Publish to Discord
       uses: drtheodor/discord-webhook-upload-action@v0.2
