@@ -89,25 +89,27 @@ java {
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
-/*tasks.withType(JavaCompile).configureEach {
-	options.compilerArgs.add('--enable-preview')
-}
-
-tasks.withType(Test).configureEach {
-	jvmArgs += '--enable-preview'
-}
-
-tasks.withType(JavaExec).configureEach {
-	jvmArgs += '--enable-preview'
-}*/
-
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
 }
 
-apply from: 'amblemaven.gradle'
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			artifactId = project.archives_base_name
+			from components.java
+		}
+	}
+
+	repositories {
+		maven {
+			name = "ci"
+			url = layout.projectDirectory.dir(System.getProperty("CI_MAVEN_PATH"))
+		}
+	}
+}
 
 loom {
 	// accessWidenerPath = file("src/main/resources/${project.mod_id}.accesswidener")
