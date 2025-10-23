@@ -1,0 +1,66 @@
+name: Publish to Amble Maven
+
+on:
+  workflow_dispatch:
+  push:
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CI_MAVEN_PATH: ${{ runner.temp }}/maven
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+      - run: git clone https://github.com/amblelabs/maven ${{ env.CI_MAVEN_PATH }}
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+
+      - name: Cache restore
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: src/main/generated
+          key: datagen-${{ github.run_id }}
+          restore-keys:
+            datagen-
+
+      - name: Build
+        run: |
+          ./gradlew --configuration-cache runDatagen
+          ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
+
+      - run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          cd ${{ env.CI_MAVEN_PATH }}
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "chore: publish artifacts for Stargate"
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Cache save
+        id: cache-save
+        uses: actions/cache/save@v4
+        with:
+          path: src/main/generated
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
