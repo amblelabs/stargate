@@ -47,6 +47,9 @@ jobs:
         path: src/main/generated
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
+    - name: Build for Maven
+      run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
+
     - name: Publish artifacts
       uses: drtheodor/discord-webhook-upload-action@v0.2
       with:
