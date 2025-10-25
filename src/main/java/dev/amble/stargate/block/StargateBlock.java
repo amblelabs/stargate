@@ -2,10 +2,8 @@ package dev.amble.stargate.block;
 
 import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.AWaterloggableBlock;
-import dev.amble.lib.block.behavior.api.BlockBehaviorLike;
 import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.lib.blockentity.ABlockEntity;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.block.StargateBlockUseEvent;
 import dev.amble.stargate.api.event.block.StargateBlockTickEvent;
@@ -22,8 +20,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-
-import java.util.function.BiFunction;
 
 // uses unstable amblekit feat/ports block behavior api
 @SuppressWarnings("UnstableApiUsage")
