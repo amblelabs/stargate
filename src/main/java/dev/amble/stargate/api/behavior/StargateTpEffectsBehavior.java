@@ -18,7 +18,7 @@ public class StargateTpEffectsBehavior implements TBehavior, StargateTpEvents {
     private static Advancement PASSED_THROUGH_GATE;
 
     private static Advancement getPassThroughAdv() {
-        return PASSED_THROUGH_GATE != null ? PASSED_THROUGH_GATE = ServerLifecycleHooks.get().getAdvancementLoader().get(StargateMod.id("passed_through")) : null;
+        return PASSED_THROUGH_GATE == null ? PASSED_THROUGH_GATE = ServerLifecycleHooks.get().getAdvancementLoader().get(StargateMod.id("passed_through")) : PASSED_THROUGH_GATE;
     }
 
     public static boolean hasPassedThroughBefore(ServerPlayerEntity player) {

@@ -11,16 +11,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class LiquidNaquadahFluidBlock extends FluidBlock {
+
     public LiquidNaquadahFluidBlock(FlowableFluid fluid, Settings settings) {
         super(fluid, settings);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (!world.isClient && entity instanceof PlayerEntity player) {
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 60, 1, true, false, true));
         }
-        super.onEntityCollision(state, world, pos, entity);
     }
 
     @Override

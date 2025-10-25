@@ -61,8 +61,10 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
 
             Advancement root = provider.create("root").icon(StargateBlocks.GENERIC_GATE)
                     .noToast().silent().background("textures/block/raw_naquadah_block.png")
-                    .condition("root", InventoryChangedCriterion.Conditions.items(StargateBlocks.GENERIC_GATE))
-                    .build();
+                    .condition("root", InventoryChangedCriterion.Conditions.items(
+                            StargateItems.ORLIN_STARGATE, StargateItems.DESTINY_STARGATE,
+                            StargateItems.MILKY_WAY_STARGATE, StargateItems.PEGASUS_STARGATE
+                    )).build();
 
             Advancement rawNaquadah = provider.challenge(root, "obtain_raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
                     .condition("obtain_raw_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.RAW_NAQUADAH))
@@ -389,8 +391,6 @@ public class SGDataGenerator implements DataGeneratorEntrypoint {
     }
 
     private void genSounds(FabricDataGenerator.Pack pack) {
-        pack.addProvider((((output, registriesFuture) -> {
-            return new AmbleSoundProvider(output);
-        })));
+        pack.addProvider((((output, registriesFuture) -> new AmbleSoundProvider(output))));
     }
 }

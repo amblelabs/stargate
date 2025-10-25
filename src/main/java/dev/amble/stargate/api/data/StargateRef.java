@@ -93,6 +93,9 @@ public class StargateRef implements StargateLinkable {
     }
 
     public static @Nullable Stargate resolveGlobal(long globalAddress, boolean isClient) {
+        if (globalAddress == -1)
+            return null;
+
         if (isClient)
             return StargateClientData.get().getGlobal(globalAddress);
 

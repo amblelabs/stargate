@@ -11,9 +11,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class WormholeRenderer {
-    public Identifier TEXTURE_LOCATION;
-    public Identifier SECOND_LAYER_LOCATION;
-    public Identifier THIRD_LAYER_LOCATION;
+    public final Identifier TEXTURE_LOCATION;
+    public final Identifier SECOND_LAYER_LOCATION;
+    public final Identifier THIRD_LAYER_LOCATION;
     private final float distortionSpeed;
     private final float distortionSeparationFactor;
     private final float distortionFactor;

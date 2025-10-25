@@ -17,7 +17,7 @@ private static def getBranch() {
     branch = branch.substring(REFS_PREFIX.length())
     branch = branch.replaceAll("/", "-")
 
-    return branch;
+    return branch
 }
 
 private static def getBuildNumber() {

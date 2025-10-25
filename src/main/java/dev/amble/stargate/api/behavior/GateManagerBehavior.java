@@ -17,10 +17,7 @@ public class GateManagerBehavior implements TBehavior {
 
     public void set(Stargate stargate, GateState<?> newState) {
         TState.Type<?> oldStateType = stargate.getGateStateType();
-        GateState<?> oldState = null;
-
-        if (oldStateType != null)
-            oldState = (GateState<?>) stargate.removeState(oldStateType);
+        GateState<?> oldState = (GateState<?>) stargate.removeState(oldStateType);
 
         stargate.setGateState(newState);
         stargate.markDirty();

@@ -9,6 +9,7 @@ import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
 import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;
+import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -254,7 +255,7 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         }
 
         if (this.dhdBlockPos != null) {
-            this.getWorld().playSound(null, this.getBlockPos(), this.control.getSound(), SoundCategory.BLOCKS, 0.7f,
+            this.getWorld().playSound(null, this.getBlockPos(), StargateSounds.DHD_PRESS, SoundCategory.BLOCKS, 0.7f,
                     1f);
         }
 
@@ -314,7 +315,5 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
     }
 
     @Override
-    public void setCustomName(@Nullable Text name) {
-        return;
-    }
+    public void setCustomName(@Nullable Text name) { }
 }

@@ -1,8 +1,5 @@
 package dev.amble.stargate.api.dhd.control;
 
-import dev.amble.stargate.init.StargateSounds;
-import net.minecraft.sound.SoundEvent;
-
 public class Symbol {
 
     protected char glyph; // a glyph to represent the control
@@ -17,10 +14,6 @@ public class Symbol {
 
     public void setGlyph(char glyph) {
         this.glyph = glyph;
-    }
-
-    public SoundEvent getSound() {
-        return StargateSounds.DHD_PRESS;
     }
 
     @Override

@@ -107,8 +107,6 @@ public interface GenericGateBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
-            //if (stargate.isClient()) return;
-
             GateState.Opening opening = stargate.state(GateState.Opening.state);
 
             // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
@@ -125,12 +123,12 @@ public interface GenericGateBehaviors {
                             Math.pow(tPrime, 3) * p3
             );
 
-            //stargate.markDirty();
-
             if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH || tPrime != 1) return;
 
             opening.kawooshHeight = 0;
             opening.timer = 0;
+
+            if (stargate.isClient()) return;
 
             // Handle missing gates by address gracefully
             if (opening.caller && opening.target != null) {
@@ -204,32 +202,17 @@ public interface GenericGateBehaviors {
                 return;
 
             Stargate target = open.target;
+            if (target == null) return; // this is most likely false, since we do a check every tick, but just in case...
 
-            // this is most likely false, since we do a check every tick, but just in case...
-            if (target == null)
-                return;
-
-            ServerWorld targetWorld = (ServerWorld) target.world();
             BlockPos targetBlockPos = target.pos();
+            ServerWorld targetWorld = (ServerWorld) target.world();
+            if (targetWorld == null) return;
 
             StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
-
-            if (result == StargateTpEvent.Result.DENY)
-                return;
+            if (result == StargateTpEvent.Result.DENY) return;
 
             BlockPos pos = stargate.pos();
             Vec3d offset = entity.getPos().subtract(pos.toCenterPos().subtract(0, 0.5, 0));
-
-            // FIXME uh oh! this sucks!
-//            double yOffset = 0;
-//            for (int y = 1; y <= 5; y++) {
-//                boolean bottomIsAir = targetWorld.getBlockState(targetBlockPos.up(y)).isAir();
-//                boolean belowIsAir = targetWorld.getBlockState(targetBlockPos.up(y - 1)).isAir();
-//                if (!bottomIsAir || !belowIsAir) {
-//                    yOffset = y;
-//                    break;
-//                }
-//            }
 
             entity.getWorld().playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);
             targetWorld.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundCategory.BLOCKS, 1f, 1);

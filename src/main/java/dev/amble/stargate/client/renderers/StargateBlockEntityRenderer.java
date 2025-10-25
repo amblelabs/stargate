@@ -25,7 +25,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
-import org.joml.Matrix4f;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
 
@@ -112,7 +111,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.scale(0.025f, 0.025f, 0.025f);
 
             final GateState.Closed closed = gate.stateOrNull(GateState.Closed.state);
-            final int selectedIndex = closed != null ? closed.locked : -1;
+            final int selectedIndex = closed != null && (closed.locked > 0 || closed.locking) ? closed.locked : -1;
 
             final float baseAngle = 2 * MathHelper.PI / GLYPHS.length;
 

@@ -10,8 +10,8 @@ import java.security.SecureRandom;
 
 public class AddressProvider {
 
-    static int BITS_PER_COORD = getBitsNeeded(Glyph.ALL.length);
-    static int MASK = (1 << BITS_PER_COORD) - 1;
+    static final int BITS_PER_COORD = getBitsNeeded(Glyph.ALL.length);
+    static final int MASK = (1 << BITS_PER_COORD) - 1;
 
     private static int getBitsNeeded(int max) {
         return MathHelper.ceil(Math.log(max) / Math.log(2));
@@ -102,7 +102,7 @@ public class AddressProvider {
         // TODO: set random seed to world seed maybe?
         private static final SecureRandom RANDOM = new SecureRandom();
 
-        static int ID_MASK = (1 << BITS_PER_COORD * 6) - 1;
+        static final int ID_MASK = (1 << BITS_PER_COORD * 6) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;
@@ -149,7 +149,7 @@ public class AddressProvider {
         // TODO: set random seed to world seed maybe?
         private static final SecureRandom RANDOM = new SecureRandom();
 
-        static int ID_MASK = (1 << BITS_PER_COORD * 8) - 1;
+        static final int ID_MASK = (1 << BITS_PER_COORD * 8) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;

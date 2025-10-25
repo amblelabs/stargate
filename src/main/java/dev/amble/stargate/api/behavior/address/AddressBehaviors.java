@@ -90,6 +90,9 @@ public interface AddressBehaviors {
 
             ServerWorld world = (ServerWorld) stargate.world();
 
+            if (world == null)
+                return AddressResolveEvent.PASS; // do not fail in case it is an incomplete 9c address.
+
             Stargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
 
             if (target == null || stargate.kernel().getClass() != target.kernel().getClass())
