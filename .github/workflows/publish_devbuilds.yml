@@ -64,7 +64,9 @@ jobs:
       uses: drtheodor/discord-webhook-upload-action@v0.2
       with:
         url: ${{ secrets.DEV_BUILDS }}
-        file: 'build/libs/*'
+        file: |
+          build/libs/*.jar
+          !build/libs/*-sources.jar
         username: STARGATE
         avatar: 'https://i.sstatic.net/zvZCE.jpg'
         message_commit: '> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
