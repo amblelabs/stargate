@@ -1,9 +1,6 @@
 package dev.amble.stargate.client.models;
 
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 
 public class StargateModel extends BaseStargateModel {
 	public final ModelPart stargate;
@@ -70,6 +67,7 @@ public class StargateModel extends BaseStargateModel {
 	public final ModelPart blade16;
 	public final ModelPart blade17;
 	public final ModelPart blade18;
+
 	public StargateModel(ModelPart root) {
 		this.stargate = root.getChild("stargate");
 		this.OuterRing = this.stargate.getChild("OuterRing");

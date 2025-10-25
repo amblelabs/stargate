@@ -5,14 +5,19 @@
 	"name": "STARGATE",
 	"description": "Stargate Mod for Fabric 1.20.1.",
 	"authors": [
-		"Amble Labs"
+		"AmbleLabs",
+		"- DrTheo_ (code)",
+		"- Duzo (code)",
+		"- Loqor (code)",
+		"- Addi3 (code)",
+		"- Ouro (assets)"
 	],
 	"contact": {
 		"homepage": "https://amblelabs.github.io",
 		"sources": "https://github.com/amblelabs/stargate/",
 		"issues": "https://github.com/amblelabs/stargate/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "LGPL-3.0",
 	"icon": "assets/stargate/icon.png",
 	"environment": "*",
 	"entrypoints": {

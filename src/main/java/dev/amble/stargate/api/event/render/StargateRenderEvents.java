@@ -1,18 +1,17 @@
 package dev.amble.stargate.api.event.render;
 
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
-import dev.amble.stargate.client.models.BaseStargateModel;
 import dev.amble.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.profiler.Profiler;
 
 public interface StargateRenderEvents extends TEvents {
 
     Type<StargateRenderEvents> event = new Type<>(StargateRenderEvents.class);
 
-    default void render(Stargate stargate, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) { }
-
-    default void animate(StargateBlockEntity stargateBlockEntity, Stargate stargate, BaseStargateModel model, int age) { }
+    void render(Stargate stargate, ClientAbstractStargateState state, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, Profiler profiler, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta);
 }

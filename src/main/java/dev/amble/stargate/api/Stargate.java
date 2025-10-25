@@ -121,11 +121,11 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     //region Gate state
-    public @Nullable TState.Type<? extends GateState<?>> getGateStateType() {
+    public @NotNull TState.Type<? extends GateState<?>> getGateStateType() {
         return curState;
     }
 
-    public @Nullable GateState<?> getGateState() {
+    public @NotNull GateState<?> getGateState() {
         return (GateState<?>) stateOrNull((TState.Type<?>) curState);
     }
 
@@ -218,7 +218,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     @Override
     @Contract(mutates = "this")
-    @SuppressWarnings("UnstableApiUsage")
     public boolean addState(@NotNull TState<?> state) {
         boolean result = super.addState(state);
 
@@ -230,7 +229,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     @Override
     @Contract(mutates = "this")
-    @SuppressWarnings("UnstableApiUsage")
     public <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type) {
         T result = super.removeState(type);
 

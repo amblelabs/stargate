@@ -5,6 +5,7 @@ import dev.amble.stargate.api.behavior.client.ClientMilkyWayBehavior;
 import dev.amble.stargate.api.behavior.client.ClientOrlinBehavior;
 import dev.amble.stargate.api.behavior.client.ClientPegasusBehavior;
 import dev.amble.stargate.api.behavior.iris.ClientIrisBehavior;
+import dev.amble.stargate.api.event.render.StargateAnimateEvents;
 import dev.amble.stargate.api.event.render.StargateRenderEvents;
 import dev.amble.stargate.api.state.iris.ClientIrisState;
 import dev.amble.stargate.api.state.stargate.client.*;
@@ -19,11 +20,14 @@ public class StargateClientYAARs {
     public static void init() {
         // events
         StargateYAARs.initEvents();
+
         TEventsRegistry.register(StargateRenderEvents.event);
+        TEventsRegistry.register(StargateAnimateEvents.event);
         TEventsRegistry.freeze();
 
         // stargate behaviors
         StargateYAARs.initBehavior();
+
         TBehaviorRegistry.register(ClientMilkyWayBehavior::new);
         TBehaviorRegistry.register(ClientPegasusBehavior::new);
         TBehaviorRegistry.register(ClientDestinyBehavior::new);
@@ -34,6 +38,7 @@ public class StargateClientYAARs {
 
         // stargate states
         StargateYAARs.initState();
+
         States.register(ClientAbstractStargateState.state);
         States.register(ClientMilkyWayState.state);
         States.register(ClientOrlinState.state);
