@@ -22,6 +22,7 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 
+@SuppressWarnings("unused")
 public class StargateBlocks extends BlockContainer {
 
 	@PickaxeMineable(tool = PickaxeMineable.Tool.IRON)
