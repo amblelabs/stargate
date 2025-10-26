@@ -11,7 +11,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
     public SGEnglishLangGen(FabricDataOutput output) {
         super(output, LanguageType.EN_US);
 
-        //Blocks
+        // Blocks
         translateBlocks(StargateBlocks.class);
         addTranslation(StargateBlocks.DHD, "Dial-Home Device");
         addTranslation(StargateBlocks.GENERIC_GATE, "Stargate");

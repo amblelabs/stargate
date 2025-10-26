@@ -39,16 +39,16 @@ jobs:
       run: |
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           # Always run for workflow_dispatch
-          echo "should_run=true" >> $GITHUB_OUTPUTI know what
+          echo "should_run=true" >> $GITHUB_OUTPUT 
           echo "Running datagen due to workflow_dispatch"
-        elif [ "${{ steps.datagen_changes.outputs.has_changes }}" = "true" ] && [ "${{ steps.cache.outputs.cache-hit }}" = "true" ]; then
-          # Run if datagen source changed AND cache was restored successfully
+        elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^src/main/java/dev/amble/stargate/datagen/" || [ "${{ steps.cache-restore.outputs.cache-hit }}" != "true" ]; then
+          # Run if datagen source changed OR cache was not restored
           echo "should_run=true" >> $GITHUB_OUTPUT
-          echo "Running datagen due to source changes and cache hit"
+          echo "Running datagen due to source changes or cache miss"
         else
           # Don't run in all other cases
           echo "should_run=false" >> $GITHUB_OUTPUT
-          echo "Skipping datagen (no source changes OR no cache hit)"
+          echo "Skipping datagen (no source changes OR cache hit)"
         fi
 
     - name: Run DataGen
