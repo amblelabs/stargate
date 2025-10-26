@@ -58,7 +58,7 @@ jobs:
       run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
     - name: Publish to Amble Maven
-      uses: drtheodor/static-file-server-actions/upload/cmd@main
+      uses: drtheodor/static-file-server-actions/upload/setup@main
       with:
         token: ${{ secrets.BOT_TOKEN }}
         message: "chore: publish Stargate artifacts"
