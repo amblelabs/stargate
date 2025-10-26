@@ -21,7 +21,7 @@ private static def getBranch() {
 }
 
 private static def getBuildNumber() {
-    if (System.getenv("CI_MAVEN_REPO") != null) return null;
+    if (System.getenv("CI_MAVEN_PATH") != null) return null;
     return System.getenv("GITHUB_RUN_NUMBER")
 }
 
