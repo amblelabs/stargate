@@ -38,13 +38,14 @@ jobs:
       id: decision
       run: |
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          # Always run for workflow_dispatch
           echo "should_run=true" >> $GITHUB_OUTPUT 
           echo "Running datagen due to workflow_dispatch"
-        elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^src/main/java/dev/amble/stargate/datagen/" || [ "${{ steps.cache-restore.outputs.cache-hit }}" != "true" ]; then
-          # Run if datagen source changed OR cache was not restored
+        elif [ "${{ steps.cache-restore.outputs.cache-hit }}" != "true" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT
-          echo "Running datagen due to source changes or cache miss"
+          echo "Running datagen due to cache miss"
+        elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^src/main/java/dev/amble/stargate/datagen/"; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+          echo "Running datagen due to datagen change"
         else
           # Don't run in all other cases
           echo "should_run=false" >> $GITHUB_OUTPUT

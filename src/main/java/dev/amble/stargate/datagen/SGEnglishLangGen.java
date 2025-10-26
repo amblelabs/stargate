@@ -21,7 +21,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
         addTranslation(StargateBlocks.NAQUADAH_ORE, "Naquadah Ore");
         addTranslation(StargateBlocks.TOASTER, "Toaster");
 
-        //Items
+        // Items
         translateItems(StargateItems.class);
         addTranslation(StargateItems.ADDRESS_CARTOUCHE, "Address Cartouche");
         addTranslation(StargateItems.IRIS_BLADE, "Iris Blade");
