@@ -50,7 +50,7 @@ jobs:
     - name: Setup Amble Maven
       uses: drtheodor/static-file-server-actions/upload/setup@main
       with:
-        path: ${{ runner.temp }}/maven
+        repo: amblelabs/maven
 
     - name: Build for Maven
       env:
@@ -58,7 +58,7 @@ jobs:
       run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
     - name: Publish to Amble Maven
-      uses: drtheodor/static-file-server-actions/upload/setup@main
+      uses: drtheodor/static-file-server-actions/upload@main
       with:
         token: ${{ secrets.BOT_TOKEN }}
         message: "chore: publish Stargate artifacts"
