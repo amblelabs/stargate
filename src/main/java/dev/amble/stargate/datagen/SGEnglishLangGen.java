@@ -46,7 +46,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
         addTranslation(StargateItems.PEGASUS_STARGATE, "Pegasus Stargate");
         addTranslation(StargateItems.DESTINY_STARGATE, "Destiny Stargate");
 
-        //Misc
+        // Misc
         addTranslation("itemGroup.stargate.item_group", "STARGATE");
 
         addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");

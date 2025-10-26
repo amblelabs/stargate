@@ -26,7 +26,7 @@ jobs:
         cache: 'gradle'
 
     - name: Restore DataGen cache
-      id: cache-restore
+      id: datagen-restore
       uses: actions/cache/restore@v4
       with:
         path: src/main/generated
@@ -40,7 +40,7 @@ jobs:
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT 
           echo "Running datagen due to workflow_dispatch"
-        elif [ "${{ steps.cache-restore.outputs.cache-hit }}" != "true" ]; then
+        elif [ "${{ steps.datagen.outputs.cache-hit }}" = "" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT
           echo "Running datagen due to cache miss"
         elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^src/main/java/dev/amble/stargate/datagen/"; then
@@ -57,11 +57,11 @@ jobs:
       run: ./gradlew --configuration-cache runDatagen
 
     - name: Save DataGen cache
-      id: cache-save
+      id: datagen-save
       uses: actions/cache/save@v4
       with:
         path: src/main/generated
-        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+        key: ${{ steps.datagen-restore.outputs.cache-primary-key }}
 
     - name: Build
       run: ./gradlew --configuration-cache build
