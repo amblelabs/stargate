@@ -40,7 +40,7 @@ jobs:
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT 
           echo "Running datagen due to workflow_dispatch"
-        elif [ "${{ steps.datagen.outputs.cache-hit }}" = "" ]; then
+        elif [ "${{ steps.datagen-restore.outputs.cache-hit }}" = "" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT
           echo "Running datagen due to cache miss"
         elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^src/main/java/dev/amble/stargate/datagen/"; then

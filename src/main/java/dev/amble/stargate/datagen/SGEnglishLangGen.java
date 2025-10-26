@@ -3,6 +3,7 @@ package dev.amble.stargate.datagen;
 import dev.amble.lib.datagen.lang.AmbleLanguageProvider;
 import dev.amble.lib.datagen.lang.LanguageType;
 import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItemGroups;
 import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
@@ -47,7 +48,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
         addTranslation(StargateItems.DESTINY_STARGATE, "Destiny Stargate");
 
         // Misc
-        addTranslation("itemGroup.stargate.item_group", "STARGATE");
+        addTranslation(StargateItemGroups.MAIN, "STARGATE");
 
         addTranslation("tooltip.stargate.link_item.holdformoreinfo", "Hold shift for more info");
         addTranslation("tooltip.stargate.dialer.hint", "Use on stargate to link, then use on another stargate to dial");
