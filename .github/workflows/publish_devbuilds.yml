@@ -34,7 +34,25 @@ jobs:
         restore-keys:
           datagen-
 
+    - name: Make decision
+      id: decision
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          # Always run for workflow_dispatch
+          echo "should_run=true" >> $GITHUB_OUTPUTI know what
+          echo "Running datagen due to workflow_dispatch"
+        elif [ "${{ steps.datagen_changes.outputs.has_changes }}" = "true" ] && [ "${{ steps.cache.outputs.cache-hit }}" = "true" ]; then
+          # Run if datagen source changed AND cache was restored successfully
+          echo "should_run=true" >> $GITHUB_OUTPUT
+          echo "Running datagen due to source changes and cache hit"
+        else
+          # Don't run in all other cases
+          echo "should_run=false" >> $GITHUB_OUTPUT
+          echo "Skipping datagen (no source changes OR no cache hit)"
+        fi
+
     - name: Run DataGen
+      if: steps.decision.outputs.should_run == 'true'
       run: ./gradlew --configuration-cache runDatagen
 
     - name: Save DataGen cache
