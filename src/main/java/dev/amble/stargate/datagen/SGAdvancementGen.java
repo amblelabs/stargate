@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 
+@SuppressWarnings("unused")
 public class SGAdvancementGen extends AmbleAdvancementProvider {
 
     public SGAdvancementGen(FabricDataOutput output) {
