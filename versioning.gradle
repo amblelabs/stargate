@@ -21,13 +21,16 @@ private static def getBuildNumber() {
     return System.getenv("GITHUB_RUN_NUMBER")
 }
 
-private String getVersion(String branch, String build) {
-    final String BUILD = "build"
-    final String BUILD_RELEASE = "release"
-    final String BUILD_LOCAL = "testbuild"
+final String BUILD = "build"
+final String BUILD_RELEASE = "release"
+final String BUILD_LOCAL = "testbuild"
 
-    final String BRANCH_RELEASE = "release"
-    final String BRANCH_MAIN = "main"
+final String BRANCH_RELEASE = "release"
+final String BRANCH_MAIN = "main"
+
+ext.getPublicVersion = {
+    String branch = getBranch()
+    String build = getBuildNumber()
 
     String qualifier = BUILD
 
@@ -51,10 +54,12 @@ private String getVersion(String branch, String build) {
     return "$project.mod_version-$qualifier+mc.$project.minecraft_version"
 }
 
-ext.getPublicVersion = {
-    return getVersion(getBranch(), getBuildNumber())
-}
-
 ext.getArtifactVersion = {
-    return getVersion(getBranch(), null)
+    String branch = getBranch()
+
+    if (branch == BRANCH_MAIN) {
+        branch = null
+    }
+
+    return "$project.mod_version-$branch+mc.$project.minecraft_version"
 }
