@@ -64,7 +64,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
         addTranslation("command.stargate.generic.missing", "No Stargate found!");
         addTranslation("command.stargate.generic.unavailable", "This Stargate is not available!");
 
-        //Achievements
+        // Achievements
         addTranslation("achievement.stargate.title.root", "Stargate Mod");
         addTranslation("achievement.stargate.description.root", "Begin your journey through the stars!");
 
