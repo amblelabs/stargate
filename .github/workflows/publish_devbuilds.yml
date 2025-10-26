@@ -25,7 +25,6 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        cache: 'gradle'
 
     - name: Restore DataGen cache
       id: datagen-restore
@@ -68,6 +67,19 @@ jobs:
     - name: Build
       run: ./gradlew --configuration-cache build
 
+    - name: Publish to Discord
+      uses: drtheodor/discord-webhook-upload-action@v0.2
+      with:
+        url: ${{ secrets.DEV_BUILDS }}
+        file: |
+          build/libs/*.jar
+          !build/libs/*-sources.jar
+        username: STARGATE
+        avatar: 'https://i.sstatic.net/zvZCE.jpg'
+        message_commit: '> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
+        message_header: |
+          <:new1:1253371736510959636><:new2:1253371805734015006> New `${{ github.repository }}` dev build `#${{ github.run_number }}`:
+
     - name: Setup Amble Maven
       id: setup-maven
       uses: drtheodor/static-file-server-actions/upload/setup@main
@@ -84,16 +96,3 @@ jobs:
       with:
         token: ${{ secrets.BOT_TOKEN }}
         message: "chore: publish Stargate artifacts"
-
-    - name: Publish to Discord
-      uses: drtheodor/discord-webhook-upload-action@v0.2
-      with:
-        url: ${{ secrets.DEV_BUILDS }}
-        file: |
-          build/libs/*.jar
-          !build/libs/*-sources.jar
-        username: STARGATE
-        avatar: 'https://i.sstatic.net/zvZCE.jpg'
-        message_commit: '> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
-        message_header: |
-          <:new1:1253371736510959636><:new2:1253371805734015006> New `${{ github.repository }}` dev build `#${{ github.run_number }}`:
