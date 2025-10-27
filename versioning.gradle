@@ -59,10 +59,5 @@ String createVer(boolean includeBuild) {
     return "$project.mod_version-$qualifier+mc.$project.minecraft_version"
 }
 
-ext.getPublicVersion = {
-    return createVer(true)
-}
-
-ext.getArtifactVersion = {
-    return createVer(false)
-}
+version = createVer(true)
+ext.artifactVersion = createVer(false)
