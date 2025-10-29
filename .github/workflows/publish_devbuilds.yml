@@ -55,7 +55,7 @@ jobs:
 
     - name: Run DataGen
       if: steps.decision.outputs.should_run == 'true'
-      run: ./gradlew --configuration-cache --no-daemon runDatagen
+      run: ./gradlew --configuration-cache runDatagen
 
     - name: Save DataGen cache
       id: datagen-save
@@ -65,7 +65,7 @@ jobs:
         key: ${{ steps.datagen-restore.outputs.cache-primary-key }}
 
     - name: Build
-      run: ./gradlew --configuration-cache --no-daemon build
+      run: ./gradlew --configuration-cache build
 
     - name: Publish to Discord
       uses: drtheodor/discord-webhook-upload-action@v0.2
@@ -89,10 +89,11 @@ jobs:
     - name: Build for Maven
       env:
         CI_MAVEN_PATH: ${{ steps.setup-maven.outputs.path }}
-      run: ./gradlew --configuration-cache --no-daemon publishMavenJavaPublicationToCiRepository
+      run: ./gradlew --configuration-cache publishMavenJavaPublicationToCiRepository
 
     - name: Publish to Amble Maven
       uses: drtheodor/static-file-server-actions/upload@main
       with:
+        published: dev/amble/stargate
         token: ${{ secrets.BOT_TOKEN }}
         message: "chore: publish Stargate artifacts"
