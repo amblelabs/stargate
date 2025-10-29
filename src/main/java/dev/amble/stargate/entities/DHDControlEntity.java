@@ -1,189 +1,105 @@
 package dev.amble.stargate.entities;
 
-import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.dhd.SymbolArrangement;
-import dev.amble.stargate.api.dhd.control.Symbol;
-import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.block.entities.DHDBlockEntity;
-import dev.amble.stargate.entities.base.LinkableDummyLivingEntity;
 import dev.amble.stargate.init.StargateEntities;
-import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
-import java.util.List;
+public class DHDControlEntity extends Entity {
 
-public class DHDControlEntity extends LinkableDummyLivingEntity {
+    private BlockPos dhdPos;
 
-    private static final TrackedData<String> IDENTITY = DataTracker.registerData(DHDControlEntity.class,
-            TrackedDataHandlerRegistry.STRING);
-    private static final TrackedData<Float> WIDTH = DataTracker.registerData(DHDControlEntity.class,
-            TrackedDataHandlerRegistry.FLOAT);
-    private static final TrackedData<Float> HEIGHT = DataTracker.registerData(DHDControlEntity.class,
-            TrackedDataHandlerRegistry.FLOAT);
-    private static final TrackedData<Vector3f> OFFSET = DataTracker.registerData(DHDControlEntity.class,
-            TrackedDataHandlerRegistry.VECTOR3F);
+    private char symbol;
+    private EntityDimensions dimensions = StargateEntities.DHD_CONTROL_TYPE.getDimensions();
 
-    public BlockPos dhdBlockPos;
-    private Symbol control;
-
-    public DHDControlEntity(EntityType<? extends LivingEntity> entityType, World world) {
-        super(entityType, world, false);
+    public DHDControlEntity(EntityType<? extends Entity> entityType, World world) {
+        super(entityType, world);
     }
 
-    private DHDControlEntity(World world, Stargate stargate) {
+    public DHDControlEntity(World world, char symbol, EntityDimensions dimensions, BlockPos dhdPos) {
         this(StargateEntities.DHD_CONTROL_TYPE, world);
-        this.link(stargate);
+
+        this.symbol = symbol;
+        this.dimensions = dimensions;
+
+        this.dhdPos = dhdPos;
     }
 
     @Override
-    public boolean addStatusEffect(StatusEffectInstance effect, @Nullable Entity source) {
-        return false;
-    }
+    protected void initDataTracker() { }
 
-    public static DHDControlEntity create(World world, Stargate stargate) {
-        return new DHDControlEntity(world, stargate);
+    @Override
+    public boolean hasNoGravity() {
+        return true;
     }
 
     @Override
-    public void remove(RemovalReason reason) {
-        StargateMod.LOGGER.debug("Control entity discarded as {}", reason);
-        this.setRemoved(reason);
+    public boolean canHit() {
+        return true;
     }
 
     @Override
     public void onRemoved() {
-        if (this.dhdBlockPos == null) {
-            super.onRemoved();
-            return;
-        }
-
-        if (this.getWorld().getBlockEntity(this.dhdBlockPos) instanceof DHDBlockEntity dhd)
+        if (this.dhdPos != null && this.getWorld().getBlockEntity(this.dhdPos) instanceof DHDBlockEntity dhd)
             dhd.markNeedsControl();
     }
 
     @Override
-    public void initDataTracker() {
-        super.initDataTracker();
-
-        this.dataTracker.startTracking(IDENTITY, "");
-        this.dataTracker.startTracking(WIDTH, 0.125f);
-        this.dataTracker.startTracking(HEIGHT, 0.125f);
-        this.dataTracker.startTracking(OFFSET, new Vector3f(0));
-    }
-
-    @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+        if (dhdPos != null)
+            nbt.put("dhd", NbtHelper.fromBlockPos(this.dhdPos));
 
-        if (dhdBlockPos != null)
-            nbt.put("dhd", NbtHelper.fromBlockPos(this.dhdBlockPos));
-
-        nbt.putString("identity", this.getIdentity());
-        nbt.putFloat("width", this.getControlWidth());
-        nbt.putFloat("height", this.getControlHeight());
-        nbt.putFloat("offsetX", this.getOffset().x());
-        nbt.putFloat("offsetY", this.getOffset().y());
-        nbt.putFloat("offsetZ", this.getOffset().z());
+        nbt.putFloat("width", dimensions.width);
+        nbt.putFloat("height", dimensions.height);
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-
         NbtCompound dhd = nbt.getCompound("dhd");
 
         if (dhd != null)
-            this.dhdBlockPos = NbtHelper.toBlockPos(dhd);
-
-        if (nbt.contains("identity"))
-            this.setIdentity(nbt.getString("identity"));
+            this.dhdPos = NbtHelper.toBlockPos(dhd);
 
         if (nbt.contains("width") && nbt.contains("height")) {
-            this.setControlWidth(nbt.getFloat("width"));
-            this.setControlWidth(nbt.getFloat("height"));
+            float width = nbt.getFloat("width");
+            float height = nbt.getFloat("height");
+
+            this.dimensions = EntityDimensions.fixed(width, height);
             this.calculateDimensions();
         }
-
-        if (nbt.contains("offsetX") && nbt.contains("offsetY") && nbt.contains("offsetZ"))
-            this.setOffset(new Vector3f(nbt.getFloat("offsetX"), nbt.getFloat("offsetY"), nbt.getFloat("offsetZ")));
-    }
-
-    @Override
-    public void onDataTrackerUpdate(List<DataTracker.SerializedEntry<?>> dataEntries) {
-        this.setScaleAndCalculate(this.getDataTracker().get(WIDTH), this.getDataTracker().get(HEIGHT));
     }
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
-        ItemStack handStack = player.getStackInHand(hand);
-
-        if (player.getOffHandStack().getItem() == Items.COMMAND_BLOCK) {
-            controlEditorHandler(player);
-            return ActionResult.SUCCESS;
-        }
-
-        handStack.useOnEntity(player, this, hand);
-
-        if (hand == Hand.MAIN_HAND)
-            this.run(player, player.getWorld(), false);
-
+        this.run(player, false);
         return ActionResult.SUCCESS;
     }
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source.getAttacker() instanceof TntEntity) return false;
+        if (!(source.getAttacker() instanceof PlayerEntity player)) return false;
 
-        if (source.getAttacker() instanceof PlayerEntity player) {
-            if (player.getOffHandStack().getItem() == Items.COMMAND_BLOCK) {
-                controlEditorHandler(player);
-            } else this.run(player, player.getWorld(), true);
-        }
-
-        return super.damage(source, amount);
-    }
-
-    @Override
-    public boolean isAttackable() {
+        this.run(player, true);
         return true;
     }
 
     @Override
     public Text getName() {
-        if (this.control != null)
-            return Text.translatable(String.valueOf(this.control.getGlyph()));
-        else
-            return super.getName();
+        return Glyph.asText(this.symbol);
     }
 
     @Override
     public EntityDimensions getDimensions(EntityPose pose) {
-        if (this.getDataTracker().containsKey(WIDTH) && this.getDataTracker().containsKey(HEIGHT))
-            return EntityDimensions.changing(this.getControlWidth(), this.getControlHeight());
-
-        return super.getDimensions(pose);
+        return dimensions;
     }
 
     @Override
@@ -191,129 +107,22 @@ public class DHDControlEntity extends LinkableDummyLivingEntity {
         if (this.getWorld().isClient())
             return;
 
-        if (this.control == null && this.dhdBlockPos != null)
+        if (this.dhdPos == null)
             this.discard();
     }
 
-    @Override
-    public boolean shouldRenderName() {
-        return true;
-    }
-
-    public String getIdentity() {
-        return this.dataTracker.get(IDENTITY);
-    }
-
-    public void setIdentity(String string) {
-        this.dataTracker.set(IDENTITY, string);
-    }
-
-    public float getControlWidth() {
-        return this.dataTracker.get(WIDTH);
-    }
-
-    public float getControlHeight() {
-        return this.dataTracker.get(HEIGHT);
-    }
-
-    public void setControlWidth(float width) {
-        this.dataTracker.set(WIDTH, width);
-    }
-
-    public void setControlHeight(float height) {
-        this.dataTracker.set(HEIGHT, height);
-    }
-
-    public Symbol getControl() {
-        return control;
-    }
-
-    public Vector3f getOffset() {
-        return this.dataTracker.get(OFFSET);
-    }
-
-    public void setOffset(Vector3f offset) {
-        this.dataTracker.set(OFFSET, offset);
-    }
-
-    public void run(PlayerEntity player, World world, boolean leftClick) {
-        if (world.getRandom().nextBetween(1, 10_000) == 72)
-            this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.MASTER,
-                    1F, 1F);
-
-        if (world.isClient())
+    private void run(PlayerEntity player, boolean leftClick) {
+        if (this.getWorld().isClient())
             return;
 
-        Stargate stargate = this.asGate();
-
-        if (stargate == null) {
-            StargateMod.LOGGER.warn("Discarding invalid control entity at {}; dhd pos: {}", this.getPos(),
-                    this.dhdBlockPos);
-
+        if (this.getWorld().getBlockEntity(this.dhdPos) instanceof DHDBlockEntity dhd) {
+            dhd.onUseControl(player, this.getWorld(), this, leftClick);
+        } else {
             this.discard();
-            return;
-        }
-
-        if (this.dhdBlockPos != null) {
-            this.getWorld().playSound(null, this.getBlockPos(), StargateSounds.DHD_PRESS, SoundCategory.BLOCKS, 0.7f,
-                    1f);
-        }
-
-        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
-
-        if (closed != null) {
-            closed.address += control.getGlyph();
-            stargate.markDirty();
         }
     }
 
-    public void setScaleAndCalculate(float width, float height) {
-        this.setControlWidth(width);
-        this.setControlHeight(height);
-        this.calculateDimensions();
+    public char getSymbol() {
+        return symbol;
     }
-
-    public void setControlData(SymbolArrangement type, BlockPos dhdBlockPosition) {
-        this.dhdBlockPos = dhdBlockPosition;
-        this.control = type.getControl();
-
-        this.setIdentity(this.control.getClass().getSimpleName());
-        this.setControlWidth(type.getScale().width);
-        this.setControlHeight(type.getScale().height);
-        super.setCustomName(Glyph.asText(type.getControl().getGlyph()));
-    }
-
-    public void controlEditorHandler(PlayerEntity player) {
-        float increment = 0.0125f;
-        if (player.getMainHandStack().getItem() == Items.EMERALD_BLOCK)
-            this.setPosition(this.getPos().add(player.isSneaking() ? -increment : increment, 0, 0));
-
-        if (player.getMainHandStack().getItem() == Items.DIAMOND_BLOCK)
-            this.setPosition(this.getPos().add(0, player.isSneaking() ? -increment : increment, 0));
-
-        if (player.getMainHandStack().getItem() == Items.REDSTONE_BLOCK)
-            this.setPosition(this.getPos().add(0, 0, player.isSneaking() ? -increment : increment));
-
-        if (player.getMainHandStack().getItem() == Items.COD)
-            this.setScaleAndCalculate(player.isSneaking()
-                    ? this.getDataTracker().get(WIDTH) - increment
-                    : this.getDataTracker().get(WIDTH) + increment, this.getDataTracker().get(HEIGHT));
-
-        if (player.getMainHandStack().getItem() == Items.COOKED_COD)
-            this.setScaleAndCalculate(this.getDataTracker().get(WIDTH),
-                    player.isSneaking()
-                            ? this.getDataTracker().get(HEIGHT) - increment
-                            : this.getDataTracker().get(HEIGHT) + increment);
-
-        if (this.dhdBlockPos != null) {
-            Vec3d centered = this.getPos().subtract(this.dhdBlockPos.toCenterPos());
-            if (this.control != null)
-                player.sendMessage(Text.literal(/*"EntityDimensions.changing(" + this.getControlWidth() + "f, "
-                        + this.getControlHeight() + "f), */"new Vector3f(" + centered.getX() + "f, " + centered.getY()
-                        + "f, " + centered.getZ() + "f))," + "    " + this.getCustomName().getString()));
-        }
-    }
-
-    @Override
-    public void setCustomName(@Nullable Text name) { }
 }

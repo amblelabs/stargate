@@ -66,7 +66,6 @@ public class StargateClientData implements StargateData {
 
     @Override
     public @Nullable Stargate getById(long id) {
-        System.out.println("> getting sg by id " + id);
         return lookup.get(id);
     }
 

@@ -1,13 +1,12 @@
 package dev.amble.stargate.client.renderers;
 
-import dev.amble.stargate.client.models.ControlModel;
 import dev.amble.stargate.entities.DHDControlEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Items;
@@ -15,16 +14,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(value = EnvType.CLIENT)
-public class DHDControlEntityRenderer extends LivingEntityRenderer<DHDControlEntity, ControlModel> {
+public class DHDControlEntityRenderer extends EntityRenderer<DHDControlEntity> {
 
     public DHDControlEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new ControlModel(ControlModel.getNotModelData().createModel()), 0f);
-    }
-
-    @Override
-    public void render(DHDControlEntity livingEntity, float yaw, float tickDelta, MatrixStack matrixStack,
-                       VertexConsumerProvider vertexConsumerProvider, int light) {
-        super.render(livingEntity, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
+        super(context);
     }
 
     @Override

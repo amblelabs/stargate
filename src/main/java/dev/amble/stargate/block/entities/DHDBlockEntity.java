@@ -1,48 +1,57 @@
 package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
-import dev.amble.stargate.api.address.GlyphOriginRegistry;
+import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.dhd.SymbolArrangement;
-import dev.amble.stargate.api.dhd.control.Symbol;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
-import dev.amble.stargate.item.StargateLinkableItem;
+import dev.amble.stargate.init.StargateSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
-    public final List<DHDControlEntity> symbolControlEntities = new ArrayList<>();
+    private final Deque<DHDControlEntity> symbolControlEntities = new ArrayDeque<>(Glyph.ALL.length);
     private boolean needsSymbols = true;
 
     public DHDBlockEntity(BlockPos pos, BlockState state) {
         super(StargateBlockEntities.DHD, pos, state, true);
     }
 
-    @Override
-    public boolean link(Stargate gate) {
-        this.markNeedsControl();
-        return super.link(gate);
+    public void onUseControl(PlayerEntity player, World world, DHDControlEntity entity, boolean leftClick) {
+        Stargate stargate = this.asGate();
+
+        if (stargate == null) {
+            StargateMod.LOGGER.warn("Discarding invalid control entity at {}; dhd pos: {}", entity.getPos(), this.getPos());
+
+            entity.discard();
+            return;
+        }
+
+        world.playSound(null, this.getPos(), StargateSounds.DHD_PRESS, SoundCategory.BLOCKS, 0.7f, 1f);
+
+        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
+
+        if (closed != null) {
+            closed.address += entity.getSymbol();
+            stargate.markDirty();
+        }
     }
 
     @Override
@@ -52,23 +61,14 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.getStackInHand(hand).getItem() instanceof StargateLinkableItem || hand != Hand.MAIN_HAND)
-            return ActionResult.PASS;
+    public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
+        this.killControls();
+    }
 
-        if (!this.isLinked()) return ActionResult.FAIL;
-        //if (world.isClient()) return ActionResult.SUCCESS;
-
-        /*Stargate target = this.gate().get();
-
-        if (target.state() instanceof GateState.Open || target.state() instanceof GateState.PreOpen) return ActionResult.FAIL;
-
-        player.sendMessage(target.address().asText(), true);
-
-        if (target.state() instanceof GateState.Closed closed)
-            closed.setAddress(target.address().text());*/
-
-        return ActionResult.SUCCESS;
+    @Override
+    public void tick(World world, BlockPos blockPos, BlockState blockState) {
+        if (this.needsSymbols)
+            this.spawnControls();
     }
 
     @Override
@@ -78,83 +78,45 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
     }
 
     @Override
+    public boolean link(Stargate gate) {
+        this.markNeedsControl();
+        return super.link(gate);
+    }
+
+    @Override
     public void markRemoved() {
         this.killControls();
         super.markRemoved();
     }
 
-    @Override
-    public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
-        this.killControls();
+    private void killControls() {
+        while (!symbolControlEntities.isEmpty()) {
+            Entity entity = symbolControlEntities.poll();
+            if (entity == null) continue;
+
+            entity.discard();
+        }
     }
 
-    public void killControls() {
-        symbolControlEntities.forEach(Entity::discard);
-        symbolControlEntities.clear();
-    }
-
-    public void spawnControls() {
-        BlockPos current = this.getPos();
-
-        if (!(this.world instanceof ServerWorld serverWorld))
-            return;
+    private void spawnControls() {
+        if (this.world.isClient()) return;
 
         this.killControls();
 
         Stargate stargate = this.asGate();
         if (stargate == null) return;
 
-        List<SymbolArrangement> controls = DHDArrangement.getSymbolArrangement();
-        Direction direction = HorizontalBlockBehavior.getFacing(this.world.getBlockState(this.getPos()));
+        Direction direction = HorizontalBlockBehavior.getFacing(this.world.getBlockState(this.pos));
 
-        for (SymbolArrangement control : controls) {
-            DHDControlEntity controlEntity = DHDControlEntity.create(this.world, stargate);
-
-            Vec3d position = current.toCenterPos();
-            Vector3f offset = control.getOffset();
-
-            // Flip horizontally if facing north or south
-            if (direction == Direction.NORTH || direction == Direction.SOUTH)
-                offset = new Vector3f(-offset.x(), offset.y(), offset.z());
-
-            controlEntity.setPosition(
-                    position.x + offset.x() * direction.getOffsetZ() - offset.z() * direction.getOffsetX(),
-                    position.y + offset.y(),
-                    position.z + offset.x() * direction.getOffsetX() - offset.z() * direction.getOffsetZ()
-            );
-
-            controlEntity.setYaw(0.0f);
-            controlEntity.setPitch(0.0f);
-
-            controlEntity.setControlData(control, this.getPos());
-
-            serverWorld.spawnEntity(controlEntity);
-            this.symbolControlEntities.add(controlEntity);
+        for (SymbolArrangement control : DHDArrangement.SYMBOLS) {
+            this.symbolControlEntities.add(control.createEntity(this.world, this.pos, direction));
         }
 
-        DHDControlEntity dialButtonEntity = DHDControlEntity.create(this.world, stargate);
-        dialButtonEntity.setPosition(current.getX() + 0.5, current.getY() + 0.9625f, current.getZ() + 0.5);
-        dialButtonEntity.setYaw(0.0f);
-        dialButtonEntity.setPitch(0.0f);
-
-        char poi = GlyphOriginRegistry.get().glyph(world.getRegistryKey());
-
-        dialButtonEntity.setControlData(new SymbolArrangement(new Symbol(poi),
-                EntityDimensions.fixed(0.2f, 0.2f), new Vector3f(0, 0, 0)), this.getPos());
-
-        serverWorld.spawnEntity(dialButtonEntity);
-        this.symbolControlEntities.add(dialButtonEntity);
-
+        this.symbolControlEntities.add(DHDArrangement.poi(world).createEntity(this.world, this.pos, direction));
         this.needsSymbols = false;
     }
 
     public void markNeedsControl() {
         this.needsSymbols = true;
-    }
-
-    @Override
-    public void tick(World world, BlockPos blockPos, BlockState blockState) {
-        if (this.needsSymbols)
-            this.spawnControls();
     }
 }
