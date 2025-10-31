@@ -94,6 +94,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
     public float renderGlyphs(ClientAbstractStargateState glyphState, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light, int age) {
         final MinecraftClient client = MinecraftClient.getInstance();
+        float rot = model.SymbolRing.roll;
 
         if (shouldRenderGlyphs(client, gate)) {
             TextRenderer renderer = client.textRenderer;
@@ -111,25 +112,37 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.scale(0.025f, 0.025f, 0.025f);
 
             final GateState.Closed closed = gate.stateOrNull(GateState.Closed.state);
-            final int selectedIndex = closed != null && (closed.locked > 0 || closed.locking) ? closed.locked : -1;
+            final int lockingChevronIdx = closed != null && (closed.locked > 0 || closed.locking) ? closed.locked : -1; // TODO: in theory, closed.locked > 0 check is redundant
+            final int selectedGlyphIdx = closed != null && lockingChevronIdx != -1 && lockingChevronIdx < closed.address.length() ? Glyph.ALPHABET.indexOf(closed.address.charAt(lockingChevronIdx)) : -1;
 
-            final float baseAngle = 2 * MathHelper.PI / GLYPHS.length;
+            if (closed != null && closed.locking) {
+                float rotProgress = (float) closed.timer / (float) GateState.Closed.TICKS_PER_CHEVRON;
+
+                float selectedRot = 180 + (360f / Glyph.ALL.length * selectedGlyphIdx);
+                System.out.println("rot: " + rot + "/" + MathHelper.wrapDegrees(selectedRot) + "; " + rotProgress * 100 + "%");
+                rot += MathHelper.wrapDegrees(MathHelper.wrapDegrees(selectedRot) * rotProgress - rot);
+            }
+
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rot));
 
             for (int i = 0; i < GLYPHS.length; i++) {
                 final boolean isInDial = closed != null && closed.address.indexOf(Glyph.ALL[i]) != -1; // FIXME: #contains on address
-                final boolean isSelected = i == selectedIndex;
+                final boolean isSelected = isInDial && i == selectedGlyphIdx;
 
-                final float angle = baseAngle * i;
+                final float angle = 2 * MathHelper.PI * i / GLYPHS.length;
                 final int color = isInDial ? 0x5c5c73 : glyphState.glyphColor;
                 final int glyphLight = isSelected ? 0xf000f0 : light;
 
                 matrices.push();
 
                 matrices.translate(MathHelper.sin(angle) * 117, MathHelper.cos(angle) * 117, 0);
+
+                // rotate the symbols towards the gate
                 matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
+//                matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(rot));
 
                 renderer.draw(GLYPHS[i], GLYPH_WIDTHS[i], -4, color, false,
-                        matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, glyphLight);
+                        matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, glyphLight);
 
                 matrices.pop();
             }
@@ -137,6 +150,6 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.pop();
         }
 
-        return (float) MathHelper.wrapDegrees(age / 200f * Math.PI * 2);
+        return rot;
     }
 }

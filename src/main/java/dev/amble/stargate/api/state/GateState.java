@@ -23,7 +23,7 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
             }
         };
 
-        public static final int TICKS_PER_CHEVRON = 30;
+        public static final int TICKS_PER_CHEVRON = 20 * 5;
 
         public int locked;
         public boolean locking;

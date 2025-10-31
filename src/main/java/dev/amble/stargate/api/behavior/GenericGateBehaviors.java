@@ -42,9 +42,14 @@ public interface GenericGateBehaviors {
 
         @Override
         public void tick(Stargate stargate) {
-            if (stargate.isClient()) return;
-
             GateState.Closed closed = stargate.state(GateState.Closed.state);
+
+            if (stargate.isClient()) {
+                if (closed.locking)
+                    closed.timer = (closed.timer + 1) % GateState.Closed.TICKS_PER_CHEVRON;
+
+                return;
+            }
 
             int length = closed.address.length();
             closed.locking = length > closed.locked;

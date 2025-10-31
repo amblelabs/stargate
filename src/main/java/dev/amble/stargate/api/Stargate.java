@@ -257,8 +257,8 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     @SuppressWarnings("rawtypes")
     private <T extends TState<T>> void stateToNbt(NbtCompound nbt, int i, @Nullable TState<T> state, boolean isClient) {
         if (state == null) {
-            if (!isClient) // do the diffing only if we're serializing for client
-                nbt.put(StargateYAARs.States.get(i).id().toString(), NbtByte.ZERO);
+            // do the diffing only if we're serializing for client
+            if (isClient) nbt.put(StargateYAARs.States.get(i).id().toString(), NbtByte.ZERO);
 
             return;
         }
