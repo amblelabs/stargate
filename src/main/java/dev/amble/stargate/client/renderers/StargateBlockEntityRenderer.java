@@ -94,7 +94,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
 
     public float renderGlyphs(ClientAbstractStargateState glyphState, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Stargate gate, int light, int age) {
         final MinecraftClient client = MinecraftClient.getInstance();
-        float rot = model.SymbolRing.roll;
+        float rot = model.SymbolRing.roll * 180 / MathHelper.PI;
 
         if (shouldRenderGlyphs(client, gate)) {
             TextRenderer renderer = client.textRenderer;
@@ -150,6 +150,6 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
             matrices.pop();
         }
 
-        return rot;
+        return rot * MathHelper.PI / 180f;
     }
 }
