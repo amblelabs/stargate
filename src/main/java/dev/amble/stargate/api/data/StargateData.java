@@ -3,7 +3,7 @@ package dev.amble.stargate.api.data;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
-import net.minecraft.server.world.ServerWorld;
+import dev.amble.stargate.service.StargateDataProviderService;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -19,27 +19,19 @@ public interface StargateData {
     Identifier REMOVE = StargateMod.id("remove");
 
     static @Nullable StargateData get(World world) {
-        return world instanceof ServerWorld serverWorld ? StargateServerData.get(serverWorld) : StargateClientData.get();
+        return StargateDataProviderService.INSTANCE.get(world);
     }
 
     static void accept(World world, Consumer<StargateData> consumer) {
-        if (world instanceof ServerWorld serverWorld) {
-            StargateServerData.accept(serverWorld, consumer::accept);
-        } else {
-            consumer.accept(StargateClientData.get());
-        }
+        StargateDataProviderService.INSTANCE.accept(world, consumer);
     }
 
     static <R> @Nullable R apply(World world, Function<StargateData, R> func) {
-        if (world instanceof ServerWorld serverWorld) {
-            return StargateServerData.apply(serverWorld, func::apply);
-        } else {
-            return func.apply(StargateClientData.get());
-        }
+        return StargateDataProviderService.INSTANCE.apply(world, func);
     }
 
     static @NotNull StargateData getOrCreate(World world) {
-        return world instanceof ServerWorld serverWorld ? StargateServerData.getOrCreate(serverWorld) : StargateClientData.get();
+        return StargateDataProviderService.INSTANCE.getOrCreate(world);
     }
 
     default void removeLocal(long address) {

@@ -2,6 +2,7 @@ package dev.amble.stargate.api.behavior;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.lib.util.TeleportUtil;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.util.TeleportableEntity;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.tick.StargateTickEvents;
@@ -46,7 +47,7 @@ public interface GenericGateBehaviors {
 
             if (stargate.isClient()) {
                 if (closed.locking)
-                    closed.timer = (closed.timer + 1) % GateState.Closed.TICKS_PER_CHEVRON;
+                    closed.timer = (closed.timer + 1) % calculateDelay(closed);
 
                 return;
             }
@@ -63,7 +64,7 @@ public interface GenericGateBehaviors {
                 return;
             }
 
-            if (!closed.locking || closed.timer++ < GateState.Closed.TICKS_PER_CHEVRON) return;
+            if (!closed.locking || closed.timer++ < calculateDelay(closed)) return;
 
             closed.timer = 0;
             closed.locked++;
@@ -86,6 +87,20 @@ public interface GenericGateBehaviors {
             manager.set(route.stargate(), new GateState.Opening(null, false));
 
             route.stargate().markDirty();
+        }
+
+        public static int calculateDelay(int curGlyph, int nextGlyph) {
+            return Math.abs(nextGlyph - curGlyph) * GateState.Closed.TICKS_PER_GLYPH;
+        }
+
+        public static int calculateDelay(GateState.Closed closed) {
+            char curGlyph = closed.locked != 0 ? closed.address.charAt(closed.locked - 1) : (char) (Glyph.ALL.length / 2);
+            char nextGlyph = closed.address.charAt(closed.locked);
+
+            return calculateDelay(
+                    Glyph.indexOf(curGlyph),
+                    Glyph.indexOf(nextGlyph)
+            );
         }
 
         public void fail(Stargate stargate) {
@@ -115,7 +130,7 @@ public interface GenericGateBehaviors {
             GateState.Opening opening = stargate.state(GateState.Opening.state);
 
             // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
-            float t = (float) opening.timer / ((float) GateState.Opening.TICKS_PER_KAWOOSH * 1.25f);
+            float t = (float) opening.timer / (GateState.Opening.TICKS_PER_KAWOOSH * 1.25f);
 
             // Remap t to ease in and out, spending more time near p1 and p2
             // Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle

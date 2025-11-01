@@ -1,6 +1,7 @@
 package dev.amble.stargate.api.state;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.data.StargateRef;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.util.NbtUtil;
@@ -23,11 +24,12 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
             }
         };
 
-        public static final int TICKS_PER_CHEVRON = 20 * 5;
+        public static final int TICKS_PER_GLYPH = 5;
 
         public int locked;
         public boolean locking;
 
+        // FIXME: use a fixed size char array here instead
         public String address;
         public int timer;
 
@@ -39,6 +41,15 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
             this.locked = nbt.getInt("locked");
             this.locking = nbt.getBoolean("locking");
             this.address = nbt.getString("address");
+        }
+
+        // FIXME(perf)
+        public boolean address$contains(char c) {
+            return address.indexOf(c) != -1;
+        }
+
+        public int glyphIdxAtChevron(int chevronIdx) {
+            return Glyph.indexOf(address.charAt(chevronIdx));
         }
 
         @Override

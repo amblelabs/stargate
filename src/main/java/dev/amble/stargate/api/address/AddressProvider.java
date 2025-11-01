@@ -36,7 +36,7 @@ public class AddressProvider {
         int[] nums = new int[len];
 
         for (int i = 0; i < len; i++) {
-            nums[i] = indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
+            nums[i] = Glyph.indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
         }
 
         return pack(nums, Glyph.ALL.length);
@@ -58,10 +58,6 @@ public class AddressProvider {
         }
 
         return new String(chars);
-    }
-
-    protected static int indexOf(char c) {
-        return Glyph.ALPHABET.indexOf(c); // TODO(perf): use a math trick or something
     }
 
     public static long pack(int[] numbers, int k) {
@@ -125,7 +121,7 @@ public class AddressProvider {
             IntSet set = new IntArraySet();
 
             char poi = GlyphOriginRegistry.get().glyph(world);
-            int poiI = indexOf(poi);
+            int poiI = Glyph.indexOf(poi);
 
             while (set.size() != 5) {
                 int a = RANDOM.nextInt(Glyph.ALL.length);
@@ -168,7 +164,7 @@ public class AddressProvider {
             IntSet set = new IntArraySet();
 
             char poi = GlyphOriginRegistry.get().glyph(dim);
-            int poiI = indexOf(poi);
+            int poiI = Glyph.indexOf(poi);
 
             while (set.size() != 8) {
                 int a = RANDOM.nextInt(Glyph.ALL.length);

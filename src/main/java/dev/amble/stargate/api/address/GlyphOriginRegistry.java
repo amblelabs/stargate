@@ -50,11 +50,11 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
     }
 
     public void register(RegistryKey<World> key, char c) {
-        REGISTRY[AddressProvider.indexOf(c)] = key;
+        REGISTRY[Glyph.indexOf(c)] = key;
     }
 
     public RegistryKey<World> glyph(char c) {
-        return REGISTRY[AddressProvider.indexOf(c)];
+        return REGISTRY[Glyph.indexOf(c)];
     }
 
     // TODO: allocate chars

@@ -31,6 +31,12 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
     private static final Identifier FONT_ID = StargateMod.id("stargate");
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
+    // FIXME(perf): replace with math.
+    @Deprecated(forRemoval = true)
+    public static int indexOf(char c) {
+        return ALPHABET.indexOf(c);
+    }
+
     public static Text asText(String s) {
         return Text.literal(s).setStyle(STYLE);
     }

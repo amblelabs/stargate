@@ -1,6 +1,5 @@
 package dev.amble.stargate.api;
 
-import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.api.event.init.StargateCreatedEvents;
@@ -15,12 +14,11 @@ import dev.amble.stargate.api.state.address.GlobalAddressState;
 import dev.amble.stargate.api.state.stargate.GateIdentityState;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateYAARs;
+import dev.amble.stargate.service.WorldProviderService;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
 import dev.drtheo.yaar.state.TStateContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -37,8 +35,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class Stargate extends TStateContainer.Delegate implements NbtSerializer, StargateLike {
 
@@ -93,7 +89,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     public void remove() {
-        ServerWorld world = this.world$server();
+        ServerWorld world = (ServerWorld) this.world();
 
         this.kernel().shape.destroy(world, pos, facing);
         TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
@@ -142,17 +138,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     // optimize using WeakReference if this causes a bottleneck
     public @Nullable World world() {
-        // trust.
-        if (isClient) {
-            ClientWorld world = MinecraftClient.getInstance().world;
-            return world != null && this.dimension.equals(world.getRegistryKey()) ? world : null;
-        }
-
-        return world$server();
-    }
-
-    public @NotNull ServerWorld world$server() {
-        return Objects.requireNonNull(ServerLifecycleHooks.get().getWorld(this.dimension()));
+        return WorldProviderService.INSTANCE.getWorld(dimension, isClient);
     }
 
     public void playSound(SoundEvent event) {

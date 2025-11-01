@@ -3,10 +3,11 @@ package dev.amble.stargate.item;
 import dev.amble.lib.api.WorldUtil;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.data.StargateClientData;
 import dev.amble.stargate.api.data.StargateData;
 import dev.amble.stargate.api.Stargate;
-import net.minecraft.client.gui.screen.Screen;
+import dev.amble.stargate.service.StargateDataProviderService;
+import dev.amble.stargate.service.TooltipContextExt;
+import dev.amble.stargate.service.TooltipService;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,11 +45,10 @@ public abstract class StargateLinkableItem extends Item {
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-		this.handleTooltip(stack, tooltip);
-		super.appendTooltip(stack, world, tooltip, context);
+		this.handleTooltip(stack, tooltip, TooltipService.INSTANCE.create(context));
 	}
 
-	private void handleTooltip(ItemStack stack, List<Text> tooltip) {
+	private void handleTooltip(ItemStack stack, List<Text> tooltip, TooltipContextExt ctx) {
 		if (!showTooltip)
 			return;
 
@@ -57,13 +57,13 @@ public abstract class StargateLinkableItem extends Item {
 		if (id == -1)
 			return;
 
-		if (!Screen.hasShiftDown()) {
+		if (!ctx.isShiftDown()) {
 			tooltip.add(Text.translatable("tooltip.stargate.link_item.holdformoreinfo").formatted(Formatting.GRAY)
 					.formatted(Formatting.ITALIC));
 			return;
 		}
 
-		Stargate stargate = StargateClientData.get().getGlobal(id);
+		Stargate stargate = StargateDataProviderService.INSTANCE.getClient().getGlobal(id);
 
 		if (stargate != null) {
 			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));

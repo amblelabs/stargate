@@ -28,13 +28,22 @@ repositories {
 	}
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs += [
-					"src/main/generated"
-			]
+loom {
+	// accessWidenerPath = file("src/main/resources/${project.mod_id}.accesswidener")
+
+	splitEnvironmentSourceSets()
+
+	mods {
+		"${project.mod_id}" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
 		}
+	}
+}
+
+fabricApi {
+	configureDataGeneration() {
+		client = true
 	}
 }
 
@@ -109,23 +118,6 @@ publishing {
 		maven {
 			name = "ci"
 			url = providers.environmentVariable("CI_MAVEN_PATH")
-		}
-	}
-}
-
-loom {
-	// accessWidenerPath = file("src/main/resources/${project.mod_id}.accesswidener")
-
-	runs {
-		// This adds a new gradle task that runs the datagen API
-		datagen {
-			inherit server
-			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-			vmArg "-Dfabric-api.datagen.modid=${project.mod_id}"
-
-			runDir "build/datagen"
 		}
 	}
 }

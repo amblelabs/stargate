@@ -14,7 +14,7 @@
 	],
 	"contact": {
 		"homepage": "https://amblelabs.github.io",
-		"sources": "https://github.com/amblelabs/stargate/",
+		"sources": "https://github.com/amblelabs/stargate",
 		"issues": "https://github.com/amblelabs/stargate/issues"
 	},
 	"license": "LGPL-3.0",
@@ -33,7 +33,8 @@
 		]
 	},
 	"mixins": [
-		"stargate.mixins.json"
+		"stargate.mixins.json",
+		"stargate.client.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=${loader_version}",
@@ -43,6 +44,6 @@
 		"amblekit": ">=${amblekit_version}"
 	},
 	"suggests": {
-
+		"ait": "*"
 	}
 }

@@ -97,25 +97,23 @@ public class EmptyContainerItem extends Item implements FluidModificationItem {
         if (block == Blocks.WATER) return false;
 
         boolean bl = blockState.canBucketPlace(this.fluid);
-        boolean bl2 = blockState.isAir() || bl || (block instanceof FluidFillable && ((FluidFillable)block).canFillWithFluid(world, pos, blockState, this.fluid));
-        if (!bl2) {
+        if (!bl && !blockState.isAir() && !(block instanceof FluidFillable fillable && fillable.canFillWithFluid(world, pos, blockState, this.fluid))) {
             return hitResult != null && this.placeFluid(player, world, hitResult.getBlockPos().offset(hitResult.getSide()), null);
         } else if (blockState.getFluidState().isStill() && blockState.getFluidState().getFluid() == this.fluid) {
             return true;
-        } else if (block instanceof FluidFillable && this.fluid == Fluids.WATER) {
-            ((FluidFillable)block).canFillWithFluid(world, pos, blockState, ((FlowableFluid)this.fluid).getStill(false).getFluid());
+        } else if (block instanceof FluidFillable fillable && this.fluid == Fluids.WATER) {
+            fillable.canFillWithFluid(world, pos, blockState, ((FlowableFluid) this.fluid).getStill(false).getFluid());
+            this.playEmptyingSound(player, world, pos);
+            return true;
+        }
+
+        if (!world.isClient() && bl && !blockState.isLiquid()) world.breakBlock(pos, true);
+
+        if (world.setBlockState(pos, this.fluid.getDefaultState().getBlockState(), 11) || blockState.getFluidState().isStill()) {
             this.playEmptyingSound(player, world, pos);
             return true;
         } else {
-            if (!world.isClient && bl && !blockState.isLiquid()) {
-                world.breakBlock(pos, true);
-            }
-            if (!world.setBlockState(pos, this.fluid.getDefaultState().getBlockState(), 11) && !blockState.getFluidState().isStill()) {
-                return false;
-            } else {
-                this.playEmptyingSound(player, world, pos);
-                return true;
-            }
+            return false;
         }
     }
 

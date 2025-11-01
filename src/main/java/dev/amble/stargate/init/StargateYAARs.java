@@ -1,8 +1,8 @@
 package dev.amble.stargate.init;
 
 import dev.amble.stargate.api.behavior.*;
-import dev.amble.stargate.api.behavior.address.AddressBehaviors;
-import dev.amble.stargate.api.behavior.iris.IrisBehavior;
+import dev.amble.stargate.api.behavior.AddressBehaviors;
+import dev.amble.stargate.api.behavior.IrisBehavior;
 import dev.amble.stargate.api.event.address.AddressIdsListEvents;
 import dev.amble.stargate.api.event.address.AddressResolveEvents;
 import dev.amble.stargate.api.event.address.StargateRemoveEvents;
