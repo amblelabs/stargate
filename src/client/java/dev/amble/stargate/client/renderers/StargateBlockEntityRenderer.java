@@ -145,7 +145,7 @@ public class StargateBlockEntityRenderer implements BlockEntityRenderer<Stargate
                 matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (180f + Math.toDegrees(angle))));
 
                 renderer.draw(GLYPHS[i], GLYPH_WIDTHS[i], -4, color, false,
-                        matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, glyphLight);
+                        matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, glyphLight);
 
                 matrices.pop();
             }
