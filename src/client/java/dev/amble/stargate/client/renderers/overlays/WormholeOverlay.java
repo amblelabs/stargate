@@ -1,8 +1,8 @@
-package dev.amble.stargate.client.overlays;
+package dev.amble.stargate.client.renderers.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.client.portal.WormholeRenderer;
+import dev.amble.stargate.client.renderers.portal.WormholeRenderer;
 import dev.amble.stargate.client.renderers.SpaceSkyRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;

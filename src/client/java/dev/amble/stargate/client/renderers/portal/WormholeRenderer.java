@@ -1,4 +1,4 @@
-package dev.amble.stargate.client.portal;
+package dev.amble.stargate.client.renderers.portal;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.stargate.StargateMod;

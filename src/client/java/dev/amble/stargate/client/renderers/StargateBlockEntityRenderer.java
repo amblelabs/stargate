@@ -9,7 +9,7 @@ import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.client.models.OrlinGateModel;
 import dev.amble.stargate.client.models.StargateModel;
-import dev.amble.stargate.client.portal.PortalRendering;
+import dev.amble.stargate.client.renderers.portal.PortalRendering;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
