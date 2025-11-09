@@ -19,12 +19,4 @@ public abstract class BaseStargateModel extends BlockEntityModel {
     }
 
     public abstract ModelPart[] bakeChevronLights();
-
-    public abstract static class Spinning extends BaseStargateModel {
-
-        public abstract void setWheelRot(float rad);
-
-        public abstract float getWheelRot();
-    }
-
 }

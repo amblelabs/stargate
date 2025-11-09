@@ -76,7 +76,7 @@ public class ClientIrisBehavior implements TBehavior, StargateBlockTickEvents, S
     }
 
     @Override
-    public void animate(StargateBlockEntity block, Stargate stargate, ClientAbstractStargateState state, Profiler profiler) {
+    public void animate(StargateBlockEntity block, Stargate stargate, ClientAbstractStargateState<?> state, Profiler profiler) {
         if (!(state.model() instanceof MilkyWayGateModel model)) return;
 
         ClientIrisState clientIrisState = stargate.stateOrNull(ClientIrisState.state);
