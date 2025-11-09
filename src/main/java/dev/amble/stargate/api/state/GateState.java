@@ -26,6 +26,8 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
 
         public static final int TICKS_PER_GLYPH = 5;
 
+        public static final int TICKS_PER_GLYPH2 = 60;
+
         public int locked;
         public boolean locking;
 

@@ -1,8 +1,8 @@
-package dev.amble.stargate.client.api.behavior;
+package dev.amble.stargate.client.api.behavior.stargate;
 
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.state.stargate.PegasusState;
-import dev.amble.stargate.api.state.stargate.client.ClientPegasusState;
+import dev.amble.stargate.client.api.state.stargate.ClientPegasusState;
 
 public class ClientPegasusBehavior extends ClientAbstractStargateBehavior<ClientPegasusState> {
 

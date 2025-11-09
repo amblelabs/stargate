@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.state.GateState;
-import dev.amble.stargate.api.state.stargate.client.ClientAbstractStargateState;
+import dev.amble.stargate.client.api.state.stargate.ClientAbstractStargateState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
@@ -40,7 +40,7 @@ public class PortalRendering {
             if (stargate == null)
                 continue;
 
-            ClientAbstractStargateState clientState = stargate.stateOrNull(ClientAbstractStargateState.state);
+            ClientAbstractStargateState<?> clientState = stargate.stateOrNull(ClientAbstractStargateState.state);
 
             if (clientState == null) continue;
 
@@ -48,7 +48,7 @@ public class PortalRendering {
         }
     }
 
-    public static void render(MinecraftClient client, MatrixStack stack, StargateBlockEntity entity, Stargate stargate, ClientAbstractStargateState clientState, float age) {
+    public static void render(MinecraftClient client, MatrixStack stack, StargateBlockEntity entity, Stargate stargate, ClientAbstractStargateState<?> clientState, float age) {
         Vec3d pos = entity.getPos().toCenterPos()
                 .subtract(client.gameRenderer.getCamera().getPos());
 
@@ -122,7 +122,7 @@ public class PortalRendering {
         }
     }
 
-    private static void renderPortalInterior(MatrixStack matrixStack, ClientAbstractStargateState clientState, GateState<?> currentState, float time) {
+    private static void renderPortalInterior(MatrixStack matrixStack, ClientAbstractStargateState<?> clientState, GateState<?> currentState, float time) {
         matrixStack.push();
         RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapProgram);
 

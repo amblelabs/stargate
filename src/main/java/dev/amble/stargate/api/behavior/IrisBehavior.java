@@ -2,13 +2,10 @@ package dev.amble.stargate.api.behavior;
 
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.block.StargateBlockUseEvents;
-import dev.amble.stargate.api.event.init.StargateLoadedEvents;
-import dev.amble.stargate.api.event.init.StargateUpdateEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvent;
 import dev.amble.stargate.api.event.block.StargateBlockTickEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvents;
-import dev.amble.stargate.api.state.iris.IrisState;
-import dev.amble.stargate.api.state.iris.ClientIrisState;
+import dev.amble.stargate.api.state.IrisState;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
 import dev.amble.stargate.init.StargateSounds;
 import dev.drtheo.yaar.behavior.TBehavior;
@@ -23,7 +20,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class IrisBehavior implements TBehavior, StargateTpEvents, StargateBlockTickEvents, StargateLoadedEvents, StargateUpdateEvents, StargateBlockUseEvents {
+public class IrisBehavior implements TBehavior, StargateTpEvents, StargateBlockTickEvents, StargateBlockUseEvents {
 
     @Override
     public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, LivingEntity living) {
@@ -54,21 +51,6 @@ public class IrisBehavior implements TBehavior, StargateTpEvents, StargateBlockT
             irisState.prevIrisState = newState;
             stargate.markDirty();
         }
-    }
-
-    @Override
-    public void onLoaded(Stargate stargate) {
-        this.checkAndAttach(stargate);
-    }
-
-    @Override
-    public void onUpdate(Stargate stargate) {
-        this.checkAndAttach(stargate);
-    }
-
-    private void checkAndAttach(Stargate stargate) {
-        if (stargate.isClient() && stargate.hasState(IrisState.state) && !stargate.hasState(ClientIrisState.state))
-            stargate.addState(new ClientIrisState());
     }
 
     @Override

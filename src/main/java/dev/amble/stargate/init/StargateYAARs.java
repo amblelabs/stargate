@@ -19,7 +19,7 @@ import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.api.state.address.GlobalAddressState;
 import dev.amble.stargate.api.state.address.LocalAddressState;
 import dev.amble.stargate.api.state.stargate.*;
-import dev.amble.stargate.api.state.iris.IrisState;
+import dev.amble.stargate.api.state.IrisState;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import dev.drtheo.yaar.event.TEventsRegistry;
 import dev.drtheo.yaar.state.TAbstractStateRegistry;

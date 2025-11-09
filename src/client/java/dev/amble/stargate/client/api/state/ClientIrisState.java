@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.state.iris;
+package dev.amble.stargate.client.api.state;
 
 import dev.amble.stargate.StargateMod;
 import dev.drtheo.yaar.state.TState;

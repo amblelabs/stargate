@@ -1,14 +1,14 @@
 package dev.amble.stargate.client.init;
 
-import dev.amble.stargate.client.api.behavior.ClientDestinyBehavior;
-import dev.amble.stargate.client.api.behavior.ClientMilkyWayBehavior;
-import dev.amble.stargate.client.api.behavior.ClientOrlinBehavior;
-import dev.amble.stargate.client.api.behavior.ClientPegasusBehavior;
+import dev.amble.stargate.client.api.behavior.stargate.ClientDestinyBehavior;
+import dev.amble.stargate.client.api.behavior.stargate.ClientMilkyWayBehavior;
+import dev.amble.stargate.client.api.behavior.stargate.ClientOrlinBehavior;
+import dev.amble.stargate.client.api.behavior.stargate.ClientPegasusBehavior;
 import dev.amble.stargate.client.api.behavior.ClientIrisBehavior;
 import dev.amble.stargate.client.api.event.render.StargateAnimateEvents;
 import dev.amble.stargate.client.api.event.render.StargateRenderEvents;
-import dev.amble.stargate.api.state.iris.ClientIrisState;
-import dev.amble.stargate.api.state.stargate.client.*;
+import dev.amble.stargate.client.api.state.ClientIrisState;
+import dev.amble.stargate.client.api.state.stargate.*;
 import dev.amble.stargate.init.StargateYAARs;
 import dev.drtheo.yaar.behavior.TBehaviorRegistry;
 import dev.drtheo.yaar.event.TEventsRegistry;

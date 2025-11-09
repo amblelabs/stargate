@@ -64,7 +64,7 @@ public interface GenericGateBehaviors {
                 return;
             }
 
-            if (!closed.locking || closed.timer++ < calculateDelay(closed)) return;
+            if (!closed.locking || closed.timer++ < GateState.Closed.TICKS_PER_GLYPH2) return;
 
             closed.timer = 0;
             closed.locked++;

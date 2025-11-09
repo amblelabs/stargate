@@ -3,10 +3,8 @@ package dev.amble.stargate.client.models;
 import net.minecraft.client.model.*;
 
 public class OrlinGateModel extends BaseStargateModel {
+
 	public final ModelPart stargate;
-	public final ModelPart base;
-	public final ModelPart gate;
-	public final ModelPart innerlayer;
 	public final ModelPart chevron7;
 	public final ModelPart chevron1;
 	public final ModelPart chevron2;
@@ -16,25 +14,38 @@ public class OrlinGateModel extends BaseStargateModel {
 	public final ModelPart chevron6;
 	public final ModelPart chevron8;
 	public final ModelPart chevron9;
-	public final ModelPart outerlayer;
-	public final ModelPart steps;
 
-	public OrlinGateModel(ModelPart root) {
+	public OrlinGateModel() {
+		ModelPart root = getTexturedModelData().createModel();
+
 		this.stargate = root.getChild("stargate");
-		this.base = this.stargate.getChild("base");
-		this.gate = this.stargate.getChild("gate");
-		this.innerlayer = this.gate.getChild("innerlayer");
-		this.chevron7 = this.innerlayer.getChild("chevron7");
-		this.chevron1 = this.innerlayer.getChild("chevron1");
-		this.chevron2 = this.innerlayer.getChild("chevron2");
-		this.chevron3 = this.innerlayer.getChild("chevron3");
-		this.chevron4 = this.innerlayer.getChild("chevron4");
-		this.chevron5 = this.innerlayer.getChild("chevron5");
-		this.chevron6 = this.innerlayer.getChild("chevron6");
-		this.chevron8 = this.innerlayer.getChild("chevron8");
-		this.chevron9 = this.innerlayer.getChild("chevron9");
-		this.outerlayer = this.gate.getChild("outerlayer");
-		this.steps = this.stargate.getChild("steps");
+
+		ModelPart gate = this.stargate.getChild("gate");
+		ModelPart innerlayer = gate.getChild("innerlayer");
+
+		this.chevron7 = innerlayer.getChild("chevron7");
+		this.chevron1 = innerlayer.getChild("chevron1");
+		this.chevron2 = innerlayer.getChild("chevron2");
+		this.chevron3 = innerlayer.getChild("chevron3");
+		this.chevron4 = innerlayer.getChild("chevron4");
+		this.chevron5 = innerlayer.getChild("chevron5");
+		this.chevron6 = innerlayer.getChild("chevron6");
+		this.chevron8 = innerlayer.getChild("chevron8");
+		this.chevron9 = innerlayer.getChild("chevron9");
+	}
+
+	@Override
+	public ModelPart getPart() {
+		return stargate;
+	}
+
+	@Override
+	public ModelPart[] bakeChevronLights() {
+		return new ModelPart[] {
+				chevron1, chevron2, chevron3,
+				chevron4, chevron5, chevron6,
+				chevron7, chevron8, chevron9
+		};
 	}
 
 	public static TexturedModelData getTexturedModelData() {
@@ -171,10 +182,5 @@ public class OrlinGateModel extends BaseStargateModel {
 		.uv(63, 106).cuboid(7.0F, -3.0F, -16.0F, 1.0F, 3.0F, 1.0F, new Dilation(0.0F))
 		.uv(105, 85).cuboid(7.0F, -6.0F, -4.0F, 1.0F, 6.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 		return TexturedModelData.of(modelData, 128, 128);
-	}
-
-	@Override
-	public ModelPart getPart() {
-		return stargate;
 	}
 }
