@@ -1,0 +1,7 @@
+{
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
+  "icon": "stargate:copper_coil",
+  "name": "book.stargate.stellar_map.mechanics",
+  "sort_number": -1
+}

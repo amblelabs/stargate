@@ -1,0 +1,38 @@
+{
+  "type": "modonomicon:dense",
+  "pattern": [
+    [ "3I4" ],
+    [ "I0I" ],
+    [ "2N1" ]
+  ],
+  "mapping": {
+    "1": {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:cut_copper_stairs[facing=north,half=top]"
+    },
+    "2":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:cut_copper_stairs[facing=south,half=top]"
+    },
+    "3":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:cut_copper_stairs[facing=south]"
+    },
+    "4":  {
+      "type": "modonomicon:blockstate",
+      "block": "minecraft:cut_copper_stairs[facing=north]"
+    },
+    "I":  {
+      "type": "modonomicon:block",
+      "block": "minecraft:iron_block"
+    },
+    "N": {
+      "type": "modonomicon:block",
+      "block": "stargate:naquadah_block"
+    },
+    "0":  {
+      "type": "modonomicon:block",
+      "block": "stargate:toaster"
+    }
+  }
+}

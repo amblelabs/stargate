@@ -1,0 +1,28 @@
+{
+  "name": "book.stargate.stellar_map.gates.orlin",
+  "description": "book.stargate.stellar_map.gates.orlin.desc",
+  "icon": "stargate:orlin_stargate",
+  "x": 6,
+  "y": 2,
+  "category": "stargate:gates",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "book.stargate.stellar_map.gates.orlin.0",
+      "use_markdown_title": true,
+      "show_title_separator": true,
+      "text": "book.stargate.stellar_map.gates.orlin.0.text"
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "multiblock_name": "book.stargate.stellar_map.gates.orlin.1",
+      "multiblock_id": "stargate:orlin_gate",
+      "text": "book.stargate.stellar_map.gates.orlin.1.text"
+    }
+  ],
+  "parents": [
+    {
+      "entry": "stargate:gates/main"
+    }
+  ]
+}

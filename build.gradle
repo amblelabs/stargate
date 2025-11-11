@@ -26,6 +26,22 @@ repositories {
 			includeGroup "dev.amble"
 		}
 	}
+
+	maven {
+		url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
+		content {
+			includeGroup "com.klikli_dev"
+		}
+	}
+
+	maven {
+		name = "Jei and Patchouli Maven"
+		url = 'https://maven.blamejared.com'
+		content {
+			includeGroup "vazkii.patchouli"
+			includeGroup "mezz.jei"
+		}
+	}
 }
 
 loom {
@@ -60,6 +76,7 @@ dependencies {
 	}
 
 	modCompileOnlyApi "teamreborn:energy:${project.tech_version}"
+	modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
 }
 
 processResources {
@@ -97,11 +114,8 @@ java {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
-	// needed because inputs.properties.archivesName is not accessible configuration time
-	def archivesNameValue = project.base.archivesName
-
 	from("LICENSE") {
-		rename { "${it}_${archivesNameValue.get()}" }
+		rename { "${it}_${inputs.archivesName}" }
 	}
 }
 

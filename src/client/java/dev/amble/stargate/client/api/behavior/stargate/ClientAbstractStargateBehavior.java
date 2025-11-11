@@ -22,7 +22,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
@@ -56,11 +55,12 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
 
     @Override
     public void render(Stargate stargate, ClientAbstractStargateState<?> clientState, StargateBlockEntity entity, StargateBlockEntityRenderer renderer, Profiler profiler, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, float tickDelta) {
-        this.customRender(stargate, this.tryGetState(stargate, clientState), entity, renderer, profiler, matrices, vertexConsumers, light, overlay, tickDelta);
+        this.customRender(stargate, this.tryCastState(stargate, clientState), entity, renderer, profiler, matrices, vertexConsumers, light, overlay, tickDelta);
     }
 
-    protected T tryGetState(Stargate stargate, ClientAbstractStargateState<?> clientState) {
+    protected T tryCastState(Stargate stargate, ClientAbstractStargateState<?> clientState) {
         // TODO: create an abstract exception class that will get caught by stuff and make StateResolveError extend it
+        //  StateResolveError will print stacktraces in debug.
         if (!clazz.isInstance(clientState)) throw StateResolveError.create(stargate, ClientAbstractStargateState.state);
 
         return (T) clientState;
@@ -111,22 +111,6 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
         }
 
         private static final int MAX_GLYPHS = Glyph.ALL.length;
-        private static final OrderedText[] GLYPHS;
-        private static final float[] GLYPH_WIDTHS;
-
-        static {
-            GLYPHS = new OrderedText[MAX_GLYPHS];
-            GLYPH_WIDTHS = new float[MAX_GLYPHS];
-
-            TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-
-            for (int i = 0; i < MAX_GLYPHS; i++) {
-                OrderedText text = Glyph.asText(Glyph.ALL[i]).asOrderedText();
-
-                GLYPHS[i] = text;
-                GLYPH_WIDTHS[i] = renderer.getWidth(text) / -2f;
-            }
-        }
 
         public static boolean shouldRenderGlyphs(MinecraftClient client, Stargate stargate) {
             Vec3d pos = client.gameRenderer.getCamera().getPos();
@@ -138,7 +122,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
             rot = rot * 180 / MathHelper.PI;
 
             if (shouldRenderGlyphs(client, gate)) {
-                final TextRenderer renderer = client.textRenderer;
+                final GlyphCache cache = GlyphCache.get();
                 final Direction direction = gate.facing();
 
                 final boolean northern = direction.getAxis() == Direction.Axis.Z;
@@ -160,7 +144,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
                     float rotProgress = (float) closed.timer / (float) GateState.Closed.TICKS_PER_GLYPH2;
 
                     // FIXME: make this calculation be done in rad instead of deg
-                    float selectedRot = MathHelper.wrapDegrees(initialRot + 360f * selectedGlyphIdx / GLYPHS.length);
+                    float selectedRot = MathHelper.wrapDegrees(initialRot + 360f * selectedGlyphIdx / MAX_GLYPHS);
 
                     System.out.println("rot: " + rot + "/" + selectedRot + "; " + rotProgress * 100 + "%");
                     rot += MathHelper.wrapDegrees(selectedRot * rotProgress - rot)
@@ -184,7 +168,7 @@ public abstract class ClientAbstractStargateBehavior<T extends ClientAbstractSta
                     // rotate the symbols towards the gate
                     matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees((float) (initialRot + Math.toDegrees(angle))));
 
-                    renderer.draw(GLYPHS[i], GLYPH_WIDTHS[i], -4, color, false,
+                    cache.draw(i, -4, color, false,
                             matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, glyphLight);
 
                     matrices.pop();

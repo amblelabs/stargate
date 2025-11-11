@@ -6,27 +6,27 @@ import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.fluid.StargateFluids;
-import dev.amble.stargate.item.DialerItem;
-import dev.amble.stargate.item.EmptyContainerItem;
-import dev.amble.stargate.item.IrisItem;
-import dev.amble.stargate.item.StargateItem;
+import dev.amble.stargate.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import org.jetbrains.annotations.Nullable;
 
 public class StargateItems extends ItemContainer {
 
+	@NoEnglish public static final Item GUIDE_BOOK = new GuideBookItem(new AItemSettings());
+
 	@AutomaticModel
 	@NoEnglish
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1));
 
 	// Stargates
-	@NoEnglish public static final Item MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
-	@NoEnglish public static final Item ORLIN_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.ORLIN);
-	@NoEnglish public static final Item DESTINY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.DESTINY);
-	@NoEnglish public static final Item PEGASUS_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.PEGASUS);
+	@NoEnglish public static final StargateItem MILKY_WAY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.MILKY_WAY);
+	@NoEnglish public static final StargateItem ORLIN_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.ORLIN);
+	@NoEnglish public static final StargateItem DESTINY_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.DESTINY);
+	@NoEnglish public static final StargateItem PEGASUS_STARGATE = new StargateItem(new AItemSettings(), GateKernelRegistry.PEGASUS);
 
 	//Naquadah
 	@AutomaticModel

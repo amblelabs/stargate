@@ -4,11 +4,14 @@ import dev.amble.lib.block.ABlock;
 import dev.amble.lib.block.ABlockSettings;
 import dev.amble.lib.block.behavior.base.BlockWithEntityBehavior;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
+import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.block.entities.ToasterBlockEntity;
 import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateItems;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -72,7 +75,7 @@ public class ToasterBlock extends ABlock implements BlockEntityProvider {
     public ActionResult onUse(BlockState state, World world, BlockPos pos,
                               PlayerEntity player,
                               Hand hand, BlockHitResult hit) {
-        if (world.isClient()) return ActionResult.PASS;
+        if (!(world instanceof ServerWorld serverWorld)) return ActionResult.PASS;
 
         ItemStack stack = player.getStackInHand(hand);
 
@@ -81,20 +84,28 @@ public class ToasterBlock extends ABlock implements BlockEntityProvider {
             BlockPos[] positions = facing == Direction.NORTH || facing == Direction.SOUTH
                     ? POSITIONS_NORTH : POSITIONS_EAST;
 
-            for (int i = 0; i < positions.length; i++) {
-                if (world.getBlockState(positions[i]).getBlock() != requiredBlocks[i]) {
+            BlockPos[] finalPos = new BlockPos[positions.length];
+
+            for (int i = 0; i < finalPos.length; i++) {
+                BlockPos blockPos = pos.add(positions[i]);
+                finalPos[i] = blockPos;
+
+                BlockState block = world.getBlockState(blockPos);
+
+                if (block.getBlock() != requiredBlocks[i]) {
+                    StargateMod.LOGGER.debug("Block {}@{} != {}", block.getBlock(), blockPos, requiredBlocks[i]);
                     return ActionResult.PASS;
                 }
             }
 
-            for (BlockPos clearPos : positions) {
+            for (BlockPos clearPos : finalPos) {
                 world.breakBlock(clearPos, false);
             }
 
-            world.setBlockState(pos, StargateBlocks.ORLIN_GATE.getDefaultState().with(HorizontalBlockBehavior.FACING, facing), Block.NOTIFY_ALL);
+            StargateItems.ORLIN_STARGATE.place(serverWorld, pos.down(), facing);
             return ActionResult.SUCCESS;
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return ActionResult.PASS;
     }
 }
