@@ -9,13 +9,13 @@ import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import org.jetbrains.annotations.Nullable;
 
 public class StargateItems extends ItemContainer {
 
+	@AutomaticModel
 	@NoEnglish public static final Item GUIDE_BOOK = new GuideBookItem(new AItemSettings());
 
 	@AutomaticModel
@@ -79,7 +79,7 @@ public class StargateItems extends ItemContainer {
 	public static final Item CONTROL_CRYSTAL_MASTER = new Item(new AItemSettings());
 
 	@NoEnglish
-	public static final Item LIQUID_NAQUADAH = new EmptyContainerItem(StargateFluids.STILL_LIQUID_NAQUADAH, new FabricItemSettings().recipeRemainder(StargateItems.EMPTY_CONTAINER).maxCount(1));
+	public static final Item LIQUID_NAQUADAH = new EmptyContainerItem(StargateFluids.LIQUID_NAQUADAH_STILL, new FabricItemSettings().recipeRemainder(StargateItems.EMPTY_CONTAINER).maxCount(1));
 
     @AutomaticModel
     @NoEnglish

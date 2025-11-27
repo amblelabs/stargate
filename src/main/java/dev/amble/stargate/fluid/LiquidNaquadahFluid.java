@@ -24,12 +24,12 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     public Fluid getFlowing() {
-        return StargateFluids.FLOWING_LIQUID_NAQUADAH;
+        return StargateFluids.LIQUID_NAQUADAH_FLOWING;
     }
 
     @Override
     public Fluid getStill() {
-        return StargateFluids.STILL_LIQUID_NAQUADAH;
+        return StargateFluids.LIQUID_NAQUADAH_STILL;
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class LiquidNaquadahFluid extends FlowableFluid {
 
     @Override
     public boolean matchesType(Fluid fluid) {
-        return fluid == StargateFluids.STILL_LIQUID_NAQUADAH || fluid == StargateFluids.FLOWING_LIQUID_NAQUADAH;
+        return fluid == StargateFluids.LIQUID_NAQUADAH_STILL || fluid == StargateFluids.LIQUID_NAQUADAH_FLOWING;
     }
 
     @Override

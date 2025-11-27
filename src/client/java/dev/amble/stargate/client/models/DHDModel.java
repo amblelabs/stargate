@@ -93,7 +93,12 @@ public class DHDModel extends BlockEntityModel {
 	public final ModelPart bone4;
 	public final ModelPart bone2;
 	public final ModelPart bone3;
-	public DHDModel(ModelPart root) {
+
+	public DHDModel() {
+		this(getTexturedModelData().createModel());
+	}
+
+	private DHDModel(ModelPart root) {
 		this.dhd = root.getChild("dhd");
 		this.main = this.dhd.getChild("main");
 		this.area = this.main.getChild("area");

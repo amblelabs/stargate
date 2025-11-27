@@ -85,5 +85,7 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
 
         addTranslation("achievement.stargate.title.passed_through", "It'll take you a million light years away from home");
         addTranslation("achievement.stargate.description.passed_through", "Travel through a Stargate for the first time.");
+
+        addTranslation("screen.stargate.computer.title", "Dialing Computer");
     }
 }

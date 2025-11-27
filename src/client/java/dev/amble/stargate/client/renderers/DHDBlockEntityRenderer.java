@@ -32,16 +32,16 @@ public class DHDBlockEntityRenderer implements BlockEntityRenderer<DHDBlockEntit
     private final ModelPart[] allLights;
 
     public DHDBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        this.model = new DHDModel(DHDModel.getTexturedModelData().createModel());
+        this.model = new DHDModel();
 
-        ModelPart[] bottomlights = new ModelPart[]{
+        ModelPart[] bottomlights = new ModelPart[] {
                 this.model.button6, this.model.button7, this.model.button8, this.model.button9,
                 this.model.button10, this.model.button11, this.model.button12, this.model.button13, this.model.button14,
                 this.model.button15, this.model.button16, this.model.button17, this.model.button18,
                 this.model.button1, this.model.button2, this.model.button3, this.model.button4, this.model.button5
         };
 
-        ModelPart[] toplights = new ModelPart[]{
+        ModelPart[] toplights = new ModelPart[] {
                 this.model.button19, this.model.button20, this.model.button21, this.model.button22,
                 this.model.button23, this.model.button24, this.model.button25, this.model.button26,
                 this.model.button27, this.model.button28, this.model.button29, this.model.button30,

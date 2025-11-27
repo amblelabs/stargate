@@ -8,10 +8,7 @@ import dev.amble.lib.datagen.util.NoBlockDrop;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.datagen.util.PickaxeMineable;
 import dev.amble.lib.item.AItemSettings;
-import dev.amble.stargate.block.DHDBlock;
-import dev.amble.stargate.block.StargateBlock;
-import dev.amble.stargate.block.StargateRingBlock;
-import dev.amble.stargate.block.ToasterBlock;
+import dev.amble.stargate.block.*;
 import dev.amble.stargate.block.stargates.OrlinGateBlock;
 import dev.amble.stargate.fluid.LiquidNaquadahFluidBlock;
 import dev.amble.stargate.fluid.StargateFluids;
@@ -55,7 +52,7 @@ public class StargateBlocks extends BlockContainer {
 
 	@NoEnglish
 	@NoBlockDrop
-	public static final Block LIQUID_NAQUADAH_BLOCK = new LiquidNaquadahFluidBlock(StargateFluids.STILL_LIQUID_NAQUADAH,
+	public static final Block LIQUID_NAQUADAH_BLOCK = new LiquidNaquadahFluidBlock(StargateFluids.LIQUID_NAQUADAH_STILL,
 			ABlockSettings.create().itemSettings(new AItemSettings()).mapColor(MapColor.EMERALD_GREEN).replaceable()
 					.noCollision().strength(100.0F).pistonBehavior(PistonBehavior.DESTROY).dropsNothing().liquid()
 					.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY));
@@ -82,6 +79,11 @@ public class StargateBlocks extends BlockContainer {
     @NoEnglish
     @PickaxeMineable(tool = PickaxeMineable.Tool.STONE)
     public static final Block TOASTER = new ToasterBlock(ABlockSettings.create().nonOpaque().requiresTool()
+            .strength(10.0F, 1.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.METAL));
+
+    @NoEnglish
+    @PickaxeMineable(tool = PickaxeMineable.Tool.STONE)
+    public static final Block COMPUTER = new DialingComputerBlock(ABlockSettings.create().nonOpaque()
             .strength(10.0F, 1.0F).pistonBehavior(PistonBehavior.NORMAL).sounds(BlockSoundGroup.METAL));
 
 	@Override

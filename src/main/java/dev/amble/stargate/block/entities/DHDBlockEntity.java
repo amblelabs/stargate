@@ -2,10 +2,8 @@ package dev.amble.stargate.block.entities;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.dhd.DHDArrangement;
-import dev.amble.stargate.api.dhd.SymbolArrangement;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.entities.DHDControlEntity;
 import dev.amble.stargate.init.StargateBlockEntities;
@@ -22,12 +20,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
-    private final Deque<DHDControlEntity> symbolControlEntities = new ArrayDeque<>(Glyph.ALL.length);
+    private final DHDControlEntity[] symbolControlEntities = new DHDControlEntity[DHDArrangement.SYMBOLS.size() + 1];
     private boolean needsSymbols = true;
 
     public DHDBlockEntity(BlockPos pos, BlockState state) {
@@ -38,13 +33,24 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
         Stargate stargate = this.asGate();
 
         if (stargate == null) {
-            StargateMod.LOGGER.warn("Discarding invalid control entity at {}; dhd pos: {}", entity.getPos(), this.getPos());
+            StargateMod.LOGGER.warn(
+                "Discarding invalid control entity at {}; dhd pos: {}",
+                entity.getPos(),
+                this.getPos()
+            );
 
             entity.discard();
             return;
         }
 
-        world.playSound(null, this.getPos(), StargateSounds.DHD_PRESS, SoundCategory.BLOCKS, 0.7f, 1f);
+        world.playSound(
+            null,
+            this.getPos(),
+            StargateSounds.DHD_PRESS,
+            SoundCategory.BLOCKS,
+            0.7f,
+            1f
+        );
 
         GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
 
@@ -67,8 +73,7 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
     @Override
     public void tick(World world, BlockPos blockPos, BlockState blockState) {
-        if (this.needsSymbols)
-            this.spawnControls();
+        if (this.needsSymbols) this.spawnControls();
     }
 
     @Override
@@ -90,10 +95,11 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
     }
 
     private void killControls() {
-        while (!symbolControlEntities.isEmpty()) {
-            Entity entity = symbolControlEntities.poll();
-            if (entity == null) continue;
+        for (int i = 0; i < symbolControlEntities.length; i++) {
+            Entity entity = symbolControlEntities[i];
+            symbolControlEntities[i] = null;
 
+            if (entity == null) continue;
             entity.discard();
         }
     }
@@ -106,13 +112,20 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
         Stargate stargate = this.asGate();
         if (stargate == null) return;
 
-        Direction direction = HorizontalBlockBehavior.getFacing(this.world.getBlockState(this.pos));
+        Direction direction = HorizontalBlockBehavior.getFacing(
+            this.world.getBlockState(this.pos)
+        );
 
-        for (SymbolArrangement control : DHDArrangement.SYMBOLS) {
-            this.symbolControlEntities.add(control.createEntity(this.world, this.pos, direction));
+        int i = 0;
+        for (; i < DHDArrangement.SYMBOLS.size(); i++) {
+            this.symbolControlEntities[i] = DHDArrangement.SYMBOLS.get(
+                i
+            ).createEntity(this.world, this.pos, direction);
         }
 
-        this.symbolControlEntities.add(DHDArrangement.poi(world).createEntity(this.world, this.pos, direction));
+        this.symbolControlEntities[++i] = DHDArrangement.poi(
+            world
+        ).createEntity(this.world, this.pos, direction);
         this.needsSymbols = false;
     }
 
