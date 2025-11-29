@@ -1,5 +1,6 @@
 package dev.amble.stargate.block.entities;
 
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
@@ -55,7 +56,7 @@ public abstract class NearestLinkingBlockEntity extends StargateLinkableBlockEnt
 				// - if the chunk wasn't loaded, it won't find anything
 				// 		(which is why the chunk find range is only 3x3)
 				// - any linkable will get marked as a gate in that chunk
-                Collection<Stargate> collection = data.findByChunk(chunkPos.x + offsetX, chunkPos.z + offsetZ);
+                Collection<ServerStargate> collection = data.findByChunk(chunkPos.x + offsetX, chunkPos.z + offsetZ);
 
                 if (collection == null || collection.isEmpty())
                     continue;

@@ -45,7 +45,7 @@ public class SGRecipesGen extends AmbleRecipeProvider {
                 .criterion(hasItem(StargateItems.NAQUADAH_INGOT), conditionsFromItem(StargateItems.NAQUADAH_INGOT))
                 .criterion(hasItem(StargateItems.NAQUADAH_NUGGET), conditionsFromItem(StargateItems.NAQUADAH_NUGGET)));
 
-        addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.IRIS, 1)
+        addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, StargateItems.GOLD_IRIS, 1)
                 .group("iris")
                 .pattern("BBB")
                 .pattern("BFB")

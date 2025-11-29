@@ -1,4 +1,4 @@
-package dev.amble.stargate.api.util;
+package dev.amble.stargate.util;
 
 public interface TeleportableEntity {
     void stargate$setTicks(int ticks);

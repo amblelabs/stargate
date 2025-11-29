@@ -1,12 +1,9 @@
 package dev.amble.stargate.api;
 
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.data.StargateServerData;
-import dev.amble.stargate.api.event.init.StargateCreatedEvents;
 import dev.amble.stargate.api.event.init.StargateLoadedEvents;
 import dev.amble.stargate.api.event.init.StargateUpdateEvents;
 import dev.amble.stargate.api.event.tick.StargateTickEvent;
-import dev.amble.stargate.api.event.address.StargateRemoveEvent;
 import dev.amble.stargate.api.event.state.StateAddedEvent;
 import dev.amble.stargate.api.event.state.StateRemovedEvent;
 import dev.amble.stargate.api.state.GateState;
@@ -14,7 +11,7 @@ import dev.amble.stargate.api.state.address.GlobalAddressState;
 import dev.amble.stargate.api.state.stargate.GateIdentityState;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateYAARs;
-import dev.amble.stargate.service.WorldProviderService;
+import dev.amble.stargate.service.Services;
 import dev.drtheo.yaar.event.TEvents;
 import dev.drtheo.yaar.state.NbtSerializer;
 import dev.drtheo.yaar.state.TState;
@@ -38,16 +35,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class Stargate extends TStateContainer.Delegate implements NbtSerializer, StargateLike {
 
-    private final RegistryKey<World> dimension;
-    private final BlockPos pos;
-    private final Direction facing;
+    protected final RegistryKey<World> dimension;
+    protected final BlockPos pos;
+    protected final Direction facing;
 
-    private TState.Type<? extends GateState<?>> curState;
+    protected TState.Type<? extends GateState<?>> curState;
 
-    private final boolean isClient;
-    private boolean dirty;
+    protected final boolean isClient;
+    protected boolean dirty;
 
-    public Stargate(GateIdentityState identity, ServerWorld world, BlockPos pos, Direction direction) {
+    protected Stargate(GateIdentityState identity, ServerWorld world, BlockPos pos, Direction direction) {
         super(StargateYAARs.States.createArrayHolder());
 
         this.isClient = false;
@@ -60,7 +57,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         this.addState(identity);
 
         this.setGateState(this.fallbackGateState());
-        StargateCreatedEvents.handleCreation(this);
     }
 
     public static Stargate fromNbt(NbtCompound nbt, boolean isClient) {
@@ -86,13 +82,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     public void tick() {
         TEvents.handle(new StargateTickEvent(this));
-    }
-
-    public void remove() {
-        ServerWorld world = (ServerWorld) this.world();
-
-        this.kernel().shape.destroy(world, pos, facing);
-        TEvents.handle(new StargateRemoveEvent(StargateServerData.get(world), this));
     }
 
     @Override
@@ -138,7 +127,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     // optimize using WeakReference if this causes a bottleneck
     public @Nullable World world() {
-        return WorldProviderService.INSTANCE.getWorld(dimension, isClient);
+        return Services.WORLDS.getWorld(dimension, isClient);
     }
 
     public void playSound(SoundEvent event) {
@@ -222,6 +211,11 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
             TEvents.handle(new StateRemovedEvent(this, result));
 
         return result;
+    }
+
+    @Contract(mutates = "this")
+    public <T extends TState<T>> @Nullable T removeState(@NotNull T state) {
+        return this.removeState(state.type());
     }
 
     @Override

@@ -3,7 +3,7 @@ package dev.amble.stargate.api.data;
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.service.StargateDataProviderService;
+import dev.amble.stargate.service.Services;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -98,7 +98,7 @@ public class StargateRef implements StargateLinkable {
             return null;
 
         if (isClient)
-            return StargateDataProviderService.INSTANCE.getClient().getGlobal(globalAddress);
+            return Services.GATES.getClient().getGlobal(globalAddress);
 
         RegistryKey<World> key = AddressProvider.Global.getTarget(globalAddress);
         ServerWorld world = ServerLifecycleHooks.get().getWorld(key);

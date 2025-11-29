@@ -9,15 +9,10 @@ import dev.amble.stargate.client.renderers.*;
 import dev.amble.stargate.client.renderers.overlays.WormholeOverlay;
 import dev.amble.stargate.client.renderers.portal.PortalRendering;
 import dev.amble.stargate.client.screen.DialingComputerScreen;
-import dev.amble.stargate.client.service.ClientStargateDataProviderService;
-import dev.amble.stargate.client.service.ClientWorldProviderService;
-import dev.amble.stargate.client.service.TooltipServiceImpl;
+import dev.amble.stargate.client.service.ClientServices;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateEntities;
-import dev.amble.stargate.service.StargateDataProviderService;
-import dev.amble.stargate.service.TooltipService;
-import dev.amble.stargate.service.WorldProviderService;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -51,9 +46,7 @@ public class StargateModClient implements ClientModInitializer {
         StargateClientYAARs.init();
         StargateClientData.init();
 
-        TooltipService.INSTANCE = new TooltipServiceImpl();
-        StargateDataProviderService.INSTANCE = new ClientStargateDataProviderService();
-        WorldProviderService.INSTANCE = new ClientWorldProviderService();
+        ClientServices.init();
     }
 
     public void registerBlockEntityRenderers() {
@@ -70,9 +63,8 @@ public class StargateModClient implements ClientModInitializer {
     }
 
     public static void setupBlockRendering() {
-        BlockRenderLayerMap map = BlockRenderLayerMap.INSTANCE;
-        map.putBlock(StargateBlocks.GENERIC_GATE, RenderLayer.getCutout());
-        map.putBlock(StargateBlocks.ORLIN_GATE, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(StargateBlocks.GENERIC_GATE, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(StargateBlocks.ORLIN_GATE, RenderLayer.getCutout());
     }
 }
 

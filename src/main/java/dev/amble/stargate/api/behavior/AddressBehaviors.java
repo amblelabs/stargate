@@ -1,6 +1,7 @@
 package dev.amble.stargate.api.behavior;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.data.StargateServerData;
 import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.Stargate;
@@ -31,13 +32,13 @@ public interface AddressBehaviors {
     class LocalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents, AddressIdsListEvents {
 
         @Override
-        public void remove(StargateServerData data, Stargate stargate) {
+        public void remove(StargateServerData data, ServerStargate stargate) {
             data.removeLocal(stargate.state(LocalAddressState.state).address());
         }
 
         @Override
-        public void onCreated(Stargate stargate) {
-            StargateServerData data = StargateServerData.getOrCreate((ServerWorld) stargate.world());
+        public void onCreated(ServerStargate stargate) {
+            StargateServerData data = StargateServerData.getOrCreate(stargate.world());
             LocalAddressState address = data.generateAddress(stargate.dimension(), stargate.pos(), LocalAddressState::new);
 
             stargate.addState(address);
@@ -53,13 +54,13 @@ public interface AddressBehaviors {
     class GlobalAddressBehavior implements TBehavior, StargateRemoveEvents, StargateCreatedEvents, AddressIdsListEvents {
 
         @Override
-        public void remove(StargateServerData data, Stargate stargate) {
+        public void remove(StargateServerData data, ServerStargate stargate) {
             data.removeGlobal(stargate.globalAddress());
         }
 
         @Override
-        public void onCreated(Stargate stargate) {
-            StargateServerData data = StargateServerData.getOrCreate((ServerWorld) stargate.world());
+        public void onCreated(ServerStargate stargate) {
+            StargateServerData data = StargateServerData.getOrCreate(stargate.world());
             GlobalAddressState address = data.generateAddress(stargate.dimension(), stargate.pos(), GlobalAddressState::new);
 
             stargate.addState(address);
@@ -77,7 +78,7 @@ public interface AddressBehaviors {
         public static final long COST_PT = 2 * 100_000;
 
         @Override
-        public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {
+        public AddressResolveEvent.Result resolve(ServerStargate stargate, long targetAddress, int length) {
             if (length != 7) return AddressResolveEvent.PASS;
 
             long ownAddress = stargate.state(LocalAddressState.state).address();
@@ -88,12 +89,9 @@ public interface AddressBehaviors {
             // must be a 9c address...
             if (originChar != targetChar) return AddressResolveEvent.PASS;
 
-            ServerWorld world = (ServerWorld) stargate.world();
+            ServerWorld world = stargate.world();
 
-            if (world == null)
-                return AddressResolveEvent.PASS; // do not fail in case it is an incomplete 9c address.
-
-            Stargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
+            ServerStargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
 
             if (target == null || stargate.kernel().getClass() != target.kernel().getClass())
                 return AddressResolveEvent.FAIL;
@@ -107,7 +105,7 @@ public interface AddressBehaviors {
         public static final long COST_PT = 2 * 1_000_000;
 
         @Override
-        public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {
+        public AddressResolveEvent.Result resolve(ServerStargate stargate, long targetAddress, int length) {
             if (length != 8 || !(stargate.kernel() instanceof C8Gates)) return AddressResolveEvent.PASS;
 
             long ownAddress = stargate.state(LocalAddressState.state).address();
@@ -123,7 +121,7 @@ public interface AddressBehaviors {
             if (world == null)
                 return AddressResolveEvent.PASS; // do not fail in case it is an incomplete 9c address.
 
-            Stargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
+            ServerStargate target = StargateServerData.getOrCreate(world).getLocal(targetAddress);
 
             if (target == null || !(target.kernel() instanceof C8Gates))
                 return AddressResolveEvent.FAIL;
@@ -135,7 +133,7 @@ public interface AddressBehaviors {
     class C9 implements TBehavior, AddressResolveEvents {
 
         @Override
-        public AddressResolveEvent.Result resolve(Stargate stargate, long targetAddress, int length) {
+        public AddressResolveEvent.Result resolve(ServerStargate stargate, long targetAddress, int length) {
             if (length != 9) return AddressResolveEvent.PASS;
 
             ServerWorld world = ServerLifecycleHooks.get().getWorld(AddressProvider.Global.getTarget(targetAddress));
@@ -143,7 +141,7 @@ public interface AddressBehaviors {
             if (world == null)
                 return AddressResolveEvent.FAIL;
 
-            Stargate target = StargateServerData.getOrCreate(world).getGlobal(targetAddress);
+            ServerStargate target = StargateServerData.getOrCreate(world).getGlobal(targetAddress);
 
             if (target == null)
                 return AddressResolveEvent.FAIL;

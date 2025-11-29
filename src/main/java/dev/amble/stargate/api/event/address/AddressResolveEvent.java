@@ -1,7 +1,7 @@
 package dev.amble.stargate.api.event.address;
 
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.address.AddressProvider;
-import dev.amble.stargate.api.Stargate;
 import dev.drtheo.yaar.event.TEvent;
 import dev.drtheo.yaar.event.TEvents;
 import org.jetbrains.annotations.NotNull;
@@ -9,13 +9,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, AddressResolveEvent.Result> {
 
-    private final Stargate stargate;
+    private final ServerStargate stargate;
     private final long address;
     private final int length;
 
     private Result result = PASS;
 
-    public AddressResolveEvent(Stargate stargate, String address, int length) {
+    public AddressResolveEvent(ServerStargate stargate, String address, int length) {
         this.stargate = stargate;
         this.address = AddressProvider.pack(address, length);
         this.length = length;
@@ -46,11 +46,11 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
     public static final Result PASS = new Result.Pass();
     public static final Result FAIL = new Result.Fail();
 
-    public static Result route(@NotNull Stargate stargate, long openCost, long costPerTick) {
+    public static Result route(@NotNull ServerStargate stargate, long openCost, long costPerTick) {
         return new Result.Route(stargate, openCost, costPerTick);
     }
 
-    public static Result routeOrFail(@Nullable Stargate stargate, long openCost, long costPerTick) {
+    public static Result routeOrFail(@Nullable ServerStargate stargate, long openCost, long costPerTick) {
         return stargate == null ? FAIL : route(stargate, openCost, costPerTick);
     }
 
@@ -58,7 +58,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
 
         record Fail() implements Result { }
 
-        record Route(Stargate stargate, long openCost, long costPerTick) implements Result { }
+        record Route(ServerStargate stargate, long openCost, long costPerTick) implements Result { }
 
         record Pass() implements Result { }
     }

@@ -1,6 +1,6 @@
 package dev.amble.stargate.mixins;
 
-import dev.amble.stargate.api.util.TeleportableEntity;
+import dev.amble.stargate.util.TeleportableEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -12,7 +12,7 @@ import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class StargateClientData implements StargateData {
+public class StargateClientData implements StargateData<Stargate> {
 
     private static StargateClientData INSTANCE;
 

@@ -1,6 +1,7 @@
-package dev.amble.stargate.fluid;
+package dev.amble.stargate.init;
 
 import dev.amble.lib.container.impl.FluidContainer;
+import dev.amble.stargate.fluid.LiquidNaquadahFluid;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;

@@ -1,6 +1,7 @@
 package dev.amble.stargate.fluid;
 
 import dev.amble.stargate.init.StargateBlocks;
+import dev.amble.stargate.init.StargateFluids;
 import dev.amble.stargate.init.StargateItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;

@@ -3,10 +3,12 @@ package dev.amble.stargate.block.entities;
 import com.mojang.serialization.DataResult;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.api.GateKernelRegistry;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.block.StargateBlockTickEvent;
 import dev.amble.stargate.init.StargateBlockEntities;
 import dev.amble.stargate.item.StargateItem;
+import dev.amble.stargate.util.LambdaUtil;
 import dev.drtheo.yaar.event.TEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -63,7 +65,7 @@ public class StargateBlockEntity extends StargateLinkableBlockEntity {
 
 	@Override
 	public void onBreak(BlockState state, World world, BlockPos pos, BlockState newState) {
-		this.acceptGate(Stargate::remove);
+		this.acceptGate(LambdaUtil.cast(ServerStargate::remove));
 		super.onBreak(state, world, pos, newState); // unlink the gate, free the chunk
 	}
 

@@ -1,6 +1,7 @@
 package dev.amble.stargate.api.data;
 
 import dev.amble.stargate.StargateMod;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.StargateLike;
 import dev.amble.stargate.api.Stargate;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-public class StargateServerData extends PersistentState implements StargateData {
+public class StargateServerData extends PersistentState implements StargateData<ServerStargate> {
 
 	public static void init() {
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
@@ -49,8 +50,8 @@ public class StargateServerData extends PersistentState implements StargateData 
 		});
 	}
 
-	private final Long2ObjectMap<Stargate> lookup = new Long2ObjectOpenHashMap<>();
-	private final Long2ObjectMap<ReferenceSet<Stargate>> chunk2Gates = new Long2ObjectOpenHashMap<>();
+	private final Long2ObjectMap<ServerStargate> lookup = new Long2ObjectOpenHashMap<>();
+	private final Long2ObjectMap<ReferenceSet<ServerStargate>> chunk2Gates = new Long2ObjectOpenHashMap<>();
 	private final ServerWorld world; // lives just as long as the world, shouldn't explode
 
 	private StargateServerData(ServerWorld world) {
@@ -58,7 +59,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	public void mark(StargateLike gateLike) {
-		Stargate stargate = gateLike.asGate();
+		ServerStargate stargate = (ServerStargate) gateLike.asGate();
 
 		if (stargate != null)
 			chunk2Gates.computeIfAbsent(ChunkPos.toLong(stargate.pos()),
@@ -66,13 +67,13 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	public void unmark(StargateLike gateLike) {
-		Stargate stargate = gateLike.asGate();
+		ServerStargate stargate = (ServerStargate) gateLike.asGate();
 
 		if (stargate != null)
 			chunk2Gates.get(ChunkPos.toLong(stargate.pos())).remove(stargate);
 	}
 
-	public @Nullable Collection<Stargate> findByChunk(int chunkX, int chunkZ) {
+	public @Nullable Collection<ServerStargate> findByChunk(int chunkX, int chunkZ) {
 		return chunk2Gates.get(ChunkPos.toLong(chunkX, chunkZ));
 	}
 
@@ -81,7 +82,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	private void tick() {
-		for (Stargate stargate : this.lookup.values()) {
+		for (ServerStargate stargate : this.lookup.values()) {
 			if (!world.shouldTick(stargate.pos()))
 				continue;
 
@@ -107,7 +108,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 				ServerPlayNetworking.send(player, SYNC_ALL, buf));
 	}
 
-	public void syncPartial(long id, Stargate gate, Collection<ServerPlayerEntity> targets) {
+	public void syncPartial(long id, ServerStargate gate, Collection<ServerPlayerEntity> targets) {
 		NbtCompound nbt = new NbtCompound();
 		gate.toNbt(nbt, true);
 
@@ -119,7 +120,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 				ServerPlayNetworking.send(player, SYNC, buf));
 	}
 
-	private void removePartial(Stargate gate, Collection<ServerPlayerEntity> targets) {
+	private void removePartial(ServerStargate gate, Collection<ServerPlayerEntity> targets) {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeVarLong(gate.globalAddress());
 
@@ -138,15 +139,15 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	@Override
-	public void addId(long id, Stargate stargate) {
+	public void addId(long id, ServerStargate stargate) {
 		this.lookup.put(id, stargate);
 		this.syncPartial(id, stargate, tracking(stargate));
 	}
 
 	@Override
 	public void removeId(long id) {
-		Stargate stargate = lookup.remove(id);
-		Collection<Stargate> meta = this.chunk2Gates.get(ChunkPos.toLong(stargate.pos()));
+		ServerStargate stargate = lookup.remove(id);
+		Collection<ServerStargate> meta = this.chunk2Gates.get(ChunkPos.toLong(stargate.pos()));
 
 		meta.remove(stargate);
 
@@ -159,7 +160,7 @@ public class StargateServerData extends PersistentState implements StargateData 
 	}
 
 	@Override
-	public @Nullable Stargate getById(long id) {
+	public @Nullable ServerStargate getById(long id) {
 		return lookup.get(id);
 	}
 

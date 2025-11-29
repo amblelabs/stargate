@@ -1,6 +1,6 @@
 package dev.amble.stargate.api.behavior;
 
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.event.tp.StargateTpEvent;
 import dev.amble.stargate.api.event.tp.StargateTpEvents;
 import dev.amble.stargate.api.state.GateState;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 public class SpacialResistanceBehavior implements TBehavior, StargateTpEvents {
 
     @Override
-    public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, LivingEntity living) {
+    public StargateTpEvent.Result onGateTp(ServerStargate from, ServerStargate to, LivingEntity living) {
         GateState.Open open = from.state(GateState.Open.state);
 
         World world = living.getWorld();

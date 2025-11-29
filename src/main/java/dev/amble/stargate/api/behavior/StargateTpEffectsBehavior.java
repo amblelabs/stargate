@@ -2,7 +2,7 @@ package dev.amble.stargate.api.behavior;
 
 import dev.amble.lib.util.ServerLifecycleHooks;
 import dev.amble.stargate.StargateMod;
-import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.event.tp.StargateTpEvent;
 import dev.amble.stargate.api.event.tp.StargateTpEvents;
 import dev.amble.stargate.init.StargateCriterions;
@@ -26,7 +26,7 @@ public class StargateTpEffectsBehavior implements TBehavior, StargateTpEvents {
     }
 
     @Override
-    public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, LivingEntity living) {
+    public StargateTpEvent.Result onGateTp(ServerStargate from, ServerStargate to, LivingEntity living) {
         if (living instanceof ServerPlayerEntity player && !hasPassedThroughBefore(player)) {
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4,
                     2, false, false, true));

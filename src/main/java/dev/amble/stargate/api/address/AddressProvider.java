@@ -36,7 +36,7 @@ public class AddressProvider {
         int[] nums = new int[len];
 
         for (int i = 0; i < len; i++) {
-            nums[i] = Glyph.indexOf(chars[i]); // TODO(perf): use a map or a math trick instead.
+            nums[i] = Glyph.charToIdx(chars[i]);
         }
 
         return pack(nums, Glyph.ALL.length);
@@ -109,7 +109,7 @@ public class AddressProvider {
         }
 
         public static RegistryKey<World> getTarget(long packed) {
-            return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
+            return GlyphOriginRegistry.get().dimForGlyph(getTargetChar(packed));
         }
 
         public static char getOriginChar(long packed) {
@@ -120,8 +120,8 @@ public class AddressProvider {
         public static long generate(RegistryKey<World> world) {
             IntSet set = new IntArraySet();
 
-            char poi = GlyphOriginRegistry.get().glyph(world);
-            int poiI = Glyph.indexOf(poi);
+            char poi = GlyphOriginRegistry.get().glyphForDim(world);
+            int poiI = Glyph.charToIdx(poi);
 
             while (set.size() != 5) {
                 int a = RANDOM.nextInt(Glyph.ALL.length);
@@ -156,15 +156,15 @@ public class AddressProvider {
         }
 
         public static RegistryKey<World> getTarget(long packed) {
-            return GlyphOriginRegistry.get().glyph(getTargetChar(packed));
+            return GlyphOriginRegistry.get().dimForGlyph(getTargetChar(packed));
         }
 
         /// FIXME: make this better, maybe?
         public static long generate(RegistryKey<World> dim) {
             IntSet set = new IntArraySet();
 
-            char poi = GlyphOriginRegistry.get().glyph(dim);
-            int poiI = Glyph.indexOf(poi);
+            char poi = GlyphOriginRegistry.get().glyphForDim(dim);
+            int poiI = Glyph.charToIdx(poi);
 
             while (set.size() != 8) {
                 int a = RANDOM.nextInt(Glyph.ALL.length);

@@ -64,7 +64,7 @@ public class DHDArrangement {
     }
 
     public static SymbolArrangement poi(World world) {
-        char poi = GlyphOriginRegistry.get().glyph(world.getRegistryKey());
+        char poi = GlyphOriginRegistry.get().glyphForDim(world.getRegistryKey());
 
         return new SymbolArrangement(poi,
                 EntityDimensions.fixed(0.2f, 0.2f), SymbolArrangement.Offset.fixed(0, 0.4625f, 0));

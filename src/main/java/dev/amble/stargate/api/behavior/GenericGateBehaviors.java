@@ -2,8 +2,9 @@ package dev.amble.stargate.api.behavior;
 
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.lib.util.TeleportUtil;
+import dev.amble.stargate.api.ServerStargate;
 import dev.amble.stargate.api.address.Glyph;
-import dev.amble.stargate.api.util.TeleportableEntity;
+import dev.amble.stargate.util.TeleportableEntity;
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.event.tick.StargateTickEvents;
 import dev.amble.stargate.api.event.tp.StargateTpEvent;
@@ -42,10 +43,10 @@ public interface GenericGateBehaviors {
         private final GateManagerBehavior manager = behavior();
 
         @Override
-        public void tick(Stargate stargate) {
-            GateState.Closed closed = stargate.state(GateState.Closed.state);
+        public void tick(Stargate someGate) {
+            GateState.Closed closed = someGate.state(GateState.Closed.state);
 
-            if (stargate.isClient()) {
+            if (!(someGate instanceof ServerStargate stargate)) {
                 if (closed.locking)
                     closed.timer = (closed.timer + 1) % calculateDelay(closed);
 
@@ -98,8 +99,8 @@ public interface GenericGateBehaviors {
             char nextGlyph = closed.address.charAt(closed.locked);
 
             return calculateDelay(
-                    Glyph.indexOf(curGlyph),
-                    Glyph.indexOf(nextGlyph)
+                    Glyph.charToIdx(curGlyph),
+                    Glyph.charToIdx(nextGlyph)
             );
         }
 
@@ -201,8 +202,8 @@ public interface GenericGateBehaviors {
         }
 
         @Override
-        public void block$tick(Stargate stargate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) {
-            if (world.isClient()) return;
+        public void block$tick(Stargate someGate, StargateBlockEntity entity, World world, BlockPos pos, BlockState state) {
+            if (!(someGate instanceof ServerStargate stargate)) return;
             if (world.getTime() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
             Direction facing = HorizontalBlockBehavior.getFacing(state);
@@ -217,16 +218,15 @@ public interface GenericGateBehaviors {
             }
         }
 
-        public void tryTeleportFrom(Stargate stargate, GateState.Open open, LivingEntity entity) {
+        public void tryTeleportFrom(ServerStargate stargate, GateState.Open open, LivingEntity entity) {
             if (!(entity instanceof TeleportableEntity holder) || holder.stargate$updateAndGetTicks(GateState.Open.TELEPORT_DELAY) != 0)
                 return;
 
-            Stargate target = open.target;
+            ServerStargate target = (ServerStargate) open.target;
             if (target == null) return; // this is most likely false, since we do a check every tick, but just in case...
 
             BlockPos targetBlockPos = target.pos();
-            ServerWorld targetWorld = (ServerWorld) target.world();
-            if (targetWorld == null) return;
+            ServerWorld targetWorld = target.world();
 
             StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
             if (result == StargateTpEvent.Result.DENY) return;

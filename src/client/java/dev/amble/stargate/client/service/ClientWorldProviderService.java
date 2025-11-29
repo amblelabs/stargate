@@ -6,7 +6,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
-public class ClientWorldProviderService extends WorldProviderService {
+public class ClientWorldProviderService implements WorldProviderService {
 
     @Override
     public World getWorld(RegistryKey<World> dimension, boolean isClient) {
@@ -15,6 +15,6 @@ public class ClientWorldProviderService extends WorldProviderService {
             return world != null && dimension.equals(world.getRegistryKey()) ? world : null;
         }
 
-        return super.getWorld(dimension, false);
+        return WorldProviderService.super.getWorld(dimension, false);
     }
 }

@@ -1,8 +1,10 @@
 package dev.amble.stargate.datagen;
 
 import dev.amble.lib.datagen.advancement.AmbleAdvancementProvider;
+import dev.amble.stargate.advancement.BreakIrisCriterion;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateCriterions;
+import dev.amble.stargate.init.StargateIrisTiers;
 import dev.amble.stargate.init.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.advancement.Advancement;
@@ -43,5 +45,9 @@ public class SGAdvancementGen extends AmbleAdvancementProvider {
 
         Advancement passedThrough = challenge(root, "passed_through").icon(StargateItems.DESTINY_STARGATE)
                 .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
+
+        Advancement goldenIris = goal(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
+                .condition("was_broken", BreakIrisCriterion.Conditions.create(StargateIrisTiers.GOLD))
+                .build();
     }
 }

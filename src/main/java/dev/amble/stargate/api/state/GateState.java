@@ -51,7 +51,7 @@ public interface GateState<T extends TState<T> & GateState<T>> extends TState<T>
         }
 
         public int glyphIdxAtChevron(int chevronIdx) {
-            return Glyph.indexOf(address.charAt(chevronIdx));
+            return Glyph.charToIdx(address.charAt(chevronIdx));
         }
 
         @Override

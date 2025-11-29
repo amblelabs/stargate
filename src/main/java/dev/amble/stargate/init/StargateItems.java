@@ -5,7 +5,6 @@ import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
 import dev.amble.stargate.api.GateKernelRegistry;
-import dev.amble.stargate.fluid.StargateFluids;
 import dev.amble.stargate.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.fluid.Fluids;
@@ -60,7 +59,11 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item IRIS = new IrisItem(new AItemSettings());
+	public static final Item IRON_IRIS = new IrisItem(StargateIrisTiers.IRON, new AItemSettings());
+
+	@AutomaticModel
+	@NoEnglish
+	public static final Item GOLD_IRIS = new IrisItem(StargateIrisTiers.GOLD, new AItemSettings());
 
 	@AutomaticModel
 	@NoEnglish

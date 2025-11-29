@@ -5,9 +5,8 @@ import dev.amble.stargate.api.address.AddressProvider;
 import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.data.StargateData;
 import dev.amble.stargate.api.Stargate;
-import dev.amble.stargate.service.StargateDataProviderService;
+import dev.amble.stargate.service.Services;
 import dev.amble.stargate.service.TooltipContextExt;
-import dev.amble.stargate.service.TooltipService;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -45,7 +44,7 @@ public abstract class StargateLinkableItem extends Item {
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-		this.handleTooltip(stack, tooltip, TooltipService.INSTANCE.create(context));
+		this.handleTooltip(stack, tooltip, Services.TOOLTIP.create(context));
 	}
 
 	private void handleTooltip(ItemStack stack, List<Text> tooltip, TooltipContextExt ctx) {
@@ -63,7 +62,7 @@ public abstract class StargateLinkableItem extends Item {
 			return;
 		}
 
-		Stargate stargate = StargateDataProviderService.INSTANCE.getClient().getGlobal(id);
+		Stargate stargate = Services.GATES.getClient().getGlobal(id);
 
 		if (stargate != null) {
 			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));

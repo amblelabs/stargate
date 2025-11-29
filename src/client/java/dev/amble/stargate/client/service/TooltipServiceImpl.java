@@ -5,7 +5,7 @@ import dev.amble.stargate.service.TooltipService;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 
-public class TooltipServiceImpl extends TooltipService {
+public class TooltipServiceImpl implements TooltipService {
 
     @Override
     public TooltipContextExt create(TooltipContext context) {

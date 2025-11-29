@@ -2,9 +2,9 @@ package dev.amble.stargate.service;
 
 import net.minecraft.client.item.TooltipContext;
 
-public abstract class TooltipService {
+public interface TooltipService {
 
-    public static TooltipService INSTANCE;
-
-    public abstract TooltipContextExt create(TooltipContext context);
+    default TooltipContextExt create(TooltipContext context) {
+        throw new IllegalStateException("Tried to create extended tooltip context on server!");
+    }
 }

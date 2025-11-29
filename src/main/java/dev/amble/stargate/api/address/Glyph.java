@@ -20,21 +20,28 @@ import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicReference;
 
 public record Glyph(RegistryKey<World> world, char glyph) implements Identifiable {
+
     public static final Codec<Glyph> CODEC = Codecs.exceptionCatching(RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("dimension").forGetter(g -> g.world.getValue()),
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
-    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]{}:;$()%";
+    public static final String ALPHABET = "#$%&'()*+,-./0123456789:;<=>?@ABCDEFG";
+
+    private static final char ALPHABET_START_OFFSET = 35;
+    public static final int ALPHABET_LENGTH = 36;
+
     public static final char[] ALL = ALPHABET.toCharArray();
 
     private static final Identifier FONT_ID = StargateMod.id("stargate");
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
-    // FIXME(perf): replace with math.
-    @Deprecated(forRemoval = true)
-    public static int indexOf(char c) {
-        return ALPHABET.indexOf(c);
+    public static char idxToChar(int idx) {
+        return (char) (ALPHABET_START_OFFSET + idx);
+    }
+
+    public static int charToIdx(char c) {
+        return c - ALPHABET_START_OFFSET;
     }
 
     public static Text asText(String s) {
@@ -45,7 +52,7 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
         return Text.literal(String.valueOf(c)).setStyle(STYLE);
     }
 
-    public Glyph(Identifier dimension, String glyph) {
+    private Glyph(Identifier dimension, String glyph) {
         this(dimension, glyph.charAt(0));
     }
 

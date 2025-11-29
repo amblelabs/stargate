@@ -40,11 +40,11 @@ public class GateKernelRegistry {
     public record Entry(Supplier<GateIdentityState> creator) {
 
         public Stargate create(ServerWorld world, BlockPos pos, Direction direction) {
-            return new Stargate(creator.get(), world, pos, direction);
+            return new ServerStargate(creator.get(), world, pos, direction);
         }
 
         public Stargate load(NbtCompound nbt, boolean isClient) {
-            return new Stargate(creator.get(), nbt, isClient);
+            return isClient ? new Stargate(creator.get(), nbt, true) : new ServerStargate(creator.get(), nbt);
         }
     }
 }

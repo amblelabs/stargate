@@ -2,15 +2,24 @@ package dev.amble.stargate.item;
 
 import dev.amble.stargate.api.Stargate;
 import dev.amble.stargate.api.state.IrisState;
+import dev.amble.stargate.api.state.IrisTier;
 import dev.amble.stargate.block.entities.StargateBlockEntity;
+import dev.amble.stargate.init.StargateIrisTiers;
+import dev.amble.stargate.init.StargateItems;
+import dev.amble.stargate.util.NbtUtil;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
 public class IrisItem extends Item {
 
-    public IrisItem(Settings settings) {
+    private final IrisTier tier;
+
+    public IrisItem(IrisTier tier, Settings settings) {
         super(settings);
+
+        this.tier = tier;
     }
 
     @Override
@@ -26,7 +35,7 @@ public class IrisItem extends Item {
             return ActionResult.PASS;
 
         context.getStack().decrement(1);
-        stargate.addState(new IrisState());
+        stargate.addState(new IrisState(tier));
 
         return ActionResult.SUCCESS;
     }

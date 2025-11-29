@@ -1,19 +1,30 @@
 package dev.amble.stargate.api.address;
 
+import com.google.gson.JsonParser;
+import dev.amble.lib.AmbleKit;
 import dev.amble.stargate.StargateMod;
+import it.unimi.dsi.fastutil.objects.Object2CharArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
 
-    private final RegistryKey<World>[] REGISTRY = new RegistryKey[Glyph.ALL.length];
+    @SuppressWarnings("unchecked")
+    private final RegistryKey<World>[] REGISTRY = new RegistryKey[Glyph.ALPHABET_LENGTH];
+    private final Object2CharMap<RegistryKey<World>> REVERSE = new Object2CharArrayMap<>();
 
     private static GlyphOriginRegistry instance;
 
@@ -22,66 +33,55 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
     }
 
     public static void init() {
-        instance = new GlyphOriginRegistry();
-        //TODO: fix this
-        //ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
     }
 
     private GlyphOriginRegistry() {
-        register(World.OVERWORLD, 'Q');
+        REVERSE.defaultReturnValue('*');
     }
 
     @Override
     public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
         register(World.OVERWORLD, 'Q');
 
-        /*for (Identifier id : manager.findResources("poi", f -> f.getPath().endsWith(".json")).keySet()) {
-            try (InputStream stream = manager.getResource(id).get().getInputStream()) {
+        for (Identifier id : manager.findResources("poi", f -> f.getPath().endsWith(".json")).keySet()) {
+            try (InputStream stream = manager.getResourceOrThrow(id).getInputStream()) {
                 char created = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject()
-                        .getAsJsonPrimitive("glyph").getAsCharacter();
+                        .getAsJsonPrimitive("glyph").getAsString().charAt(0);
 
                 this.register(RegistryKey.of(RegistryKeys.WORLD, id), created);
             } catch (Exception e) {
                 AmbleKit.LOGGER.error("Error occurred while loading resource json {}", id.toString(), e);
             }
-        }*/
+        }
 
         return CompletableFuture.completedFuture(null);
     }
 
     public void register(RegistryKey<World> key, char c) {
-        REGISTRY[Glyph.indexOf(c)] = key;
+        REGISTRY[Glyph.charToIdx(c)] = key;
+        REVERSE.put(key, c);
     }
 
-    public RegistryKey<World> glyph(char c) {
-        return REGISTRY[Glyph.indexOf(c)];
+    public RegistryKey<World> dimForGlyph(char c) {
+        return REGISTRY[Glyph.charToIdx(c)];
     }
 
-    // TODO: allocate chars
-    public char glyph(RegistryKey<World> key) {
-        for (char i = 0; i < REGISTRY.length; i++) {
-            RegistryKey<World> dim = REGISTRY[i];
-            if (key.equals(dim)) return Glyph.ALL[i];
+    public char glyphForDim(RegistryKey<World> key) {
+        return REVERSE.computeIfAbsent(key, this::allocate);
+    }
+
+    private char allocate(RegistryKey<World> key) {
+        for (int i = 0; i < REGISTRY.length; i++) {
+            if (REGISTRY[i] == null) {
+                char c = Glyph.idxToChar(i);
+                register(key, c);
+
+                return c;
+            }
         }
 
-        return '*';
-    }
-
-    public void allocate(RegistryKey<World> key) {
-        Character free = null;
-
-        // O(36). ow.
-        for (char i = 0; i < REGISTRY.length; i++) {
-            if (REGISTRY[i].equals(key))
-                return;
-
-            if (REGISTRY[i] == null) free = i;
-        }
-
-        if (free == null)
-            throw new IllegalStateException();
-
-        REGISTRY[free] = key;
+        return REVERSE.defaultReturnValue();
     }
 
     @Override

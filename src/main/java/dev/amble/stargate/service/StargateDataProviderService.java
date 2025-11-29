@@ -10,19 +10,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class StargateDataProviderService {
+public interface StargateDataProviderService {
 
-    public static StargateDataProviderService INSTANCE = new StargateDataProviderService();
-
-    public StargateData getClient() {
+    default StargateData<?> getClient() {
         throw new RuntimeException(new IllegalAccessException("Tried to access client stargate data on server!"));
     }
 
-    public @Nullable StargateData get(World world) {
+    default @Nullable StargateData<?> get(World world) {
         return world instanceof ServerWorld serverWorld ? StargateServerData.get(serverWorld) : getClient();
     }
 
-    public void accept(World world, Consumer<StargateData> consumer) {
+    default void accept(World world, Consumer<StargateData<?>> consumer) {
         if (world instanceof ServerWorld serverWorld) {
             StargateServerData.accept(serverWorld, consumer::accept);
         } else {
@@ -30,7 +28,7 @@ public class StargateDataProviderService {
         }
     }
 
-    public <R> @Nullable R apply(World world, Function<StargateData, R> func) {
+    default <R> @Nullable R apply(World world, Function<StargateData<?>, R> func) {
         if (world instanceof ServerWorld serverWorld) {
             return StargateServerData.apply(serverWorld, func::apply);
         } else {
@@ -38,7 +36,7 @@ public class StargateDataProviderService {
         }
     }
 
-    public @NotNull StargateData getOrCreate(World world) {
+    default @NotNull StargateData<?> getOrCreate(World world) {
         return world instanceof ServerWorld serverWorld ? StargateServerData.getOrCreate(serverWorld) : getClient();
     }
 }
