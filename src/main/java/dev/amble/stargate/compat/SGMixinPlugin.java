@@ -34,7 +34,7 @@ public class SGMixinPlugin implements IMixinConfigPlugin {
         String id = parts[5];
 
         if (id.equals("energy"))
-            return DependencyChecker.hasTechEnergy();
+            return Compat.hasTechEnergy();
 
         return true;
     }

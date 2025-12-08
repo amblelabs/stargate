@@ -15,9 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
-	@NoEnglish public static final Item GUIDE_BOOK = new GuideBookItem(new AItemSettings());
-
-	@AutomaticModel
 	@NoEnglish
 	public static final Item ADDRESS_CARTOUCHE = new DialerItem(new AItemSettings().maxCount(1));
 

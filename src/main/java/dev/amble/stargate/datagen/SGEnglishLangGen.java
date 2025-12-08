@@ -1,7 +1,10 @@
 package dev.amble.stargate.datagen;
 
+import dev.amble.lib.container.impl.BlockContainer;
+import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.lang.AmbleLanguageProvider;
 import dev.amble.lib.datagen.lang.LanguageType;
+import dev.amble.stargate.compat.Compat;
 import dev.amble.stargate.init.StargateBlocks;
 import dev.amble.stargate.init.StargateItemGroups;
 import dev.amble.stargate.init.StargateItems;
@@ -14,6 +17,10 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
 
         // Blocks
         translateBlocks(StargateBlocks.class);
+        for (Class<? extends BlockContainer> item : Compat.blocks) {
+            translateBlocks(item);
+        }
+
         addTranslation(StargateBlocks.DHD, "Dial-Home Device");
         addTranslation(StargateBlocks.GENERIC_GATE, "Stargate");
         addTranslation(StargateBlocks.ORLIN_GATE, "Orlin Stargate");
@@ -24,6 +31,10 @@ public class SGEnglishLangGen extends AmbleLanguageProvider {
 
         // Items
         translateItems(StargateItems.class);
+        for (Class<? extends ItemContainer> item : Compat.items) {
+            translateItems(item);
+        }
+
         addTranslation(StargateItems.ADDRESS_CARTOUCHE, "Address Cartouche");
         addTranslation(StargateItems.IRIS_BLADE, "Iris Blade");
         addTranslation(StargateItems.IRIS_FRAME, "Iris Frame");

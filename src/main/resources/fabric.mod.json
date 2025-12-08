@@ -44,6 +44,7 @@
 		"amblekit": ">=${amblekit_version}"
 	},
 	"suggests": {
-		"ait": "*"
+		"ait": "*",
+		"modonomicon": "*"
 	}
 }

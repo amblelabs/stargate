@@ -1,4 +1,4 @@
-package dev.amble.stargate.item;
+package dev.amble.stargate.compat.modonomicon;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.item.ModonomiconCustomItemBase;
