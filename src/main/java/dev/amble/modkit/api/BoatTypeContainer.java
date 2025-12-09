@@ -9,11 +9,19 @@ import java.lang.reflect.Field;
 
 public abstract class BoatTypeContainer implements RegistryContainer2<BoatTypeContainer.Holder> {
 
-    protected static ABoatType register(Item item, Block block) {
-        return new Holder(new Pending(item, block));
+    protected static ABoatType register(Item item, Item chest, Block block) {
+        return new Holder(new Pending(item, chest, block));
     }
 
-    record Pending(Item item, Block block) implements ABoatType {
+    protected static ABoatType registerNormal(Item item, Block block) {
+        return register(item, null, block);
+    }
+
+    protected static ABoatType registerChest(Item item, Block block) {
+        return register(null, item, block);
+    }
+
+    record Pending(Item item, Item chest, Block block) implements ABoatType {
 
         @Override
         public BoatEntity.Type get() {
@@ -21,7 +29,7 @@ public abstract class BoatTypeContainer implements RegistryContainer2<BoatTypeCo
         }
 
         public ABoatType register(Identifier id) {
-            return BoatTypeRegistry.register(id, this.item, this.block);
+            return BoatTypeRegistry.register(id, this.item, this.chest, this.block);
         }
     }
 
@@ -45,6 +53,7 @@ public abstract class BoatTypeContainer implements RegistryContainer2<BoatTypeCo
 
     @Override
     public void postProcessField(Identifier identifier, Holder value, Field field) {
+        // Promotion
         value.child = ((Pending) value.child).register(identifier);
     }
 

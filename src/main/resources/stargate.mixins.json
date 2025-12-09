@@ -6,6 +6,7 @@
   "mixins": [
     "BoatEntityMixin",
     "BoatEntityTypeMixin",
+    "ChestBoatEntityMixin",
     "LivingEntityMixin",
     "ServerPlayerEntityMixin"
   ],

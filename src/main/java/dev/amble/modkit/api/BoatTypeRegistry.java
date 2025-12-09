@@ -12,29 +12,50 @@ import java.util.List;
 public class BoatTypeRegistry {
 
     private static Item[] TYPE2ITEM;
+    private static Item[] CTYPE2ITEM;
+
+    private static final BoatItemConsumer CONSUMER = new BoatItemConsumer() {
+
+        @Override
+        public void init(int size) {
+            TYPE2ITEM = new Item[size];
+            CTYPE2ITEM = new Item[size];
+        }
+
+        @Override
+        public void accept(BoatEntity.Type type, Item normal, Item chest) {
+            TYPE2ITEM[type.ordinal()] = normal;
+            CTYPE2ITEM[type.ordinal()] = chest;
+        }
+    };
 
     private static final List<Entry> entries = new ArrayList<>();
 
-    public static LazyBoatType register(Identifier id, Item item, Block block) {
-        Entry entry = new Entry(id, item, block);
+    public static LazyBoatType register(Identifier id, Item item, Item chest, Block block) {
+        Entry entry = new Entry(id, item, chest, block);
         entries.add(entry);
 
         return entry.lazyGetter();
     }
 
-    public static Item getItem(BoatEntity.Type type) {
-        return TYPE2ITEM[type.ordinal()];
+    public static Item getItem(BoatEntity.Type type, boolean chest) {
+        return (chest ? CTYPE2ITEM : TYPE2ITEM)[type.ordinal()];
     }
 
     public static void apply() {
-        TYPE2ITEM = ((CustomBoatTypes) (Object) BoatEntity.Type.OAK).amble$recalc(entries);
+        ((CustomBoatTypes) (Object) BoatEntity.Type.OAK).amble$recalc(entries, CONSUMER);
+    }
+
+    public interface BoatItemConsumer {
+        void init(int size);
+        void accept(BoatEntity.Type type, Item normal, Item chest);
     }
 
     public interface CustomBoatTypes {
-        Item[] amble$recalc(List<Entry> entries);
+        void amble$recalc(List<Entry> entries, BoatItemConsumer consumer);
     }
 
-    public record Entry(Identifier id, Item item, Block block) {
+    public record Entry(Identifier id, Item item, Item chest, Block block) {
 
         public String getPath() {
             return id.getNamespace() + "/" + id.getPath();

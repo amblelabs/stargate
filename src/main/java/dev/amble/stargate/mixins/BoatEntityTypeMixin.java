@@ -3,7 +3,6 @@ package dev.amble.stargate.mixins;
 import dev.amble.modkit.api.BoatTypeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.function.ValueLists;
@@ -34,40 +33,33 @@ public class BoatEntityTypeMixin implements BoatTypeRegistry.CustomBoatTypes {
     }
 
     @Override
-    public Item[] amble$recalc(List<BoatTypeRegistry.Entry> entries) {
+    public void amble$recalc(List<BoatTypeRegistry.Entry> entries, BoatTypeRegistry.BoatItemConsumer consumer) {
         int l = field_7724.length;
 
         BoatEntity.Type[] variants = new BoatEntity.Type[l + entries.size()];
-        Item[] items = new Item[variants.length];
-
         System.arraycopy(field_7724, 0, variants, 0, l);
 
-        for (int i = 0; i < l; i++) {
-            items[i] = switch (variants[i]) {
-                case SPRUCE -> Items.SPRUCE_BOAT;
-                case BIRCH -> Items.BIRCH_BOAT;
-                case JUNGLE -> Items.JUNGLE_BOAT;
-                case ACACIA -> Items.ACACIA_BOAT;
-                case CHERRY -> Items.CHERRY_BOAT;
-                case DARK_OAK -> Items.DARK_OAK_BOAT;
-                case MANGROVE -> Items.MANGROVE_BOAT;
-                case BAMBOO -> Items.BAMBOO_RAFT;
-                default -> Items.OAK_BOAT;
-            };
-        }
+        consumer.init(variants.length);
+        consumer.accept(BoatEntity.Type.OAK, Items.OAK_BOAT, Items.OAK_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.SPRUCE, Items.SPRUCE_BOAT, Items.SPRUCE_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.BIRCH, Items.BIRCH_BOAT, Items.BIRCH_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.JUNGLE, Items.JUNGLE_BOAT, Items.JUNGLE_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.ACACIA, Items.ACACIA_BOAT, Items.ACACIA_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.CHERRY, Items.CHERRY_BOAT, Items.CHERRY_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.DARK_OAK, Items.DARK_OAK_BOAT, Items.DARK_OAK_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.MANGROVE, Items.MANGROVE_BOAT, Items.MANGROVE_CHEST_BOAT);
+        consumer.accept(BoatEntity.Type.BAMBOO, Items.BAMBOO_RAFT, Items.BAMBOO_CHEST_RAFT);
 
         for (int i = 0; i < entries.size(); i++) {
             BoatTypeRegistry.Entry entry = entries.get(i);
+            BoatEntity.Type type = variants[l + i] = stargate$init(entry, i);
 
-            items[l + i] = entry.item();
-            variants[l + i] = stargate$init(entry, i);
+            consumer.accept(type, entry.item(), entry.chest());
         }
 
         field_7724 = variants;
 
         CODEC = StringIdentifiable.createCodec(BoatEntity.Type::values);
         BY_ID = ValueLists.<BoatEntity.Type>createIdToValueFunction(Enum::ordinal, variants, ValueLists.OutOfBoundsHandling.ZERO);
-
-        return items;
     }
 }
