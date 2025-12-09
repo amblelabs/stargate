@@ -4,6 +4,7 @@ import dev.amble.lib.container.impl.ItemContainer;
 import dev.amble.lib.datagen.util.AutomaticModel;
 import dev.amble.lib.datagen.util.NoEnglish;
 import dev.amble.lib.item.AItemSettings;
+import dev.amble.modkit.api.ABoatItem;
 import dev.amble.stargate.api.GateKernelRegistry;
 import dev.amble.stargate.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -39,7 +40,7 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item NAQUADAH_BOAT = new NaquadahBoatItem(false, new AItemSettings());
+	public static final Item NAQUADAH_BOAT = new ABoatItem(false, () -> StargateBoatTypes.NAQUADAH, new AItemSettings());
 
 	@AutomaticModel
 	@NoEnglish
