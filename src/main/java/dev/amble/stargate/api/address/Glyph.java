@@ -26,12 +26,21 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
             Codec.STRING.fieldOf("glyph").forGetter(symbol -> String.valueOf(symbol.glyph()))
     ).apply(instance, Glyph::new)));
 
-    public static final String ALPHABET = "#$%&'()*+,-./0123456789:;<=>?@ABCDEFG";
-
-    private static final char ALPHABET_START_OFFSET = 35;
     public static final int ALPHABET_LENGTH = 36;
 
+    private static final char ALPHABET_START_OFFSET = '#';
+    public static final String ALPHABET = "ABCDEFASDHAKJSDHAJDHAJSDH";
     public static final char[] ALL = ALPHABET.toCharArray();
+
+//    static {
+//        char[] chars = new char[ALPHABET_LENGTH];
+//        for (char i = 0; i < ALPHABET_LENGTH; i++) {
+//            chars[i] = (char) (i + ALPHABET_START_OFFSET);
+//        }
+//
+//        ALL = chars;
+//        ALPHABET = new String(chars);
+//    }
 
     private static final Identifier FONT_ID = StargateMod.id("stargate");
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);

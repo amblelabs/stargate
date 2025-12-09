@@ -38,6 +38,8 @@ public class StargateMod implements ModInitializer {
 		RegistryContainer.register(StargateAttributes.class, MOD_ID);
 		RegistryContainer.register(StargateStatusEffects.class, MOD_ID);
 		RegistryContainer.register(StargateFluids.class, MOD_ID);
+
+		RegistryContainer.register(StargateIrisTiers.class, MOD_ID);
 		GlyphOriginRegistry.init();
 
 		StargateWorldGeneration.generateStargateWorldGen();

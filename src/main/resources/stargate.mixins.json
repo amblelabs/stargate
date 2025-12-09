@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "dev.amble.stargate.compat.SGMixinPlugin",
   "mixins": [
+    "BoatEntityMixin",
+    "BoatEntityTypeMixin",
     "LivingEntityMixin",
     "ServerPlayerEntityMixin"
   ],

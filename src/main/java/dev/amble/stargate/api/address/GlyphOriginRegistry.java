@@ -3,20 +3,23 @@ package dev.amble.stargate.api.address;
 import com.google.gson.JsonParser;
 import dev.amble.lib.AmbleKit;
 import dev.amble.stargate.StargateMod;
+import it.unimi.dsi.fastutil.chars.CharObjectImmutablePair;
 import it.unimi.dsi.fastutil.objects.Object2CharArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -33,34 +36,69 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
     }
 
     public static void init() {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
+        instance = new GlyphOriginRegistry();
+//        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(instance = new GlyphOriginRegistry());
     }
 
     private GlyphOriginRegistry() {
+        this.clear();
+        this.register(World.OVERWORLD, '3');
+    }
+
+    private void clear() {
+        Arrays.fill(REGISTRY, null);
+        REVERSE.clear();
         REVERSE.defaultReturnValue('*');
     }
 
+    private static final String SUBPATH = "point_of_origin";
+
+    // TODO: figure out why the fuck this causes a thread lock
     @Override
     public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
-        register(World.OVERWORLD, 'Q');
+        return CompletableFuture.supplyAsync(() -> {
+            Map<Identifier, Resource> resources = manager.findResources(SUBPATH, f -> f.getPath().endsWith(".json"));
 
-        for (Identifier id : manager.findResources("poi", f -> f.getPath().endsWith(".json")).keySet()) {
-            try (InputStream stream = manager.getResourceOrThrow(id).getInputStream()) {
-                char created = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject()
-                        .getAsJsonPrimitive("glyph").getAsString().charAt(0);
+            //noinspection unchecked
+            CharObjectImmutablePair<Identifier>[] pairs = new CharObjectImmutablePair[resources.size()];
 
-                this.register(RegistryKey.of(RegistryKeys.WORLD, id), created);
-            } catch (Exception e) {
-                AmbleKit.LOGGER.error("Error occurred while loading resource json {}", id.toString(), e);
+            int i = 0;
+            for (Identifier id : resources.keySet()) {
+                try (Reader reader = manager.getResourceOrThrow(id).getReader()) {
+                    char created = JsonParser.parseReader(reader).getAsJsonObject()
+                            .getAsJsonPrimitive("glyph").getAsString().charAt(0);
+
+                    Identifier dimId = new Identifier(id.getNamespace(),
+                            id.getPath().substring(SUBPATH.length() + 1, // 'point_of_origin/'
+                                    id.getPath().length() - 5) // .json
+                    );
+
+                    pairs[i++] = new CharObjectImmutablePair<>(created, dimId);
+                } catch (Exception e) {
+                    AmbleKit.LOGGER.error("Error occurred while loading resource json {}", id.toString(), e);
+                }
             }
-        }
 
-        return CompletableFuture.completedFuture(null);
+            return pairs;
+        }, prepareExecutor).thenComposeAsync(pairs -> {
+            this.clear();
+
+            for (CharObjectImmutablePair<Identifier> pair : pairs) {
+                this.register(RegistryKey.of(RegistryKeys.WORLD, pair.second()), pair.firstChar());
+            }
+
+            return CompletableFuture.completedFuture(null);
+        }, applyExecutor);
     }
 
     public void register(RegistryKey<World> key, char c) {
         REGISTRY[Glyph.charToIdx(c)] = key;
         REVERSE.put(key, c);
+    }
+
+    public void register(RegistryKey<World> key, int idx) {
+        REGISTRY[idx] = key;
+        REVERSE.put(key, Glyph.idxToChar(idx));
     }
 
     public RegistryKey<World> dimForGlyph(char c) {
@@ -86,6 +124,6 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return StargateMod.id("poi");
+        return StargateMod.id(SUBPATH);
     }
 }
