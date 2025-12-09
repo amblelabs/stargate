@@ -29,9 +29,10 @@ public abstract class BoatTypeContainer implements RegistryContainer2<ABoatType>
     public void postProcessField(Identifier identifier, ABoatType value, Field field) {
         if (value instanceof Pending pending) {
             try {
+                field.setAccessible(true);
                 field.set(this, BoatTypeRegistry.register(identifier, pending.item, pending.block));
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
