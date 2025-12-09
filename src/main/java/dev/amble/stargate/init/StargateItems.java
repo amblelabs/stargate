@@ -40,7 +40,7 @@ public class StargateItems extends ItemContainer {
 
 	@AutomaticModel
 	@NoEnglish
-	public static final Item NAQUADAH_BOAT = new ABoatItem(false, () -> StargateBoatTypes.NAQUADAH, new AItemSettings());
+	public static final Item NAQUADAH_BOAT = new ABoatItem(false, StargateBoatTypes.NAQUADAH, new AItemSettings());
 
 	@AutomaticModel
 	@NoEnglish

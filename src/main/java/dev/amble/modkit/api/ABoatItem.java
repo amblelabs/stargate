@@ -19,15 +19,14 @@ import net.minecraft.world.event.GameEvent;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ABoatItem extends Item {
 
     private static final Predicate<Entity> RIDERS = EntityPredicates.EXCEPT_SPECTATOR.and(Entity::canHit);
-    private final Supplier<ABoatType> type;
+    private final ABoatType type;
     private final boolean chest;
 
-    public ABoatItem(boolean chest, Supplier<ABoatType> type, Item.Settings settings) {
+    public ABoatItem(boolean chest, ABoatType type, Item.Settings settings) {
         super(settings);
         this.chest = chest;
         this.type = type;
@@ -59,7 +58,7 @@ public class ABoatItem extends Item {
             return TypedActionResult.pass(itemStack);
 
         BoatEntity boatEntity = this.createEntity(world, hitResult);
-        boatEntity.setVariant(this.type.get().get());
+        boatEntity.setVariant(this.type.get());
         boatEntity.setYaw(user.getYaw());
 
         if (!world.isSpaceEmpty(boatEntity, boatEntity.getBoundingBox())) {

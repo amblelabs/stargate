@@ -7,10 +7,10 @@ import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Field;
 
-public abstract class BoatTypeContainer implements RegistryContainer2<ABoatType> {
+public abstract class BoatTypeContainer implements RegistryContainer2<BoatTypeContainer.Holder> {
 
     protected static ABoatType register(Item item, Block block) {
-        return new Pending(item, block);
+        return new Holder(new Pending(item, block));
     }
 
     record Pending(Item item, Block block) implements ABoatType {
@@ -19,21 +19,37 @@ public abstract class BoatTypeContainer implements RegistryContainer2<ABoatType>
         public BoatEntity.Type get() {
             throw new IllegalStateException("This boat type was not registered yet!");
         }
+
+        public ABoatType register(Identifier id) {
+            return BoatTypeRegistry.register(id, this.item, this.block);
+        }
     }
 
-    public Class<ABoatType> getTargetClass() {
-        return ABoatType.class;
+    public static final class Holder implements ABoatType {
+
+        ABoatType child;
+
+        Holder(ABoatType child) {
+            this.child = child;
+        }
+
+        @Override
+        public BoatEntity.Type get() {
+            return child.get();
+        }
+    }
+
+    public Class<Holder> getTargetClass() {
+        return Holder.class;
     }
 
     @Override
-    public void postProcessField(Identifier identifier, ABoatType value, Field field) {
-        if (value instanceof Pending pending) {
-            try {
-                field.setAccessible(true);
-                field.set(this, BoatTypeRegistry.register(identifier, pending.item, pending.block));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public void postProcessField(Identifier identifier, Holder value, Field field) {
+        value.child = ((Pending) value.child).register(identifier);
+    }
+
+    @Override
+    public void finish() {
+        BoatTypeRegistry.apply();
     }
 }

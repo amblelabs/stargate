@@ -13,14 +13,9 @@ public class BoatTypeRegistry {
 
     private static Item[] TYPE2ITEM;
 
-    private static boolean frozen = false;
-
     private static final List<Entry> entries = new ArrayList<>();
 
     public static LazyBoatType register(Identifier id, Item item, Block block) {
-        if (frozen)
-            throw new IllegalStateException("Attempted to register a boat in a frozen registry");
-
         Entry entry = new Entry(id, item, block);
         entries.add(entry);
 
@@ -31,8 +26,7 @@ public class BoatTypeRegistry {
         return TYPE2ITEM[type.ordinal()];
     }
 
-    public static void freeze() {
-        frozen = true;
+    public static void apply() {
         TYPE2ITEM = ((CustomBoatTypes) (Object) BoatEntity.Type.OAK).amble$recalc(entries);
     }
 
@@ -47,7 +41,7 @@ public class BoatTypeRegistry {
         }
 
         public String getEnumName() {
-            return id.getPath().toUpperCase();
+            return id.getNamespace().toUpperCase() + "_" + id.getPath().replace('/', '_').toUpperCase();
         }
 
         public LazyBoatType lazyGetter() {
@@ -58,7 +52,7 @@ public class BoatTypeRegistry {
     public static class LazyBoatType extends LazyObject<BoatEntity.Type> implements ABoatType {
 
         public LazyBoatType(Entry entry) {
-            super(() -> BoatEntity.Type.getType(entry.getEnumName()), BoatEntity.Type.OAK);
+            super(() -> BoatEntity.Type.getType(entry.getPath()), BoatEntity.Type.OAK);
         }
     }
 }
