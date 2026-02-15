@@ -20,7 +20,7 @@ repositories {
 	}
 
 	maven {
-		url "https://amblelabs.github.io/maven"
+		url "https://amblelabs.dev/maven"
 
 		content {
 			includeGroup "dev.amble"
