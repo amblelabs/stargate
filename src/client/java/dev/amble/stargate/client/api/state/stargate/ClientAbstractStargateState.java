@@ -5,9 +5,13 @@ import dev.amble.stargate.client.models.BaseStargateModel;
 import dev.drtheo.yaar.state.TState;
 import net.minecraft.util.Identifier;
 
-public abstract class ClientAbstractStargateState<T extends BaseStargateModel> implements TState<ClientAbstractStargateState<?>> {
+public abstract class ClientAbstractStargateState<
+    T extends BaseStargateModel
+> implements TState<ClientAbstractStargateState<?>> {
 
-    public static final Type<ClientAbstractStargateState<?>> state = new Type<>(StargateMod.id("meta/client"));
+    public static final Type<ClientAbstractStargateState<?>> state = new Type<>(
+        StargateMod.id("meta/client")
+    );
 
     public int glyphColor = 0x5c5c73;
 
@@ -23,8 +27,17 @@ public abstract class ClientAbstractStargateState<T extends BaseStargateModel> i
     private T model;
 
     public ClientAbstractStargateState(Identifier id) {
-        this.texture = id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + ".png");
-        this.emission = id.withPath(s -> "textures/blockentities/stargates/" + s + "/" + s + "_emission.png");
+        this.texture = id.withPath(
+            s -> "textures/blockentities/stargates/" + s + "/" + s + ".png"
+        );
+        this.emission = id.withPath(
+            s ->
+                "textures/blockentities/stargates/" +
+                s +
+                "/" +
+                s +
+                "_emission.png"
+        );
 
         this.model = this.createModel();
     }
