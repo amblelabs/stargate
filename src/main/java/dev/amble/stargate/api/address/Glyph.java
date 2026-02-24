@@ -28,8 +28,8 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
 
     public static final int ALPHABET_LENGTH = 36;
 
-    private static final char ALPHABET_START_OFFSET = '#';
-    public static final String ALPHABET = "ABCDEFASDHAKJSDHAJDHAJSDH";
+    public static final String ALPHABET = "789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final char ALPHABET_START_OFFSET = ALPHABET.charAt(0);
     public static final char[] ALL = ALPHABET.toCharArray();
 
 //    static {
