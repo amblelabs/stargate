@@ -11,13 +11,13 @@ import java.util.List;
 
 public class DHDArrangement {
 
-    public static final List<SymbolArrangement> SYMBOLS = new ArrayList<>(Glyph.ALL.length);
+    public static final List<SymbolArrangement> SYMBOLS = new ArrayList<>(Glyph.ALPHABET_LENGTH);
 
     private static final float innerRadius = 0.3f;
     private static final float outerRadius = 0.45f;
 
-    private static final int innerCount = Glyph.ALL.length / 2;
-    private static final int outerCount = Glyph.ALL.length - innerCount;
+    private static final int innerCount = Glyph.ALPHABET_LENGTH / 2;
+    private static final int outerCount = Glyph.ALPHABET_LENGTH - innerCount;
 
     private static final int offset = 0;
     private static final int otherOffset = 5;

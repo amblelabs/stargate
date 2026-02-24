@@ -3,6 +3,7 @@ package dev.amble.stargate.block.entities;
 import dev.amble.lib.block.behavior.horizontal.HorizontalBlockBehavior;
 import dev.amble.stargate.StargateMod;
 import dev.amble.stargate.api.Stargate;
+import dev.amble.stargate.api.address.Glyph;
 import dev.amble.stargate.api.dhd.DHDArrangement;
 import dev.amble.stargate.api.state.GateState;
 import dev.amble.stargate.entities.DHDControlEntity;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
-    private final DHDControlEntity[] symbolControlEntities = new DHDControlEntity[DHDArrangement.SYMBOLS.size() + 1];
+    private final DHDControlEntity[] symbolControlEntities = new DHDControlEntity[Glyph.ALPHABET_LENGTH + 1];
     private boolean needsSymbols = true;
 
     public DHDBlockEntity(BlockPos pos, BlockState state) {
@@ -106,7 +107,6 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
 
     private void spawnControls() {
         if (this.world.isClient()) return;
-
         this.killControls();
 
         Stargate stargate = this.asGate();
@@ -117,15 +117,14 @@ public class DHDBlockEntity extends NearestLinkingBlockEntity {
         );
 
         int i = 0;
-        for (; i < DHDArrangement.SYMBOLS.size(); i++) {
-            this.symbolControlEntities[i] = DHDArrangement.SYMBOLS.get(
-                i
-            ).createEntity(this.world, this.pos, direction);
+        for (; i < Glyph.ALPHABET_LENGTH; i++) {
+            this.symbolControlEntities[i] = DHDArrangement.SYMBOLS.get(i)
+                    .createEntity(this.world, this.pos, direction);
         }
 
-        this.symbolControlEntities[++i] = DHDArrangement.poi(
-            world
-        ).createEntity(this.world, this.pos, direction);
+        this.symbolControlEntities[i] = DHDArrangement.poi(world)
+                .createEntity(this.world, this.pos, direction);
+
         this.needsSymbols = false;
     }
 

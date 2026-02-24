@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 
 public class AddressProvider {
 
-    static final int BITS_PER_COORD = getBitsNeeded(Glyph.ALL.length);
+    static final int BITS_PER_COORD = getBitsNeeded(Glyph.ALPHABET_LENGTH);
     static final int MASK = (1 << BITS_PER_COORD) - 1;
 
     private static int getBitsNeeded(int max) {
@@ -39,11 +39,11 @@ public class AddressProvider {
             nums[i] = Glyph.charToIdx(chars[i]);
         }
 
-        return pack(nums, Glyph.ALL.length);
+        return pack(nums, Glyph.ALPHABET_LENGTH);
     }
 
     public static long pack(int[] numbers) {
-        return pack(numbers, Glyph.ALL.length);
+        return pack(numbers, Glyph.ALPHABET_LENGTH);
     }
 
     public static int length(long address) {
@@ -98,7 +98,7 @@ public class AddressProvider {
         // TODO: set random seed to world seed maybe?
         private static final SecureRandom RANDOM = new SecureRandom();
 
-        static final int ID_MASK = (1 << BITS_PER_COORD * 6) - 1;
+        static final long ID_MASK = (1L << BITS_PER_COORD * 6) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;
@@ -116,7 +116,7 @@ public class AddressProvider {
             return Glyph.ALL[AddressProvider.readAt(packed, length(packed) - 1)];
         }
 
-        /// FIXME: make this better, maybe?
+        // FIXME: make this better, maybe?
         public static long generate(RegistryKey<World> world) {
             IntSet set = new IntArraySet();
 
@@ -124,7 +124,7 @@ public class AddressProvider {
             int poiI = Glyph.charToIdx(poi);
 
             while (set.size() != 5) {
-                int a = RANDOM.nextInt(Glyph.ALL.length);
+                int a = RANDOM.nextInt(Glyph.ALPHABET_LENGTH);
 
                 if (a == poiI)
                     continue;
@@ -145,7 +145,7 @@ public class AddressProvider {
         // TODO: set random seed to world seed maybe?
         private static final SecureRandom RANDOM = new SecureRandom();
 
-        static final int ID_MASK = (1 << BITS_PER_COORD * 8) - 1;
+        static final long ID_MASK = (1L << BITS_PER_COORD * 8) - 1;
 
         public static long getId(long packed) {
             return packed & ID_MASK;
@@ -167,7 +167,7 @@ public class AddressProvider {
             int poiI = Glyph.charToIdx(poi);
 
             while (set.size() != 8) {
-                int a = RANDOM.nextInt(Glyph.ALL.length);
+                int a = RANDOM.nextInt(Glyph.ALPHABET_LENGTH);
 
                 if (a == poiI)
                     continue;

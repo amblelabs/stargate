@@ -27,10 +27,19 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
     ).apply(instance, Glyph::new)));
 
     public static final int ALPHABET_LENGTH = 36;
+    private static final char ALPHABET_START = '7';
 
-    public static final String ALPHABET = "789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final char ALPHABET_START_OFFSET = ALPHABET.charAt(0);
-    public static final char[] ALL = ALPHABET.toCharArray();
+    public static final char[] ALL;
+
+    static {
+        ALL = new char[ALPHABET_LENGTH];
+
+        for (char i = 0; i < ALPHABET_LENGTH; i++) {
+            ALL[i] = (char) (ALPHABET_START + i);
+        }
+    }
+
+    private static final char ALPHABET_END = ALL[ALPHABET_LENGTH - 1];
 
 //    static {
 //        char[] chars = new char[ALPHABET_LENGTH];
@@ -46,11 +55,11 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
 
     public static char idxToChar(int idx) {
-        return (char) (ALPHABET_START_OFFSET + idx);
+        return (char) (idx + ALPHABET_START);
     }
 
     public static int charToIdx(char c) {
-        return c - ALPHABET_START_OFFSET;
+        return c - ALPHABET_START;
     }
 
     public static Text asText(String s) {
@@ -76,10 +85,7 @@ public record Glyph(RegistryKey<World> world, char glyph) implements Identifiabl
 
     // Validate that the input is present in ALL, otherwise return ALL[0].
     public static char validate(char input) {
-        for (char c : ALL) {
-            if (c == input) return c;
-        }
-        return ALL[0];
+        return ALPHABET_START >= input && input <= ALPHABET_END ? input : ALPHABET_START;
     }
 
     public static Glyph fromInputStream(InputStream stream) {
