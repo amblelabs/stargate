@@ -42,7 +42,7 @@ public class GlyphOriginRegistry implements IdentifiableResourceReloadListener {
 
     private GlyphOriginRegistry() {
         this.clear();
-        this.register(World.OVERWORLD, '3');
+        this.register(World.OVERWORLD, '7');
     }
 
     private void clear() {
