@@ -57,7 +57,8 @@ public abstract class StargateLinkableItem extends Item {
 			return;
 
 		if (!ctx.isShiftDown()) {
-			tooltip.add(Text.translatable("tooltip.stargate.link_item.holdformoreinfo").formatted(Formatting.GRAY)
+			tooltip.add(Text.translatable("tooltip.stargate.link_item.holdformoreinfo")
+					.formatted(Formatting.GRAY)
 					.formatted(Formatting.ITALIC));
 			return;
 		}
@@ -65,18 +66,27 @@ public abstract class StargateLinkableItem extends Item {
 		Stargate stargate = Services.GATES.getClient().getGlobal(id);
 
 		if (stargate != null) {
-			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": ")).formatted(Formatting.BLUE));
+			tooltip.add(Text.translatable("text.stargate.gate").append(Text.literal(": "))
+					.formatted(Formatting.BLUE));
 
 			RegistryKey<World> dim = stargate.dimension();
 			BlockPos pos = stargate.pos();
 			Direction direction = stargate.facing();
 
-			tooltip.add(Text.literal("> ").append(Glyph.asText(AddressProvider.Global.asString(stargate.globalAddress())))
+			// Original address string
+			String address = AddressProvider.Global.asString(stargate.globalAddress());
+			// Add spaces between each glyph
+			String spacedAddress = String.join(" ", address.split(""));
+			// Add to tooltip
+			tooltip.add(Text.literal("> ").append(Glyph.asText(spacedAddress))
 					.formatted(Formatting.DARK_GRAY));
-			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(dim)).formatted(Formatting.DARK_GRAY));
+
+			tooltip.add(Text.literal("> ").append(WorldUtil.worldText(dim))
+					.formatted(Formatting.DARK_GRAY));
 			tooltip.add(Text.literal("> " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ())
 					.formatted(Formatting.DARK_GRAY));
-			tooltip.add(Text.literal("> " + direction).formatted(Formatting.DARK_GRAY));
+			tooltip.add(Text.literal("> " + direction)
+					.formatted(Formatting.DARK_GRAY));
 		}
 	}
 
