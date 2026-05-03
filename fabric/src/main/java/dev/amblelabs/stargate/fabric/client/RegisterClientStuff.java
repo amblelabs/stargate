@@ -1,5 +1,7 @@
 package dev.amblelabs.stargate.fabric.client;
 
+import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
+import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,14 +20,8 @@ public class RegisterClientStuff {
 //        x.registerEntityRenderer(AitEntities.FALLING_TARDIS_BLOCK, FallingTardisBlockRenderer::new);
     }
 
-    @SuppressWarnings("EmptyMethod")
-    public static void registerColorProviders(BiConsumer<ItemColor, Item> itemColorRegistry,
-                                              BiConsumer<BlockColor, Block> blockColorRegistry) {
-
-    }
-
     public static void registerBlockEntityRenderers(@NotNull BlockEntityRendererRegisterer registerer) {
-//        registerer.registerBlockEntityRenderer(AitBlockEntities.EXTERIOR_BLOCK_ENTITY, ExteriorBlockEntityRenderer::new);
+        registerer.registerBlockEntityRenderer(StargateBlockEntities.STARGATE, StargateBlockEntityRenderer::new);
 //        registerer.registerBlockEntityRenderer(AitBlockEntities.DOOR_BLOCK_ENTITY, DoorBlockEntityRenderer::new);
 //        registerer.registerBlockEntityRenderer(AitBlockEntities.CONSOLE_BLOCK_ENTITY, ConsoleBlockEntityRenderer::new);
     }

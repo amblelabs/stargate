@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.datafixers.util.Pair;
+import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -23,6 +24,7 @@ import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class StargateBlocks {
+
 
     public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
         for (var e : BLOCKS.entrySet()) {
@@ -85,6 +87,7 @@ public class StargateBlocks {
     }
 
     //
+    public static final StargateBlock STARGATE_BLOCK = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
 
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
