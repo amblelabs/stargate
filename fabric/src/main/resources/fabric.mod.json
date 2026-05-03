@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "stargate",
+  "version": "${version}",
+  "name": "Stargate: Sojourner",
+  "description": "",
+  "authors": [
+    "DrTheo_",
+    "AddieDaBaddie",
+    "OuroborosGames"
+  ],
+  "contact": {
+    "homepage": "https://amblelabs.dev/wiki/en/stargate",
+    "issues": "https://codeberg.org/amblelabs/stargate/issues",
+    "sources": "https://codeberg.org/amblelabs/stargate"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/stargate/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.amblelabs.stargate.fabric.FabricStargateInit"
+    ],
+    "client": [
+      "dev.amblelabs.stargate.fabric.FabricStargateClientInit"
+    ]
+  },
+  "mixins": [
+    "stargate.mixins.json",
+    "stargate-fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.1",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "recommends": {
+    "cloth-config": "*"
+  }
+}

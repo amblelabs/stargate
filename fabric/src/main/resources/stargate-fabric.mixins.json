@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.amblelabs.stargate.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "FabricAxeItemMixin",
+    "FabricPlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

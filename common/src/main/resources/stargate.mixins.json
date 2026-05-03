@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.amblelabs.stargate.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "BlockInvoker",
+    "FireBlockAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
