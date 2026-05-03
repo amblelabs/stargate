@@ -5,9 +5,7 @@
   "name": "Stargate: Sojourner",
   "description": "",
   "authors": [
-    "DrTheo_",
-    "AddieDaBaddie",
-    "OuroborosGames"
+    "AmbleLabs"
   ],
   "contact": {
     "homepage": "https://amblelabs.dev/wiki/en/stargate",
@@ -23,6 +21,12 @@
     ],
     "client": [
       "dev.amblelabs.stargate.fabric.FabricStargateClientInit"
+    ],
+    "server": [
+      "dev.amblelabs.stargate.fabric.FabricStargateServerInit"
+    ],
+    "fabric-datagen": [
+      "dev.amblelabs.stargate.fabric.datagen.FabricStargateDataGenerators"
     ]
   },
   "mixins": [

@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -24,8 +23,6 @@ import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class StargateBlocks {
-
-    private static boolean frozen = false;
 
     public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
         for (var e : BLOCKS.entrySet()) {
@@ -103,11 +100,11 @@ public class StargateBlocks {
     }
 
     private static <T extends Block> T blockItem(String name, T block) {
-        return blockItem(name, block, YoureFiredItems.props(), StargateCreativeTabs.AIT);
+        return blockItem(name, block, StargateItems.props(), StargateCreativeTabs.AIT);
     }
 
     private static <T extends Block> T blockItem(String name, T block, @Nullable CreativeModeTab tab) {
-        return blockItem(name, block, YoureFiredItems.props(), tab);
+        return blockItem(name, block, StargateItems.props(), tab);
     }
 
     private static <T extends Block> T blockItem(String name, T block, Item.Properties props) {

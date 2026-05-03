@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.fabric;
 
+import dev.amblelabs.stargate.client.lib.StargateClientEcs;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.fabric.client.RegisterClientStuff;
 import dev.amblelabs.stargate.interop.StargateInterop;
@@ -35,5 +36,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
 //            if (!(block instanceof GenericBurningBlock)) return;
 //            BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
 //        });
+
+        StargateClientEcs.registerAll();
     }
 }

@@ -2,12 +2,9 @@ package dev.amblelabs.stargate.api;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Supplier;
 
 public interface StargateAPI {
@@ -20,12 +17,7 @@ public interface StargateAPI {
                     .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             LogManager.getLogger().warn("Unable to find AitAPIImpl, using a dummy");
-            return new StargateAPI() {
-                @Override
-                public Collection<Block> getVanillaBurningBlocks() {
-                    return List.of();
-                }
-            };
+            return new StargateAPI() { };
         }
     });
 
