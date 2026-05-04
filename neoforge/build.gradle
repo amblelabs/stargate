@@ -23,6 +23,7 @@ repositories {
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
+    modImplementation "software.bernie.geckolib:geckolib-neoforge-$minecraft_version:$geckolib_version"
     common(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
 }
 

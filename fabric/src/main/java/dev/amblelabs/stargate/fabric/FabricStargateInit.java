@@ -13,6 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import software.bernie.geckolib.GeckoLib;
 
 import java.util.function.BiConsumer;
 
