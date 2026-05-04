@@ -52,7 +52,7 @@ public final class FabricStargateInit implements ModInitializer {
         StargateSounds.registerSounds(bind(BuiltInRegistries.SOUND_EVENT));
         StargateBlocks.registerBlocks(bind(BuiltInRegistries.BLOCK));
         StargateBlocks.registerBlockItems(bind(BuiltInRegistries.ITEM));
-//        AitBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
+        StargateBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
         StargateItems.registerItems(bind(BuiltInRegistries.ITEM));
 
 //        AitEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
