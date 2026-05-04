@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class StargateBlockEntityRenderer implements BlockEntityRenderer<StargateBlockEntity> {
 
-    private ModelPart model;
+    private final ModelPart model;
 
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         model = SnifferModel.createBodyLayer().bakeRoot();

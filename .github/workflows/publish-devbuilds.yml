@@ -68,7 +68,7 @@ jobs:
 
           message_commit: '> - :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
           message_header: |
-            <:new1:1253371736510959636><:new2:1253371805734015006> New :al_stargate: **Stargate: Sojourner** dev build `#${{ github.run_number }}`:
+            <:new1:1253371736510959636><:new2:1253371805734015006> New <:al_stargate:1493896251618361374> **Stargate: Sojourner** dev build `#${{ github.run_number }}`:
 
           file: |
             fabric/build/libs/*.jar
