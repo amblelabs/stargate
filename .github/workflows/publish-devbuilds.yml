@@ -63,8 +63,8 @@ jobs:
         uses: drtheodor/discord-webhook-upload-action@v0.3
         with:
           url: ${{ secrets.DEV_BUILDS }}
-          username: tramp
-          avatar: 'https://i.imgur.com/zCKLpZo.png'
+          username: Macguyver
+          avatar: 'https://i.imgur.com/LAzH4IT.jpeg'
 
           message_commit: '> - :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
           message_header: |
