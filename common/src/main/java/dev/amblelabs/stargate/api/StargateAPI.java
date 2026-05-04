@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.function.Supplier;
 
 public interface StargateAPI {
-    String MOD_ID = "youre-fired";
+    String MOD_ID = "stargate";
     Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     Supplier<StargateAPI> INSTANCE = Suppliers.memoize(() -> {
