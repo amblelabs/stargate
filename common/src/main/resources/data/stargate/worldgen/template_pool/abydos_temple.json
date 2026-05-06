@@ -1,0 +1,15 @@
+{
+  "name": "stargate:abydos_temple",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 150,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "stargate:abydos_temple",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}
