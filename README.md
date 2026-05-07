@@ -1,4 +1,4 @@
-<img width="800" height="400" style="image-rendering: pixelated; image-rendering: crisp-edges;" alt="sglogo_new" src="https://github.com/user-attachments/assets/3cff3725-6755-4274-9456-bb8cb1c2b363" />
+<img width="800" height="300" style="image-rendering: pixelated; image-rendering: crisp-edges;" alt="sglogo_new" src="common/src/main/resources/assets/stargate/textures/gui/title/minecraft.png" />
 
 
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/stargate-sojourner?link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait%2Fversions)
