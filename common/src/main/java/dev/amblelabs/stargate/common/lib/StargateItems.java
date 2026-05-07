@@ -54,7 +54,7 @@ public class StargateItems {
     }
 
     private static <T extends Item> T make(String id, T item) {
-        return make(id, item, StargateCreativeTabs.AIT);
+        return make(id, item, StargateCreativeTabs.STARGATE);
     }
 
     private static Supplier<ItemStack> addToTab(Supplier<ItemStack> stack, CreativeModeTab tab) {
