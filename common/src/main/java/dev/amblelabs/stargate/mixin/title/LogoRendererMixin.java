@@ -16,7 +16,7 @@ public class LogoRendererMixin {
     @Unique
     private static final ResourceLocation stargate$CUSTOM = StargateAPI.modLoc("textures/gui/title/minecraft.png");
 
-    @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V"))
+    @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 0))
     public void blit(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
         instance.blit(StargateConfig.client().useCustomMainMenu() ? stargate$CUSTOM : resourceLocation, i, j, f, g, k, l, m, n);
     }
