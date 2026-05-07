@@ -3,6 +3,16 @@ architectury {
     fabric()
 }
 
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/stargate.accesswidener")
 }
@@ -12,16 +22,6 @@ fabricApi {
         client = true
         outputDirectory = file("../common/src/main/generated")
     }
-}
-
-configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
 }
 
 repositories {
@@ -44,6 +44,8 @@ dependencies {
 }
 
 processResources {
+    from project(":common").sourceSets.main.resources
+
     inputs.property 'version', project.version
 
     filesMatching('fabric.mod.json') {
