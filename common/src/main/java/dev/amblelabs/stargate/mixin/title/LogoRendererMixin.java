@@ -20,4 +20,10 @@ public class LogoRendererMixin {
     public void blit(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
         instance.blit(StargateConfig.client().useCustomMainMenu() ? stargate$CUSTOM : resourceLocation, i, j, f, g, k, l, m, n);
     }
+
+    @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 1))
+    public void blitEdition(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
+        if (!StargateConfig.client().useCustomMainMenu())
+            instance.blit(resourceLocation, i, j, f, g, k, l, m, n);
+    }
 }
