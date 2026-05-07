@@ -13,16 +13,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = LogoRenderer.class, priority = 1001)
 public class LogoRendererMixin {
 
-    @Unique private static final int LOGO_HEIGHT = 48*2;
-    @Unique private static final int LOGO_WIDTH = 128*2;
+    @Unique private static final int LOGO_HEIGHT = 48 * 2;
+    @Unique private static final int LOGO_WIDTH = 128 * 2;
 
     @Unique
     private static final ResourceLocation stargate$CUSTOM = StargateAPI.modLoc("textures/gui/title/logo_wide.png");
 
     @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 0))
     public void blit(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
-        boolean custom = StargateConfig.client().useCustomMainMenu();
-
         int x = i;
         int y = j;
 
@@ -32,7 +30,7 @@ public class LogoRendererMixin {
         int w = k;
         int h = l;
 
-        if (custom) {
+        if (StargateConfig.client().useCustomMainMenu()) {
             resourceLocation = stargate$CUSTOM;
             y -= LOGO_HEIGHT / 4;
 
