@@ -2,16 +2,9 @@ package dev.amblelabs.stargate.fabric.client;
 
 import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BiConsumer;
 
 public class RegisterClientStuff {
 
@@ -20,7 +13,7 @@ public class RegisterClientStuff {
 //        x.registerEntityRenderer(AitEntities.FALLING_TARDIS_BLOCK, FallingTardisBlockRenderer::new);
     }
 
-    public static void registerBlockEntityRenderers(@NotNull BlockEntityRendererRegisterer registerer) {
+    public static void registerBlockEntityRenderers(BlockEntityRendererRegisterer registerer) {
         registerer.registerBlockEntityRenderer(StargateBlockEntities.STARGATE, StargateBlockEntityRenderer::new);
 //        registerer.registerBlockEntityRenderer(AitBlockEntities.DOOR_BLOCK_ENTITY, DoorBlockEntityRenderer::new);
 //        registerer.registerBlockEntityRenderer(AitBlockEntities.CONSOLE_BLOCK_ENTITY, ConsoleBlockEntityRenderer::new);

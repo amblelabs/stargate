@@ -2,6 +2,7 @@ package dev.drtheo.ecs.state;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,26 +58,26 @@ public abstract class TAbstractStateRegistry {
     }
 
     /**
-     * Gets a registered {@link TState.Type} by its index, or null if it wasn't found.
+     * Gets a registered {@link TState.Type} by its index.
      *
      * @param index the registered state type's index.
-     * @return the found {@link TState}'s type or null.
+     * @return the found {@link TState}'s type or {@code null}.
      *
      * @implNote the index may very each run, so make sure to not use constants.
      */
     @Contract(pure = true)
-    public TState.Type<?> get(int index) {
+    public @Nullable TState.Type<?> get(int index) {
         return comps.get(index);
     }
 
     /**
-     * Gets a registered {@link TState.Type} by its {@link ResourceLocation}, or null if it wasn't found.
+     * Gets a registered {@link TState.Type} by its {@link ResourceLocation}.
      *
      * @param id the state's {@link ResourceLocation}.
-     * @return the found {@link TState}'s type or null.
+     * @return the found {@link TState}'s type or {@code null}.
      */
     @Contract(pure = true)
-    public TState.Type<?> get(ResourceLocation id) {
+    public @Nullable TState.Type<?> get(ResourceLocation id) {
         return idToHolder.get(id);
     }
 

@@ -1,5 +1,6 @@
-package dev.amblelabs.stargate.common.lib.amblekit;
+package dev.amblelabs.stargate.common.lib;
 
+import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
@@ -25,6 +26,7 @@ public class StargateEcs {
     }
 
     public static void initState() {
+        States.register(PrototypeIdentityState.state);
     }
 
     public static void initEvents() {
