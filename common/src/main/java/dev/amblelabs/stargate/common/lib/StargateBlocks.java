@@ -25,7 +25,6 @@ import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class StargateBlocks {
 
-
     public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
         for (var e : BLOCKS.entrySet()) {
             r.accept(e.getValue(), e.getKey());
