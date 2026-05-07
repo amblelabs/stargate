@@ -1,13 +1,14 @@
 {
   "required": true,
   "package": "dev.amblelabs.stargate.mixin",
+  "plugin": "dev.amblelabs.stargate.interop.StargateMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "title.LogoRendererMixin",
+    "title.PanoramaRendererMixin"
   ],
   "mixins": [
-    "BlockInvoker",
-    "FireBlockAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
