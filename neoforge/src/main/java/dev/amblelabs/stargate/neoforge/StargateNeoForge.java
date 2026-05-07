@@ -1,12 +1,12 @@
 package dev.amblelabs.stargate.neoforge;
 
-import dev.amblelabs.stargate.api.YoureFiredAPI;
+import dev.amblelabs.stargate.api.StargateAPI;
 import net.neoforged.fml.common.Mod;
 
-@Mod(YoureFiredAPI.MOD_ID)
+@Mod(StargateAPI.MOD_ID)
 public final class StargateNeoForge {
-    public YoureFiredNeoForge() {
+    public StargateNeoForge() {
         // Run our common setup.
-        YoureFired.init();
+     //   Stargate.init();
     }
 }
