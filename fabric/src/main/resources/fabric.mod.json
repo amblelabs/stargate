@@ -41,9 +41,9 @@
     "minecraft": "~1.21.1",
     "java": ">=21",
     "fabric-api": "*",
-    "geckolib": "*"
+    "geckolib": "*",
+    "cloth-config": "*"
   },
   "recommends": {
-    "cloth-config": "*"
   }
 }
