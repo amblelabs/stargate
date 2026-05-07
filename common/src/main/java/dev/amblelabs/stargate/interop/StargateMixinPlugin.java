@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.interop;
 
-import dev.amblelabs.stargate.api.mod.StargateConfig;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -11,12 +10,8 @@ import java.util.Set;
 
 public class StargateMixinPlugin implements IMixinConfigPlugin {
 
-    private @Nullable String mixinPackage;
-
     @Override
-    public void onLoad(String mixinPackage) {
-        this.mixinPackage = mixinPackage;
-    }
+    public void onLoad(String mixinPackage) { }
 
     @Override
     public @Nullable String getRefMapperConfig() {
@@ -25,10 +20,6 @@ public class StargateMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.equals(mixinPackage + ".title.LogoRendererMixin")
-                || mixinClassName.equals(mixinPackage + ".title.PanoramaRendererMixin"))
-            return StargateConfig.client().useCustomMainMenu();
-
         return true;
     }
 
