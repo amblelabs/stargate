@@ -14,21 +14,12 @@ public class GeckoState implements TState<GeckoState>, NbtSerializer {
     public static final TState.Type<GeckoState> state = new NbtBacked<>(StargateAPI.modLoc("gecko"), 0) {
         @Override
         public GeckoState fromNbt(CompoundTag nbt, boolean isClient) {
-            ResourceLocation model;
-            ResourceLocation texture;
-            ResourceLocation animation;
+            if (nbt.contains("path", CompoundTag.TAG_STRING))
+                return new GeckoState(NbtUtil.getLoc(nbt, "path"));
 
-            if (nbt.contains("path", CompoundTag.TAG_STRING)) {
-                ResourceLocation loc = NbtUtil.getLoc(nbt, "path");
-
-                model = loc;
-                texture = loc;
-                animation = loc;
-            } else {
-                model = NbtUtil.getLoc(nbt, "model");
-                texture = NbtUtil.getLoc(nbt, "texture");
-                animation = NbtUtil.getLoc(nbt, "animation", model);
-            }
+            ResourceLocation model = NbtUtil.getLoc(nbt, "model");
+            ResourceLocation texture = NbtUtil.getLoc(nbt, "texture");
+            ResourceLocation animation = NbtUtil.getLoc(nbt, "animation", model);
 
             return new GeckoState(model, texture, animation);
         }
@@ -80,6 +71,9 @@ public class GeckoState implements TState<GeckoState>, NbtSerializer {
     public void toNbt(CompoundTag nbt, boolean isClient) {
         nbt.putString("model", this.model.toString());
         nbt.putString("texture", this.texture.toString());
-        nbt.putString("animation", this.animation.toString());
+
+        // yes, this is correct. see deserialization code.
+        if (this.model != this.animation)
+            nbt.putString("animation", this.animation.toString());
     }
 }
