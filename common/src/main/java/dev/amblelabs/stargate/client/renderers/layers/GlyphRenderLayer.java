@@ -2,15 +2,12 @@ package dev.amblelabs.stargate.client.renderers.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -19,6 +16,7 @@ import software.bernie.geckolib.util.Color;
 public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLayer<T> {
 
     Minecraft mc = Minecraft.getInstance();
+    // float rotateGlyph = 0;
 
     public GlyphRenderLayer(GeoRenderer<T> entityRendererIn) {
         super(entityRendererIn);
@@ -27,9 +25,10 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        String text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        String text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; // 36 characters, will be replaced by font
         float angleStep = (float) (2 * Math.PI / text.length());
         float radius = 155f;
+        // rotateGlyph++;
 
         poseStack.pushPose();
         poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(180));
@@ -42,14 +41,21 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
 
             poseStack.pushPose();
 
+            // ACTUALLY rotate the characters around the center pivot
             poseStack.mulPose(com.mojang.math.Axis.ZP.rotation(theta));
+
+            // Move the first character to the top chevron
             poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(-89.5f));
+
+            // TODO This rotates the symbols with the ring, implement animation timing
+            // poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(rotateGlyph / 10f));
 
             poseStack.translate(radius, 0, 0);
 
             float charWidth = mc.font.width(character);
             float charHeight = 8;
 
+            // Reset pivot position to the center of the character, and rotate it around its axis to point its ass to the center
             poseStack.translate(-charWidth / 2f, -charHeight / 2f, 0);
             poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(90));
 
