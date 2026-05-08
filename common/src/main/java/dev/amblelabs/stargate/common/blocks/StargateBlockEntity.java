@@ -1,9 +1,9 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
-import dev.amblelabs.stargate.common.lib.StargatePrototypes;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import dev.drtheo.ecs.state.TState;
@@ -46,7 +46,9 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         // FIXME: this wont work properly in multiplayer, client code must handle the PrototypeIdentityState and compensate.
-        IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(StargatePrototypes.MILKY_WAY.loc()).make(StargateEcs.States, this.container, level.isClientSide());
+        PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().get().value();
+
+        entry.make(StargateEcs.States, this.container, level.isClientSide());
         this.setChanged(); // TODO: figure out if this is even needed
     }
 

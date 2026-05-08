@@ -1,0 +1,9 @@
+{
+  "states": {
+    "stargate:gecko": {
+      "model": "stargate:block/stargate",
+      "animation": "stargate:block/stargate",
+      "texture": "stargate:block/pegasus"
+    }
+  }
+}

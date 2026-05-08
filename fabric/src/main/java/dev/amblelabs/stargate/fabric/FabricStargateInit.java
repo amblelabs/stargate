@@ -1,11 +1,9 @@
 package dev.amblelabs.stargate.fabric;
 
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateComposting;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateStrippable;
 import dev.amblelabs.stargate.common.lib.*;
 import dev.amblelabs.stargate.fabric.network.FabricPacketHandler;
-import dev.amblelabs.stargate.fabric.xplat.FabricXplatImpl;
 import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -57,10 +55,6 @@ public final class FabricStargateInit implements ModInitializer {
         StargateBlocks.registerBlockItems(bind(BuiltInRegistries.ITEM));
         StargateBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
         StargateItems.registerItems(bind(BuiltInRegistries.ITEM));
-
-        // FIXME: temp
-        Registry<PrototypeRegistryEntry> protoRegistry = FabricXplatImpl.INSTANCE.getPrototypeRegistry();
-        StargatePrototypes.registerPrototypes(protoRegistry, bind(protoRegistry));
 
 //        AitEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
 //        AitAttributes.register(bind(BuiltInRegistries.ATTRIBUTE));

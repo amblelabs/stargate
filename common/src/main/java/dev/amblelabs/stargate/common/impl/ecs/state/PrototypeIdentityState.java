@@ -7,17 +7,16 @@ import dev.drtheo.ecs.state.NbtSerializer;
 import dev.drtheo.ecs.state.TState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
-public record PrototypeIdentityState(PrototypeRegistryEntry prototype) implements TState<PrototypeIdentityState>, NbtSerializer {
+public record PrototypeIdentityState(ResourceLocation key, PrototypeRegistryEntry prototype) implements TState<PrototypeIdentityState>, NbtSerializer {
 
     public static final TState.NbtBacked<PrototypeIdentityState> state = new NbtBacked<>(StargateAPI.modLoc("identity"), 0) {
         @Override
-        public PrototypeIdentityState fromNbt(@NotNull CompoundTag nbt, boolean isClient) {
+        public PrototypeIdentityState fromNbt(CompoundTag nbt, boolean isClient) {
             ResourceLocation loc = ResourceLocation.parse(nbt.getString("prototype"));
 
             PrototypeRegistryEntry prototype = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(loc);
-            return new PrototypeIdentityState(prototype);
+            return new PrototypeIdentityState(loc, prototype);
         }
     };
 
@@ -27,7 +26,7 @@ public record PrototypeIdentityState(PrototypeRegistryEntry prototype) implement
     }
 
     @Override
-    public void toNbt(@NotNull CompoundTag nbt, boolean isClient) {
-        nbt.putString("prototype", this.prototype.key().location().toString());
+    public void toNbt(CompoundTag nbt, boolean isClient) {
+        nbt.putString("prototype", this.key.toString());
     }
 }
