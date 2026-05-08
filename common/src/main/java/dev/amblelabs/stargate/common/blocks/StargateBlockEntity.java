@@ -1,9 +1,11 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.amblelabs.stargate.common.lib.StargatePrototypes;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.drtheo.ecs.event.TEvents;
 import dev.drtheo.ecs.state.TState;
 import dev.drtheo.ecs.state.TStateContainer;
 import net.minecraft.core.BlockPos;
@@ -15,16 +17,11 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -33,16 +30,11 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
-    public static final RawAnimation IRIS_OPEN = RawAnimation.begin().thenPlay("IRIS_OPEN");
-    public static final RawAnimation IRIS_CLOSE = RawAnimation.begin().thenPlay("IRIS_CLOSE");
-
     public static final String STATES_TAG = "States";
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public final TStateContainer container = StargateEcs.States.createArrayHolder();
-
-    public boolean irisClosed;
 
     public StargateBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
@@ -50,11 +42,6 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     public StargateBlockEntity(BlockPos blockPos, BlockState blockState) {
         this(StargateBlockEntities.STARGATE, blockPos, blockState);
-    }
-
-    public void useItemOn(ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (itemStack.getItem() == Items.SPIDER_EYE)
-            this.irisClosed = !this.irisClosed;
     }
 
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
@@ -122,8 +109,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Iris",
-                state -> state.setAndContinue(irisClosed ? IRIS_CLOSE : IRIS_OPEN)));
+        TEvents.handle(new StargateBlockEvents.RegisterControllers(this, controllers));
     }
 
     @Override

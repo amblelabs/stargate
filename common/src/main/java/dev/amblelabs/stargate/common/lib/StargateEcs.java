@@ -1,5 +1,9 @@
 package dev.amblelabs.stargate.common.lib;
 
+import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.IrisBehavior;
+import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
@@ -27,11 +31,15 @@ public class StargateEcs {
 
     public static void initState() {
         States.register(PrototypeIdentityState.state);
+        States.register(IrisState.state);
     }
 
     public static void initEvents() {
+        TEventsRegistry.register(IrisEvents.type);
+        TEventsRegistry.register(StargateBlockEvents.type);
     }
 
     public static void initBehavior() {
+        TBehaviorRegistry.register(IrisBehavior::new);
     }
 }
