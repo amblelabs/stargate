@@ -54,7 +54,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
         controllers.add(new AnimationController<>(stargate, "Iris",
                 anim -> {
                     IrisState state = stargate.container.stateOrNull(IrisState.state);
-                    return anim.setAndContinue(state == null || state.closed ? IRIS_CLOSE : IRIS_OPEN);
+                    return anim.setAndContinue(state == null || !state.closed ? IRIS_OPEN : IRIS_CLOSE);
                 }));
     }
 }
