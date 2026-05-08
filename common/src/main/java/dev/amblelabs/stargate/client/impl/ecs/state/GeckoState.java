@@ -5,11 +5,17 @@ import dev.amblelabs.stargate.api.util.NbtUtil;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.drtheo.ecs.state.NbtSerializer;
 import dev.drtheo.ecs.state.TState;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
+import java.util.Objects;
+
 public class GeckoState implements TState<GeckoState>, NbtSerializer {
+
+    private static final Int2ObjectMap<GeoModel<StargateBlockEntity>> MODEL_CACHE = new Int2ObjectOpenHashMap<>();
 
     public static final TState.Type<GeckoState> state = new NbtBacked<>(StargateAPI.modLoc("gecko"), 0) {
         @Override
@@ -40,7 +46,7 @@ public class GeckoState implements TState<GeckoState>, NbtSerializer {
         this.texture = texture;
         this.animation = animation;
 
-        this.geoModel = new GeoModel<>() {
+        this.geoModel = MODEL_CACHE.computeIfAbsent(Objects.hash(model, texture, animation), i -> new GeoModel<>() {
             private final ResourceLocation model = GeckoState.this.model.withPath(s -> "geo/" + s + ".geo.json");
             private final ResourceLocation texture = GeckoState.this.texture.withPath(s -> "textures/" + s + ".png");
             private final ResourceLocation animation = GeckoState.this.animation.withPath(s -> "animations/" + s + ".animation.json");
@@ -59,7 +65,7 @@ public class GeckoState implements TState<GeckoState>, NbtSerializer {
             public ResourceLocation getAnimationResource(StargateBlockEntity animatable) {
                 return animation;
             }
-        };
+        });
     }
 
     @Override
