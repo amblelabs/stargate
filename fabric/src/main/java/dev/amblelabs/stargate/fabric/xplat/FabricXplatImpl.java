@@ -1,14 +1,21 @@
 package dev.amblelabs.stargate.fabric.xplat;
 
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Lifecycle;
+import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.common.lib.StargateRegistries;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.amblelabs.stargate.xplat.IXplatTags;
 import dev.amblelabs.stargate.xplat.Platform;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,9 +29,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class FabricXplatImpl implements IXplatAbstractions {
+
+    private static final Supplier<Registry<PrototypeRegistryEntry>> PROTOTYPE_REGISTRY = Suppliers.memoize(() ->
+            FabricRegistryBuilder.from(new MappedRegistry<>(
+                            StargateRegistries.PROTOTYPE,
+                            Lifecycle.stable(), false))
+                    .buildAndRegister()
+    );
 
     @Override
     public Platform platform() {
@@ -76,6 +91,11 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @SuppressWarnings("deprecation")
     public <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func, Block... blocks) {
         return FabricBlockEntityTypeBuilder.create(func::apply, blocks).build();
+    }
+
+    @Override
+    public Registry<PrototypeRegistryEntry> getPrototypeRegistry() {
+        return PROTOTYPE_REGISTRY.get();
     }
 
     private static final IXplatTags TAGS = new IXplatTags() {

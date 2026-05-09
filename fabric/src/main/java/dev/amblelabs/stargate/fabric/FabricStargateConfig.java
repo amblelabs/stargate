@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @Config(name = StargateAPI.MOD_ID)
 @Config.Gui.Background("minecraft:textures/block/mud.png")
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.TransitiveObject
@@ -60,8 +61,16 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     @Config(name = "client")
     public static final class Client implements StargateConfig.ClientConfigAccess, ConfigData {
 
+        @ConfigEntry.Gui.Tooltip
+        private boolean useCustomMainMenu = DEFAULT_CUSTOM_MAIN_MENU;
+
         @Override
         public void validatePostLoad() {
+        }
+
+        @Override
+        public boolean useCustomMainMenu() {
+            return useCustomMainMenu;
         }
     }
 

@@ -25,7 +25,6 @@ import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class StargateBlocks {
 
-
     public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
         for (var e : BLOCKS.entrySet()) {
             r.accept(e.getValue(), e.getKey());
@@ -39,7 +38,10 @@ public class StargateBlocks {
     }
 
     public static void registerBlockCreativeTab(Consumer<Block> r, CreativeModeTab tab) {
-        for (var block : BLOCK_TABS.getOrDefault(tab, List.of())) {
+        List<Block> blocks = BLOCK_TABS.get(tab);
+        if (blocks == null || blocks.isEmpty()) return;
+
+        for (var block : blocks) {
             r.accept(block);
         }
     }
@@ -103,7 +105,7 @@ public class StargateBlocks {
     }
 
     private static <T extends Block> T blockItem(String name, T block) {
-        return blockItem(name, block, StargateItems.props(), StargateCreativeTabs.AIT);
+        return blockItem(name, block, StargateItems.props(), StargateCreativeTabs.STARGATE);
     }
 
     private static <T extends Block> T blockItem(String name, T block, @Nullable CreativeModeTab tab) {
@@ -111,7 +113,7 @@ public class StargateBlocks {
     }
 
     private static <T extends Block> T blockItem(String name, T block, Item.Properties props) {
-        return blockItem(name, block, props, StargateCreativeTabs.AIT);
+        return blockItem(name, block, props, StargateCreativeTabs.STARGATE);
     }
 
     private static <T extends Block> T blockItem(String name, T block, Item.Properties props, @Nullable CreativeModeTab tab) {

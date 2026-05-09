@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.fabric;
 
-import dev.amblelabs.stargate.common.lib.amblekit.StargateEcs;
+import dev.amblelabs.stargate.common.lib.StargateEcs;
 import net.fabricmc.api.DedicatedServerModInitializer;
 
 public class FabricStargateServerInit implements DedicatedServerModInitializer {

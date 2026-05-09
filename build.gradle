@@ -1,7 +1,11 @@
 plugins {
     id 'dev.architectury.loom' version '1.14-SNAPSHOT' apply false
-    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'architectury-plugin' version '3.5-SNAPSHOT'
 }
+
+apply from: 'versioning.gradle'
+
+version = getPublicVersion()
 
 architectury {
     minecraft = project.minecraft_version
@@ -9,7 +13,7 @@ architectury {
 
 allprojects {
     group = rootProject.maven_group
-    version = rootProject.mod_version
+    version = rootProject.version
 }
 
 subprojects {
@@ -25,11 +29,19 @@ subprojects {
     repositories {
         maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 
+        maven {
+            name = "ParchmentMC"
+            url = "https://maven.parchmentmc.org"
+        }
     }
 
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
-        mappings loom.officialMojangMappings()
+
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-$rootProject.minecraft_version:$rootProject.mappings_version@zip")
+        }
 
         constraints {
             implementation('org.jetbrains:annotations:26.1.0') {
@@ -55,18 +67,18 @@ subprojects {
     // Configure Maven publishing.
     publishing {
         publications {
-            mavenJava(MavenPublication) {
-                artifactId = base.archivesName.get()
+            create("mavenJava", MavenPublication) {
+                artifactId = project.archives_name
+                version = getArtifactVersion()
                 from components.java
             }
         }
 
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
         repositories {
-            // Add repositories to publish to here.
-            // Notice: This block does NOT have the same function as the block in the top level.
-            // The repositories here will be used for publishing your artifact, not for
-            // retrieving dependencies.
+            maven {
+                name = "ci"
+                url = providers.environmentVariable("CI_MAVEN_PATH")
+            }
         }
     }
 }
