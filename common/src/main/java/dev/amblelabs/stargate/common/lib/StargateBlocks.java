@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.Nullable;
@@ -90,6 +91,8 @@ public class StargateBlocks {
 
     //
     public static final StargateBlock STARGATE_BLOCK = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
+
+    public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
