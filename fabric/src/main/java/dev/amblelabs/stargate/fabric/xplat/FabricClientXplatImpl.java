@@ -49,7 +49,7 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
     @Override
     public void registerSkyRenderer(ResourceKey<Level> resourceKey, SkyRenderer skyRenderer) {
         DimensionRenderingRegistry.registerSkyRenderer(resourceKey, context -> {
-            skyRenderer.renderSky(context.projectionMatrix(), context.camera().getPartialTickTime(), context.camera());
+            skyRenderer.renderSky(context.world(), context.positionMatrix(), context.projectionMatrix(), context.camera().getPartialTickTime(), context.camera());
         });
     }
 

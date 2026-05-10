@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.xplat;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -51,6 +52,6 @@ public interface IClientXplatAbstractions {
 
     @FunctionalInterface
     interface SkyRenderer {
-        void renderSky(Matrix4f projectionMatrix, float partialTick, Camera camera);
+        void renderSky(ClientLevel level, Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTick, Camera camera);
     }
 }

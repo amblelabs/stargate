@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.*;
 import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -107,7 +108,7 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
         return bufferBuilder.buildOrThrow();
     }
 
-    public void renderSky(Matrix4f projectionMatrix, float partialTick, Camera camera) {
+    public void renderSky(ClientLevel level, Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTick, Camera camera) {
         if (starBuffer == null) createStars();
         if (skyBuffer == null) createLightSky();
         if (darkBuffer == null) createDarkSky();
@@ -115,6 +116,7 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
             FogType fogType = camera.getFluidInCamera();
             if (fogType != FogType.POWDER_SNOW && fogType != FogType.LAVA && !this.doesMobEffectBlockSky(camera)) {
                 PoseStack poseStack = new PoseStack();
+                poseStack.mulPose(frustumMatrix);
                 Vec3 vec3 = minecraft.level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTick);
                 float f = (float)vec3.x;
                 float g = (float)vec3.y;
@@ -172,21 +174,28 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
                 bufferBuilder2.addVertex(matrix4f2, k, 100.0F, k).setUv(1.0F, 1.0F);
                 bufferBuilder2.addVertex(matrix4f2, -k, 100.0F, k).setUv(0.0F, 1.0F);
                 BufferUploader.drawWithShader(bufferBuilder2.buildOrThrow());
-                k = 20.0F;
-                RenderSystem.setShaderTexture(0, MOON_LOCATION);
-                int r = minecraft.level.getMoonPhase();
-                int s = r % 4;
-                int m = r / 4 % 2;
-                float t = (float)(s + 0) / 4.0F;
-                float o = (float)(m + 0) / 2.0F;
-                float p = (float)(s + 1) / 4.0F;
-                float q = (float)(m + 1) / 2.0F;
-                bufferBuilder2 = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                bufferBuilder2.addVertex(matrix4f2, -k, -100.0F, k).setUv(p, q);
-                bufferBuilder2.addVertex(matrix4f2, k, -100.0F, k).setUv(t, q);
-                bufferBuilder2.addVertex(matrix4f2, k, -100.0F, -k).setUv(t, o);
-                bufferBuilder2.addVertex(matrix4f2, -k, -100.0F, -k).setUv(p, o);
-                BufferUploader.drawWithShader(bufferBuilder2.buildOrThrow());
+
+                for (int j = 0; j < 3; j++) {
+
+
+                    k = 20.0F ;
+                    RenderSystem.setShaderTexture(0, MOON_LOCATION);
+                    int r = minecraft.level.getMoonPhase();
+                    int s = r % 4;
+                    int m = r / 4 % 2;
+                    float t = (float)(s + 0) / 4.0F;
+                    float o = (float)(m + 0) / 2.0F;
+                    float p = (float)(s + 1) / 4.0F;
+                    float q = (float)(m + 1) / 2.0F;
+                    bufferBuilder2 = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+                    bufferBuilder2.addVertex(matrix4f2, -k-j*20, -100.0F, k-j*20).setUv(p, q);
+                    bufferBuilder2.addVertex(matrix4f2, k-j*20, -100.0F, k-j*20).setUv(t, q);
+                    bufferBuilder2.addVertex(matrix4f2, k-j*20, -100.0F, -k-j*20).setUv(t, o);
+                    bufferBuilder2.addVertex(matrix4f2, -k-j*20, -100.0F, -k-j*20).setUv(p, o);
+                    BufferUploader.drawWithShader(bufferBuilder2.buildOrThrow());
+                }
+
+
                 float u = minecraft.level.getStarBrightness(partialTick) * i;
                 if (u > 0.0F) {
                     RenderSystem.setShaderColor(u, u, u, u);
