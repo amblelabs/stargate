@@ -175,10 +175,16 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
                 bufferBuilder2.addVertex(matrix4f2, -k, 100.0F, k).setUv(0.0F, 1.0F);
                 BufferUploader.drawWithShader(bufferBuilder2.buildOrThrow());
 
+                float[] moonXOffsets = {-0, 25.0f, -28.0f};
+                float[] moonYOffsets = {-0, -10.0f, -12.5f};
+                float[] moonScales = {1, 0.5f, 0.75f};
+
                 for (int j = 0; j < 3; j++) {
 
+                    float xOffset = moonXOffsets[j];
+                    float yOffset = moonYOffsets[j];
 
-                    k = 20.0F ;
+                    k = 20.0F * moonScales[j];
                     RenderSystem.setShaderTexture(0, MOON_LOCATION);
                     int r = minecraft.level.getMoonPhase();
                     int s = r % 4;
@@ -188,10 +194,10 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
                     float p = (float)(s + 1) / 4.0F;
                     float q = (float)(m + 1) / 2.0F;
                     bufferBuilder2 = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                    bufferBuilder2.addVertex(matrix4f2, -k-j*20, -100.0F, k-j*20).setUv(p, q);
-                    bufferBuilder2.addVertex(matrix4f2, k-j*20, -100.0F, k-j*20).setUv(t, q);
-                    bufferBuilder2.addVertex(matrix4f2, k-j*20, -100.0F, -k-j*20).setUv(t, o);
-                    bufferBuilder2.addVertex(matrix4f2, -k-j*20, -100.0F, -k-j*20).setUv(p, o);
+                    bufferBuilder2.addVertex(matrix4f2, -k-xOffset, -100.0F, k-yOffset).setUv(p, q);
+                    bufferBuilder2.addVertex(matrix4f2, k-xOffset, -100.0F, k-yOffset).setUv(t, q);
+                    bufferBuilder2.addVertex(matrix4f2, k-xOffset, -100.0F, -k-yOffset).setUv(t, o);
+                    bufferBuilder2.addVertex(matrix4f2, -k-xOffset, -100.0F, -k-yOffset).setUv(p, o);
                     BufferUploader.drawWithShader(bufferBuilder2.buildOrThrow());
                 }
 
