@@ -6,6 +6,7 @@ import dev.amblelabs.stargate.fabric.client.RegisterClientStuff;
 import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.*;
 

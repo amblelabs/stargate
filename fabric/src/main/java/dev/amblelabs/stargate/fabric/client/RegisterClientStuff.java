@@ -1,16 +1,21 @@
 package dev.amblelabs.stargate.fabric.client;
 
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
+import dev.amblelabs.stargate.client.renderers.skybox.AbydosSkyRenderer;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
+import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class RegisterClientStuff {
 
     public static void init() {
-//        var x = IClientXplatAbstractions.INSTANCE;
-//        x.registerEntityRenderer(AitEntities.FALLING_TARDIS_BLOCK, FallingTardisBlockRenderer::new);
+        var x = IClientXplatAbstractions.INSTANCE;
+        x.registerSkyRenderer(ResourceKey.create(Registries.DIMENSION, StargateAPI.modLoc("abydos")), new AbydosSkyRenderer());
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegisterer registerer) {
