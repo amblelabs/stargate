@@ -129,7 +129,9 @@ public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
                 VertexBuffer.unbind();
                 RenderSystem.enableBlend();
                 float[] sunriseColor = level.effects().getSunriseColor(level.getTimeOfDay(partialTick), partialTick);
-                {
+
+                //noinspection ConstantValue
+                if (sunriseColor != null) {
                     RenderSystem.setShader(GameRenderer::getPositionColorShader);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                     poseStack.pushPose();
