@@ -92,7 +92,9 @@ public class StargateBlocks {
     //
     public static final StargateBlock STARGATE_BLOCK = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
 
-    public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
+    public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.ofFullCopy(Blocks.DEEPSLATE_COAL_ORE)));
+
+    public static final Block NAQUADAH_BLOCK = blockItem("naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {

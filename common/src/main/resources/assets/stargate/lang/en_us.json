@@ -1,0 +1,16 @@
+{
+  "itemgroup.stargate.main": "Stargate: Sojourner",
+  "block.stargate.naquadah_ore": "Naquadah Ore",
+  "item.stargate.naquadah_ingot": "Naquadah Ingot",
+  "item.stargate.naquadah_nugget": "Naquadah Nugget",
+  "item.stargate.raw_naquadah": "Raw Naquadah",
+  "item.stargate.trinium_ingot": "Trinium Ingot",
+  "item.stargate.crystal_ingot": "Crystal Ingot",
+  "item.stargate.trinium_iris": "Trinium Iris",
+  "item.stargate.naquadah_iris": "Naquadah Iris",
+  "item.stargate.netherite_iris": "Netherite Iris",
+  "item.stargate.diamond_iris": "Diamond Iris",
+  "item.stargate.gold_iris": "Gold Iris",
+  "item.stargate.iron_iris": "Iron Iris",
+  "block.stargate.naquadah_block": "Block of Naquadah"
+}

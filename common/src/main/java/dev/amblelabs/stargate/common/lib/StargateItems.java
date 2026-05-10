@@ -31,8 +31,11 @@ public class StargateItems {
     private static final Map<ResourceLocation, Item> ITEMS = new LinkedHashMap<>(); // preserve insertion order
     private static final Map<CreativeModeTab, List<TabEntry>> ITEM_TABS = new LinkedHashMap<>();
 
-    public static final Item TRINIUM_INGOT = make("trinium_ingot", new Item(props()));
     public static final Item NAQUADAH_INGOT = make("naquadah_ingot", new Item(props()));
+    public static final Item NAQUADAH_NUGGET = make("naquadah_nugget", new Item(props()));
+    public static final Item RAW_NAQUADAH = make("raw_naquadah", new Item(props()));
+
+    public static final Item TRINIUM_INGOT = make("trinium_ingot", new Item(props()));
     public static final Item CRYSTAL_INGOT = make("crystal_ingot", new Item(props()));
 
     public static final Item TRINIUM_IRIS = make("trinium_iris", new IrisItem(IrisItem.Type.TRINIUM, props()));
