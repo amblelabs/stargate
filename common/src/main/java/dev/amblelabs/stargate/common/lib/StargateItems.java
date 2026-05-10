@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.google.common.base.Suppliers;
+import dev.amblelabs.stargate.common.items.IrisItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +30,17 @@ public class StargateItems {
 
     private static final Map<ResourceLocation, Item> ITEMS = new LinkedHashMap<>(); // preserve insertion order
     private static final Map<CreativeModeTab, List<TabEntry>> ITEM_TABS = new LinkedHashMap<>();
+
+    public static final Item TRINIUM_INGOT = make("trinium_ingot", new Item(props()));
+    public static final Item NAQUADAH_INGOT = make("naquadah_ingot", new Item(props()));
+    public static final Item CRYSTAL_INGOT = make("crystal_ingot", new Item(props()));
+
+    public static final Item TRINIUM_IRIS = make("trinium_iris", new IrisItem(IrisItem.Type.TRINIUM, props()));
+    public static final Item NAQUADAH_IRIS = make("naquadah_iris", new IrisItem(IrisItem.Type.NAQUADAH, props()));
+    public static final Item NETHERITE_IRIS = make("netherite_iris", new IrisItem(IrisItem.Type.NETHERITE, props()));
+    public static final Item DIAMOND_IRIS = make("diamond_iris", new IrisItem(IrisItem.Type.DIAMOND, props()));
+    public static final Item GOLD_IRIS = make("gold_iris", new IrisItem(IrisItem.Type.GOLD, props()));
+    public static final Item IRON_IRIS = make("iron_iris", new IrisItem(IrisItem.Type.IRON, props()));
 
     public static Item.Properties props() {
         return new Item.Properties();

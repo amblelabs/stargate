@@ -1,6 +1,8 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
+import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -37,7 +39,7 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            blockEntity.useItemOn(itemStack, blockState, player, interactionHand, blockHitResult);
+            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity, itemStack, blockState, player, interactionHand, blockHitResult));
         }
 
         return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);

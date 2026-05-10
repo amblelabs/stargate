@@ -32,7 +32,7 @@ public class LogoRendererMixin {
 
         if (StargateConfig.client().useCustomMainMenu()) {
             resourceLocation = stargate$CUSTOM;
-            y -= LOGO_HEIGHT / 4;
+            y -= LOGO_HEIGHT / 4 + 4;
 
             texWidth = LOGO_WIDTH;
             texHeight = LOGO_HEIGHT;

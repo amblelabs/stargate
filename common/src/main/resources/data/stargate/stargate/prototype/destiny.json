@@ -1,0 +1,8 @@
+{
+  "states": {
+    "stargate:gecko": {
+      "model": "stargate:block/stargate",
+      "texture": "stargate:block/destiny"
+    }
+  }
+}

@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
+import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,6 +17,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super((GeoModel<StargateBlockEntity>) null);
         this.addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        this.addRenderLayer(new GlyphRenderLayer<>(this));
     }
 
     @Override
@@ -29,7 +31,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         GeckoState gecko = blockEntity.container.stateOrNull(GeckoState.state);
         if (gecko == null) return;
 
-        this.model = gecko;
+        this.model = gecko.geoModel;
         super.render(blockEntity, f, poseStack, multiBufferSource, i, j);
     }
 }
