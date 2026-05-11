@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.fabric.datagen.tag;
 
-import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.xplat.IXplatTags;
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleBlockTagProvider;
@@ -22,10 +21,14 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         this.getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(StargateBlocks.NAQUADAH_ORE);
+                .add(StargateBlocks.NAQUADAH_ORE)
+                .add(StargateBlocks.RAW_NAQUADAH_BLOCK)
+                .add(StargateBlocks.NAQUADAH_BLOCK);
 
 
         this.getOrCreateTagBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
-                .add(StargateBlocks.NAQUADAH_ORE);
+                .add(StargateBlocks.NAQUADAH_ORE)
+                .add(StargateBlocks.RAW_NAQUADAH_BLOCK)
+                .add(StargateBlocks.NAQUADAH_BLOCK);
     }
 }

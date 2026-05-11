@@ -19,6 +19,8 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     public void generateBlockStateModels(BlockModelGenerators gen) {
         gen.blockEntityModels(StargateBlocks.STARGATE_BLOCK, Blocks.IRON_BLOCK);
         gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
+        gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
+        gen.createTrivialCube(StargateBlocks.NAQUADAH_BLOCK);
     }
 
     @Override

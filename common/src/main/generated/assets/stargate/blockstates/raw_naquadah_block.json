@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "stargate:block/raw_naquadah_block"
+    }
+  }
+}

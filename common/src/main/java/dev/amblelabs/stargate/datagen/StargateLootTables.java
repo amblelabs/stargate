@@ -2,12 +2,15 @@ package dev.amblelabs.stargate.datagen;
 
 import dev.amblelabs.lib.datagen.AmbleLootTableSubProvider;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.*;
@@ -25,7 +28,11 @@ public class StargateLootTables extends AmbleLootTableSubProvider {
     @Override
     protected void makeLootTables(Map<Block, LootTable.Builder> blockTables, Map<ResourceKey<LootTable>, LootTable.Builder> lootTables) {
 
+        dropSelf(blockTables, StargateBlocks.NAQUADAH_BLOCK);
+        dropSelf(blockTables, StargateBlocks.RAW_NAQUADAH_BLOCK);
     }
+
+
 
     private void makeSlabTable(Map<Block, LootTable.Builder> lootTables, Block block) {
         var leafPool = dropThisPool(block, 1)

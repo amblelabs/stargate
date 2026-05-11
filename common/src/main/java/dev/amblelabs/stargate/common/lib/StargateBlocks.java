@@ -96,6 +96,8 @@ public class StargateBlocks {
 
     public static final Block NAQUADAH_BLOCK = blockItem("naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
+    public static final Block RAW_NAQUADAH_BLOCK = blockItem("raw_naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.RAW_GOLD_BLOCK)));
+
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
         return false;

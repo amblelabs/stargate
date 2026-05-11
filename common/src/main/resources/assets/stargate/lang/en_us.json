@@ -12,5 +12,6 @@
   "item.stargate.diamond_iris": "Diamond Iris",
   "item.stargate.gold_iris": "Gold Iris",
   "item.stargate.iron_iris": "Iron Iris",
-  "block.stargate.naquadah_block": "Block of Naquadah"
+  "block.stargate.naquadah_block": "Block of Naquadah",
+  "block.stargate.raw_naquadah_block": "Block of Raw Naquadah"
 }
