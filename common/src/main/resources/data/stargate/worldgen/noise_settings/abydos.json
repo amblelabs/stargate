@@ -161,7 +161,7 @@
           }
         }
       },
-      "argument2": "minecraft:overworld/caves/noodle"
+      "argument2": "minecraft:overworld/caves/spaghetti_2d"
     },
     "fluid_level_floodedness": {
       "type": "minecraft:constant",
@@ -215,14 +215,14 @@
                           "type": "minecraft:mul",
                           "argument1": "minecraft:overworld/depth",
                           "argument2": {
-                            "type": "minecraft:cache_2d",
-                            "argument": "minecraft:overworld/factor"
+                            "type": "minecraft:spline",
+                            "spline": 0
                           }
                         }
                       }
                     }
                   },
-                  "max": 64,
+                  "max": 40,
                   "min": -64
                 }
               }
