@@ -15,7 +15,7 @@ import org.joml.Vector3f;
 
 @Environment(value=EnvType.CLIENT)
 public class PuddleParticle
-        extends DustParticleBase<PuddleParticleOptions> {
+        extends PuddleParticleBase<PuddleParticleOptions> {
 
     protected PuddleParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, PuddleParticleOptions options, SpriteSet sprites) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed, options, sprites);
@@ -23,7 +23,8 @@ public class PuddleParticle
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
-        this.setColor(0, 0.75f, 1.0f);
+        this.setColor(options.getRed() * f, options.getGreen() * f, options.getBlue() * f);
+        this.setLoc(options.loc());
     }
 
     @Override

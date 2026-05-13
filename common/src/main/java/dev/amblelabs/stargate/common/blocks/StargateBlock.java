@@ -2,23 +2,27 @@ package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class StargateBlock extends BaseEntityBlock {
+public class StargateBlock extends BaseEntityBlock implements EntityBlock{
 
     public static final MapCodec<StargateBlock> CODEC = simpleCodec(StargateBlock::new);
 
@@ -55,6 +59,13 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new StargateBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        // Bind the ticker to your block entity type
+        return createTickerHelper(type, StargateBlockEntities.STARGATE,
+                (level1, pos, state1, be) -> be.tick(level1, pos, state1, be));
     }
 
     public static Properties defaultProps() {
