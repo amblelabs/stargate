@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.client.renderers.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,7 +16,11 @@ import software.bernie.geckolib.util.Color;
 
 public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLayer<T> {
 
-    Minecraft mc = Minecraft.getInstance();
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    private static final float ANGLE_STEP = (float) (2f * Math.PI / ALPHABET.length());
+    private static final float RADIUS = 155f; // i have no idea why that is
+
+    private final Minecraft mc = Minecraft.getInstance();
     // float rotateGlyph = 0;
 
     public GlyphRenderLayer(GeoRenderer<T> entityRendererIn) {
@@ -24,33 +29,29 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
 
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-
-        String text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; // 36 characters, will be replaced by font
-        float angleStep = (float) (2 * Math.PI / text.length());
-        float radius = 155f;
         // rotateGlyph++;
 
         poseStack.pushPose();
-        poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(0, 3.5, 0.2);
         poseStack.scale(0.02f, -0.02f, 0.02f);
 
-        for (int i = 0; i < text.length(); i++) {
-            String character = String.valueOf(text.charAt(i));
-            float theta = i * angleStep;
+        for (int i = 0; i < ALPHABET.length(); i++) {
+            String character = String.valueOf(ALPHABET.charAt(i));
+            float theta = i * ANGLE_STEP;
 
             poseStack.pushPose();
 
             // ACTUALLY rotate the characters around the center pivot
-            poseStack.mulPose(com.mojang.math.Axis.ZP.rotation(theta));
+            poseStack.mulPose(Axis.ZP.rotation(theta));
 
             // Move the first character to the top chevron
-            poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(-89.5f));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-89.5f));
 
             // TODO This rotates the symbols with the ring, implement animation timing
             // poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(rotateGlyph / 10f));
 
-            poseStack.translate(radius, 0, 0);
+            poseStack.translate(RADIUS, 0, 0);
 
             float charWidth = mc.font.width(character);
             float charHeight = 8;
@@ -74,8 +75,6 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
             poseStack.popPose();
         }
 
-
         poseStack.popPose();
     }
-
 }
