@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.blocks.DHDBlockEntity;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ public class StargateBlockEntities {
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITIES = new LinkedHashMap<>();
 
     public static final BlockEntityType<StargateBlockEntity> STARGATE = register("stargate_block_entity", StargateBlockEntity::new, StargateBlocks.STARGATE_BLOCK);
+    public static final BlockEntityType<DHDBlockEntity> DHD = register("dhd_block_entity", DHDBlockEntity::new, StargateBlocks.DHD_BLOCK);
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id,
                                                                        BiFunction<BlockPos, BlockState, T> func, Block... blocks) {

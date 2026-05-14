@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.common.lib;
 
+import dev.amblelabs.stargate.api.ecs.event.DHDBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.IrisBehavior;
@@ -37,6 +38,7 @@ public class StargateEcs {
     public static void initEvents() {
         TEventsRegistry.register(IrisEvents.type);
         TEventsRegistry.register(StargateBlockEvents.type);
+        TEventsRegistry.register(DHDBlockEvents.type);
     }
 
     public static void initBehavior() {

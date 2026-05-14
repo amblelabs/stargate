@@ -156,52 +156,46 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         long gameTime = level.getGameTime();
 
-        // --- EFFECT 1: LIQUID BACKGROUND (Less Noisy, Fluid Undulation) ---
-        // Incrementing by 0.25 reduces density overlapping and performance overhead
         for (double radius = 0.1; radius <= maxRadius; radius += 0.25) {
 
-            // Add a subtle sine-wave pulsation to background ring density over time
             double waveOffset = Math.sin((gameTime * 0.1) + radius) * 2;
             int bgCount = (int) (radius + waveOffset);
             if (bgCount < 1) bgCount = 1;
 
             int bgColor = (radius <= innerWhiteRadius)
-                    ? Color.ofRGB(0.85f, 0.85f, 1.0f).getColor() // Soft off-white
-                    : Color.ofRGB(0.05f, 0.75f, 1.0f).getColor(); // Deep, shimmering gate blue
+                    ? Color.ofRGB(0.85f, 0.85f, 1.0f).getColor()
+                    : Color.ofRGB(0.05f, 0.75f, 1.0f).getColor();
 
             for (int i = 0; i < bgCount; i++) {
                 double angle = (2 * Math.PI * i) / bgCount;
 
-                // Introduce time-based rotation so the background slowly shifts like liquid
                 double shiftedAngle = angle + (gameTime * 0.25);
 
                 double offsetX = Math.cos(shiftedAngle) * radius;
                 double offsetY = Math.sin(shiftedAngle) * radius;
                 Vector2f uv = toEventHorizonUv(offsetX, offsetY, maxRadius);
 
-                // Spreading particles slightly via the speed parameters breaks up harsh concentric noise lines
                 serverLevel.sendParticles(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
                         centerX + offsetX, centerY + offsetY, centerZ,
                         1,
-                        0, 0, 0.00, // Small random positional jitter (X, Y, Z) to blend gaps smoothly
+                        0, 0, 0,
                         0.0
                 );
             }
         }
 
-        // --- EFFECT 2: CLEAN RIPPLE (Slower, Smooth Event Horizon Wave) ---
-        int cycleLength = 35; // Increased cycle length makes the ripple travel slower and look heavier/more fluid
+        int cycleLength = 35;
         double progress = (gameTime % cycleLength) / (double) cycleLength;
 
         double rippleRadius = progress * maxRadius;
         if (rippleRadius < 0.1) rippleRadius = 0.1;
 
-        int rippleCount = (int) (rippleRadius); // Lowered particle count prevents clustering noise
+        int rippleCount = (int) (rippleRadius);
 
         int rippleColor = (rippleRadius <= innerWhiteRadius)
                 ? Color.ofRGB(1.0f, 1.0f, 1.0f).getColor()
-                : Color.ofRGB(0.2f, 0.65f, 1.0f).getColor(); // Vibrant, luminous blue highlight
+                : Color.ofRGB(0.2f, 0.65f, 1.0f).getColor();
 
         for (int i = 0; i < rippleCount; i++) {
             double angle = (2 * Math.PI * i) / rippleCount;
@@ -212,7 +206,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                     new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
                     centerX + offsetX, centerY + offsetY, centerZ,
                     1,
-                    0, 0, 0.00, // Tiny jitter keeps the expanding wave unified but organic
+                    0, 0, 0,
                     0.0
             );
         }

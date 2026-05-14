@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.datafixers.util.Pair;
+import dev.amblelabs.stargate.common.blocks.DHDBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -91,6 +92,8 @@ public class StargateBlocks {
 
     //
     public static final StargateBlock STARGATE_BLOCK = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
+
+    public static final DHDBlock DHD_BLOCK = blockItem("dhd", new DHDBlock(DHDBlock.defaultProps()));
 
     public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.ofFullCopy(Blocks.DEEPSLATE_COAL_ORE)));
 
