@@ -98,6 +98,17 @@ public class StargateBlocks {
 
     public static final Block RAW_NAQUADAH_BLOCK = blockItem("raw_naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.RAW_GOLD_BLOCK)));
 
+    public static final Block SANDSTONE_BRICKS = blockItem("sandstone_bricks", new Block(Block.Properties.ofFullCopy(Blocks.SANDSTONE)));
+
+    public static final Block SANDSTONE_BRICK_STAIRS = blockItem("sandstone_brick_stairs", new StairBlock(SANDSTONE_BRICKS.defaultBlockState(), Block.Properties.ofFullCopy(Blocks.SANDSTONE_STAIRS)) {});
+
+    public static final Block SANDSTONE_BRICK_SLAB = blockItem("sandstone_brick_slab", new SlabBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE_SLAB)));
+
+    public static final Block SANDSTONE_BRICK_WALL = blockItem("sandstone_brick_wall", new WallBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE_WALL)));
+
+    public static final Block DRY_GRASS = blockItem("dry_grass", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
+
+    public static final Block DRY_BUSH = blockItem("dry_bush", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
         return false;

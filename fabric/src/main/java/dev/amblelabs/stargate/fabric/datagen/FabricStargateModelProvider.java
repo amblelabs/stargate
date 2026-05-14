@@ -21,6 +21,14 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
         gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
         gen.createTrivialCube(StargateBlocks.NAQUADAH_BLOCK);
+
+        gen.family(StargateBlocks.SANDSTONE_BRICKS)
+                .slab(StargateBlocks.SANDSTONE_BRICK_SLAB)
+                .stairs(StargateBlocks.SANDSTONE_BRICK_STAIRS)
+                .wall(StargateBlocks.SANDSTONE_BRICK_WALL);
+
+        gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_BUSH, BlockModelGenerators.TintState.NOT_TINTED);
+        gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_GRASS, BlockModelGenerators.TintState.NOT_TINTED);
     }
 
     @Override

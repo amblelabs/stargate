@@ -30,5 +30,15 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
                 .add(StargateBlocks.NAQUADAH_ORE)
                 .add(StargateBlocks.RAW_NAQUADAH_BLOCK)
                 .add(StargateBlocks.NAQUADAH_BLOCK);
+
+
+        this.getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
+                .add(StargateBlocks.SANDSTONE_BRICKS)
+                .add(StargateBlocks.SANDSTONE_BRICK_SLAB)
+                .add(StargateBlocks.SANDSTONE_BRICK_STAIRS)
+                .add(StargateBlocks.SANDSTONE_BRICK_WALL);
+
+        this.getOrCreateTagBuilder(BlockTags.WALLS)
+                .add(StargateBlocks.SANDSTONE_BRICK_WALL);
     }
 }
