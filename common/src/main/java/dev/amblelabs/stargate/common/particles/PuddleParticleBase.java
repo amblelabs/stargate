@@ -1,11 +1,17 @@
 package dev.amblelabs.stargate.common.particles;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.particles.ScalableParticleOptionsBase;
 import net.minecraft.util.Mth;
 
@@ -20,15 +26,12 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
         float f = this.random.nextFloat() * 0.4f + 0.6f;
         this.quadSize = 0.18f * f;
         this.setSpriteFromAge(sprites);
-    }
-
-    protected float randomizeColor(float coordMultiplier, float multiplier) {
-        return (this.random.nextFloat() * 0.2f + 0.8f) * coordMultiplier * multiplier;
+        this.lifetime += 100;
     }
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
     @Override
     public void tick() {
         super.tick();
+        this.setSpriteFromAge(this.sprites);
     }
 }
 

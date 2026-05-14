@@ -161,7 +161,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
             // Add a subtle sine-wave pulsation to background ring density over time
             double waveOffset = Math.sin((gameTime * 0.1) + radius) * 2;
-            int bgCount = (int) (radius * 12 + waveOffset);
+            int bgCount = (int) (radius + waveOffset);
             if (bgCount < 1) bgCount = 1;
 
             int bgColor = (radius <= innerWhiteRadius)
@@ -172,7 +172,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 double angle = (2 * Math.PI * i) / bgCount;
 
                 // Introduce time-based rotation so the background slowly shifts like liquid
-                double shiftedAngle = angle + (gameTime * 0.5);
+                double shiftedAngle = angle + (gameTime * 0.25);
 
                 double offsetX = Math.cos(shiftedAngle) * radius;
                 double offsetY = Math.sin(shiftedAngle) * radius;
@@ -196,7 +196,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         double rippleRadius = progress * maxRadius;
         if (rippleRadius < 0.1) rippleRadius = 0.1;
 
-        int rippleCount = (int) (rippleRadius * 16); // Lowered particle count prevents clustering noise
+        int rippleCount = (int) (rippleRadius); // Lowered particle count prevents clustering noise
 
         int rippleColor = (rippleRadius <= innerWhiteRadius)
                 ? Color.ofRGB(1.0f, 1.0f, 1.0f).getColor()
