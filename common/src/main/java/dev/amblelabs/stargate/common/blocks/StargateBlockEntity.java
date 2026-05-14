@@ -145,6 +145,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) return;
 
+
         BlockPos centerPos = blockPos.above().above().above();
         double maxRadius = 2.6d;
         double innerWhiteRadius = 0.8d;

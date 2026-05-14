@@ -27,6 +27,7 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
         this.quadSize = 0.18f * f;
         this.setSpriteFromAge(sprites);
         this.lifetime += 100;
+        this.setAlpha(0.5f);
     }
 
     @Override
@@ -43,6 +44,7 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
     public void tick() {
         super.tick();
         this.setSpriteFromAge(this.sprites);
+        this.scale(0.999f);
     }
 }
 
