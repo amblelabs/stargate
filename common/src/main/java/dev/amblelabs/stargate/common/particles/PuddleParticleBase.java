@@ -17,6 +17,8 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
     protected PuddleParticleBase(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, T options, SpriteSet sprites) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.sprites = sprites;
+        float f = this.random.nextFloat() * 0.4f + 0.6f;
+        this.quadSize = 0.18f * f;
         this.setSpriteFromAge(sprites);
     }
 

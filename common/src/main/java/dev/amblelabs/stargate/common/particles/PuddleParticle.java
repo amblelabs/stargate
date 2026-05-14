@@ -23,7 +23,6 @@ public class PuddleParticle
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
-        this.setColor(options.getRed() * f, options.getGreen() * f, options.getBlue() * f);
         this.setLoc(options.loc());
     }
 
