@@ -160,8 +160,4 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
             );
         }
     }
-
-
-
-
 }
