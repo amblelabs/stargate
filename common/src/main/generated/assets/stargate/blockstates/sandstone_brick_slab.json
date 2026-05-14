@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "stargate:block/sandstone_brick_slab"
+    },
+    "type=double": {
+      "model": "stargate:block/sandstone_bricks"
+    },
+    "type=top": {
+      "model": "stargate:block/sandstone_brick_slab_top"
+    }
+  }
+}
