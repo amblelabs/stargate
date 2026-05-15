@@ -1,0 +1,17 @@
+{
+  "name": "book.stargate.stellar_map.gates.main",
+  "description": "book.stargate.stellar_map.gates.main.desc",
+  "icon": "stargate:toaster",
+  "x": 0,
+  "y": 0,
+  "category": "stargate:gates",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "book.stargate.stellar_map.gates.main.0",
+      "use_markdown_title": true,
+      "show_title_separator": true,
+      "text": "book.stargate.stellar_map.gates.main.0.text"
+    }
+  ]
+}
