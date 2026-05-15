@@ -56,6 +56,7 @@ public class StargateConfig {
         return Objects.requireNonNull(client, "accessed config too early");
     }
 
+    @SuppressWarnings("unused") // will be used later
     public static ServerConfigAccess server() {
         return Objects.requireNonNull(server, "accessed config too early");
     }
@@ -91,7 +92,7 @@ public class StargateConfig {
     }
 
     @NotNull
-    @SuppressWarnings({"DataFlowIssue", "NullableProblems"})
+    @SuppressWarnings({"DataFlowIssue", "NullableProblems", "SameReturnValue"})
     private static <T> T trustMeBro() {
         return null;
     }

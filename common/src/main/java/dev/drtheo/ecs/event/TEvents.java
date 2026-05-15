@@ -2,11 +2,13 @@ package dev.drtheo.ecs.event;
 
 import dev.drtheo.ecs.behavior.TBehavior;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 
 /**
  * Base interface for all event groups.
+ *
  * @author DrTheodor (DrTheo_)
  */
 public interface TEvents {
@@ -29,7 +31,7 @@ public interface TEvents {
      * @param <T> the event group.
      * @param <R> the event result type.
      */
-    static <T extends TEvents, R> R handle(TEvent.Result<T, R> event) {
+    static <T extends TEvents, R> @UnknownNullability R handle(TEvent.Result<T, R> event) {
         event.type().handle(event);
         return event.result();
     }

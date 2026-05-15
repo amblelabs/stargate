@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class RegisterClientStuff {
 
+    @SuppressWarnings("EmptyMethod")
     public static void init() {
         var x = IClientXplatAbstractions.INSTANCE;
         x.registerSkyRenderer(ResourceKey.create(Registries.DIMENSION, StargateAPI.modLoc("abydos")), new AbydosSkyRenderer());

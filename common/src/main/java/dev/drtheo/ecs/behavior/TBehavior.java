@@ -3,6 +3,7 @@ package dev.drtheo.ecs.behavior;
 import dev.drtheo.ecs.event.TEvent;
 import dev.drtheo.ecs.event.TEvents;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Base interface for all behaviors (classes that handle logic).
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Contract;
  * <br>
  * If you want to obtain a reference to another {@link TBehavior}, either use the singleton pattern (not recommended),
  * or use DI with {@link Resolve} and {@link #behavior()}.
+ *
  * @author DrTheodor (DrTheo_)
  */
 public interface TBehavior {
@@ -20,6 +22,7 @@ public interface TBehavior {
      * @return Always {@code null}.
      */
     @Contract(pure = true)
+    @SuppressWarnings({"SameReturnValue", "DataFlowIssue"})
     default <T> T behavior() {
         return null;
     }
@@ -34,7 +37,7 @@ public interface TBehavior {
     /**
      * Redirects to {@link TEvents#handle(TEvent.Result)}.
      */
-    default <T extends TEvents, R> R handle(TEvent.Result<T, R> event) {
+    default <T extends TEvents, R> @UnknownNullability R handle(TEvent.Result<T, R> event) {
         return TEvents.handle(event);
     }
 }

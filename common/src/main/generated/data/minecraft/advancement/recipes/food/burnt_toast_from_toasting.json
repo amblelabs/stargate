@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:burnt_toast_from_toasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_toast": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stargate:toast"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_toast"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:burnt_toast_from_toasting"
+    ]
+  }
+}

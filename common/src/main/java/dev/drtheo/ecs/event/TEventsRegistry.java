@@ -12,6 +12,8 @@ import java.util.Set;
 /**
  * Registry for all {@link TEvents} (event groups, not {@link TEvent}).
  * All elements must be registered and the registry should be frozen <i>before</i> registering {@link TBehavior}s.
+ *
+ * @author DrTheodor (DrTheo_)
  */
 public class TEventsRegistry {
 

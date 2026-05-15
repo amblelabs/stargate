@@ -2,6 +2,7 @@ package dev.drtheo.ecs.event;
 
 import dev.drtheo.ecs.state.StateResolveError;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.function.Supplier;
 
@@ -111,7 +112,7 @@ public interface TEvent<T extends TEvents> {
      * @author DrTheodor (DrTheo_)
      */
     interface Result<T extends TEvents, R> extends TEvent<T> {
-        R result();
+        @UnknownNullability R result();
 
         @Override
         void handleAll(Iterable<T> subscribed);

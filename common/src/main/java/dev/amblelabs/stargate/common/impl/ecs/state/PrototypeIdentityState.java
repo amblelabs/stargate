@@ -1,21 +1,25 @@
 package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
+import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.util.NbtUtil;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
-import dev.drtheo.ecs.state.NbtSerializer;
-import dev.drtheo.ecs.state.TState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public record PrototypeIdentityState(ResourceLocation key, PrototypeRegistryEntry prototype) implements TState<PrototypeIdentityState>, NbtSerializer {
+import java.util.Objects;
 
-    public static final TState.NbtBacked<PrototypeIdentityState> state = new NbtBacked<>(StargateAPI.modLoc("identity"), 0) {
+public record PrototypeIdentityState(ResourceLocation key, PrototypeRegistryEntry prototype) implements NbtState<PrototypeIdentityState> {
+
+    public static final Type<PrototypeIdentityState> state = new Type<>(StargateAPI.modLoc("identity"), 0) {
         @Override
-        public PrototypeIdentityState fromNbt(CompoundTag nbt, boolean isClient) {
-            ResourceLocation loc = ResourceLocation.parse(nbt.getString("prototype"));
+        public PrototypeIdentityState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
+            ResourceLocation loc = Objects.requireNonNull(NbtUtil.getLoc(nbt, "prototype"));
+            PrototypeRegistryEntry prototype = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(loc));
 
-            PrototypeRegistryEntry prototype = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(loc);
             return new PrototypeIdentityState(loc, prototype);
         }
     };
@@ -26,7 +30,7 @@ public record PrototypeIdentityState(ResourceLocation key, PrototypeRegistryEntr
     }
 
     @Override
-    public void toNbt(CompoundTag nbt, boolean isClient) {
+    public void toNbt(CompoundTag nbt, NbtSerializer.Context context) {
         nbt.putString("prototype", this.key.toString());
     }
 }

@@ -1,6 +1,8 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
@@ -66,59 +68,17 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        CompoundTag states = new CompoundTag();
-
-        // FIXME: this only works once. by this i mean diffing.
-        // FIXME FIXME: i have no idea what i was talking about. by this i mean all this.
-        this.container.forEachState((i, state) -> stateToNbt(states, i, state, this.level.isClientSide()));
-
-        nbt.put(STATES_TAG, states);
+        stargate.toNbt(nbt, NbtSerializer.Context.fromLevel(level));
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        boolean fix = false;
-        boolean isClient = this.level != null && this.level.isClientSide();
-
-        CompoundTag states = nbt.getCompound(STATES_TAG);
-
-        for (String key : states.getAllKeys()) {
-            if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof TState.NbtBacked<?> serializable) {
-                Tag state = states.get(key);
-
-                if (state instanceof CompoundTag compound) {
-                    this.container.addState(serializable.decode(fix ? serializable.update(compound, 0) : compound, isClient));
-                } else {
-                    this.container.removeState(serializable);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    private <T extends TState<T>> void stateToNbt(CompoundTag nbt, int i, @Nullable TState<T> state, boolean isClient) {
-        if (state == null) {
-            // do the diffing only if we're serializing for client
-            if (isClient) nbt.put(StargateEcs.States.get(i).id().toString(), ByteTag.ZERO);
-
-            return;
-        }
-
-        TState.Type<T> type = state.type();
-
-        if (!(type instanceof TState.NbtBacked backed))
-            return;
-
-        //noinspection unchecked
-        CompoundTag tag = backed.encode(state, isClient);
-        if (tag == null) return;
-
-        nbt.put(type.id().toString(), tag);
+        stargate.fromNbt(nbt, NbtDeserializer.Context.fromLevel(level));
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        TEvents.handle(new StargateBlockEvents.RegisterControllers(this, controllers));
+        TEvents.handle(new StargateBlockEvents.RegisterControllers(this.stargate, this, controllers));
     }
 
     @Override

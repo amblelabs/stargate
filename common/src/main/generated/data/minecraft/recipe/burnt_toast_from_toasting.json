@@ -1,0 +1,12 @@
+{
+  "type": "stargate:toasting",
+  "category": "food",
+  "cookingtime": 20,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "stargate:toast"
+  },
+  "result": {
+    "id": "stargate:burnt_toast"
+  }
+}

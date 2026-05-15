@@ -1,5 +1,1 @@
-// 1.21.1	2026-05-14T22:25:18.798340347	Stargate: Sojourner/Tags for minecraft:block
-6e5239e66387dacfd26aac5963ab9fbef692fd9d data/minecraft/tags/block/needs_diamond_tool.json
-135c7797c0c05f7449b75c3819df8bdc7416957c data/minecraft/tags/block/needs_stone_tool.json
-6e5239e66387dacfd26aac5963ab9fbef692fd9d data/minecraft/tags/block/mineable/pickaxe.json
-113037755d161b4cfbeb26c4955d85eb74273404 data/minecraft/tags/block/walls.json
+// 1.21.1	2026-05-15T23:02:23.65766624	Stargate: Sojourner/Tags for minecraft:block

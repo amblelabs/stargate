@@ -8,7 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LogoRenderer.class, priority = 1001)
 public class LogoRendererMixin {
@@ -20,33 +22,24 @@ public class LogoRendererMixin {
     private static final ResourceLocation stargate$CUSTOM = StargateAPI.modLoc("textures/gui/title/logo_wide.png");
 
     @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 0))
-    public void blit(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
-        int x = i;
-        int y = j;
-
-        int texWidth = m;
-        int texHeight = n;
-
-        int w = k;
-        int h = l;
-
+    public void blit(GuiGraphics instance, ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight) {
         if (StargateConfig.client().useCustomMainMenu()) {
-            resourceLocation = stargate$CUSTOM;
-            y -= LOGO_HEIGHT / 4 + 4;
+            atlasLocation = stargate$CUSTOM;
+            y -= LOGO_HEIGHT / 4 - 4;
 
-            texWidth = LOGO_WIDTH;
-            texHeight = LOGO_HEIGHT;
+            textureWidth = LOGO_WIDTH;
+            textureHeight = LOGO_HEIGHT;
 
-            w = LOGO_WIDTH;
-            h = LOGO_HEIGHT;
+            width = LOGO_WIDTH;
+            height = LOGO_HEIGHT;
         }
 
-        instance.blit(resourceLocation, x, y, f, g, w, h, texWidth, texHeight);
+        instance.blit(atlasLocation, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
     }
 
-    @Redirect(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 1))
-    public void blitEdition(GuiGraphics instance, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n) {
-        if (!StargateConfig.client().useCustomMainMenu())
-            instance.blit(resourceLocation, i, j, f, g, k, l, m, n);
+    @Inject(method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIFFIIII)V", ordinal = 1), cancellable = true)
+    public void blitEdition(GuiGraphics guiGraphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
+        if (StargateConfig.client().useCustomMainMenu())
+            ci.cancel();
     }
 }

@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
 import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.amblelabs.stargate.common.items.IrisItem;
@@ -21,39 +22,38 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
     public static final RawAnimation IRIS_CLOSE = RawAnimation.begin().thenPlay("IRIS_CLOSE");
 
     public void damage(StargateBlockEntity stargate, int amount) {
-        IrisState iris = stargate.container.state(IrisState.state);
+        IrisState iris = stargate.stargate.state(IrisState.state);
 
         iris.durability -= amount;
 
         if (iris.durability <= 0) {
             handle(new IrisEvents.Broken(stargate, iris));
-            stargate.container.removeState(IrisState.state);
+            stargate.stargate.removeState(IrisState.state);
         }
 
         stargate.setChanged();
     }
 
     @Override
-    public void stargate$useItem(StargateBlockEntity stargate, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (itemStack.isEmpty()) {
-            IrisState iris = stargate.container.state(IrisState.state);
-            iris.closed = !iris.closed;
-            stargate.setChanged();
-
-            return;
-        }
-
-        if (itemStack.getItem() instanceof IrisItem iris && !stargate.container.hasState(IrisState.state)) {
-            stargate.container.addState(iris.toState());
+    public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        if (itemStack.getItem() instanceof IrisItem iris && !stargate.hasState(IrisState.state)) {
+            stargate.addState(iris.toState());
             player.getItemInHand(interactionHand).consume(1, player);
         }
     }
 
     @Override
-    public void stargate$registerControllers(StargateBlockEntity stargate, AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(stargate, "Iris",
+    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) {
+        IrisState iris = stargate.state(IrisState.state);
+        iris.closed = !iris.closed;
+        blockEntity.setChanged();
+    }
+
+    @Override
+    public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(blockEntity, "Iris",
                 anim -> {
-                    IrisState state = stargate.container.stateOrNull(IrisState.state);
+                    IrisState state = stargate.stateOrNull(IrisState.state);
                     return anim.setAndContinue(state == null || !state.closed ? IRIS_OPEN : IRIS_CLOSE);
                 }));
     }

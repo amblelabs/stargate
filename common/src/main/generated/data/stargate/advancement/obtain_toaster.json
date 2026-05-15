@@ -1,0 +1,35 @@
+{
+  "parent": "stargate:root",
+  "criteria": {
+    "obtain_toaster": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stargate:toaster"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.stargate.description.obtain_toaster"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "stargate:toaster"
+    },
+    "title": {
+      "translate": "achievement.stargate.title.obtain_toaster"
+    }
+  },
+  "requirements": [
+    [
+      "obtain_toaster"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

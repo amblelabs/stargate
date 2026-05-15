@@ -14,18 +14,23 @@ import java.util.function.Function;
 
 public class FabricPacketHandler {
 
+    @SuppressWarnings("EmptyMethod")
     public static void init() {
-
+        // will be used later
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Environment(EnvType.CLIENT)
     public static void initClient() {
+        // will be used later
     }
 
+    @SuppressWarnings("unused") // will be used later
     private static <T extends CustomPacketPayload> ServerPlayNetworking.PlayPayloadHandler<T> c2s(Function<T, C2SPacketHandler> handler) {
         return (payload, context) -> context.server().execute(() -> handler.apply(payload).handle(context.server(), context.player()));
     }
 
+    @SuppressWarnings("unused") // will be used later
     @Environment(EnvType.CLIENT)
     private static <T extends CustomPacketPayload> ClientPlayNetworking.PlayPayloadHandler<T> s2c(Function<T, S2CPacketHandler> handler) {
         return (payload, context) -> handler.apply(payload).handle(context.client(), context.player());

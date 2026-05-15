@@ -1,10 +1,11 @@
 package dev.amblelabs.stargate.client.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
+import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.util.NbtUtil;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
-import dev.drtheo.ecs.state.NbtSerializer;
-import dev.drtheo.ecs.state.TState;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
@@ -13,18 +14,18 @@ import software.bernie.geckolib.model.GeoModel;
 
 import java.util.Objects;
 
-public class GeckoState implements TState<GeckoState>, NbtSerializer {
+public class GeckoState implements NbtState<GeckoState> {
 
     private static final Int2ObjectMap<GeoModel<StargateBlockEntity>> MODEL_CACHE = new Int2ObjectOpenHashMap<>();
 
-    public static final TState.Type<GeckoState> state = new NbtBacked<>(StargateAPI.modLoc("gecko"), 0) {
+    public static final Type<GeckoState> state = new Type<>(StargateAPI.modLoc("gecko"), 0) {
         @Override
-        public GeckoState fromNbt(CompoundTag nbt, boolean isClient) {
+        public GeckoState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             if (nbt.contains("path", CompoundTag.TAG_STRING))
-                return new GeckoState(NbtUtil.getLoc(nbt, "path"));
+                return new GeckoState(Objects.requireNonNull(NbtUtil.getLoc(nbt, "path")));
 
-            ResourceLocation model = NbtUtil.getLoc(nbt, "model");
-            ResourceLocation texture = NbtUtil.getLoc(nbt, "texture");
+            ResourceLocation model = Objects.requireNonNull(NbtUtil.getLoc(nbt, "model"));
+            ResourceLocation texture = Objects.requireNonNull(NbtUtil.getLoc(nbt, "texture"));
             ResourceLocation animation = NbtUtil.getLoc(nbt, "animation", model);
 
             return new GeckoState(model, texture, animation);
@@ -74,7 +75,7 @@ public class GeckoState implements TState<GeckoState>, NbtSerializer {
     }
 
     @Override
-    public void toNbt(CompoundTag nbt, boolean isClient) {
+    public void toNbt(CompoundTag nbt, NbtSerializer.Context context) {
         nbt.putString("model", this.model.toString());
         nbt.putString("texture", this.texture.toString());
 

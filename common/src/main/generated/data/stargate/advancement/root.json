@@ -1,0 +1,35 @@
+{
+  "criteria": {
+    "root": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stargate:stargate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "stargate:textures/block/raw_naquadah_block.png",
+    "description": {
+      "translate": "achievement.stargate.description.root"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stargate:stargate"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "achievement.stargate.title.root"
+    }
+  },
+  "requirements": [
+    [
+      "root"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

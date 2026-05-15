@@ -4,6 +4,7 @@ import dev.amblelabs.stargate.client.lib.StargateClientEcs;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.fabric.client.RegisterClientStuff;
+import dev.amblelabs.stargate.fabric.network.FabricPacketHandler;
 import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -24,6 +25,8 @@ public class FabricStargateClientInit implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        FabricPacketHandler.initClient();
+
 //        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);
 
         RegisterClientStuff.init();

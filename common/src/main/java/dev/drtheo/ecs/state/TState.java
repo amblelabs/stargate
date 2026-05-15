@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,7 +27,7 @@ public interface TState<Self extends TState<Self>> {
      *
      * @param <T> the state.
      */
-    abstract class NbtBacked<T extends TState<T> & NbtSerializer> extends SerializableType<T, CompoundTag> implements NbtDeserializer<T> {
+    abstract class NbtBacked<T extends TState<T> & NbtSerializer<EncodeContext>, EncodeContext, DecodeContext> extends SerializableType<T, CompoundTag, EncodeContext, DecodeContext> implements NbtDeserializer<T, DecodeContext> {
 
         public static final String VERSION_TAG = "DataVersion";
 
@@ -36,7 +35,7 @@ public interface TState<Self extends TState<Self>> {
         private final Fix[] fixes;
 
         @Contract(pure = true)
-        public NbtBacked(@NotNull ResourceLocation id, int version, Fix... fix) {
+        public NbtBacked(ResourceLocation id, int version, Fix... fix) {
             super(id);
 
             this.version = version;
@@ -45,9 +44,9 @@ public interface TState<Self extends TState<Self>> {
 
         @Override
         @Contract(pure = true)
-        public @Nullable CompoundTag encode(@NotNull T t, boolean isClient) {
+        public @Nullable CompoundTag encode(T t, EncodeContext context) {
             CompoundTag nbt = new CompoundTag();
-            t.toNbt(nbt, isClient);
+            t.toNbt(nbt, context);
 
             nbt.putInt(VERSION_TAG, this.version);
             return nbt;
@@ -55,9 +54,9 @@ public interface TState<Self extends TState<Self>> {
 
         @Override
         @Contract(pure = true)
-        public @NotNull T decode(@NotNull CompoundTag element, boolean isClient) {
+        public T decode(CompoundTag element, DecodeContext context) {
             try {
-                return this.fromNbt(element, isClient);
+                return this.fromNbt(element, context);
             } catch (Exception e) {
                 TEventsRegistry.LOGGER.info(element.toString());
                 throw e;
@@ -95,7 +94,7 @@ public interface TState<Self extends TState<Self>> {
      * @param <T> the state.
      * @see NbtBacked
      */
-    abstract class SerializableType<T extends TState<T>, S> extends Type<T> {
+    abstract class SerializableType<T extends TState<T>, S, EncodeContext, DecodeContext> extends Type<T> {
 
         /**
          * Constructs a new state type with the provided {@link ResourceLocation}, which is later used for registration.
@@ -103,7 +102,7 @@ public interface TState<Self extends TState<Self>> {
          * @param id the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public SerializableType(@NotNull ResourceLocation id) {
+        public SerializableType(ResourceLocation id) {
             super(id);
         }
 
@@ -111,21 +110,21 @@ public interface TState<Self extends TState<Self>> {
          * Decodes the object and creates a new instance.
          *
          * @param s serialized data.
-         * @param isClient whether the deserialization is running on client.
+         * @param context whether the deserialization is running on client.
          * @return a new {@link T} instance, containing all the deserialized data.
          */
         @Contract(pure = true)
-        public abstract @NotNull T decode(@NotNull S s, boolean isClient);
+        public abstract T decode(S s, DecodeContext context);
 
         /**
          * Encodes the object.
          *
          * @param t the unserialized state.
-         * @param isClient whether the serialization is running on client.
+         * @param context whether the serialization is running on client.
          * @return a new {@link S} instance, containing all the serialized data, or {@code null}, to skip serialization.
          */
         @Contract(pure = true)
-        public abstract @Nullable S encode(@NotNull T t, boolean isClient);
+        public abstract @Nullable S encode(T t, EncodeContext context);
     }
 
     /**
@@ -137,7 +136,7 @@ public interface TState<Self extends TState<Self>> {
     class Type<T extends TState<T>> {
 
         protected int index = -1;
-        protected final @NotNull ResourceLocation id;
+        protected final ResourceLocation id;
 
         /**
          * Constructs a new state type with the provided {@link ResourceLocation}, which is later used for registration.
@@ -145,7 +144,7 @@ public interface TState<Self extends TState<Self>> {
          * @param id the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public Type(@NotNull ResourceLocation id) {
+        public Type(ResourceLocation id) {
             this.id = id;
         }
 
@@ -153,7 +152,7 @@ public interface TState<Self extends TState<Self>> {
          * @return the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public @NotNull ResourceLocation id() {
+        public ResourceLocation id() {
             return id;
         }
 

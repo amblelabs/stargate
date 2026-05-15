@@ -27,9 +27,11 @@ public class StargateClientEcs {
         States.register(GeckoState.state);
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void initEvents() {
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void initBehavior() {
     }
 }

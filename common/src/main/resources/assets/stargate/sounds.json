@@ -1,0 +1,20 @@
+{
+  "block.toaster.ding": {
+    "subtitle": "block.toaster.ding",
+    "sounds": [
+      "stargate:toaster/ding"
+    ]
+  },
+  "block.toaster.load": {
+    "subtitle": "block.toaster.load",
+    "sounds": [
+      "stargate:toaster/load"
+    ]
+  },
+  "block.toaster.active": {
+    "subtitle": "block.toaster.active",
+    "sounds": [
+      "stargate:toaster/toaster_active"
+    ]
+  }
+}
