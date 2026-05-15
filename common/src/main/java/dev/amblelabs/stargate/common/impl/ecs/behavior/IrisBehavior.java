@@ -36,18 +36,17 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
 
     @Override
     public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (itemStack.isEmpty()) {
-            IrisState iris = stargate.state(IrisState.state);
-            iris.closed = !iris.closed;
-            blockEntity.setChanged();
-
-            return;
-        }
-
         if (itemStack.getItem() instanceof IrisItem iris && !stargate.hasState(IrisState.state)) {
             stargate.addState(iris.toState());
             player.getItemInHand(interactionHand).consume(1, player);
         }
+    }
+
+    @Override
+    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) {
+        IrisState iris = stargate.state(IrisState.state);
+        iris.closed = !iris.closed;
+        blockEntity.setChanged();
     }
 
     @Override

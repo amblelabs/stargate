@@ -28,6 +28,11 @@ public class IrisState implements NbtState<IrisState> {
 
     public boolean closed;
 
+    /**
+     * Whether the iris is busy, that is, whether it is currently in progress of closing or opening.
+     */
+    public boolean busy;
+
     public IrisState(ResourceLocation type, int durability, boolean closed) {
         this.type = type;
         this.durability = durability;
