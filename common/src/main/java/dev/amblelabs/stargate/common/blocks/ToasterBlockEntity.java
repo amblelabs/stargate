@@ -62,7 +62,8 @@ public class ToasterBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        this.heldItem = ItemStack.parse(registries, tag.getCompound(TAG_ITEM)).orElse(ItemStack.EMPTY);
+        if (tag.contains(TAG_ITEM, CompoundTag.TAG_COMPOUND))
+            this.heldItem = ItemStack.parse(registries, tag.getCompound(TAG_ITEM)).orElse(ItemStack.EMPTY);
 
         if (tag.contains(TAG_COOKING_PROGRESS, CompoundTag.TAG_INT))
             this.cookingProgress = tag.getInt(TAG_COOKING_PROGRESS);
@@ -73,7 +74,8 @@ public class ToasterBlockEntity extends BlockEntity {
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put(TAG_ITEM, this.heldItem.save(registries, new CompoundTag()));
+        if (!this.heldItem.isEmpty())
+            tag.put(TAG_ITEM, this.heldItem.save(registries, new CompoundTag()));
 
         tag.putInt(TAG_COOKING_PROGRESS, this.cookingProgress);
         tag.putInt(TAG_COOKING_TIME, this.cookingTime);
