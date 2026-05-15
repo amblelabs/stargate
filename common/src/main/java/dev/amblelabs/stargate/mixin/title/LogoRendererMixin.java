@@ -25,7 +25,7 @@ public class LogoRendererMixin {
     public void blit(GuiGraphics instance, ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight) {
         if (StargateConfig.client().useCustomMainMenu()) {
             atlasLocation = stargate$CUSTOM;
-            y -= LOGO_HEIGHT / 4 + 8;
+            y -= LOGO_HEIGHT / 4 - 4;
 
             textureWidth = LOGO_WIDTH;
             textureHeight = LOGO_HEIGHT;
