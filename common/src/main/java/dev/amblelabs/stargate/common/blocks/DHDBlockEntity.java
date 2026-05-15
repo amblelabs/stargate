@@ -57,4 +57,12 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity {
         BlockState state = getBlockState();
         level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
     }
+
+    public String getModelName() {
+        return "dhd";
+    }
+
+    public String getTextureName() {
+        return "dhd";
+    }
 }

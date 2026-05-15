@@ -33,7 +33,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
             @Override
             protected RenderType getRenderType(StargateBlockEntity animatable, @Nullable MultiBufferSource bufferSource) {
                 ResourceLocation texture = AutoGlowingTexture.getEmissiveResource(getTextureResource(animatable));
-                return RenderType.eyes(texture);
+                return RenderType.beaconBeam(texture, true);
             }
         });
 
