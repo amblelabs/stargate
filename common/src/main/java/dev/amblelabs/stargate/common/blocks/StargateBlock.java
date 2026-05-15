@@ -5,6 +5,8 @@ import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
+import dev.amblelabs.stargate.common.lib.StargateEcs;
+import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -89,7 +91,6 @@ public class StargateBlock extends BaseEntityBlock implements EntityBlock{
     @Override
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            blockEntity.onPlace(blockState, level, blockPos, blockState2, bl);
             // FIXME: this wont work properly in multiplayer, client code must handle the PrototypeIdentityState and compensate.
             PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
 
@@ -110,7 +111,6 @@ public class StargateBlock extends BaseEntityBlock implements EntityBlock{
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Bind the ticker to your block entity type
         return createTickerHelper(type, StargateBlockEntities.STARGATE,
                 (level1, pos, state1, be) -> be.tick(level1, pos, state1, be));
     }

@@ -95,13 +95,11 @@ public class StargateBlocks {
 
     public static final ToasterBlock TOASTER = blockItem("toaster", new ToasterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 
-    public static final Block NAQUADAH_BLOCK = blockItem("naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_BLOCK)));
+    public static final Block NAQUADAH_BLOCK = blockItem("naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
     public static final DHDBlock DHD_BLOCK = blockItem("dhd", new DHDBlock(DHDBlock.defaultProps()));
 
     public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.ofFullCopy(Blocks.DEEPSLATE_COAL_ORE)));
-
-    public static final Block NAQUADAH_BLOCK = blockItem("naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
     public static final Block RAW_NAQUADAH_BLOCK = blockItem("raw_naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.RAW_GOLD_BLOCK)));
 

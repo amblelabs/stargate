@@ -4,6 +4,7 @@ import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
@@ -39,11 +40,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker {
 
-    public static final String STATES_TAG = "States";
-
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public final TStateContainer container = StargateEcs.States.createArrayHolder();
+    public final Stargate stargate = new Stargate();
 
     public StargateBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
@@ -51,14 +50,6 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     public StargateBlockEntity(BlockPos blockPos, BlockState blockState) {
         this(StargateBlockEntities.STARGATE, blockPos, blockState);
-    }
-
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        // FIXME: this wont work properly in multiplayer, client code must handle the PrototypeIdentityState and compensate.
-        PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().get().value();
-
-        entry.make(StargateEcs.States, this.container, level.isClientSide());
-        this.setChanged(); // TODO: figure out if this is even needed
     }
 
     @Override
