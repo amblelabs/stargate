@@ -23,7 +23,7 @@ public class StargateCreativeTabs {
     private static final Map<ResourceLocation, CreativeModeTab> TABS = new LinkedHashMap<>();
 
     public static final CreativeModeTab STARGATE = register("main", CreativeModeTab.builder(CreativeModeTab.Row.TOP, 7)
-            .icon(() -> new ItemStack(StargateBlocks.STARGATE_BLOCK)));
+            .icon(() -> new ItemStack(StargateBlocks.STARGATE)));
 
     @SuppressWarnings("SameParameterValue")
     private static CreativeModeTab register(String name, CreativeModeTab.Builder tabBuilder) {

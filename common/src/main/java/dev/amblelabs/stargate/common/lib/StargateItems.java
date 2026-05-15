@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.common.lib;
 import com.google.common.base.Suppliers;
 import dev.amblelabs.stargate.common.items.IrisItem;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +31,20 @@ public class StargateItems {
 
     private static final Map<ResourceLocation, Item> ITEMS = new LinkedHashMap<>(); // preserve insertion order
     private static final Map<CreativeModeTab, List<TabEntry>> ITEM_TABS = new LinkedHashMap<>();
+
+    public static final Item TOAST = make("toast", new Item(props().food(
+            new FoodProperties.Builder().nutrition(2)
+                    .saturationModifier(0.1f)
+                    .alwaysEdible()
+                    .build()
+    )));
+
+    public static final Item BURNT_TOAST = make("burnt_toast", new Item(props().food(
+            new FoodProperties.Builder().nutrition(2)
+                    .saturationModifier(0.1f)
+                    .alwaysEdible()
+                    .build()
+    )));
 
     public static final Item TRINIUM_INGOT = make("trinium_ingot", new Item(props()));
     public static final Item NAQUADAH_INGOT = make("naquadah_ingot", new Item(props()));

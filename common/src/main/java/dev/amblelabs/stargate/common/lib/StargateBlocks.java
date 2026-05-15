@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.datafixers.util.Pair;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
+import dev.amblelabs.stargate.common.blocks.ToasterBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
@@ -88,8 +89,11 @@ public class StargateBlocks {
             .isViewBlocking(StargateBlocks::never);
     }
 
-    //
-    public static final StargateBlock STARGATE_BLOCK = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
+    public static final StargateBlock STARGATE = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
+
+    public static final ToasterBlock TOASTER = blockItem("toaster", new ToasterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+
+    public static final Block NAQUADAH_BLOCK = blockItem("naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_BLOCK)));
 
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
