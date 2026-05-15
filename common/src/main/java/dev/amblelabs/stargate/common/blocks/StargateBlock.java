@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
@@ -41,7 +42,7 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity, itemStack, blockState, player, interactionHand, blockHitResult));
+            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity.stargate, blockEntity, itemStack, blockState, player, interactionHand, blockHitResult));
         }
 
         return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
@@ -51,9 +52,9 @@ public class StargateBlock extends BaseEntityBlock {
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
             // FIXME: this wont work properly in multiplayer, client code must handle the PrototypeIdentityState and compensate.
-            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().get().value();
+            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
 
-            entry.make(StargateEcs.States, blockEntity.stargate, level.isClientSide());
+            entry.make(StargateEcs.States, blockEntity.stargate, NbtDeserializer.Context.fromLevel(level));
             blockEntity.setChanged(); // TODO: figure out if this is even needed
         }
     }

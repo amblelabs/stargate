@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
  * @author DrTheodor (DrTheo_)
  */
 @FunctionalInterface
-public interface NbtSerializer {
+public interface NbtSerializer<Context> {
     /**
      * Serializes the object to NBT.
      * @implNote Mutates the {@code nbt} parameter.
      *
      * @param nbt the {@link Tag} to serialize to.
-     * @param isClient whether the data is being serialized on a client.
+     * @param context the context of serialization.
      */
     @Contract(mutates = "param1")
-    void toNbt(@NotNull CompoundTag nbt, boolean isClient);
+    void toNbt(@NotNull CompoundTag nbt, Context context);
 }

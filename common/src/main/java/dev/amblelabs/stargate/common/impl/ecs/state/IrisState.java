@@ -1,22 +1,25 @@
 package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
+import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.util.NbtUtil;
-import dev.drtheo.ecs.state.NbtSerializer;
-import dev.drtheo.ecs.state.TState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public class IrisState implements TState<IrisState>, NbtSerializer {
+import java.util.Objects;
 
-    public static final Type<IrisState> state = new NbtBacked<>(StargateAPI.modLoc("iris"), 0) {
+public class IrisState implements NbtState<IrisState> {
+
+    public static final Type<IrisState> state = new Type<>(StargateAPI.modLoc("iris"), 0) {
         @Override
-        public IrisState fromNbt(CompoundTag nbt, boolean isClient) {
-            return new IrisState(NbtUtil.getLoc(nbt, "type"), nbt.getInt("durability"), nbt.getBoolean("closed"));
+        public IrisState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
+            return new IrisState(Objects.requireNonNull(NbtUtil.getLoc(nbt, "type")), nbt.getInt("durability"), nbt.getBoolean("closed"));
         }
     };
 
-    public ResourceLocation type;
+    public final ResourceLocation type;
 
     /**
      * Goes from positive number to 0
@@ -36,7 +39,7 @@ public class IrisState implements TState<IrisState>, NbtSerializer {
     }
 
     @Override
-    public void toNbt(CompoundTag nbt, boolean isClient) {
+    public void toNbt(CompoundTag nbt, NbtSerializer.Context context) {
         nbt.putString("type", type.toString());
         nbt.putInt("durability", durability);
         nbt.putBoolean("closed", closed);

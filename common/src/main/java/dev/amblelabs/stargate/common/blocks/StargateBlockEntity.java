@@ -1,5 +1,7 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
@@ -40,19 +42,17 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     @Override
     protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        boolean isClient = this.level != null && this.level.isClientSide();
-        stargate.toNbt(nbt, isClient);
+        stargate.toNbt(nbt, NbtSerializer.Context.fromLevel(level));
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        boolean isClient = this.level != null && this.level.isClientSide();
-        stargate.fromNbt(nbt, isClient);
+        stargate.fromNbt(nbt, NbtDeserializer.Context.fromLevel(level));
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        TEvents.handle(new StargateBlockEvents.RegisterControllers(this, controllers));
+        TEvents.handle(new StargateBlockEvents.RegisterControllers(this.stargate, this, controllers));
     }
 
     @Override
