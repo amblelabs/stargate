@@ -1,0 +1,12 @@
+{
+  "type": "stargate:toasting",
+  "category": "food",
+  "cookingtime": 10,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "minecraft:bread"
+  },
+  "result": {
+    "id": "stargate:toast"
+  }
+}

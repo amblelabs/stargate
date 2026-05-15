@@ -1,1 +1,5 @@
-// 1.21.1	2026-05-15T21:13:57.811689443	Stargate: Sojourner/Recipes
+// 1.21.1	2026-05-15T23:02:23.65358462	Stargate: Sojourner/Recipes
+c794d60beeee73d1a88a1654d980f944c6074a7b data/minecraft/advancement/recipes/food/burnt_toast_from_toasting.json
+01238e541f6a952dd625356f6422808b2dccbf3a data/minecraft/recipe/toast_from_toasting.json
+8a6f018e83ccee03c0ede783df80aab38293c817 data/minecraft/advancement/recipes/food/toast_from_toasting.json
+fe9b71346c41e630a72443b532334865e3ae6305 data/minecraft/recipe/burnt_toast_from_toasting.json

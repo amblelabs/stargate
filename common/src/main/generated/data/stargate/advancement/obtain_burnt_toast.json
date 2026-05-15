@@ -1,0 +1,35 @@
+{
+  "parent": "stargate:obtain_toaster",
+  "criteria": {
+    "obtain_burnt_toast": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stargate:burnt_toast"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.stargate.description.obtain_burnt_toast"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "stargate:burnt_toast"
+    },
+    "title": {
+      "translate": "achievement.stargate.title.obtain_burnt_toast"
+    }
+  },
+  "requirements": [
+    [
+      "obtain_burnt_toast"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
