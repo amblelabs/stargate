@@ -17,6 +17,7 @@ public interface StargateBlockEvents extends TEvents {
     Type<StargateBlockEvents> type = new Type<>(StargateBlockEvents.class);
 
     void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult);
+    void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult);
 
     void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers);
 
@@ -30,6 +31,19 @@ public interface StargateBlockEvents extends TEvents {
         @Override
         public void handle(StargateBlockEvents handler) throws StateResolveError {
             handler.stargate$useItem(stargate, blockEntity, itemStack, blockState, player, interactionHand, blockHitResult);
+        }
+    }
+
+    record Use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) implements TEvent.Notify<StargateBlockEvents> {
+
+        @Override
+        public BaseType<StargateBlockEvents> type() {
+            return type;
+        }
+
+        @Override
+        public void handle(StargateBlockEvents handler) throws StateResolveError {
+            handler.stargate$use(stargate, blockEntity, blockState, player, blockHitResult);
         }
     }
 
