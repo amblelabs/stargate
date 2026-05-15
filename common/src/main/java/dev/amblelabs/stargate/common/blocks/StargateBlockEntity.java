@@ -94,8 +94,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
-        if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) return;
-
+        if (!level.isClientSide()) return;
 
         BlockPos centerPos = blockPos.above().above().above();
         double maxRadius = 2.6d;
@@ -126,12 +125,11 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 double offsetY = Math.sin(shiftedAngle) * radius;
                 Vector2f uv = toEventHorizonUv(offsetX, offsetY, maxRadius);
 
-                serverLevel.sendParticles(
+                level.addAlwaysVisibleParticle(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
                         centerX + offsetX, centerY + offsetY, centerZ,
                         1,
-                        0, 0, 0,
-                        0.0
+                        0, 0
                 );
             }
         }
@@ -153,12 +151,11 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
             double offsetX = Math.cos(angle) * rippleRadius;
             double offsetY = Math.sin(angle) * rippleRadius;
             Vector2f uv = toEventHorizonUv(offsetX, offsetY, maxRadius);
-            serverLevel.sendParticles(
+            level.addAlwaysVisibleParticle(
                     new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
                     centerX + offsetX, centerY + offsetY, centerZ,
                     1,
-                    0, 0, 0,
-                    0.0
+                    0, 0
             );
         }
     }
