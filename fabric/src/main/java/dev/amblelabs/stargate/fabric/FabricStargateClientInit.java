@@ -3,18 +3,18 @@ package dev.amblelabs.stargate.fabric;
 import dev.amblelabs.stargate.client.lib.StargateClientEcs;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.fabric.client.RegisterClientStuff;
+import dev.amblelabs.stargate.fabric.network.FabricPacketHandler;
 import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.resources.model.*;
-
-import java.util.*;
 
 public class FabricStargateClientInit implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        FabricPacketHandler.initClient();
+
 //        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);
 
         RegisterClientStuff.init();

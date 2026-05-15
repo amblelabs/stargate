@@ -1,7 +1,6 @@
 package dev.drtheo.ecs.state;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -21,7 +20,7 @@ public interface TStateContainer {
      * @param <T> the state.
      */
     @Contract(pure = true)
-    <T extends TState<T>> @Nullable T stateOrNull(@NotNull TState.Type<T> type);
+    <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type);
 
     /**
      * Utility method that gets the queried {@link TState}
@@ -34,7 +33,7 @@ public interface TStateContainer {
      * @see StateResolveError
      */
     @Contract(pure = true)
-    default <T extends TState<T>> @NotNull T state(@NotNull TState.Type<T> type) {
+    default <T extends TState<T>> T state(TState.Type<T> type) {
         T result = stateOrNull(type);
 
         if (result == null)
@@ -55,7 +54,7 @@ public interface TStateContainer {
      * @throws IllegalStateException if the state is not found.
      */
     @Contract(pure = true)
-    default <T extends TState<T>> @NotNull T resolveState(@NotNull TState.Type<T> type) {
+    default <T extends TState<T>> T resolveState(TState.Type<T> type) {
         T res = stateOrNull(type);
 
         if (res == null)
@@ -72,7 +71,7 @@ public interface TStateContainer {
      * @param <T> the state.
      */
     @Contract(mutates = "this")
-    <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type);
+    <T extends TState<T>> @Nullable T removeState(TState.Type<T> type);
 
     @Contract(mutates = "this")
     void clearStates();
@@ -85,7 +84,7 @@ public interface TStateContainer {
      * @return whether adding the state had succeeded.
      */
     @Contract(mutates = "this")
-    boolean addState(@NotNull TState<?> state);
+    boolean addState(TState<?> state);
 
     /**
      * Checks for existence of a state by its {@link TState.Type}, returning a proper {@code boolean} value.
@@ -96,7 +95,7 @@ public interface TStateContainer {
      * @return whether the state exists.
      */
     @Contract(pure = true)
-    default boolean hasState(@NotNull TState.Type<?> type) {
+    default boolean hasState(TState.Type<?> type) {
         return stateOrNull(type) != null;
     }
 
@@ -106,7 +105,7 @@ public interface TStateContainer {
      * @param consumer the iterator that will consume the entries.
      */
     @Contract(pure = true)
-    void forEachState(@NotNull Iterator consumer);
+    void forEachState(Iterator consumer);
 
     @FunctionalInterface
     interface Iterator {
@@ -119,7 +118,7 @@ public interface TStateContainer {
     class ArrayBacked implements TStateContainer {
 
         private static final Object REMOVED = new Object();
-        private final Object[] data;
+        private final @Nullable Object[] data;
 
         /**
          * @param maxSize the maximum size of the array.
@@ -132,7 +131,7 @@ public interface TStateContainer {
         @Override
         @Contract(pure = true)
         @SuppressWarnings("unchecked")
-        public <T extends TState<T>> @Nullable T stateOrNull(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type) {
             int index = type.index;
 
             if (index < 0)
@@ -145,7 +144,7 @@ public interface TStateContainer {
         @Override
         @Contract(mutates = "this")
         @SuppressWarnings("unchecked")
-        public <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> @Nullable T removeState(TState.Type<T> type) {
             T result = (T) data[type.index];
             data[type.index] = REMOVED;
 
@@ -160,7 +159,7 @@ public interface TStateContainer {
 
         @Override
         @Contract(mutates = "this")
-        public boolean addState(@NotNull TState<?> state) {
+        public boolean addState(TState<?> state) {
             int index = state.type().verifyIndex();
             data[index] = state;
             return true;
@@ -168,8 +167,8 @@ public interface TStateContainer {
 
         @Override
         @Contract(pure = true)
-        public void forEachState(@NotNull Iterator consumer) {
-            Object[] objects = this.data;
+        public void forEachState(Iterator consumer) {
+            @Nullable Object[] objects = this.data;
             for (int i = 0; i < objects.length; i++) {
                 Object state = objects[i];
 
@@ -204,24 +203,24 @@ public interface TStateContainer {
 
         @Override
         @Contract(pure = true)
-        public <T extends TState<T>> @Nullable T stateOrNull(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type) {
             return parent.stateOrNull(type);
         }
 
         @Override
         @Contract(pure = true)
-        public <T extends TState<T>> @NotNull T resolveState(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> T resolveState(TState.Type<T> type) {
             return parent.resolveState(type);
         }
 
         @Override
-        public <T extends TState<T>> @NotNull T state(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> T state(TState.Type<T> type) {
             return parent.state(type);
         }
 
         @Override
         @Contract(mutates = "this")
-        public <T extends TState<T>> @Nullable T removeState(@NotNull TState.Type<T> type) {
+        public <T extends TState<T>> @Nullable T removeState(TState.Type<T> type) {
             return parent.removeState(type);
         }
 
@@ -233,13 +232,13 @@ public interface TStateContainer {
 
         @Override
         @Contract(mutates = "this")
-        public boolean addState(@NotNull TState<?> state) {
+        public boolean addState(TState<?> state) {
             return parent.addState(state);
         }
 
         @Override
         @Contract(pure = true)
-        public void forEachState(@NotNull Iterator consumer) {
+        public void forEachState(Iterator consumer) {
             parent.forEachState(consumer);
         }
     }

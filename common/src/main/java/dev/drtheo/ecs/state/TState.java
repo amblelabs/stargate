@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -36,7 +35,7 @@ public interface TState<Self extends TState<Self>> {
         private final Fix[] fixes;
 
         @Contract(pure = true)
-        public NbtBacked(@NotNull ResourceLocation id, int version, Fix... fix) {
+        public NbtBacked(ResourceLocation id, int version, Fix... fix) {
             super(id);
 
             this.version = version;
@@ -45,7 +44,7 @@ public interface TState<Self extends TState<Self>> {
 
         @Override
         @Contract(pure = true)
-        public @Nullable CompoundTag encode(@NotNull T t, EncodeContext context) {
+        public @Nullable CompoundTag encode(T t, EncodeContext context) {
             CompoundTag nbt = new CompoundTag();
             t.toNbt(nbt, context);
 
@@ -55,7 +54,7 @@ public interface TState<Self extends TState<Self>> {
 
         @Override
         @Contract(pure = true)
-        public @NotNull T decode(@NotNull CompoundTag element, DecodeContext context) {
+        public T decode(CompoundTag element, DecodeContext context) {
             try {
                 return this.fromNbt(element, context);
             } catch (Exception e) {
@@ -103,7 +102,7 @@ public interface TState<Self extends TState<Self>> {
          * @param id the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public SerializableType(@NotNull ResourceLocation id) {
+        public SerializableType(ResourceLocation id) {
             super(id);
         }
 
@@ -115,7 +114,7 @@ public interface TState<Self extends TState<Self>> {
          * @return a new {@link T} instance, containing all the deserialized data.
          */
         @Contract(pure = true)
-        public abstract @NotNull T decode(@NotNull S s, DecodeContext context);
+        public abstract T decode(S s, DecodeContext context);
 
         /**
          * Encodes the object.
@@ -125,7 +124,7 @@ public interface TState<Self extends TState<Self>> {
          * @return a new {@link S} instance, containing all the serialized data, or {@code null}, to skip serialization.
          */
         @Contract(pure = true)
-        public abstract @Nullable S encode(@NotNull T t, EncodeContext context);
+        public abstract @Nullable S encode(T t, EncodeContext context);
     }
 
     /**
@@ -137,7 +136,7 @@ public interface TState<Self extends TState<Self>> {
     class Type<T extends TState<T>> {
 
         protected int index = -1;
-        protected final @NotNull ResourceLocation id;
+        protected final ResourceLocation id;
 
         /**
          * Constructs a new state type with the provided {@link ResourceLocation}, which is later used for registration.
@@ -145,7 +144,7 @@ public interface TState<Self extends TState<Self>> {
          * @param id the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public Type(@NotNull ResourceLocation id) {
+        public Type(ResourceLocation id) {
             this.id = id;
         }
 
@@ -153,7 +152,7 @@ public interface TState<Self extends TState<Self>> {
          * @return the state's {@link ResourceLocation}.
          */
         @Contract(pure = true)
-        public @NotNull ResourceLocation id() {
+        public ResourceLocation id() {
             return id;
         }
 

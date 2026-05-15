@@ -3,7 +3,6 @@ package dev.drtheo.ecs.state;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An interface for all classes that do NBT serialization.
@@ -19,5 +18,5 @@ public interface NbtSerializer<Context> {
      * @param context the context of serialization.
      */
     @Contract(mutates = "param1")
-    void toNbt(@NotNull CompoundTag nbt, Context context);
+    void toNbt(CompoundTag nbt, Context context);
 }
