@@ -28,7 +28,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     @Override
     @SuppressWarnings("UnstableApiUsage") // im a magic man
     public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        GeckoState gecko = blockEntity.container.stateOrNull(GeckoState.state);
+        GeckoState gecko = blockEntity.stargate.stateOrNull(GeckoState.state);
         if (gecko == null) return;
 
         this.model = gecko.geoModel;
