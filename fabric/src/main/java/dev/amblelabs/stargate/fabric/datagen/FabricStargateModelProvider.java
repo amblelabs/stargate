@@ -31,7 +31,8 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     private static void createToaster(BlockModelGenerators generator, Block horizontalBlock) {
         ResourceLocation model = ModelLocationUtils.getModelLocation(horizontalBlock, "");
 
-        generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(horizontalBlock, Variant.variant().with(VariantProperties.MODEL, model))
+        generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(horizontalBlock, Variant.variant()
+                        .with(VariantProperties.MODEL, model))
                 .with(BlockModelGenerators.createHorizontalFacingDispatch()));
     }
 
