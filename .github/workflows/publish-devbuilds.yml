@@ -37,25 +37,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      #    - name: Restore DataGen cache
-      #      id: cache-restore
-      #      uses: actions/cache/restore@v4
-      #      with:
-      #        path: src/main/generated
-      #        key: datagen-${{ github.run_id }}
-      #        restore-keys:
-      #          datagen-
-
-      #    - name: Run DataGen
-      #      run: ./gradlew --configuration-cache runDatagen
-
-      #    - name: Save DataGen cache
-      #      id: cache-save
-      #      uses: actions/cache/save@v4
-      #      with:
-      #        path: src/main/generated
-      #        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-
       - name: Build
         run: ./gradlew :fabric:build
 

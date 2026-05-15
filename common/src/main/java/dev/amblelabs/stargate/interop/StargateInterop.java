@@ -17,7 +17,7 @@ public class StargateInterop {
         IClientXplatAbstractions.INSTANCE.initPlatformSpecific();
     }
 
-    @SuppressWarnings({"EmptyMethod"})
+    @SuppressWarnings("EmptyMethod")
     private static void initPatchouli() {
 
     }
