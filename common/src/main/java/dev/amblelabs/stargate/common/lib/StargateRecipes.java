@@ -34,7 +34,7 @@ public class StargateRecipes {
     private static <T extends net.minecraft.world.item.crafting.Recipe<?>> RecipeType<T> recipe(String name, RecipeSerializer<T> serializer) {
         var id = modLoc(name);
 
-        var type = new RecipeType<T>(id) {
+        var type = new RecipeType<T>() {
 
             @Override
             public String toString() {

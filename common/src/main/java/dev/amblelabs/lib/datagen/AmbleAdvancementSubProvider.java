@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -78,8 +79,12 @@ public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvi
 
         private final String name;
 
-        public Builder(AdvancementHolder parent, String name) {
-            this.builder = Advancement.Builder.advancement().parent(parent);
+        public Builder(@Nullable AdvancementHolder parent, String name) {
+            this.builder = Advancement.Builder.advancement();
+
+            if (parent != null)
+                this.builder.parent(parent);
+
             this.name = name;
         }
 

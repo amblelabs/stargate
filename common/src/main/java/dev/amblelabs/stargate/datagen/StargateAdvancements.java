@@ -20,11 +20,9 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
     public void generate(HolderLookup.Provider provider, Consumer<AdvancementHolder> consumer) {
         AdvancementHolder root = create("root").icon(StargateBlocks.STARGATE)
                 .noToast().silent().background("textures/block/raw_naquadah_block.png")
-//                .condition("root", InventoryChangeTrigger.TriggerInstance.hasItems(
-//                        StargateItems.ORLIN_STARGATE, StargateItems.DESTINY_STARGATE,
-//                        StargateItems.MILKY_WAY_STARGATE, StargateItems.PEGASUS_STARGATE
-//                ))
-                .build(consumer);
+                .condition("root", InventoryChangeTrigger.TriggerInstance.hasItems(
+                        StargateBlocks.STARGATE
+                )).build(consumer);
 
 //        AdvancementHolder rawNaquadah = challenge(root, "obtain_raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
 //                .condition("obtain_raw_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.RAW_NAQUADAH))

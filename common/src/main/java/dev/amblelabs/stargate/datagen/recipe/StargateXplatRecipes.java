@@ -11,9 +11,12 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.lang.reflect.Constructor;
 import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unused")
@@ -41,10 +44,23 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
     public static void toasting(RecipeOutput recipeOutput, RecipeCategory category, int cookingTime, ItemLike material, ItemLike result, float experience) {
         final String cookingMethod = "toasting";
 
-        SimpleCookingRecipeBuilder.generic(Ingredient.of(material), category, result,
-                        experience, cookingTime, ToastingRecipe.SERIALIZER, ToastingRecipe::new
-                ).unlockedBy(getHasName(material), has(material))
+        toasting(Ingredient.of(material), category, result, experience, cookingTime)
+                .unlockedBy(getHasName(material), has(material))
                 .save(recipeOutput, getItemName(result) + "_from_" + cookingMethod);
+    }
+
+    public static SimpleCookingRecipeBuilder toasting(Ingredient ingredient, RecipeCategory category, ItemLike result, float experience, int cookingTime) {
+        AbstractCookingRecipe.Factory<?> factory = ToastingRecipe::new;
+
+        try {
+            Constructor<?> constructor = SimpleCookingRecipeBuilder.class.getDeclaredConstructors()[0];
+            constructor.setAccessible(true);
+
+            return (SimpleCookingRecipeBuilder) constructor
+                    .newInstance(category, CookingBookCategory.FOOD, result, ingredient, experience, cookingTime, factory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void stoneCutterFromTag(RecipeOutput recipes, TagKey<Item> tagKey, Item... results) {
