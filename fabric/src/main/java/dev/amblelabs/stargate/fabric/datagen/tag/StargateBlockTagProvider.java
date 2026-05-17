@@ -40,5 +40,6 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
 
         this.getOrCreateTagBuilder(BlockTags.WALLS)
                 .add(StargateBlocks.SANDSTONE_BRICK_WALL);
+
     }
 }
