@@ -5,15 +5,11 @@ import dev.amblelabs.stargate.common.blocks.DHDBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.ToasterBlock;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,44 +48,6 @@ public class StargateBlocks {
     private static final Map<ResourceLocation, Block> BLOCKS = new LinkedHashMap<>();
     private static final Map<ResourceLocation, Pair<Block, Item.Properties>> BLOCK_ITEMS = new LinkedHashMap<>();
     private static final Map<CreativeModeTab, List<Block>> BLOCK_TABS = new LinkedHashMap<>();
-
-    private static BlockBehaviour.Properties papery(MapColor color) {
-        return BlockBehaviour.Properties
-            .of()
-            .mapColor(color)
-            .sound(SoundType.GRASS)
-            .instabreak()
-            .ignitedByLava()
-            .pushReaction(PushReaction.DESTROY);
-    }
-
-    private static BlockBehaviour.Properties woodyHard(MapColor color) {
-        return BlockBehaviour.Properties
-            .ofFullCopy(Blocks.OAK_LOG)
-            .mapColor(color)
-            .sound(SoundType.WOOD)
-            .strength(3f, 4f);
-    }
-
-    private static BlockBehaviour.Properties woody(MapColor color) {
-        return BlockBehaviour.Properties
-            .ofFullCopy(Blocks.OAK_LOG)
-            .mapColor(color)
-            .sound(SoundType.WOOD)
-            .strength(2f);
-    }
-
-    private static BlockBehaviour.Properties leaves(MapColor color) {
-        return BlockBehaviour.Properties
-            .ofFullCopy(Blocks.OAK_LEAVES)
-            .strength(0.2F)
-            .randomTicks()
-            .sound(SoundType.GRASS)
-            .noOcclusion()
-            .isValidSpawn((bs, level, pos, type) -> type == EntityType.OCELOT || type == EntityType.PARROT)
-            .isSuffocating(StargateBlocks::never)
-            .isViewBlocking(StargateBlocks::never);
-    }
 
     public static final StargateBlock STARGATE = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
 
