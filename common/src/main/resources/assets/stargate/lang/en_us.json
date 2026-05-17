@@ -13,5 +13,11 @@
   "item.stargate.gold_iris": "Gold Iris",
   "item.stargate.iron_iris": "Iron Iris",
   "block.stargate.naquadah_block": "Block of Naquadah",
-  "block.stargate.raw_naquadah_block": "Block of Raw Naquadah"
+  "block.stargate.raw_naquadah_block": "Block of Raw Naquadah",
+  "block.stargate.dry_grass": "Dry Grass",
+  "block.stargate.dry_bush": "Dry Bush",
+  "block.stargate.sandstone_bricks": "Sandstone Bricks",
+  "block.stargate.sandstone_brick_slab": "Sandstone Brick Slab",
+  "block.stargate.sandstone_brick_stairs": "Sandstone Brick Stairs",
+  "block.stargate.sandstone_brick_wall": "Sandstone Brick Wall"
 }
