@@ -35,7 +35,6 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
         gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_BUSH, BlockModelGenerators.TintState.NOT_TINTED);
         gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_GRASS, BlockModelGenerators.TintState.NOT_TINTED);
-        gen.blockEntityModels(StargateBlocks.STARGATE, Blocks.IRON_BLOCK);
 
         createToaster(gen, StargateBlocks.TOASTER);
     }
@@ -59,8 +58,6 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.generateFlatItem(StargateItems.NAQUADAH_INGOT, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.NAQUADAH_NUGGET, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.RAW_NAQUADAH, ModelTemplates.FLAT_ITEM);
-
-        gen.generateFlatItem(StargateItems.TRINIUM_INGOT, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.CRYSTAL_INGOT, ModelTemplates.FLAT_ITEM);
 
         gen.generateFlatItem(StargateItems.TRINIUM_IRIS, ModelTemplates.FLAT_ITEM);
