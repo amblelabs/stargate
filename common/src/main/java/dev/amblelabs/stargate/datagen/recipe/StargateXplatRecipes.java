@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.datagen.recipe;
 
 import dev.amblelabs.lib.datagen.AmbleRecipeProvider;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import dev.amblelabs.stargate.common.recipe.ToastingRecipe;
 import dev.amblelabs.stargate.datagen.IXplatIngredients;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import java.lang.reflect.Constructor;
 import java.util.concurrent.CompletableFuture;
@@ -35,6 +37,71 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
     public void buildRecipes(RecipeOutput recipeOutput) {
         foodToasting(recipeOutput, 10, Items.BREAD, StargateItems.TOAST, 1);
         foodToasting(recipeOutput, 20, StargateItems.TOAST, StargateItems.BURNT_TOAST, 1);
+
+        // SANDSTONE RECIPES
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICKS, 4)
+                .pattern("SS")
+                .pattern("SS")
+                .define('S', Blocks.CUT_SANDSTONE)
+                .unlockedBy(getHasName(Blocks.CUT_SANDSTONE), has(Blocks.CUT_SANDSTONE))
+                .save(recipeOutput);  
+
+        SingleItemRecipeBuilder.stonecutting(
+                        Ingredient.of(Blocks.SANDSTONE),
+                        RecipeCategory.BUILDING_BLOCKS,
+                        StargateBlocks.SANDSTONE_BRICKS,
+                        1
+                )
+                .unlockedBy(getHasName(Blocks.SANDSTONE), has(Blocks.SANDSTONE))
+                .save(recipeOutput, modLoc("sandstone_bricks_from_stonecutter"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICK_STAIRS, 4)
+                .pattern("S  ")
+                .pattern("SS ")
+                .pattern("SSS")
+                .define('S', StargateBlocks.SANDSTONE_BRICKS)
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput);  
+
+        SingleItemRecipeBuilder.stonecutting(
+                        Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),
+                        RecipeCategory.BUILDING_BLOCKS,
+                        StargateBlocks.SANDSTONE_BRICK_STAIRS,
+                        1
+                )
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput, modLoc("sandstone_brick_stairs_from_stonecutter")); 
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICK_SLAB, 6)
+                .pattern("SSS")
+                .define('S', StargateBlocks.SANDSTONE_BRICKS)
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput); 
+
+        SingleItemRecipeBuilder.stonecutting(
+                        Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),
+                        RecipeCategory.BUILDING_BLOCKS,
+                        StargateBlocks.SANDSTONE_BRICK_SLAB,
+                        2
+                )
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput, modLoc("sandstone_brick_slab_from_stonecutter")); 
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICK_WALL, 6)
+                .pattern("SSS")
+                .pattern("SSS")
+                .define('S', StargateBlocks.SANDSTONE_BRICKS)
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput); 
+
+        SingleItemRecipeBuilder.stonecutting(
+                        Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),
+                        RecipeCategory.BUILDING_BLOCKS,
+                        StargateBlocks.SANDSTONE_BRICK_WALL,
+                        1
+                )
+                .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
+                .save(recipeOutput, modLoc("sandstone_brick_wall_from_stonecutter")); 
     }
 
     public static void foodToasting(RecipeOutput recipeOutput, int cookingTime, ItemLike material, ItemLike result, float experience) {
