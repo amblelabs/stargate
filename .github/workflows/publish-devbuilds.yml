@@ -66,4 +66,4 @@ jobs:
           avatar: 'https://i.imgur.com/LAzH4IT.jpeg'
 
           message: |
-            <:al_error:1513885241339678852> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** (**SGS**) dev build [**`#${{ github.run_number }}`**](<https://github.com/amblelabs/stargate/actions/runs/${{ github.run_id }}>) **failed** to build! <:al_explosion:1467652202356150272>
+            <:al_error:1513885241339678852> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** (**SGS**) dev build [**`#${{ github.run_number }}`**](<https://github.com/amblelabs/stargate/actions/runs/${{ github.run_id }}>) **failed** to build! <a:al_explosion:1467652202356150272>
