@@ -48,10 +48,22 @@ jobs:
           avatar: 'https://i.imgur.com/LAzH4IT.jpeg'
 
           message: |
-            <:new1:1253371736510959636><:new2:1253371805734015006> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** dev build `#${{ github.run_number }}`:
+            <:new1:1253371736510959636><:new2:1253371805734015006> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** (**SGS**) dev build [**`#${{ github.run_number }}`**](<https://github.com/amblelabs/stargate/actions/runs/${{ github.run_id }}>):
+            ${commits}
 
           file: |
             fabric/build/libs/*.jar
             !fabric/build/libs/*-sources.jar
             forge/build/libs/*.jar
             !forge/build/libs/*-sources.jar
+
+      - name: Send failure notice
+        if: failure()
+        uses: drtheodor/discord-webhook-upload-action@v0.4
+        with:
+          url: ${{ secrets.DEV_BUILDS }}
+          username: Macguyver
+          avatar: 'https://i.imgur.com/LAzH4IT.jpeg'
+
+          message: |
+            <:al_error:1513885241339678852> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** (**SGS**) dev build [**`#${{ github.run_number }}`**](<https://github.com/amblelabs/stargate/actions/runs/${{ github.run_id }}>) **failed** to build! <:al_explosion:1467652202356150272>
