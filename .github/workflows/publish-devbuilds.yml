@@ -41,14 +41,13 @@ jobs:
         run: ./gradlew :fabric:build
 
       - name: Publish artifacts
-        uses: drtheodor/discord-webhook-upload-action@v0.3
+        uses: drtheodor/discord-webhook-upload-action@v0.4
         with:
           url: ${{ secrets.DEV_BUILDS }}
           username: Macguyver
           avatar: 'https://i.imgur.com/LAzH4IT.jpeg'
 
-          message_commit: '> - :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)'
-          message_header: |
+          message: |
             <:new1:1253371736510959636><:new2:1253371805734015006> New <:al_stargate:1504663279421882378> **Stargate: Sojourner** dev build `#${{ github.run_number }}`:
 
           file: |
