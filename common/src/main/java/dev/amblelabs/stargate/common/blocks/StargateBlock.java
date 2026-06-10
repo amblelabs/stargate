@@ -84,11 +84,7 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            // FIXME: this wont work properly in multiplayer, client code must handle the PrototypeIdentityState and compensate.
-            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-
-            entry.make(StargateEcs.States, blockEntity.stargate, NbtDeserializer.Context.fromLevel(level));
-            blockEntity.setChanged(); // TODO: figure out if this is even needed
+            blockEntity.onPlace(blockState, level, blockPos, blockState2, bl);
         }
     }
 
