@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.datafixers.util.Pair;
+import dev.amblelabs.stargate.common.blocks.DHDBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.ToasterBlock;
 import net.minecraft.resources.ResourceLocation;
@@ -52,8 +53,25 @@ public class StargateBlocks {
 
     public static final ToasterBlock TOASTER = blockItem("toaster", new ToasterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 
-    public static final Block NAQUADAH_BLOCK = blockItem("naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_BLOCK)));
+    public static final Block BLOCK_OF_NAQUADAH = blockItem("block_of_naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
+    public static final DHDBlock DHD_BLOCK = blockItem("dhd", new DHDBlock(DHDBlock.defaultProps()));
+
+    public static final Block NAQUADAH_ORE = blockItem("naquadah_ore", new Block(Block.Properties.ofFullCopy(Blocks.DEEPSLATE_COAL_ORE)));
+
+    public static final Block RAW_NAQUADAH_BLOCK = blockItem("raw_naquadah_block", new Block(Block.Properties.ofFullCopy(Blocks.RAW_GOLD_BLOCK)));
+
+    public static final Block SANDSTONE_BRICKS = blockItem("sandstone_bricks", new Block(Block.Properties.ofFullCopy(Blocks.SANDSTONE)));
+
+    public static final Block SANDSTONE_BRICK_STAIRS = blockItem("sandstone_brick_stairs", new StairBlock(SANDSTONE_BRICKS.defaultBlockState(), Block.Properties.ofFullCopy(Blocks.SANDSTONE_STAIRS)) {});
+
+    public static final Block SANDSTONE_BRICK_SLAB = blockItem("sandstone_brick_slab", new SlabBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE_SLAB)));
+
+    public static final Block SANDSTONE_BRICK_WALL = blockItem("sandstone_brick_wall", new WallBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE_WALL)));
+
+    public static final Block DRY_GRASS = blockItem("dry_grass", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
+
+    public static final Block DRY_BUSH = blockItem("dry_bush", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
     @SuppressWarnings("SameReturnValue") // intended
     private static boolean never(Object... args) {
         return false;

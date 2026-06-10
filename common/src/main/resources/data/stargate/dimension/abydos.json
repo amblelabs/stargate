@@ -1,0 +1,42 @@
+{
+  "type": "stargate:abydos",
+  "generator": {
+    "biome_source": {
+      "biomes": [
+        {
+          "parameters": {
+            "weirdness": [
+              0,
+              1
+            ],
+            "continentalness": [
+              -0.96,
+              -0.125
+            ],
+            "erosion": [
+              0.375,
+              1
+            ],
+            "temperature": [
+              -1,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "depth": [
+              -1,
+              1
+            ],
+            "offset": 0
+          },
+          "biome": "stargate:abydos_desert"
+        }
+      ],
+      "type": "minecraft:multi_noise"
+    },
+    "settings": "stargate:abydos",
+    "type": "minecraft:noise"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "stargate:block_of_naquadah"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "stargate:naquadah_ingot"
+  }
+}

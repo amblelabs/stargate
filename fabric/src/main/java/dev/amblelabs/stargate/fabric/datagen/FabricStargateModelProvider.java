@@ -24,6 +24,17 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     @Override
     public void generateBlockStateModels(BlockModelGenerators gen) {
         gen.blockEntityModels(StargateBlocks.STARGATE, Blocks.IRON_BLOCK);
+        gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
+        gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
+        gen.createTrivialCube(StargateBlocks.BLOCK_OF_NAQUADAH);
+
+        gen.family(StargateBlocks.SANDSTONE_BRICKS)
+                .slab(StargateBlocks.SANDSTONE_BRICK_SLAB)
+                .stairs(StargateBlocks.SANDSTONE_BRICK_STAIRS)
+                .wall(StargateBlocks.SANDSTONE_BRICK_WALL);
+
+        gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_BUSH, BlockModelGenerators.TintState.NOT_TINTED);
+        gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_GRASS, BlockModelGenerators.TintState.NOT_TINTED);
 
         createToaster(gen, StargateBlocks.TOASTER);
     }
@@ -45,6 +56,8 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
         gen.generateFlatItem(StargateItems.TRINIUM_INGOT, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.NAQUADAH_INGOT, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.NAQUADAH_NUGGET, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.RAW_NAQUADAH, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.CRYSTAL_INGOT, ModelTemplates.FLAT_ITEM);
 
         gen.generateFlatItem(StargateItems.TRINIUM_IRIS, ModelTemplates.FLAT_ITEM);

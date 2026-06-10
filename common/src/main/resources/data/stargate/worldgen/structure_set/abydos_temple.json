@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "stargate:abydos_temple",
+      "weight": 6
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 84845502,
+    "spacing": 80,
+    "separation": 55,
+    "spread_type": "triangular"
+  }
+}

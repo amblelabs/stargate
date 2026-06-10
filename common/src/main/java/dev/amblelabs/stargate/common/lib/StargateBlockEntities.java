@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.blocks.DHDBlockEntity;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.blocks.ToasterBlockEntity;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
@@ -28,6 +29,7 @@ public class StargateBlockEntities {
     public static final BlockEntityType<StargateBlockEntity> STARGATE = register("stargate", StargateBlockEntity::new, StargateBlocks.STARGATE);
 
     public static final BlockEntityType<ToasterBlockEntity> TOASTER = register("toaster", ToasterBlockEntity::new, StargateBlocks.TOASTER);
+    public static final BlockEntityType<DHDBlockEntity> DHD = register("dhd_block_entity", DHDBlockEntity::new, StargateBlocks.DHD_BLOCK);
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id,
                                                                        BiFunction<BlockPos, BlockState, T> func, Block... blocks) {
