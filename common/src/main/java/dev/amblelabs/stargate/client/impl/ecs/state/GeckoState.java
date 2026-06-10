@@ -14,6 +14,7 @@ import software.bernie.geckolib.model.GeoModel;
 
 import java.util.Objects;
 
+@SuppressWarnings("deprecated")
 public class GeckoState implements NbtState<GeckoState> {
 
     private static final Int2ObjectMap<GeoModel<StargateBlockEntity>> MODEL_CACHE = new Int2ObjectOpenHashMap<>();

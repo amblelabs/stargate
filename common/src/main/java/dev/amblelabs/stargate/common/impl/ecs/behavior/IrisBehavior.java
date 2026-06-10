@@ -21,14 +21,14 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
     public static final RawAnimation IRIS_OPEN = RawAnimation.begin().thenPlay("IRIS_OPEN");
     public static final RawAnimation IRIS_CLOSE = RawAnimation.begin().thenPlay("IRIS_CLOSE");
 
-    public void damage(StargateBlockEntity stargate, int amount) {
-        IrisState iris = stargate.stargate.state(IrisState.state);
+    public void damage(Stargate stargate, int amount) {
+        IrisState iris = stargate.state(IrisState.state);
 
         iris.durability -= amount;
 
         if (iris.durability <= 0) {
             handle(new IrisEvents.Broken(stargate, iris));
-            stargate.stargate.removeState(IrisState.state);
+            stargate.removeState(IrisState.state);
         }
 
         stargate.setChanged();
@@ -46,7 +46,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) {
         IrisState iris = stargate.state(IrisState.state);
         iris.closed = !iris.closed;
-        blockEntity.setChanged();
+        stargate.setChanged();
     }
 
     @Override

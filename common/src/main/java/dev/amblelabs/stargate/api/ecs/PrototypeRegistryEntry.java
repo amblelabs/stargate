@@ -15,25 +15,21 @@ import java.util.Objects;
 
 public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states) {
 
-    public void make(TAbstractStateRegistry registry, TStateContainer container, NbtDeserializer.Context context, boolean mark) {
-        for (Map.Entry<ResourceLocation, CompoundTag> entry : states.entrySet()) {
-            TState.Type<?> type = registry.get(entry.getKey());
-
-            if (!(type instanceof NbtState.Type<?> serializable))
-                return;
-
-            TState<?> state = serializable.decode(entry.getValue(), context);
-            container.addState(state);
-        }
-
-        if (!mark) return;
-
+    public void mark(TStateContainer container) {
         ResourceLocation loc = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
         container.addState(new PrototypeIdentityState(loc, this));
     }
 
     public void make(TAbstractStateRegistry registry, TStateContainer container, NbtDeserializer.Context context) {
-        this.make(registry, container, context, true);
+        for (Map.Entry<ResourceLocation, CompoundTag> entry : states.entrySet()) {
+            TState.Type<?> type = registry.get(entry.getKey());
+
+            if (!(type instanceof NbtState.Type<?> serializable) || container.hasState(type))
+                return;
+
+            TState<?> state = serializable.decode(entry.getValue(), context);
+            container.addState(state);
+        }
     }
 
     public static final Codec<PrototypeRegistryEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -14,12 +14,37 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
+import java.util.WeakHashMap;
+
 public class Stargate extends TStateContainer.Delegate implements NbtSerializer, NbtDeserializer<Stargate> {
 
+    public static final String ID_TAG = "Id";
     public static final String STATES_TAG = "States";
 
-    public Stargate() {
+    private final UUID id;
+    private final boolean isClient;
+    private final Set<UpdateListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
+
+    public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
+        return new Stargate(tag.getUUID(ID_TAG), ctx.isClient()).fromNbt(tag, ctx);
+    }
+
+    public Stargate(UUID id, boolean isClient) {
         super(StargateEcs.States.createArrayHolder());
+
+        this.id = id;
+        this.isClient = isClient;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public boolean isClient() {
+        return isClient;
     }
 
     @Override
@@ -30,6 +55,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         // FIXME FIXME: i have no idea what i was talking about. by this i mean all this.
         this.forEachState((i, state) -> stateToNbt(states, i, state, context));
 
+        nbt.putUUID(ID_TAG, id);
         nbt.put(STATES_TAG, states);
     }
 
@@ -90,5 +116,36 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         }
 
         return this;
+    }
+
+    @Override
+    public boolean addState(TState<?> state) {
+        boolean result = super.addState(state);
+        if (result) this.setChanged();
+
+        return result;
+    }
+
+    @Override
+    public @Nullable <T extends TState<T>> T removeState(TState.Type<T> type) {
+        T result = super.removeState(type);
+        if (result != null) this.setChanged();
+
+        return result;
+    }
+
+    public void setChanged() {
+        for (UpdateListener listener : this.listeners) {
+            listener.onStargateUpdate(this);
+        }
+    }
+
+    public void onUpdate(UpdateListener listener) {
+        this.listeners.add(listener);
+    }
+
+    // eventify?
+    public interface UpdateListener {
+        void onStargateUpdate(Stargate stargate);
     }
 }
