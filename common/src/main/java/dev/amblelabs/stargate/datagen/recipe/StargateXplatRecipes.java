@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -101,7 +102,84 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                         1
                 )
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput, modLoc("sandstone_brick_wall_from_stonecutter")); 
+                .save(recipeOutput, modLoc("sandstone_brick_wall_from_stonecutter"));
+
+        // NAQUADAH RECIPES
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.BLOCK_OF_NAQUADAH, 1)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', StargateItems.NAQUADAH_INGOT)
+                .unlockedBy(getHasName(StargateItems.NAQUADAH_INGOT), has(StargateItems.NAQUADAH_INGOT))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 9)
+                .requires(StargateBlocks.BLOCK_OF_NAQUADAH)
+                .unlockedBy(getHasName(StargateBlocks.BLOCK_OF_NAQUADAH), has(StargateBlocks.BLOCK_OF_NAQUADAH))
+                .save(recipeOutput, modLoc("naquadah_ingot_from_naquadah_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', StargateItems.RAW_NAQUADAH)
+                .unlockedBy(getHasName(StargateItems.RAW_NAQUADAH), has(StargateItems.RAW_NAQUADAH))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, StargateItems.RAW_NAQUADAH, 9)
+                .requires(StargateBlocks.RAW_NAQUADAH_BLOCK)
+                .unlockedBy(getHasName(StargateBlocks.RAW_NAQUADAH_BLOCK), has(StargateBlocks.RAW_NAQUADAH_BLOCK))
+                .save(recipeOutput, modLoc("raw_naquadah_from_raw_naquadah_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 1)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', StargateItems.NAQUADAH_NUGGET)
+                .unlockedBy(getHasName(StargateItems.NAQUADAH_NUGGET), has(StargateItems.NAQUADAH_NUGGET))
+                .save(recipeOutput, modLoc("naquadah_ingot_from_nuggets"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, StargateItems.NAQUADAH_NUGGET, 9)
+                .requires(StargateItems.NAQUADAH_INGOT)
+                .unlockedBy(getHasName(StargateItems.NAQUADAH_INGOT), has(StargateItems.NAQUADAH_INGOT))
+                .save(recipeOutput);
+
+       SimpleCookingRecipeBuilder.blasting(
+               Ingredient.of(StargateBlocks.NAQUADAH_ORE),
+               RecipeCategory.MISC,
+               StargateItems.NAQUADAH_INGOT,
+               0.7f,
+               100)
+               .unlockedBy(getHasName(StargateBlocks.NAQUADAH_ORE), has(StargateBlocks.NAQUADAH_ORE))
+               .save(recipeOutput, modLoc("naquadah_ingot_from_blasting_naquadah_ore"));
+
+        SimpleCookingRecipeBuilder.blasting(
+                Ingredient.of(StargateItems.RAW_NAQUADAH),
+                RecipeCategory.MISC,
+                StargateItems.NAQUADAH_INGOT,
+                0.7f,
+                100)
+                .unlockedBy(getHasName(StargateItems.RAW_NAQUADAH), has(StargateItems.RAW_NAQUADAH))
+                .save(recipeOutput, modLoc("naquadah_ingot_from_blasting_raw_naquadah"));
+
+        SimpleCookingRecipeBuilder.smelting(
+                Ingredient.of(StargateBlocks.NAQUADAH_ORE),
+                RecipeCategory.MISC,
+                StargateItems.NAQUADAH_INGOT,
+                0.7f,
+                100)
+                .unlockedBy(getHasName(StargateBlocks.NAQUADAH_ORE), has(StargateBlocks.NAQUADAH_ORE))
+                .save(recipeOutput, modLoc("naquadah_ingot_from_smelting_naquadah_ore"));
+
+        SimpleCookingRecipeBuilder.smelting(
+                Ingredient.of(StargateItems.RAW_NAQUADAH),
+                RecipeCategory.MISC,
+                StargateItems.NAQUADAH_INGOT,
+                0.7f,
+                100)
+                .unlockedBy(getHasName(StargateItems.RAW_NAQUADAH), has(StargateItems.RAW_NAQUADAH))
+                .save(recipeOutput, modLoc("naquadah_ingot_from_smelting_raw_naquadah"));
+
     }
 
     public static void foodToasting(RecipeOutput recipeOutput, int cookingTime, ItemLike material, ItemLike result, float experience) {

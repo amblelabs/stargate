@@ -5,11 +5,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "stargate:naquadah"
+          "name": "stargate:block_of_naquadah"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "stargate:blocks/naquadah"
+  "random_sequence": "stargate:blocks/block_of_naquadah"
 }

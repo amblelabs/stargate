@@ -30,7 +30,7 @@ public class StargateLootTables extends AmbleLootTableSubProvider {
     @Override
     protected void makeLootTables(Map<Block, LootTable.Builder> blockTables, Map<ResourceKey<LootTable>, LootTable.Builder> lootTables) {
 
-        dropSelf(blockTables, StargateBlocks.NAQUADAH_BLOCK);
+        dropSelf(blockTables, StargateBlocks.BLOCK_OF_NAQUADAH);
         dropSelf(blockTables, StargateBlocks.RAW_NAQUADAH_BLOCK);
         dropSelf(blockTables, StargateBlocks.SANDSTONE_BRICK_SLAB);
         dropSelf(blockTables, StargateBlocks.SANDSTONE_BRICK_STAIRS);

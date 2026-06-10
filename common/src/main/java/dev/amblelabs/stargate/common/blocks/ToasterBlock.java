@@ -61,7 +61,7 @@ public class ToasterBlock extends BaseEntityBlock {
             Blocks.IRON_BLOCK, // up
             Blocks.IRON_BLOCK, // east
             Blocks.IRON_BLOCK, // west
-            StargateBlocks.NAQUADAH_BLOCK, // down
+            StargateBlocks.BLOCK_OF_NAQUADAH, // down
             Blocks.CUT_COPPER_STAIRS, // upEast
             Blocks.CUT_COPPER_STAIRS, // upWest
             Blocks.CUT_COPPER_STAIRS, // downEast

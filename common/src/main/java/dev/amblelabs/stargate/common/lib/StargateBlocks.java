@@ -53,7 +53,7 @@ public class StargateBlocks {
 
     public static final ToasterBlock TOASTER = blockItem("toaster", new ToasterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 
-    public static final Block NAQUADAH_BLOCK = blockItem("naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
+    public static final Block BLOCK_OF_NAQUADAH = blockItem("block_of_naquadah", new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
     public static final DHDBlock DHD_BLOCK = blockItem("dhd", new DHDBlock(DHDBlock.defaultProps()));
 

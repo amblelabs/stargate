@@ -26,7 +26,7 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.blockEntityModels(StargateBlocks.STARGATE, Blocks.IRON_BLOCK);
         gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
         gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
-        gen.createTrivialCube(StargateBlocks.NAQUADAH_BLOCK);
+        gen.createTrivialCube(StargateBlocks.BLOCK_OF_NAQUADAH);
 
         gen.family(StargateBlocks.SANDSTONE_BRICKS)
                 .slab(StargateBlocks.SANDSTONE_BRICK_SLAB)

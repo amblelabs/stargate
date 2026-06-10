@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "stargate:naquadah_ore"
+  },
+  "result": {
+    "id": "stargate:naquadah_ingot"
+  }
+}

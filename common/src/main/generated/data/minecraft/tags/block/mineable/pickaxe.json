@@ -2,6 +2,10 @@
   "values": [
     "stargate:naquadah_ore",
     "stargate:raw_naquadah_block",
-    "stargate:naquadah"
+    "stargate:block_of_naquadah",
+    "stargate:sandstone_bricks",
+    "stargate:sandstone_brick_slab",
+    "stargate:sandstone_brick_stairs",
+    "stargate:sandstone_brick_wall"
   ]
 }
