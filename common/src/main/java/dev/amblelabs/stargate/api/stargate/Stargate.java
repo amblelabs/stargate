@@ -25,20 +25,26 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     public static final String STATES_TAG = "States";
 
     private final UUID id;
+    private final boolean isClient;
     private final Set<UpdateListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
-        return new Stargate(tag.getUUID(ID_TAG)).fromNbt(tag, ctx);
+        return new Stargate(tag.getUUID(ID_TAG), ctx.isClient()).fromNbt(tag, ctx);
     }
 
-    public Stargate(UUID id) {
+    public Stargate(UUID id, boolean isClient) {
         super(StargateEcs.States.createArrayHolder());
 
         this.id = id;
+        this.isClient = isClient;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public boolean isClient() {
+        return isClient;
     }
 
     @Override

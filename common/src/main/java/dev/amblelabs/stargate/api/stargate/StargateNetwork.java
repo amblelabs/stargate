@@ -26,7 +26,7 @@ public class StargateNetwork extends SavedData implements Stargate.UpdateListene
     }
 
     public Stargate create() {
-        Stargate result = new Stargate(UUID.randomUUID());
+        Stargate result = new Stargate(UUID.randomUUID(), false);
         this.lookup.put(result.getId(), result);
         return this.init(result);
     }

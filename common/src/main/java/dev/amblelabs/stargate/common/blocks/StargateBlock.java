@@ -1,14 +1,11 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
-import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
-import dev.amblelabs.stargate.common.lib.StargateEcs;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -83,8 +80,9 @@ public class StargateBlock extends BaseEntityBlock {
 
     @Override
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            blockEntity.onPlace(blockState, level, blockPos, blockState2, bl);
+        // always ServerLevel, actually.
+        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
+            blockEntity.onPlace(blockState, serverLevel, blockPos, blockState2, bl);
         }
     }
 
