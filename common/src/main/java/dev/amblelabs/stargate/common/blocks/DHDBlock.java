@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.common.blocks;
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -36,8 +37,8 @@ public class DHDBlock extends BaseEntityBlock {
 
     @Override
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (level.getBlockEntity(blockPos) instanceof DHDBlockEntity blockEntity) {
-            blockEntity.onPlace(blockState, level, blockPos, blockState2, bl);
+        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(blockPos) instanceof DHDBlockEntity blockEntity) {
+            blockEntity.onPlace(blockState, serverLevel, blockPos, blockState2, bl);
         }
     }
 
