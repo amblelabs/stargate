@@ -13,7 +13,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -105,7 +104,7 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                 .save(recipeOutput, modLoc("sandstone_brick_wall_from_stonecutter"));
 
         // NAQUADAH RECIPES
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.BLOCK_OF_NAQUADAH, 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.NAQUADAH_BLOCK, 1)
                 .pattern("NNN")
                 .pattern("NNN")
                 .pattern("NNN")
@@ -114,8 +113,8 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                 .save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, StargateItems.NAQUADAH_INGOT, 9)
-                .requires(StargateBlocks.BLOCK_OF_NAQUADAH)
-                .unlockedBy(getHasName(StargateBlocks.BLOCK_OF_NAQUADAH), has(StargateBlocks.BLOCK_OF_NAQUADAH))
+                .requires(StargateBlocks.NAQUADAH_BLOCK)
+                .unlockedBy(getHasName(StargateBlocks.NAQUADAH_BLOCK), has(StargateBlocks.NAQUADAH_BLOCK))
                 .save(recipeOutput, modLoc("naquadah_ingot_from_naquadah_block"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.RAW_NAQUADAH_BLOCK, 1)

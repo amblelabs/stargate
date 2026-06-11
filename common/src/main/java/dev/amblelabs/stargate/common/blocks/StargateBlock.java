@@ -2,9 +2,8 @@ package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.util.BlockEntityHelper;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
-import dev.amblelabs.stargate.common.lib.StargateEcs;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +29,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-
 
 public class StargateBlock extends BaseEntityBlock {
 
@@ -107,8 +105,7 @@ public class StargateBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, StargateBlockEntities.STARGATE,
-                (level1, pos, state1, be) -> be.tick(level1, pos, state1, be));
+        return BlockEntityHelper.createTicker(type, StargateBlockEntities.STARGATE, StargateBlockEntity::tick);
     }
 
     public static Properties defaultProps() {

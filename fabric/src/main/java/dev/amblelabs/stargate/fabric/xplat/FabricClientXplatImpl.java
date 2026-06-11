@@ -3,7 +3,6 @@ package dev.amblelabs.stargate.fabric.xplat;
 import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -49,9 +48,9 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 
     @Override
     public void registerSkyRenderer(ResourceKey<Level> resourceKey, SkyRenderer skyRenderer) {
-        DimensionRenderingRegistry.registerSkyRenderer(resourceKey, context -> {
-            skyRenderer.renderSky(context.world(), context.positionMatrix(), context.projectionMatrix(), context.camera().getPartialTickTime(), context.camera());
-        });
+        DimensionRenderingRegistry.registerSkyRenderer(resourceKey, context
+                -> skyRenderer.renderSky(context.world(), context.positionMatrix(), context.projectionMatrix(),
+                context.camera().getPartialTickTime(), context.camera()));
     }
 
     @SuppressWarnings("deprecation")

@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,10 +38,6 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity {
         return cache;
     }
 
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        this.setChanged(); // TODO: figure out if this is even needed
-    }
-
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -56,13 +51,5 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity {
 
         BlockState state = getBlockState();
         level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
-    }
-
-    public String getModelName() {
-        return "dhd";
-    }
-
-    public String getTextureName() {
-        return "dhd";
     }
 }

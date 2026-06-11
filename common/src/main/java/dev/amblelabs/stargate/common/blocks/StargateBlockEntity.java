@@ -3,43 +3,30 @@ package dev.amblelabs.stargate.common.blocks;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
+import dev.amblelabs.stargate.api.util.BlockEntityHelper;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
-import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
-import dev.drtheo.ecs.state.TState;
-import dev.drtheo.ecs.state.TStateContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
@@ -48,7 +35,8 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Objects;
 
-public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, BlockEntityTicker, Stargate.UpdateListener {
+public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateListener,
+        BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -58,6 +46,13 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         super(StargateBlockEntities.STARGATE, blockPos, blockState);
     }
 
+    public Stargate setStargate(Stargate stargate, NbtDeserializer.Context ctx) {
+        stargate.onUpdate(this);
+        TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
+        return this.stargate = stargate;
+    }
+
+    @Override
     public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         Stargate stargate = StargateNetwork.getOrCreate(level).create();
 
@@ -65,12 +60,6 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         entry.mark(stargate);
 
         this.setStargate(stargate, NbtDeserializer.Context.fromLevel(level));
-    }
-
-    public Stargate setStargate(Stargate stargate, NbtDeserializer.Context ctx) {
-        stargate.onUpdate(this);
-        TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
-        return this.stargate = stargate;
     }
 
     @Override
@@ -122,13 +111,21 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         this.setChanged();
     }
 
+    private static final float MAX_RADIUS = 2.6f;
+    private static final float INNER_WHITE_RADIUS = 0.8f;
+    private static final int CYCLE_LENGTH = 35;
+
+    private static final int INNER_BG_COLOR = Color.ofRGB(0.85f, 0.85f, 1.0f).getColor();
+    private static final int OUTER_BG_COLOR = Color.ofRGB(0.05f, 0.75f, 1.0f).getColor();
+
+    private static final int INNER_RIPPLE_COLOR = Color.WHITE.getColor();
+    private static final int OUTER_RIPPLE_COLOR = Color.ofRGB(0.2f, 0.65f, 1.0f).getColor();
+
     @Override
-    public void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide()) return;
 
         BlockPos centerPos = blockPos.above().above().above();
-        double maxRadius = 2.6d;
-        double innerWhiteRadius = 0.8d;
 
         double centerX = centerPos.getX() + 0.5;
         double centerY = centerPos.getY() + 0.5;
@@ -136,63 +133,54 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         long gameTime = level.getGameTime();
 
-        for (double radius = 0.1; radius <= maxRadius; radius += 0.25) {
+        for (float radius = 0.1f; radius <= MAX_RADIUS; radius += 0.25f) {
+            double waveOffset = Mth.sin((gameTime * 0.1f) + radius) * 2;
 
-            double waveOffset = Math.sin((gameTime * 0.1) + radius) * 2;
-            int bgCount = (int) (radius + waveOffset);
-            if (bgCount < 1) bgCount = 1;
-
-            int bgColor = (radius <= innerWhiteRadius)
-                    ? Color.ofRGB(0.85f, 0.85f, 1.0f).getColor()
-                    : Color.ofRGB(0.05f, 0.75f, 1.0f).getColor();
+            int bgCount = Math.min((int) (radius + waveOffset), 1);
+            int bgColor = radius <= INNER_WHITE_RADIUS ? INNER_BG_COLOR : OUTER_BG_COLOR;
 
             for (int i = 0; i < bgCount; i++) {
-                double angle = (2 * Math.PI * i) / bgCount;
+                float angle = (2 * Mth.PI * i) / bgCount;
+                float shiftedAngle = angle + (gameTime * 0.25f);
 
-                double shiftedAngle = angle + (gameTime * 0.25);
-
-                double offsetX = Math.cos(shiftedAngle) * radius;
-                double offsetY = Math.sin(shiftedAngle) * radius;
-                Vector2f uv = toEventHorizonUv(offsetX, offsetY, maxRadius);
+                float offsetX = Mth.cos(shiftedAngle) * radius;
+                float offsetY = Mth.sin(shiftedAngle) * radius;
+                Vector2f uv = toEventHorizonUv(offsetX, offsetY);
 
                 level.addAlwaysVisibleParticle(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
                         centerX + offsetX, centerY + offsetY, centerZ,
-                        1,
-                        0, 0
+                        1, 0, 0
                 );
             }
         }
 
-        int cycleLength = 35;
-        double progress = (gameTime % cycleLength) / (double) cycleLength;
+        float progress = (gameTime % CYCLE_LENGTH) / (float) CYCLE_LENGTH;
 
-        double rippleRadius = progress * maxRadius;
-        if (rippleRadius < 0.1) rippleRadius = 0.1;
+        float rippleRadius = Math.min(progress * MAX_RADIUS, 0.1f);
+        int rippleCount = (int) rippleRadius;
 
-        int rippleCount = (int) (rippleRadius);
-
-        int rippleColor = (rippleRadius <= innerWhiteRadius)
-                ? Color.ofRGB(1.0f, 1.0f, 1.0f).getColor()
-                : Color.ofRGB(0.2f, 0.65f, 1.0f).getColor();
+        int rippleColor = rippleRadius <= INNER_WHITE_RADIUS
+                ? INNER_RIPPLE_COLOR
+                : OUTER_RIPPLE_COLOR;
 
         for (int i = 0; i < rippleCount; i++) {
-            double angle = (2 * Math.PI * i) / rippleCount;
-            double offsetX = Math.cos(angle) * rippleRadius;
-            double offsetY = Math.sin(angle) * rippleRadius;
-            Vector2f uv = toEventHorizonUv(offsetX, offsetY, maxRadius);
+            float angle = (2 * Mth.PI * i) / rippleCount;
+            float offsetX = Mth.cos(angle) * rippleRadius;
+            float offsetY = Mth.sin(angle) * rippleRadius;
+
+            Vector2f uv = toEventHorizonUv(offsetX, offsetY);
             level.addAlwaysVisibleParticle(
                     new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
                     centerX + offsetX, centerY + offsetY, centerZ,
-                    1,
-                    0, 0
+                    1, 0, 0
             );
         }
     }
 
-    private static Vector2f toEventHorizonUv(double offsetX, double offsetY, double maxRadius) {
-        float u = (float) ((offsetX / (maxRadius * 2.0)) + 0.5);
-        float v = (float) ((offsetY / (maxRadius * 2.0)) + 0.5);
-        return new Vector2f(Mth.clamp(u, 0.0f, 1.0f), Mth.clamp(1.0f - v, 0.0f, 1.0f));
+    private static Vector2f toEventHorizonUv(float offsetX, float offsetY) {
+        float u = (float) (offsetX / (MAX_RADIUS * 2.0) + 0.5);
+        float v = (float) (offsetY / (MAX_RADIUS * 2.0) + 0.5);
+        return new Vector2f(Mth.clamp(u, 0, 1), Mth.clamp(1 - v, 0, 1));
     }
 }

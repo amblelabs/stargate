@@ -23,18 +23,16 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
         this.getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(StargateBlocks.NAQUADAH_ORE)
                 .add(StargateBlocks.RAW_NAQUADAH_BLOCK)
-                .add(StargateBlocks.BLOCK_OF_NAQUADAH)
+                .add(StargateBlocks.NAQUADAH_BLOCK)
                 .add(StargateBlocks.SANDSTONE_BRICKS)
                 .add(StargateBlocks.SANDSTONE_BRICK_SLAB)
                 .add(StargateBlocks.SANDSTONE_BRICK_STAIRS)
                 .add(StargateBlocks.SANDSTONE_BRICK_WALL);
 
-
         this.getOrCreateTagBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
                 .add(StargateBlocks.NAQUADAH_ORE)
                 .add(StargateBlocks.RAW_NAQUADAH_BLOCK)
-                .add(StargateBlocks.BLOCK_OF_NAQUADAH);
-
+                .add(StargateBlocks.NAQUADAH_BLOCK);
 
         this.getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
                 .add(StargateBlocks.SANDSTONE_BRICKS)
@@ -44,6 +42,5 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
 
         this.getOrCreateTagBuilder(BlockTags.WALLS)
                 .add(StargateBlocks.SANDSTONE_BRICK_WALL);
-
     }
 }

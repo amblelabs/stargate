@@ -1,31 +1,23 @@
-package dev.amblelabs.stargate.common.particles;
+package dev.amblelabs.stargate.client.particles;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.core.particles.ScalableParticleOptionsBase;
 import net.minecraft.util.Mth;
 
-@Environment(value=EnvType.CLIENT)
-public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
-        extends TexturedCubeParticle {
+public class PuddleParticleBase extends TexturedCubeParticle {
+
     private final SpriteSet sprites;
 
-    protected PuddleParticleBase(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, T options, SpriteSet sprites) {
+    protected PuddleParticleBase(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
+
         this.sprites = sprites;
+        this.setSpriteFromAge(sprites);
+
         float f = this.random.nextFloat() * 0.4f + 0.6f;
         this.quadSize = 0.18f * f;
-        this.setSpriteFromAge(sprites);
+
         this.lifetime += 100;
         this.setAlpha(0.5f);
     }
@@ -43,6 +35,7 @@ public class PuddleParticleBase<T extends ScalableParticleOptionsBase>
     @Override
     public void tick() {
         super.tick();
+
         this.setSpriteFromAge(this.sprites);
         this.scale(0.999f);
     }

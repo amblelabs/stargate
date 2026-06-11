@@ -1,28 +1,22 @@
-package dev.amblelabs.stargate.common.particles;
+package dev.amblelabs.stargate.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.DustParticleBase;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.minecraft.core.particles.ParticleOptions;
-import org.joml.Vector3f;
 
-@Environment(value=EnvType.CLIENT)
-public class PuddleParticle
-        extends PuddleParticleBase<PuddleParticleOptions> {
+public class PuddleParticle extends PuddleParticleBase {
 
     protected PuddleParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, PuddleParticleOptions options, SpriteSet sprites) {
-        super(level, x, y, z, xSpeed, ySpeed, zSpeed, options, sprites);
-        float f = this.random.nextFloat() * 0.4f + 0.6f;
+        super(level, x, y, z, xSpeed, ySpeed, zSpeed, sprites);
+
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
+
         this.setLoc(options.loc());
     }
 
@@ -31,9 +25,8 @@ public class PuddleParticle
         super.render(buffer, camera, partialTicks);
     }
 
-    @Environment(value=EnvType.CLIENT)
-    public static class Provider
-            implements ParticleProvider<PuddleParticleOptions> {
+    public static class Provider implements ParticleProvider<PuddleParticleOptions> {
+
         private final SpriteSet sprites;
 
         public Provider(SpriteSet sprites) {

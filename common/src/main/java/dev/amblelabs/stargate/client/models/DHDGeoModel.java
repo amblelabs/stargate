@@ -7,21 +7,19 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class DHDGeoModel extends GeoModel<DHDBlockEntity> {
 
-    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getModelResource(DHDBlockEntity entity) {
-        return StargateAPI.modLoc("geo/block/" + entity.getModelName() + ".geo.json");
+        return StargateAPI.modLoc("geo/block/dhd.geo.json");
     }
 
-    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getTextureResource(DHDBlockEntity entity) {
-        return StargateAPI.modLoc("textures/block/" + entity.getTextureName() + ".png");
+        return StargateAPI.modLoc("textures/block/dhd.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(DHDBlockEntity entity) {
-        return StargateAPI.modLoc("animations/block/" + entity.getModelName() + ".animation.json");
+        return StargateAPI.modLoc("animations/block/dhd.animation.json");
     }
 }
 

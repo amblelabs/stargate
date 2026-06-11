@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.client.renderers.skybox;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -10,12 +11,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +28,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
+
+    public static final ResourceLocation DIMENSION_ID = StargateAPI.modLoc("abydos");
+    public static final ResourceKey<Level> DIMENSION_KEY = ResourceKey.create(Registries.DIMENSION, DIMENSION_ID);
 
     private static final ResourceLocation MOON_LOCATION = ResourceLocation.withDefaultNamespace("textures/environment/moon_phases.png");
     private static final ResourceLocation SUN_LOCATION = ResourceLocation.withDefaultNamespace("textures/environment/sun.png");

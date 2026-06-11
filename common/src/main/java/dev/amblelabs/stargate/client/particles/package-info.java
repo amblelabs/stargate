@@ -1,6 +1,6 @@
 @Environment(EnvType.CLIENT)
 @NotNullByDefault
-package dev.amblelabs.stargate.client.lib;
+package dev.amblelabs.stargate.client.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

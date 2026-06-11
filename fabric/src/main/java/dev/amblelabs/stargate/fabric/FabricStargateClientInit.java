@@ -9,7 +9,6 @@ import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -37,13 +36,13 @@ public class FabricStargateClientInit implements ClientModInitializer {
 
 //        YoureFiredModelLayers.init((loc, def) -> EntityModelLayerRegistry.registerModelLayer(loc, def::get));
 
-        StargateParticles.FactoryHandler.registerFactories(
-                (type, constructor) ->
-                        ParticleFactoryRegistry.getInstance().register(
-                                type,
-                                spriteSet -> (ParticleProvider) constructor.apply(spriteSet)
-                        )
-        );
+        StargateParticles.FactoryHandler.registerFactories(new StargateParticles.FactoryHandler.Consumer() {
+
+            @Override
+            public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> constructor) {
+                ParticleFactoryRegistry.getInstance().register(type, constructor::apply);
+            }
+        });
 
         RegisterClientStuff.registerBlockEntityRenderers(BlockEntityRenderers::register);
 

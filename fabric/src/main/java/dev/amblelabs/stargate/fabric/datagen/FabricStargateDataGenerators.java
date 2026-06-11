@@ -28,7 +28,6 @@ public class FabricStargateDataGenerators implements DataGeneratorEntrypoint {
         var pack = gen.createPack();
         var tags = IXplatAbstractions.INSTANCE.tags();
 
-
         pack.addProvider((output, lookup) -> new StargateXplatRecipes(
                 output, lookup, INGREDIENTS));
 

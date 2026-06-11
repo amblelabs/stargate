@@ -1,8 +1,6 @@
-package dev.amblelabs.stargate.common.particles;
+package dev.amblelabs.stargate.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -11,36 +9,35 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-@Environment(value=EnvType.CLIENT)
-public abstract class CubeParticle
-        extends Particle {
+public abstract class CubeParticle extends Particle {
+
     protected float quadSize;
 
     protected CubeParticle(ClientLevel level, double x, double y, double z) {
         super(level, x, y, z);
-        this.quadSize = 0.1f * (this.random.nextFloat() * 0.5f + 0.5f) * 2.0f;
+        this.quadSize = (this.random.nextFloat() * 0.5f + 0.5f) * 0.2f;
     }
 
     protected CubeParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.quadSize = 0.1f * (this.random.nextFloat() * 0.5f + 0.5f) * 2.0f;
+        this.quadSize = (this.random.nextFloat() * 0.5f + 0.5f) * 0.2f;
     }
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
         Quaternionf quaternionf = new Quaternionf();
-        if (this.roll != 0.0f) {
-            quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
-        }
+        if (this.roll != 0.0f) quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
+
         this.renderRotatedQuad(buffer, camera, quaternionf, partialTicks);
     }
 
     protected void renderRotatedQuad(VertexConsumer buffer, Camera camera, Quaternionf quaternion, float partialTicks) {
         Vec3 vec3 = camera.getPosition();
-        float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
-        float g = (float)(Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
-        float h = (float)(Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
-        this.renderCube(buffer, quaternion, f, g, h, partialTicks);
+        float x = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
+        float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
+        float z = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+
+        this.renderCube(buffer, quaternion, x, y, z, partialTicks);
     }
 
     protected void renderCube(VertexConsumer buffer, Quaternionf quaternion,
