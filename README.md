@@ -1,3 +1,4 @@
+<div align="center">
 
 ### **Presented by [AmbleLabs](https://amblelabs.dev)**
 <img src="promo/stargate_logo_1400px.png" alt="Stargate Logo" width="700" />
@@ -81,4 +82,6 @@ This mod adds the well known Stargate from the popular shows with the same name,
   <a href="https://discord.com/invite/WjKhRjavCj" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Discord</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
    <a href="https://amblelabs.github.io/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Website</a>
+</div>
+
 </div>
