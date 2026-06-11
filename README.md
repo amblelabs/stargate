@@ -1,4 +1,6 @@
-<img width="800" height="300" style="image-rendering: pixelated; image-rendering: crisp-edges;" alt="sglogo_new" src="common/src/main/resources/assets/stargate/textures/gui/title/minecraft.png" />
+
+### **Presented by [AmbleLabs](https://amblelabs.dev)**
+<img src="promo/stargate_logo_1400px.png" alt="Stargate Logo" width="700" />
 
 
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/stargate-sojourner?link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait%2Fversions)
