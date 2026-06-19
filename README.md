@@ -1,8 +1,7 @@
 <div align="center">
 
 ### **Presented by [AmbleLabs](https://amblelabs.dev)**
-<img src="promo/stargate_logo_1400px.png" alt="Stargate Logo" width="700" />
-
+<img src="promo/stargatelogo.png" alt="Stargate Logo" width="700" />
 
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/stargate-sojourner?link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait%2Fversions)
 
@@ -54,12 +53,14 @@
 
 This mod adds the well known Stargate from the popular shows with the same name, along with various other features from the franchise!
 
--------------------
 
+<img src="promo/destinygate.png" alt="Destiny Stargate" width="200" />
+
+-------------------
+<br>
 
 [<img alt="minecraft storage" height="56" src="https://cdn.modrinth.com/data/cached_images/3a98e120295ec956896ba5adcdc27d7e83826f6e_0.webp">](https://minecraftstorage.com/mods/stargate)
 
----
 
 <h2>
   <img src="https://cdn.modrinth.com/data/cached_images/23b97ecfe49586f70c6a7d4e4ca63ac14d47e6e1.png"
@@ -71,13 +72,13 @@ This mod adds the well known Stargate from the popular shows with the same name,
 </h2>
 
 <div style="text-align: center; font-size: 1.5em; margin-top: 1em; white-space: nowrap;">
-  <a href="https://amblelabs.dev/wiki/en/stargate/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Wiki</a>
+  <a href="https://amblelabs.dev/wiki/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Wiki</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
   <a href="https://github.com/amblelabs/stargate/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">GitHub</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
   <a href="https://www.curseforge.com/minecraft/mc-mods/stargate" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">CurseForge</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
-  <a href="https://modrinth.com/mod/amble-stargate" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Modrinth</a>
+  <a href="https://modrinth.com/mod/stargate-sojourner" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Modrinth</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
   <a href="https://discord.com/invite/WjKhRjavCj" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Discord</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
