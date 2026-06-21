@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "stargate:block_of_naquadah"
+      "item": "stargate:naquadah_block"
     }
   ],
   "result": {
