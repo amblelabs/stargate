@@ -14,6 +14,7 @@ import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -125,8 +128,17 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide()) return;
 
-        BlockPos centerPos = blockPos.above().above().above();
+        Direction facing = blockState.hasProperty(BlockStateProperties.FACING)
+                ? blockState.getValue(BlockStateProperties.FACING)
+                : Direction.NORTH;
 
+        Direction.Axis axis = facing.getAxis();
+        Vec3 localX = Vec3.atLowerCornerOf(facing.getCounterClockWise().getNormal());
+        Vec3 localY = (axis == Direction.Axis.Y)
+                ? Vec3.atLowerCornerOf(Direction.NORTH.getNormal())
+                : Vec3.atLowerCornerOf(Direction.UP.getNormal());
+
+        BlockPos centerPos = blockPos.above().above().above();
         double centerX = centerPos.getX() + 0.5;
         double centerY = centerPos.getY() + 0.5;
         double centerZ = centerPos.getZ() + 0.5;
@@ -136,7 +148,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         for (float radius = 0.1f; radius <= MAX_RADIUS; radius += 0.25f) {
             double waveOffset = Mth.sin((gameTime * 0.1f) + radius) * 2;
 
-            int bgCount = Math.min((int) (radius + waveOffset), 1);
+            int bgCount = Math.max((int) (radius + waveOffset), 1);
             int bgColor = radius <= INNER_WHITE_RADIUS ? INNER_BG_COLOR : OUTER_BG_COLOR;
 
             for (int i = 0; i < bgCount; i++) {
@@ -147,22 +159,23 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 float offsetY = Mth.sin(shiftedAngle) * radius;
                 Vector2f uv = toEventHorizonUv(offsetX, offsetY);
 
+                double worldX = centerX + (offsetX * localX.x) + (offsetY * localY.x);
+                double worldY = centerY + (offsetX * localX.y) + (offsetY * localY.y);
+                double worldZ = centerZ + (offsetX * localX.z) + (offsetY * localY.z);
+
                 level.addAlwaysVisibleParticle(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
-                        centerX + offsetX, centerY + offsetY, centerZ,
+                        worldX, worldY, worldZ,
                         1, 0, 0
                 );
             }
         }
 
         float progress = (gameTime % CYCLE_LENGTH) / (float) CYCLE_LENGTH;
-
         float rippleRadius = Math.min(progress * MAX_RADIUS, 0.1f);
         int rippleCount = (int) rippleRadius;
 
-        int rippleColor = rippleRadius <= INNER_WHITE_RADIUS
-                ? INNER_RIPPLE_COLOR
-                : OUTER_RIPPLE_COLOR;
+        int rippleColor = rippleRadius <= INNER_WHITE_RADIUS ? INNER_RIPPLE_COLOR : OUTER_RIPPLE_COLOR;
 
         for (int i = 0; i < rippleCount; i++) {
             float angle = (2 * Mth.PI * i) / rippleCount;
@@ -170,9 +183,14 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
             float offsetY = Mth.sin(angle) * rippleRadius;
 
             Vector2f uv = toEventHorizonUv(offsetX, offsetY);
+
+            double worldX = centerX + (offsetX * localX.x) + (offsetY * localY.x);
+            double worldY = centerY + (offsetX * localX.y) + (offsetY * localY.y);
+            double worldZ = centerZ + (offsetX * localX.z) + (offsetY * localY.z);
+
             level.addAlwaysVisibleParticle(
                     new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
-                    centerX + offsetX, centerY + offsetY, centerZ,
+                    worldX, worldY, worldZ,
                     1, 0, 0
             );
         }
