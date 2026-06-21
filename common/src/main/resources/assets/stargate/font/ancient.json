@@ -1,0 +1,18 @@
+{
+  "providers": [
+    {
+      "type": "reference",
+      "id": "minecraft:include/space"
+    },
+    {
+      "type": "bitmap",
+      "file": "stargate:font/ancient.png",
+      "ascent": 7,
+      "chars": [
+        "abcdefghijklm",
+        "nopqrstuvwxyz",
+        "0123456789\u0000\u0000\u0000"
+      ]
+    }
+  ]
+}
