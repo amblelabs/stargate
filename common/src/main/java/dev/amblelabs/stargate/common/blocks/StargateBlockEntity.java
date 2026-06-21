@@ -128,15 +128,46 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide()) return;
 
-        Direction facing = blockState.hasProperty(BlockStateProperties.FACING)
-                ? blockState.getValue(BlockStateProperties.FACING)
-                : Direction.NORTH;
+        Direction facing = Direction.NORTH;
+        if (blockState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        } else if (blockState.hasProperty(BlockStateProperties.FACING)) {
+            facing = blockState.getValue(BlockStateProperties.FACING);
+        }
 
-        Direction.Axis axis = facing.getAxis();
-        Vec3 localX = Vec3.atLowerCornerOf(facing.getCounterClockWise().getNormal());
-        Vec3 localY = (axis == Direction.Axis.Y)
-                ? Vec3.atLowerCornerOf(Direction.NORTH.getNormal())
-                : Vec3.atLowerCornerOf(Direction.UP.getNormal());
+        Vec3 localX;
+        Vec3 localY;
+
+        switch (facing) {
+            case NORTH -> {
+                localX = new Vec3(-1, 0, 0);
+                localY = new Vec3(0, 1, 0);
+            }
+            case SOUTH -> {
+                localX = new Vec3(1, 0, 0);
+                localY = new Vec3(0, 1, 0);
+            }
+            case WEST -> {
+                localX = new Vec3(0, 0, 1);
+                localY = new Vec3(0, 1, 0);
+            }
+            case EAST -> {
+                localX = new Vec3(0, 0, -1);
+                localY = new Vec3(0, 1, 0);
+            }
+            case UP -> {
+                localX = new Vec3(1, 0, 0);
+                localY = new Vec3(0, 0, 1);
+            }
+            case DOWN -> {
+                localX = new Vec3(1, 0, 0);
+                localY = new Vec3(0, 0, -1);
+            }
+            default -> {
+                localX = new Vec3(1, 0, 0);
+                localY = new Vec3(0, 1, 0);
+            }
+        }
 
         BlockPos centerPos = blockPos.above().above().above();
         double centerX = centerPos.getX() + 0.5;
