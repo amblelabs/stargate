@@ -66,5 +66,6 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.generateFlatItem(StargateItems.DIAMOND_IRIS, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.GOLD_IRIS, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.IRON_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.MUSIC_DISC_THEME, ModelTemplates.FLAT_ITEM);
     }
 }

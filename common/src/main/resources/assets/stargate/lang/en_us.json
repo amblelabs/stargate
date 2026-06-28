@@ -19,5 +19,7 @@
   "block.stargate.sandstone_bricks": "Sandstone Bricks",
   "block.stargate.sandstone_brick_slab": "Sandstone Brick Slab",
   "block.stargate.sandstone_brick_stairs": "Sandstone Brick Stairs",
-  "block.stargate.sandstone_brick_wall": "Sandstone Brick Wall"
+  "block.stargate.sandstone_brick_wall": "Sandstone Brick Wall",
+  "item.stargate.music_disc_theme": "Music Disc",
+  "item.stargate.music_disc_theme.desc": "Lucien - Stargate Theme"
 }

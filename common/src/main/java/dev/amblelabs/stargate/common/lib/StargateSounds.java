@@ -22,6 +22,7 @@ public class StargateSounds {
     public static final SoundEvent TOASTER_DING = sound("block.toaster.ding");
     public static final SoundEvent TOASTER_LOAD = sound("block.toaster.load");
     public static final SoundEvent TOASTER_ACTIVE = sound("block.toaster.active");
+    public static final SoundEvent STARGATE_THEME = sound("music.theme");
 
     private static SoundEvent sound(String name) {
         var id = modLoc(name);

@@ -9,6 +9,9 @@ import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -16,15 +19,21 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 import java.util.function.Function;
 
 public class FabricStargateClientInit implements ClientModInitializer {
 
+    public static final String ID = "stargate";
     @Override
     public void onInitializeClient() {
         FabricPacketHandler.initClient();
+
+        FabricLoader.getInstance().getModContainer(ID).ifPresent(container -> {
+            ResourceManagerHelper.registerBuiltinResourcePack(ResourceLocation.fromNamespaceAndPath(ID, "mainmenutrack"), container, ResourcePackActivationType.DEFAULT_ENABLED);
+        });
 
 //        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);
 

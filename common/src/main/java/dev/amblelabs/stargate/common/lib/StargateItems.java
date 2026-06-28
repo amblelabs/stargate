@@ -2,7 +2,11 @@ package dev.amblelabs.stargate.common.lib;
 
 import com.google.common.base.Suppliers;
 import dev.amblelabs.stargate.common.items.IrisItem;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +63,19 @@ public class StargateItems {
     public static final Item DIAMOND_IRIS = make("diamond_iris", new IrisItem(IrisItem.Type.DIAMOND, props()));
     public static final Item GOLD_IRIS = make("gold_iris", new IrisItem(IrisItem.Type.GOLD, props()));
     public static final Item IRON_IRIS = make("iron_iris", new IrisItem(IrisItem.Type.IRON, props()));
+
+    public static final ResourceKey<JukeboxSong> STARGATE_THEME_SONG =
+            ResourceKey.create(Registries.JUKEBOX_SONG,
+                    ResourceLocation.fromNamespaceAndPath("stargate", "stargate_theme"));
+
+    public static final Item MUSIC_DISC_THEME = make(
+            "music_disc_theme",
+            new Item(new Item.Properties()
+                    .jukeboxPlayable(STARGATE_THEME_SONG)
+                    .stacksTo(1)
+                    .rarity(Rarity.RARE)
+            )
+    );
 
     public static Item.Properties props() {
         return new Item.Properties();

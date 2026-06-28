@@ -16,5 +16,10 @@
     "sounds": [
       "stargate:toaster/toaster_active"
     ]
+  },
+  "music.theme": {
+    "sounds": [
+      "stargate:music/stargate_theme"
+    ]
   }
 }
