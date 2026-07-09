@@ -1,19 +1,25 @@
 package dev.amblelabs.stargate.api.stargate;
 
+import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
+import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
 
 public class StargateNetwork extends SavedData implements Stargate.UpdateListener {
 
     private static final String NETWORK_FILE_ID = "stargate-networks";
+    private static final String GATES_TAG = "Gates";
 
     private final ServerLevel level;
 
@@ -42,16 +48,21 @@ public class StargateNetwork extends SavedData implements Stargate.UpdateListene
 
     @Override
     public void onStargateUpdate(Stargate stargate) {
-        // no-op for now
+        this.setDirty();
     }
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        return tag;
-    }
+        ListTag gates = new ListTag();
+        for (Stargate stargate : this.lookup.values()) {
+            CompoundTag gateTag = new CompoundTag();
+            stargate.toNbt(gateTag, NbtSerializer.Context.fromLevel(level));
 
-    public static StargateNetwork load(ServerLevel level, CompoundTag tag, HolderLookup.Provider registries) {
-        return new StargateNetwork(level);
+            gates.add(gateTag);
+        }
+
+        tag.put(GATES_TAG, gates);
+        return tag;
     }
 
     public static @Nullable StargateNetwork get(ServerLevel level) {
@@ -62,10 +73,33 @@ public class StargateNetwork extends SavedData implements Stargate.UpdateListene
         return level.getDataStorage().computeIfAbsent(factory(level), NETWORK_FILE_ID);
     }
 
-    public static Factory<StargateNetwork> factory(ServerLevel level) {
-        return new Factory<>(() -> new StargateNetwork(level),
-                (compoundTag, provider) -> load(level, compoundTag, provider),
-                DataFixTypes.SAVED_DATA_FORCED_CHUNKS
+    private static StargateNetwork load(ServerLevel level, CompoundTag tag, HolderLookup.Provider registries) {
+        StargateNetwork network = new StargateNetwork(level);
+
+        ListTag gates = tag.getList(GATES_TAG, Tag.TAG_COMPOUND);
+        for (Tag rawGateTag : gates) {
+            if (!(rawGateTag instanceof CompoundTag gateTag)) {
+                StargateAPI.LOGGER.error("Failed to load a Stargate for {}: {}", level, rawGateTag);
+                continue;
+            }
+
+            NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
+            Stargate stargate = Stargate.createFromNbt(gateTag, ctx);
+
+            network.lookup.put(stargate.getId(), stargate);
+            network.init(stargate);
+        }
+
+        return network;
+    }
+
+    private static BiFunction<CompoundTag, HolderLookup.Provider, StargateNetwork> load(ServerLevel level) {
+        return (tag, registries) -> load(level, tag, registries);
+    }
+
+    private static Factory<StargateNetwork> factory(ServerLevel level) {
+        return new Factory<>(() -> new StargateNetwork(level), StargateNetwork.load(level),
+                null /// {@see net.fabricmc.fabric.mixin.object.builder.PersistentStateManagerMixin}
         ); // FIXME: :P
     }
 }

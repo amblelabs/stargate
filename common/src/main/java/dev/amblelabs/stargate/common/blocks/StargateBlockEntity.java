@@ -41,6 +41,8 @@ import java.util.Objects;
 public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateListener,
         BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
 
+    private static final String ID_TAG = "Ref";
+
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public @Nullable Stargate stargate = null;
@@ -65,23 +67,46 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         this.setStargate(stargate, NbtDeserializer.Context.fromLevel(level));
     }
 
+    // this is ONLY used for networking (S2C) and this impl DOES NOT handle components
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        return super.saveWithoutMetadata(provider);
+        CompoundTag tag = new CompoundTag();
+        if (stargate == null) return tag;
+
+        stargate.toNbt(tag, NbtSerializer.Context.fromLevel(level));
+        return tag;
     }
 
+    // this is ONLY used for server-side serialization (like saving the BE to the world)
     @Override
     protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        stargate.toNbt(nbt, NbtSerializer.Context.fromLevel(level));
-        nbt.putUUID("Ref", this.stargate.getId()); // TODO: figure out if this is needed
+        if (this.stargate != null)
+            nbt.putUUID(ID_TAG, this.stargate.getId());
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
         NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
 
-        this.stargate = this.stargate != null ? this.stargate.fromNbt(nbt, ctx)
-                : this.setStargate(Stargate.createFromNbt(nbt, ctx), ctx);
+        // stargate ain't null, meaning it's already got full gate data
+        if (this.stargate != null) {
+            this.stargate.fromNbt(nbt, ctx);
+            return;
+        }
+
+        // FIXME: this relies on a hack that "Ref" only gets serialized if it was from loading the world
+        //  ideally, this split logic should be done via a custom packet
+        if (nbt.hasUUID(ID_TAG) && level instanceof ServerLevel serverLevel) {
+            Stargate stargate = StargateNetwork.getOrCreate(serverLevel).get(nbt.getUUID(ID_TAG));
+
+            if (stargate != null)
+                this.stargate = this.setStargate(stargate, ctx);
+
+            return;
+        }
+
+        // finally, it could be running on client
+        this.stargate = this.setStargate(Stargate.createFromNbt(nbt, ctx), ctx);
     }
 
     @Override
@@ -135,45 +160,27 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
             facing = blockState.getValue(BlockStateProperties.FACING);
         }
 
-        Vec3 localX;
-        Vec3 localY;
+        Vec3 localX = null;
+        Vec3 localY = null;
 
-        switch (facing) {
-            case NORTH -> {
-                localX = new Vec3(-1, 0, 0);
+        int sign = facing.getAxisDirection().getStep(); // returns +1 or -1
+
+        switch (facing.getAxis()) {
+            case X -> {
+                localX = new Vec3(0, 0, -sign);  // WEST -> +Z, EAST -> -Z
                 localY = new Vec3(0, 1, 0);
             }
-            case SOUTH -> {
-                localX = new Vec3(1, 0, 0);
+            case Z -> {
+                localX = new Vec3(sign, 0, 0);   // NORTH -> -X, SOUTH -> +X
                 localY = new Vec3(0, 1, 0);
             }
-            case WEST -> {
-                localX = new Vec3(0, 0, 1);
-                localY = new Vec3(0, 1, 0);
-            }
-            case EAST -> {
-                localX = new Vec3(0, 0, -1);
-                localY = new Vec3(0, 1, 0);
-            }
-            case UP -> {
-                localX = new Vec3(1, 0, 0);
-                localY = new Vec3(0, 0, 1);
-            }
-            case DOWN -> {
-                localX = new Vec3(1, 0, 0);
-                localY = new Vec3(0, 0, -1);
-            }
-            default -> {
-                localX = new Vec3(1, 0, 0);
-                localY = new Vec3(0, 1, 0);
+            case Y -> {
+                localX = new Vec3(1, 0, 0);      // always +X
+                localY = new Vec3(0, 0, sign);   // UP -> +Z, DOWN -> -Z
             }
         }
 
-        BlockPos centerPos = blockPos.above().above().above();
-        double centerX = centerPos.getX() + 0.5;
-        double centerY = centerPos.getY() + 0.5;
-        double centerZ = centerPos.getZ() + 0.5;
-
+        Vec3 center = blockPos.above(3).getCenter();
         long gameTime = level.getGameTime();
 
         for (float radius = 0.1f; radius <= MAX_RADIUS; radius += 0.25f) {
@@ -190,9 +197,9 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 float offsetY = Mth.sin(shiftedAngle) * radius;
                 Vector2f uv = toEventHorizonUv(offsetX, offsetY);
 
-                double worldX = centerX + (offsetX * localX.x) + (offsetY * localY.x);
-                double worldY = centerY + (offsetX * localX.y) + (offsetY * localY.y);
-                double worldZ = centerZ + (offsetX * localX.z) + (offsetY * localY.z);
+                double worldX = center.x + (offsetX * localX.x) + (offsetY * localY.x);
+                double worldY = center.y + (offsetX * localX.y) + (offsetY * localY.y);
+                double worldZ = center.z + (offsetX * localX.z) + (offsetY * localY.z);
 
                 level.addAlwaysVisibleParticle(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
@@ -215,9 +222,9 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
             Vector2f uv = toEventHorizonUv(offsetX, offsetY);
 
-            double worldX = centerX + (offsetX * localX.x) + (offsetY * localY.x);
-            double worldY = centerY + (offsetX * localX.y) + (offsetY * localY.y);
-            double worldZ = centerZ + (offsetX * localX.z) + (offsetY * localY.z);
+            double worldX = center.x + (offsetX * localX.x) + (offsetY * localY.x);
+            double worldY = center.y + (offsetX * localX.y) + (offsetY * localY.y);
+            double worldZ = center.z + (offsetX * localX.z) + (offsetY * localY.z);
 
             level.addAlwaysVisibleParticle(
                     new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
