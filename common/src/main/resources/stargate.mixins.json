@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "stargate_manager.ClientLevelMixin",
     "title.LogoRendererMixin",
     "title.PanoramaRendererMixin"
   ],
   "mixins": [
+    "stargate_manager.ServerLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

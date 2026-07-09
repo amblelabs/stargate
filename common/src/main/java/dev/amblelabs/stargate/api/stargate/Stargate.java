@@ -11,13 +11,11 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class Stargate extends TStateContainer.Delegate implements NbtSerializer, NbtDeserializer<Stargate> {
 
@@ -27,6 +25,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     private final UUID id;
     private final boolean isClient;
     private final Set<UpdateListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<UpdateSubscriber> subscribers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
         return new Stargate(tag.getUUID(ID_TAG), ctx.isClient()).fromNbt(tag, ctx);
@@ -134,18 +133,51 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         return result;
     }
 
+    private boolean dirty = false;
+
     public void setChanged() {
+        this.dirty = true;
+
         for (UpdateListener listener : this.listeners) {
             listener.onStargateUpdate(this);
         }
+    }
+
+    public boolean isChanged() {
+        return dirty;
+    }
+
+    /**
+     * Removes dirty state and collects update receivers.
+     * @return set of player recipients or {@code null} if the state is not dirty
+     */
+    public @Nullable Set<ServerPlayer> collectUpdateReceivers() {
+        if (!this.dirty) return null;
+
+        Set<ServerPlayer> set = new HashSet<>();
+        for (UpdateSubscriber subscriber : this.subscribers) {
+            subscriber.onStargateUpdate(this, set);
+        }
+
+        this.dirty = false;
+        return set;
     }
 
     public void onUpdate(UpdateListener listener) {
         this.listeners.add(listener);
     }
 
+    public void onUpdate(UpdateSubscriber subscriber) {
+        this.subscribers.add(subscriber);
+    }
+
     // eventify?
     public interface UpdateListener {
         void onStargateUpdate(Stargate stargate);
+    }
+
+    @FunctionalInterface
+    public interface UpdateSubscriber {
+        void onStargateUpdate(Stargate stargate, Set<ServerPlayer> receivers);
     }
 }

@@ -1,8 +1,10 @@
 package dev.amblelabs.stargate.fabric.network;
 
+import dev.amblelabs.stargate.common.network.StargateSyncS2CPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,13 +18,13 @@ public class FabricPacketHandler {
 
     @SuppressWarnings("EmptyMethod")
     public static void init() {
-        // will be used later
+        PayloadTypeRegistry.playS2C().register(StargateSyncS2CPayload.ID, StargateSyncS2CPayload.CODEC);
     }
 
     @SuppressWarnings("EmptyMethod")
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        // will be used later
+        ClientPlayNetworking.registerGlobalReceiver(StargateSyncS2CPayload.ID, s2c(p -> p::handle));
     }
 
     @SuppressWarnings("unused") // will be used later

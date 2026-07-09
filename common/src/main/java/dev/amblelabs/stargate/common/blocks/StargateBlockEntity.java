@@ -1,11 +1,12 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
-import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
@@ -21,7 +22,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,81 +40,75 @@ import software.bernie.geckolib.util.Color;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateListener,
+public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateSubscriber,
         BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
 
     private static final String ID_TAG = "Ref";
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public @Nullable Stargate stargate = null;
+    private @Nullable UUID stargateId = null;
+    private @Nullable Stargate stargate = null;
 
     public StargateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(StargateBlockEntities.STARGATE, blockPos, blockState);
     }
 
-    public Stargate setStargate(Stargate stargate, NbtDeserializer.Context ctx) {
+    public @Nullable Stargate stargate() {
+        return this.stargate != null ? stargate : this.stargateId != null ?
+                this.setStargate(StargateNetwork.get(this.level).get(this.stargateId), NbtDeserializer.Context.fromLevel(level)) : null;
+    }
+
+    public @Nullable Stargate setStargate(@Nullable Stargate stargate, NbtDeserializer.Context ctx) {
+        if (stargate == null) {
+            this.stargate = null;
+            this.stargateId = null;
+            return null;
+        }
+
         stargate.onUpdate(this);
         TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
+
+        this.stargateId = stargate.getId();
         return this.stargate = stargate;
     }
 
     @Override
     public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        Stargate stargate = StargateNetwork.getOrCreate(level).create();
+        Stargate stargate = ServerStargateNetwork.get(level).create();
 
         PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
         entry.mark(stargate);
 
         this.setStargate(stargate, NbtDeserializer.Context.fromLevel(level));
+
+        stargate.setChanged();
+        this.setChanged();
     }
 
-    // this is ONLY used for networking (S2C) and this impl DOES NOT handle components
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        if (stargate == null) return tag;
-
-        stargate.toNbt(tag, NbtSerializer.Context.fromLevel(level));
-        return tag;
+        return this.saveWithoutMetadata(provider);
     }
 
-    // this is ONLY used for server-side serialization (like saving the BE to the world)
     @Override
     protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        if (this.stargate != null)
-            nbt.putUUID(ID_TAG, this.stargate.getId());
+        if (this.stargateId != null)
+            nbt.putUUID(ID_TAG, this.stargateId);
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
-
-        // stargate ain't null, meaning it's already got full gate data
-        if (this.stargate != null) {
-            this.stargate.fromNbt(nbt, ctx);
-            return;
-        }
-
-        // FIXME: this relies on a hack that "Ref" only gets serialized if it was from loading the world
-        //  ideally, this split logic should be done via a custom packet
-        if (nbt.hasUUID(ID_TAG) && level instanceof ServerLevel serverLevel) {
-            Stargate stargate = StargateNetwork.getOrCreate(serverLevel).get(nbt.getUUID(ID_TAG));
-
-            if (stargate != null)
-                this.stargate = this.setStargate(stargate, ctx);
-
-            return;
-        }
-
-        // finally, it could be running on client
-        this.stargate = this.setStargate(Stargate.createFromNbt(nbt, ctx), ctx);
+        if (nbt.hasUUID(ID_TAG))
+            this.stargateId = nbt.getUUID(ID_TAG);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        TEvents.handle(new StargateBlockEvents.RegisterControllers(Objects.requireNonNull(this.stargate), this, controllers));
+        TEvents.handle(new StargateBlockEvents.RegisterControllers(Objects.requireNonNull(this.stargate()), this, controllers));
     }
 
     @Override
@@ -130,13 +127,18 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         if (level == null || level.isClientSide()) return;
 
-        BlockState state = getBlockState();
+        BlockState state = this.getBlockState();
         level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
     }
-  
+
     @Override
-    public void onStargateUpdate(Stargate stargate) {
-        this.setChanged();
+    public void onStargateUpdate(Stargate stargate, Set<ServerPlayer> receivers) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            StargateAPI.LOGGER.info("Tried to process a stargate server update on client", new IllegalStateException());
+            return;
+        }
+
+        receivers.addAll(serverLevel.getChunkSource().chunkMap.getPlayers(new ChunkPos(this.getBlockPos()), false));
     }
 
     private static final float MAX_RADIUS = 2.6f;
