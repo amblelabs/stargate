@@ -27,6 +27,7 @@ public class ServerLevelMixin implements StargateNetwork.ManagerLevel {
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(BooleanSupplier hasTimeLeft, CallbackInfo ci) {
+        if (this.stargate$network == null) return;
         this.stargate$network.tick();
     }
 }
