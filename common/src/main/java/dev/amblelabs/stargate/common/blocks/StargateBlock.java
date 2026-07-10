@@ -70,7 +70,7 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity.stargate, blockEntity, stack, state, player, hand, hitResult));
+            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity.stargate(), blockEntity, stack, state, player, hand, hitResult));
         }
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -79,7 +79,7 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            TEvents.handle(new StargateBlockEvents.Use(blockEntity.stargate, blockEntity, state, player, hitResult));
+            TEvents.handle(new StargateBlockEvents.Use(blockEntity.stargate(), blockEntity, state, player, hitResult));
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
