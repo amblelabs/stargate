@@ -6,6 +6,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
+import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,10 +17,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.cache.texture.AutoGlowingTexture;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
-import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
 public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockEntity> {
 
@@ -31,14 +30,8 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super((GeoModel<StargateBlockEntity>) null);
 
+        this.addRenderLayer(new GlyphRenderLayer<>(this));
         this.addRenderLayer(new GlowRenderLayer<>(this));
-        this.addRenderLayer(new AutoGlowingGeoLayer<>(this) {
-            @Override
-            protected RenderType getRenderType(StargateBlockEntity animatable, @Nullable MultiBufferSource bufferSource) {
-                ResourceLocation texture = AutoGlowingTexture.getEmissiveResource(getTextureResource(animatable));
-                return RenderType.beaconBeam(texture, true);
-            }
-        });
     }
 
     @Override
