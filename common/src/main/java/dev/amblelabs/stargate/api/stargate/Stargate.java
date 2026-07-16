@@ -19,6 +19,8 @@ import java.util.*;
 
 public class Stargate extends TStateContainer.Delegate implements NbtSerializer, NbtDeserializer<Stargate> {
 
+    public static final int DEFAULT_VERSION = 0;
+
     public static final String ID_TAG = "Id";
     public static final String STATES_TAG = "States";
 
@@ -96,7 +98,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
                 if (state instanceof CompoundTag compound) {
                     if (fix) {
                         try {
-                            compound = serializable.update(compound, 0);
+                            compound = serializable.update(compound, DEFAULT_VERSION);
                         } catch (Exception e) {
                             StargateAPI.LOGGER.error("Failed to update {}", serializable, e);
                         }

@@ -1,5 +1,6 @@
 package dev.drtheo.ecs.state;
 
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.drtheo.ecs.event.TEventsRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -48,7 +49,9 @@ public interface TState<Self extends TState<Self>> {
             CompoundTag nbt = new CompoundTag();
             t.toNbt(nbt, context);
 
-            nbt.putInt(VERSION_TAG, this.version);
+            if (this.version != Stargate.DEFAULT_VERSION)
+                nbt.putInt(VERSION_TAG, this.version);
+
             return nbt;
         }
 
