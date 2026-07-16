@@ -3,30 +3,21 @@ package dev.amblelabs.stargate.client.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.amblelabs.stargate.api.StargateAPI;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.texture.AutoGlowingTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
-import software.bernie.geckolib.util.ClientUtil;
 
 public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockEntity> {
 
@@ -34,7 +25,6 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
     @SuppressWarnings("NotNullFieldNotInitialized")
     private GeoModel<StargateBlockEntity> model;
-    private static final ResourceLocation TEXTURE = StargateAPI.modLoc("textures/block/puddle.png");
 
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super((GeoModel<StargateBlockEntity>) null);
@@ -59,9 +49,10 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        if (blockEntity.stargate() == null) return;
+        Stargate stargate = blockEntity.stargate();
+        if (stargate == null) return;
 
-        GeckoState gecko = blockEntity.stargate().stateOrNull(GeckoState.state);
+        GeckoState gecko = stargate.stateOrNull(GeckoState.state);
         if (gecko == null) return;
 
         this.model = gecko.geoModel;

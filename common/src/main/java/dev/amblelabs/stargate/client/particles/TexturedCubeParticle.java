@@ -4,25 +4,23 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 public abstract class TexturedCubeParticle extends CubeParticle {
 
-    protected @Nullable TextureAtlasSprite sprite;
-    protected @Nullable Vector2f loc;
+    protected TextureAtlasSprite sprite;
+    protected Vector2f loc;
 
     private float mappedU0;
     private float mappedU1;
     private float mappedV0;
     private float mappedV1;
 
-    protected TexturedCubeParticle(ClientLevel level, double x, double y, double z) {
-        super(level, x, y, z);
-    }
-
-    protected TexturedCubeParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    protected TexturedCubeParticle(SpriteSet sprite, Vector2f loc, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
+
+        this.sprite = sprite.get(this.age, this.lifetime);
+        this.setLoc(loc);
     }
 
     public void setSpriteFromAge(SpriteSet sprite) {
@@ -40,16 +38,6 @@ public abstract class TexturedCubeParticle extends CubeParticle {
     }
 
     private void updateMappedUv() {
-        if (this.sprite == null) return;
-
-        if (this.loc == null) {
-            this.mappedU0 = this.sprite.getU0();
-            this.mappedU1 = this.sprite.getU1();
-            this.mappedV0 = this.sprite.getV0();
-            this.mappedV1 = this.sprite.getV1();
-            return;
-        }
-
         float u = Mth.clamp(this.loc.x, 0, 1);
         float v = Mth.clamp(this.loc.y, 0, 1);
 

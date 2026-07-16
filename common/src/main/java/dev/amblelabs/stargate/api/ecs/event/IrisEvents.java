@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.api.ecs.event;
 
 import dev.amblelabs.stargate.api.stargate.Stargate;
-import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.drtheo.ecs.event.TEvent;
 import dev.drtheo.ecs.event.TEvents;

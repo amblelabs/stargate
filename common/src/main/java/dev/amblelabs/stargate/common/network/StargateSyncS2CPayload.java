@@ -23,7 +23,8 @@ public record StargateSyncS2CPayload(CompoundTag tag) implements CustomPacketPay
 
     @Environment(EnvType.CLIENT)
     public void handle(Minecraft minecraft, LocalPlayer player) {
-        ClientStargateNetwork.get(minecraft.level).upsert(tag);
+        if (minecraft.level != null)
+            ClientStargateNetwork.get(minecraft.level).upsert(tag);
     }
 
     @Override

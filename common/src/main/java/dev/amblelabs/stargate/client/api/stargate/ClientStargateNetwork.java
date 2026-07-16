@@ -5,7 +5,6 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -23,34 +22,18 @@ public class ClientStargateNetwork extends StargateNetwork {
 
     public void upsert(CompoundTag tag) {
         UUID id = tag.getUUID(Stargate.ID_TAG); // FIXME kinda sucks
-        Stargate tardis = this.get(id);
+        Stargate stargate = this.get(id);
 
         NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
 
-        if (tardis != null) {
-            tardis.fromNbt(tag, ctx);
+        if (stargate != null) {
+            stargate.fromNbt(tag, ctx);
         } else {
-            tardis = Stargate.createFromNbt(tag, ctx);
-            this.add(tardis);
+            stargate = Stargate.createFromNbt(tag, ctx);
+            this.add(stargate);
 
 //            TardisLifecycleEvents.handleLoaded(this, tardis);
         }
-    }
-
-    public void remove(UUID id) {
-        this.lookup.remove(id);
-    }
-
-    public boolean contains(UUID id) {
-        return lookup.containsKey(id);
-    }
-
-    public @Nullable Stargate get(UUID id) {
-        return lookup.get(id);
-    }
-
-    private void clear() {
-        this.lookup.clear();
     }
 
     public static ClientStargateNetwork get(ClientLevel level) {

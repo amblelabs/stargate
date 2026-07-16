@@ -15,12 +15,12 @@ import java.util.Optional;
 public class FabricAxeItemMixin {
 
     @Inject(method = "getStripped", at = @At("RETURN"), cancellable = true)
-    private void stripBlock(BlockState state, CallbackInfoReturnable<Optional<BlockState>> cir) {
+    private void stripBlock(BlockState unstrippedState, CallbackInfoReturnable<Optional<BlockState>> cir) {
         if (cir.getReturnValue().isEmpty()) {
-            var block = StargateStrippable.STRIPPABLE.get(state.getBlock());
+            var block = StargateStrippable.STRIPPABLE.get(unstrippedState.getBlock());
 
             if (block != null) {
-                cir.setReturnValue(Optional.of(block.withPropertiesOf(state)));
+                cir.setReturnValue(Optional.of(block.withPropertiesOf(unstrippedState)));
             }
         }
     }

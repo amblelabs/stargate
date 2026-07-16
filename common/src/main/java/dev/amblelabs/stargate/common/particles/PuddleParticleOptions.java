@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.common.particles;
 
-import com.mojang.datafixers.kinds.Applicative;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -54,22 +53,6 @@ public class PuddleParticleOptions extends ScalableParticleOptionsBase implement
 
     public ParticleType<PuddleParticleOptions> getType() {
         return this.type;
-    }
-
-    public float getRed() {
-        return (float)FastColor.ARGB32.red(this.color) / 255.0f;
-    }
-
-    public float getGreen() {
-        return (float)FastColor.ARGB32.green(this.color) / 255.0f;
-    }
-
-    public float getBlue() {
-        return (float)FastColor.ARGB32.blue(this.color) / 255.0f;
-    }
-
-    public float getAlpha() {
-        return (float)FastColor.ARGB32.alpha(this.color) / 255.0f;
     }
 
     public Vector2f loc() {

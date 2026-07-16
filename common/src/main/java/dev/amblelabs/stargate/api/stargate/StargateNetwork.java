@@ -22,6 +22,18 @@ public class StargateNetwork {
 
     }
 
+    public void remove(UUID id) {
+        this.lookup.remove(id);
+    }
+
+    public boolean contains(UUID id) {
+        return lookup.containsKey(id);
+    }
+
+    private void clear() {
+        this.lookup.clear();
+    }
+
     public @Nullable Stargate get(UUID key) {
         return lookup.get(key);
     }

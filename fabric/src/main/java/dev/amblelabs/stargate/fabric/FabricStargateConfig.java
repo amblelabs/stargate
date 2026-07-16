@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 @Config.Gui.Background("minecraft:textures/block/mud.png")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
+
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.TransitiveObject
     public final Common common = new Common();

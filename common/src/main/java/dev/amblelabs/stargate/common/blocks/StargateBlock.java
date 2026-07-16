@@ -2,11 +2,9 @@ package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
-import dev.amblelabs.stargate.common.lib.StargateEcs;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
-import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,9 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -73,18 +68,18 @@ public class StargateBlock extends BaseEntityBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            TEvents.handle(new StargateBlockEvents.UseItem(blockEntity.stargate(), blockEntity, stack, state, player, hand, hitResult));
-        }
+        Stargate stargate;
+        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
+            TEvents.handle(new StargateBlockEvents.UseItem(stargate, blockEntity, stack, state, player, hand, hitResult));
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            TEvents.handle(new StargateBlockEvents.Use(blockEntity.stargate(), blockEntity, state, player, hitResult));
-        }
+        Stargate stargate;
+        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
+            TEvents.handle(new StargateBlockEvents.Use(stargate, blockEntity, state, player, hitResult));
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

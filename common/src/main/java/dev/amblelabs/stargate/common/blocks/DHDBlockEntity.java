@@ -43,7 +43,7 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
     }
 
     @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         this.setChanged(); // TODO: figure out if this is even needed
     }
 
@@ -65,13 +65,5 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
 
         BlockState state = getBlockState();
         level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
-    }
-
-    public String getModelName() {
-        return "dhd";
-    }
-
-    public String getTextureName() {
-        return "dhd";
     }
 }

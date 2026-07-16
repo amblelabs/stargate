@@ -9,7 +9,8 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public abstract class CubeParticle extends Particle {
+public abstract class CubeParticle
+        extends Particle {
 
     protected float quadSize;
 

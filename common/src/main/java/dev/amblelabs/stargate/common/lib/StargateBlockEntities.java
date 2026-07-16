@@ -29,7 +29,6 @@ public class StargateBlockEntities {
     public static final BlockEntityType<StargateBlockEntity> STARGATE = register("stargate", StargateBlockEntity::new, StargateBlocks.STARGATE);
 
     public static final BlockEntityType<ToasterBlockEntity> TOASTER = register("toaster", ToasterBlockEntity::new, StargateBlocks.TOASTER);
-    public static final BlockEntityType<DHDBlockEntity> DHD = register("dhd_block_entity", DHDBlockEntity::new, StargateBlocks.DHD_BLOCK);
 
     public static final BlockEntityType<DHDBlockEntity> DHD = register("dhd_block_entity", DHDBlockEntity::new, StargateBlocks.DHD_BLOCK);
 

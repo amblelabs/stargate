@@ -10,22 +10,16 @@ import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.resources.model.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 
-import java.util.*;
 import java.util.function.Function;
 
 public class FabricStargateClientInit implements ClientModInitializer {
@@ -40,6 +34,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
 
 //        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);
 
+        // TODO: move stuff from RegisterClientStuff to here
         RegisterClientStuff.init();
         BlockRenderLayerMap.INSTANCE.putBlock(StargateBlocks.DRY_BUSH,
                 RenderType.cutout());
