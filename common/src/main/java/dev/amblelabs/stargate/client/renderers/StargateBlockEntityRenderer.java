@@ -6,14 +6,16 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
-import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
+import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.texture.AutoGlowingTexture;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
@@ -37,8 +39,6 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
                 return RenderType.beaconBeam(texture, true);
             }
         });
-
-        this.addRenderLayer(new GlyphRenderLayer<>(this));
     }
 
     @Override
@@ -47,8 +47,13 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     }
 
     @Override
+    protected Direction getFacing(StargateBlockEntity block) {
+        return block.getBlockState().getValue(StargateBlock.FACING);
+    }
+
+    @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
+    public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int i, int j) {
         Stargate stargate = blockEntity.stargate();
         if (stargate == null) return;
 
@@ -57,15 +62,23 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         this.model = gecko.geoModel;
 
-        VertexConsumer vc = multiBufferSource.getBuffer(RenderType.breezeEyes(TEXTURE));
-
-        poseStack.pushPose();
-        StargateBlockEntityRenderer.renderQuad(poseStack.last(), vc, 0xFFFFFFFF, 1, 6, -2.05f, 0.5f, 3.05f, 0.5f, 0, 1, 0, 1);
-        poseStack.popPose();
-
-        super.render(blockEntity, f, poseStack, multiBufferSource, i, j);
+        super.render(blockEntity, f, poseStack, bufferSource, i, j);
     }
 
+    @Override
+    public void actuallyRender(PoseStack poseStack, StargateBlockEntity animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+
+        if (isReRender)
+            return;
+
+        poseStack.pushPose();
+        poseStack.translate(-0.5, 0, -0.5);
+        StargateBlockEntityRenderer.renderQuad(poseStack.last(), bufferSource.getBuffer(RenderType.breezeEyes(TEXTURE)), 0xFFFFFFFF, 1, 6, -2.05f, 0.5f, 3.05f, 0.5f, 0, 1, 0, 1);
+        poseStack.popPose();
+    }
+
+    @SuppressWarnings("SameParameterValue")
     private static void renderQuad(PoseStack.Pose pose, VertexConsumer consumer, int color, float minY, float maxY, float minX, float minZ, float maxX, float maxZ, float minU, float maxU, float minV, float maxV) {
         addVertex(pose, consumer, color, maxY, minX, minZ, maxU, minV);
         addVertex(pose, consumer, color, minY, minX, minZ, maxU, maxV);
