@@ -7,3 +7,5 @@ flowchart TD
     C --> D[StargateBlockEntity#getUpdateTag]
     A --> E[StargateNetwork#onStargateUpdate]
 ```
+
+WARN: OUTDATED
