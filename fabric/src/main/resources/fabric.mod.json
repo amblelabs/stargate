@@ -12,7 +12,10 @@
     "issues": "https://codeberg.org/amblelabs/stargate/issues",
     "sources": "https://codeberg.org/amblelabs/stargate"
   },
-  "license": "LGPL-3.0",
+  "license": [
+    "LGPL-3.0",
+    "ARR"
+  ],
   "icon": "assets/stargate/icon.png",
   "environment": "*",
   "entrypoints": {
