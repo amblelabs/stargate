@@ -1,0 +1,139 @@
+[
+  {
+    "section": "AmbleLabs",
+    "disciplines": [
+      {
+        "discipline": "AmbleLabs Leadership",
+        "titles": [
+          {
+            "title": "Studio Head of AmbleLabs",
+            "names": [
+              "Loqor"
+            ]
+          },
+          {
+            "title": "Lead Developer",
+            "names": [
+              "theoretically"
+            ]
+          },
+          {
+            "title": "Head of Quality Assessment",
+            "names": [
+              "Saturn"
+            ]
+          },
+          {
+            "title": "Developer & Artist",
+            "names": [
+              "Addie"
+            ]
+          }
+        ]
+      },
+      {
+        "discipline": "Programming",
+        "titles": [
+          {
+            "title": "Lead Developer",
+            "names": [
+              "theoretically"
+            ]
+          },
+          {
+            "title": "Software Engineers",
+            "names": [
+              "Lake",
+              "Monke",
+              "nanowu",
+              "Pan",
+              "Segfault",
+              "Max",
+              "Addie"
+            ]
+          }
+        ]
+      },
+      {
+        "discipline": "Visual Arts",
+        "titles": [
+          {
+            "title": "Art Director",
+            "names": [
+              "Avery"
+            ]
+          },
+          {
+            "title": "Artists",
+            "names": [
+              "Ember",
+              "Dian",
+              "Classic",
+              "Loqor",
+              "Brettski",
+              "lucien",
+              "Maggie",
+              "Wazzaki",
+              "Addie"
+            ]
+          }
+        ]
+      },
+      {
+        "discipline": "Audio",
+        "titles": [
+          {
+            "title": "Sound Designers",
+            "names": [
+              "Classic",
+              "lucien"
+            ]
+          },
+          {
+            "title": "Music composed by",
+            "names": [
+              "lucien"
+            ]
+          }
+        ]
+      },
+      {
+        "discipline": "Quality Assessment",
+        "titles": [
+          {
+            "title": "Head of Quality Assessment",
+            "names": [
+              "Saturn"
+            ]
+          },
+          {
+            "title": "Software Test Engineers",
+            "names": [
+            ]
+          },
+          {
+            "title": "Test Associates",
+            "names": [
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "section": "Special Thanks",
+    "disciplines": [
+      {
+        "discipline": "",
+        "titles": [
+          {
+            "title": "",
+            "names": [
+              "SG-1 Creators"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

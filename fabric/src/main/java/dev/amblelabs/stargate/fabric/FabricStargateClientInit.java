@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.fabric;
 
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.client.lib.StargateClientEcs;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
@@ -19,20 +20,18 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 import java.util.function.Function;
 
 public class FabricStargateClientInit implements ClientModInitializer {
 
-    public static final String ID = "stargate";
     @Override
     public void onInitializeClient() {
         FabricPacketHandler.initClient();
 
-        FabricLoader.getInstance().getModContainer(ID).ifPresent(container -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(ResourceLocation.fromNamespaceAndPath(ID, "mainmenutrack"), container, ResourcePackActivationType.DEFAULT_ENABLED);
+        FabricLoader.getInstance().getModContainer(StargateAPI.MOD_ID).ifPresent(container -> {
+            ResourceManagerHelper.registerBuiltinResourcePack(StargateAPI.modLoc("menu"), container, ResourcePackActivationType.DEFAULT_ENABLED);
         });
 
 //        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);

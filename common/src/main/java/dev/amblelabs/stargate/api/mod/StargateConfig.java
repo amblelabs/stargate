@@ -14,9 +14,7 @@ public class StargateConfig {
     }
 
     public interface ClientConfigAccess {
-        boolean useCustomMainMenu();
 
-        boolean DEFAULT_CUSTOM_MAIN_MENU = true;
     }
 
     public interface ServerConfigAccess {

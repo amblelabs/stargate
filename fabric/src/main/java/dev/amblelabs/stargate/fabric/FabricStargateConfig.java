@@ -61,16 +61,8 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     @Config(name = "client")
     public static final class Client implements StargateConfig.ClientConfigAccess, ConfigData {
 
-        @ConfigEntry.Gui.Tooltip
-        private boolean useCustomMainMenu = DEFAULT_CUSTOM_MAIN_MENU;
-
         @Override
         public void validatePostLoad() {
-        }
-
-        @Override
-        public boolean useCustomMainMenu() {
-            return useCustomMainMenu;
         }
     }
 

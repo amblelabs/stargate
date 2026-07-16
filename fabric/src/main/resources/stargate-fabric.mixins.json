@@ -4,10 +4,12 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "modmenu.MojangCreditsEntryMixin"
   ],
   "mixins": [
     "FabricAxeItemMixin",
-    "FabricPlayerMixin"
+    "FabricPlayerMixin",
+    "modmenu.DescriptionListWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1
