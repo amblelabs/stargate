@@ -59,7 +59,7 @@ public final class FabricStargateInit implements ModInitializer {
         StargateRecipes.registerSerializers(bind(BuiltInRegistries.RECIPE_SERIALIZER));
         StargateRecipes.registerTypes(bind(BuiltInRegistries.RECIPE_TYPE));
 
-//        AitEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
+        StargateEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
 //        AitAttributes.register(bind(BuiltInRegistries.ATTRIBUTE));
 //        AitMobEffects.register(bind(BuiltInRegistries.MOB_EFFECT));
 //        AitPotions.register(bind(BuiltInRegistries.POTION));

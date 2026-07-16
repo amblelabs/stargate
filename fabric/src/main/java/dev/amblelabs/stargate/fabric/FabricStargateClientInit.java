@@ -10,6 +10,7 @@ import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -52,6 +53,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
         });
 
         RegisterClientStuff.registerBlockEntityRenderers(BlockEntityRenderers::register);
+        RegisterClientStuff.registerEntityRenderers(EntityRendererRegistry::register);
 
         StargateInterop.clientInit();
 //        RegisterClientStuff.registerColorProviders(

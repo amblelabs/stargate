@@ -42,14 +42,5 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
 
         this.getOrCreateTagBuilder(BlockTags.WALLS)
                 .add(StargateBlocks.SANDSTONE_BRICK_WALL);
-
-        this.getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
-                .add(StargateBlocks.SANDSTONE_BRICKS)
-                .add(StargateBlocks.SANDSTONE_BRICK_SLAB)
-                .add(StargateBlocks.SANDSTONE_BRICK_STAIRS)
-                .add(StargateBlocks.SANDSTONE_BRICK_WALL);
-
-        this.getOrCreateTagBuilder(BlockTags.WALLS)
-                .add(StargateBlocks.SANDSTONE_BRICK_WALL);
     }
 }
