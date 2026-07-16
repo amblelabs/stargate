@@ -2,10 +2,17 @@ package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.client.particles.PuddleParticle;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
+import com.mojang.serialization.MapCodec;
+import dev.amblelabs.stargate.common.particles.PuddleParticle;
+import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;

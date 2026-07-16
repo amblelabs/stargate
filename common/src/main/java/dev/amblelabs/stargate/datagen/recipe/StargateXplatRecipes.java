@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -44,7 +45,7 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                 .pattern("SS")
                 .define('S', Blocks.CUT_SANDSTONE)
                 .unlockedBy(getHasName(Blocks.CUT_SANDSTONE), has(Blocks.CUT_SANDSTONE))
-                .save(recipeOutput);  
+                .save(recipeOutput);
 
         SingleItemRecipeBuilder.stonecutting(
                         Ingredient.of(Blocks.SANDSTONE),
@@ -61,7 +62,7 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                 .pattern("SSS")
                 .define('S', StargateBlocks.SANDSTONE_BRICKS)
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput);  
+                .save(recipeOutput);
 
         SingleItemRecipeBuilder.stonecutting(
                         Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),
@@ -70,13 +71,13 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                         1
                 )
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput, modLoc("sandstone_brick_stairs_from_stonecutter")); 
+                .save(recipeOutput, modLoc("sandstone_brick_stairs_from_stonecutter"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICK_SLAB, 6)
                 .pattern("SSS")
                 .define('S', StargateBlocks.SANDSTONE_BRICKS)
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput); 
+                .save(recipeOutput);
 
         SingleItemRecipeBuilder.stonecutting(
                         Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),
@@ -85,14 +86,14 @@ public class StargateXplatRecipes extends AmbleRecipeProvider {
                         2
                 )
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput, modLoc("sandstone_brick_slab_from_stonecutter")); 
+                .save(recipeOutput, modLoc("sandstone_brick_slab_from_stonecutter"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, StargateBlocks.SANDSTONE_BRICK_WALL, 6)
                 .pattern("SSS")
                 .pattern("SSS")
                 .define('S', StargateBlocks.SANDSTONE_BRICKS)
                 .unlockedBy(getHasName(StargateBlocks.SANDSTONE_BRICKS), has(StargateBlocks.SANDSTONE_BRICKS))
-                .save(recipeOutput); 
+                .save(recipeOutput);
 
         SingleItemRecipeBuilder.stonecutting(
                         Ingredient.of(StargateBlocks.SANDSTONE_BRICKS),

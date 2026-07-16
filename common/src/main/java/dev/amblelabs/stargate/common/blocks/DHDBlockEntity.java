@@ -43,6 +43,16 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
     }
 
     @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        this.setChanged(); // TODO: figure out if this is even needed
+    }
+
+    @Override
+    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
+
+    }
+
+    @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
@@ -57,13 +67,11 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
         level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
     }
 
-    @Override
-    public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-
+    public String getModelName() {
+        return "dhd";
     }
 
-    @Override
-    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-
+    public String getTextureName() {
+        return "dhd";
     }
 }

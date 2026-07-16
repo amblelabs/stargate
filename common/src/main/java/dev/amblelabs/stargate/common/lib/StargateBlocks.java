@@ -70,6 +70,7 @@ public class StargateBlocks {
     public static final Block SANDSTONE_BRICK_WALL = blockItem("sandstone_brick_wall", new WallBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE_WALL)));
 
     public static final Block DRY_GRASS = blockItem("dry_grass", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
+
     public static final Block DRY_BUSH = blockItem("dry_bush", new DeadBushBlock(Block.Properties.ofFullCopy(Blocks.DEAD_BUSH)) {});
 
     @SuppressWarnings("SameReturnValue") // intended

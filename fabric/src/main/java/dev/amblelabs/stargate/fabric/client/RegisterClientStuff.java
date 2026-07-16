@@ -1,11 +1,15 @@
 package dev.amblelabs.stargate.fabric.client;
 
+import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.skybox.AbydosSkyRenderer;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 

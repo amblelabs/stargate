@@ -40,6 +40,8 @@ public class StargateLootTables extends AmbleLootTableSubProvider {
         makeDryGrassTable(blockTables, StargateBlocks.DRY_BUSH);
     }
 
+
+
     private void makeSlabTable(Map<Block, LootTable.Builder> lootTables, Block block) {
         var leafPool = dropThisPool(block, 1)
             .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))
