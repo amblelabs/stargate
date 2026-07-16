@@ -91,6 +91,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        stargate().setChanged();
         return this.saveWithoutMetadata(provider);
     }
 
