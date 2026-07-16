@@ -24,7 +24,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     private final UUID id;
     private final boolean isClient;
-    private final Set<UpdateListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
     private final Set<UpdateSubscriber> subscribers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
@@ -137,10 +136,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     public void setChanged() {
         this.dirty = true;
-
-        for (UpdateListener listener : this.listeners) {
-            listener.onStargateUpdate(this);
-        }
     }
 
     public boolean isChanged() {
@@ -163,17 +158,8 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         return set;
     }
 
-    public void onUpdate(UpdateListener listener) {
-        this.listeners.add(listener);
-    }
-
     public void onUpdate(UpdateSubscriber subscriber) {
         this.subscribers.add(subscriber);
-    }
-
-    // eventify?
-    public interface UpdateListener {
-        void onStargateUpdate(Stargate stargate);
     }
 
     @FunctionalInterface
