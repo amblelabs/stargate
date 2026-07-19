@@ -9,6 +9,7 @@ import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -60,6 +61,9 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
         iris.closed = !iris.closed;
         stargate.setChanged();
     }
+
+    @Override
+    public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
 
     @Override
     public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
