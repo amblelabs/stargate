@@ -12,6 +12,7 @@ import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
@@ -25,11 +26,14 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
     private static final ResourceLocation TEXTURE = StargateAPI.modLoc("textures/block/puddle.png");
 
+    private final BlockRenderDispatcher blockRenderer;
+
     @SuppressWarnings("NotNullFieldNotInitialized")
     private GeoModel<StargateBlockEntity> model;
 
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super((GeoModel<StargateBlockEntity>) null);
+        this.blockRenderer = context.getBlockRenderDispatcher();
 
         this.addRenderLayer(new GlyphRenderLayer<>(this));
         this.addRenderLayer(new GlowRenderLayer<>(this));
@@ -47,7 +51,13 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int i, int j) {
+    public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        if (blockEntity.getBlockSet() != null) {
+            poseStack.pushPose();
+            blockRenderer.renderSingleBlock(blockEntity.getBlockSet(), poseStack, bufferSource, packedLight, packedOverlay);
+            poseStack.popPose();
+        }
+
         Stargate stargate = blockEntity.stargate();
         if (stargate == null) return;
 
@@ -56,7 +66,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         this.model = gecko.geoModel;
 
-        super.render(blockEntity, f, poseStack, bufferSource, i, j);
+        super.render(blockEntity, f, poseStack, bufferSource, packedLight, packedOverlay);
     }
 
     @Override

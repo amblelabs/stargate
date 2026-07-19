@@ -11,6 +11,7 @@ import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +36,9 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     private static final int OUTER_RIPPLE_COLOR = Color.ofRGB(0.2f, 0.65f, 1.0f).getColor();
 
     private static final Minecraft mc = Minecraft.getInstance();
+
+    @Override
+    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, ServerLevel level, BlockPos blockPos, BlockState blockState) { }
 
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {

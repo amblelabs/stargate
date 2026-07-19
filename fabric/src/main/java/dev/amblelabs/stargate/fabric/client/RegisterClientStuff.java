@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.fabric.client;
 import dev.amblelabs.stargate.client.renderers.DHDBlockEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.DHDControlEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
+import dev.amblelabs.stargate.client.renderers.StargateRingBlockEntityRenderer;
 import dev.amblelabs.stargate.client.renderers.skybox.AbydosSkyRenderer;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateEntities;
@@ -24,6 +25,7 @@ public class RegisterClientStuff {
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegisterer registerer) {
         registerer.registerBlockEntityRenderer(StargateBlockEntities.STARGATE, StargateBlockEntityRenderer::new);
+        registerer.registerBlockEntityRenderer(StargateBlockEntities.RING, StargateRingBlockEntityRenderer::new);
         registerer.registerBlockEntityRenderer(StargateBlockEntities.DHD, DHDBlockEntityRenderer::new);
     }
 

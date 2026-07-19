@@ -37,10 +37,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
 
         // TODO: move stuff from RegisterClientStuff to here
         RegisterClientStuff.init();
-        BlockRenderLayerMap.INSTANCE.putBlock(StargateBlocks.DRY_BUSH,
-                RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(StargateBlocks.DRY_GRASS,
-                RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), StargateBlocks.DRY_BUSH, StargateBlocks.DRY_GRASS, StargateBlocks.RING);
 
 //        YoureFiredModelLayers.init((loc, def) -> EntityModelLayerRegistry.registerModelLayer(loc, def::get));
 

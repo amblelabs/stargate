@@ -6,8 +6,10 @@ import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.IrisBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.PrototypeBehavior;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.ShapeBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
+import dev.amblelabs.stargate.common.impl.ecs.state.ShapeState;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
@@ -35,6 +37,7 @@ public class StargateEcs {
     public static void initState() {
         States.register(PrototypeIdentityState.state);
         States.register(IrisState.state);
+        States.register(ShapeState.state);
     }
 
     public static void initEvents() {
@@ -47,5 +50,6 @@ public class StargateEcs {
     public static void initBehavior() {
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(PrototypeBehavior::new);
+        TBehaviorRegistry.register(ShapeBehavior::new);
     }
 }

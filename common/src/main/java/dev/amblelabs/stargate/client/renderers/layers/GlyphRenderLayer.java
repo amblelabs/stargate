@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -16,12 +17,11 @@ import software.bernie.geckolib.util.Color;
 
 public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLayer<T> {
 
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890";
     private static final float ANGLE_STEP = (float) (2f * Math.PI / ALPHABET.length());
     private static final float RADIUS = 155f; // i have no idea why that is
 
-    private final Minecraft mc = Minecraft.getInstance();
-    // float rotateGlyph = 0;
+    private static final Minecraft mc = Minecraft.getInstance();
 
     public GlyphRenderLayer(GeoRenderer<T> entityRendererIn) {
         super(entityRendererIn);
@@ -29,11 +29,9 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
 
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        // rotateGlyph++;
-
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
-        poseStack.translate(0, 3.5, 0.2);
+        poseStack.translate(0, 3.5, 0.21);
         poseStack.scale(0.02f, -0.02f, 0.02f);
 
         for (int i = 0; i < ALPHABET.length(); i++) {
@@ -61,7 +59,7 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
             poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(90));
 
             mc.font.drawInBatch(
-                    character,
+                    Component.literal(character),
                     0, 0,
                     Color.ofRGBA(0.18f, 0.18f, 0.18f, 1f).getColor(),
                     false,

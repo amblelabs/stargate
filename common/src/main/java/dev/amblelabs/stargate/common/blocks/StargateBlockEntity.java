@@ -14,7 +14,9 @@ import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -44,6 +46,8 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
     private @Nullable UUID stargateId = null;
     private @Nullable Stargate stargate = null;
 
+    private @Nullable BlockState blockSet;
+
     public StargateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(StargateBlockEntities.STARGATE, blockPos, blockState);
     }
@@ -64,6 +68,8 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
 
         this.stargateId = stargate.getId();
+        this.setChanged();
+
         return this.stargate = stargate;
     }
 
@@ -76,8 +82,10 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         this.setStargate(stargate, NbtDeserializer.Context.fromLevel(level));
 
-        stargate.setChanged();
-        this.setChanged();
+        StargateBlockEvents.notify(events -> events.stargate$place(
+                stargate, this, level, blockPos, this.getBlockState()));
+
+        stargate.setChanged(); // forces sync
     }
 
     @Override
@@ -90,12 +98,16 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+        if (this.blockSet != null) nbt.put(StargateRingBlockEntity.ID_BLOCK, NbtUtils.writeBlockState(this.blockSet));
+
         if (this.stargateId != null)
             nbt.putUUID(ID_TAG, this.stargateId);
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+        this.blockSet = NbtUtils.readBlockState(provider.asGetterLookup().lookupOrThrow(Registries.BLOCK), nbt.getCompound(StargateRingBlockEntity.ID_BLOCK));
+
         if (nbt.hasUUID(ID_TAG))
             this.stargateId = nbt.getUUID(ID_TAG);
     }
@@ -144,5 +156,14 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         if (stargate == null) return;
 
         StargateBlockEvents.notify(events -> events.stargate$tick(stargate, this, level, blockPos, blockState));
+    }
+
+    public void setBlockSet(@Nullable BlockState state) {
+        this.blockSet = state;
+        this.setChanged();
+    }
+
+    public @Nullable BlockState getBlockSet() {
+        return this.blockSet;
     }
 }

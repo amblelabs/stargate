@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.common.lib;
 import com.mojang.datafixers.util.Pair;
 import dev.amblelabs.stargate.common.blocks.DHDBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
+import dev.amblelabs.stargate.common.blocks.StargateRingBlock;
 import dev.amblelabs.stargate.common.blocks.ToasterBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -50,6 +51,8 @@ public class StargateBlocks {
     private static final Map<CreativeModeTab, List<Block>> BLOCK_TABS = new LinkedHashMap<>();
 
     public static final StargateBlock STARGATE = blockItem("stargate", new StargateBlock(StargateBlock.defaultProps()));
+
+    public static final Block RING = blockNoItem("ring", new StargateRingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK).noOcclusion()));
 
     public static final ToasterBlock TOASTER = blockItem("toaster", new ToasterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 
