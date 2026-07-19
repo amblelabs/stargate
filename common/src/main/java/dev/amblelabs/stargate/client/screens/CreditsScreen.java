@@ -139,25 +139,27 @@ public class CreditsScreen extends Screen {
         }
     }
 
-    private void wrapCreditsIO(ResourceLocation location, CreditsReader reader) {
-        try (Reader reader2 = this.minecraft.getResourceManager().openAsReader(location)) {
-            reader.read(reader2);
+    private void wrapCreditsIO(ResourceLocation location, CreditsReader credits) {
+        try (Reader reader = this.minecraft.getResourceManager().openAsReader(location)) {
+            credits.read(reader);
         } catch (Exception exception) {
             LOGGER.error("Couldn't load credits from file {}", location, exception);
         }
     }
 
     private void addCreditsFile(Reader reader) {
-        for (JsonElement jsonElement : GsonHelper.parseArray(reader)) {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            String string = jsonObject.get("section").getAsString();
+        for (JsonElement sectionEl : GsonHelper.parseArray(reader)) {
+            JsonObject sectionEntry = sectionEl.getAsJsonObject();
+            String section = sectionEntry.get("section").getAsString();
+
             this.addCreditsLine(SECTION_HEADING, true);
-            this.addCreditsLine(Component.literal(string).withStyle(ChatFormatting.YELLOW), true);
+            this.addCreditsLine(Component.literal(section).withStyle(ChatFormatting.YELLOW), true);
             this.addCreditsLine(SECTION_HEADING, true);
+
             this.addEmptyLine();
             this.addEmptyLine();
 
-            for (JsonElement disciplineEl : jsonObject.getAsJsonArray("disciplines")) {
+            for (JsonElement disciplineEl : sectionEntry.getAsJsonArray("disciplines")) {
                 JsonObject discipleEntry = disciplineEl.getAsJsonObject();
                 String discipline = discipleEntry.get("discipline").getAsString();
 
