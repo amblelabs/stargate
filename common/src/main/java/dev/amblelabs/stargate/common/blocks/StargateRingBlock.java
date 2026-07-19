@@ -27,7 +27,7 @@ public class StargateRingBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof StargateRingBlockEntity ring))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
         if (stack.isEmpty()) {
             ring.setBlockSet(null);
@@ -35,14 +35,14 @@ public class StargateRingBlock extends BaseEntityBlock {
         }
 
         if (!(stack.getItem() instanceof BlockItem blockItem))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
         if (blockItem.getBlock().defaultBlockState() != ring.getBlockSet()) {
             ring.setBlockSet(blockItem.getBlock().getStateForPlacement(new BlockPlaceContext(player, hand, stack, hitResult)));
             return ItemInteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.FAIL;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override

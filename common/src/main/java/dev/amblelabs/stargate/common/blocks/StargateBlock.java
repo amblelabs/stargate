@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -66,8 +67,22 @@ public class StargateBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Stargate stargate;
-        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
+        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
+            if (stack.isEmpty()) {
+                blockEntity.setBlockSet(null);
+                return ItemInteractionResult.SUCCESS;
+            }
+
+            if (!(stack.getItem() instanceof BlockItem blockItem))
+                return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+
+            if (blockItem.getBlock().defaultBlockState() != blockEntity.getBlockSet()) {
+                blockEntity.setBlockSet(blockItem.getBlock().getStateForPlacement(new BlockPlaceContext(player, hand, stack, hitResult)));
+                return ItemInteractionResult.SUCCESS;
+            }
+
             StargateBlockEvents.notify(events -> events.stargate$useItem(stargate, blockEntity, stack, state, player, hand, hitResult));
+        }
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
