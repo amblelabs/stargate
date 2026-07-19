@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
@@ -97,5 +98,15 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(0xF000F0)
                 .setNormal(pose, 0.0f, 1.0f, 0.0f);
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(StargateBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(StargateBlockEntity blockEntity, Vec3 cameraPos) {
+        return true;
     }
 }
