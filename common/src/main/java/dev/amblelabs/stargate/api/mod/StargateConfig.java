@@ -17,7 +17,7 @@ public class StargateConfig {
         int puddleParticleTick();
 
         int DEFAULT_PUDDLE_PARTICLE_TICK = 1;
-        int MIN_PUDDLE_PARTICLE_TICK = DEFAULT_PUDDLE_PARTICLE_TICK;
+        int MIN_PUDDLE_PARTICLE_TICK = 0;
         int MAX_PUDDLE_PARTICLE_TICK = 20;
     }
 

@@ -43,7 +43,7 @@
       client: {
         puddleParticleTick: {
           "": "Puddle Particle Tick",
-          "@Tooltip": "Sets on which tick should the puddle particle get spawned on."
+          "@Tooltip": "Sets on which tick should the puddle particle get spawned on. (0 = off)"
         }
       },
       server: {}

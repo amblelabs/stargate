@@ -39,7 +39,10 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
 
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
-        if (!level.isClientSide() || mc.player == null || mc.player.tickCount % StargateConfig.client().puddleParticleTick() != 0) return;
+        if (!level.isClientSide() || mc.player == null) return;
+
+        int targetTick = StargateConfig.client().puddleParticleTick();
+        if (targetTick == 0 || mc.player.tickCount % StargateConfig.client().puddleParticleTick() != 0) return;
 
         Direction facing = blockState.getValue(StargateBlock.FACING);
 
