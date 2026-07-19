@@ -8,6 +8,7 @@ import dev.amblelabs.stargate.api.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -110,6 +111,15 @@ public class StargateBlock extends BaseEntityBlock {
             blockEntity.onBreak(state, level, pos, newState, movedByPiston);
 
         super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        Stargate stargate;
+        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
+            StargateBlockEvents.notify(events -> events.stargate$randomTick(stargate, state, level, pos, random));
+
+        super.randomTick(state, level, pos, random);
     }
 
     @Override
