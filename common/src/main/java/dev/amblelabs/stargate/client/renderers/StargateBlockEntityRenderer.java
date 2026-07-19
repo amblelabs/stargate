@@ -106,7 +106,12 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     }
 
     @Override
+    public int getViewDistance() {
+        return 256;
+    }
+
+    @Override
     public boolean shouldRender(StargateBlockEntity blockEntity, Vec3 cameraPos) {
-        return true;
+        return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0F, 0.0F, 1.0F).closerThan(cameraPos.multiply(1.0F, 0.0F, 1.0F), this.getViewDistance());
     }
 }
