@@ -5,7 +5,6 @@ import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
-import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-
 
 public class StargateBlock extends BaseEntityBlock {
 
@@ -69,7 +67,7 @@ public class StargateBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
-            TEvents.handle(new StargateBlockEvents.UseItem(stargate, blockEntity, stack, state, player, hand, hitResult));
+            StargateBlockEvents.notify(events -> events.stargate$useItem(stargate, blockEntity, stack, state, player, hand, hitResult));
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
@@ -78,7 +76,7 @@ public class StargateBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
-            TEvents.handle(new StargateBlockEvents.Use(stargate, blockEntity, state, player, hitResult));
+            StargateBlockEvents.notify(events -> events.stargate$use(stargate, blockEntity, state, player, hitResult));
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

@@ -61,9 +61,18 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
 
     @Config(name = "client")
     public static final class Client implements StargateConfig.ClientConfigAccess, ConfigData {
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = MIN_PUDDLE_PARTICLE_TICK, max = MAX_PUDDLE_PARTICLE_TICK)
+        private int puddleParticleTick = DEFAULT_PUDDLE_PARTICLE_TICK;
 
         @Override
         public void validatePostLoad() {
+            this.puddleParticleTick = Math.clamp(puddleParticleTick, MIN_PUDDLE_PARTICLE_TICK, MAX_PUDDLE_PARTICLE_TICK);
+        }
+
+        @Override
+        public int puddleParticleTick() {
+            return puddleParticleTick;
         }
     }
 

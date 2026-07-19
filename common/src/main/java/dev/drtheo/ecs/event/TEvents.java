@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Base interface for all event groups.
@@ -34,6 +35,10 @@ public interface TEvents {
     static <T extends TEvents, R> @UnknownNullability R handle(TEvent.Result<T, R> event) {
         event.type().handle(event);
         return event.result();
+    }
+
+    static <T extends TEvents> void notify(TEvents.BaseType<T> type, Consumer<T> handler) {
+        TEvents.handle(new TEvent.Notifier<>(type, handler));
     }
 
     /**

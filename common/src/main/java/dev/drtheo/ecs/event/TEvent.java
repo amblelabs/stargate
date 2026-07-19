@@ -4,6 +4,7 @@ import dev.drtheo.ecs.state.StateResolveError;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -99,6 +100,14 @@ public interface TEvent<T extends TEvents> {
             for (T handler : subscribed) {
                 handleSilent(this, handler, () -> this.handle(handler));
             }
+        }
+    }
+
+    record Notifier<T extends TEvents>(TEvents.BaseType<T> type, Consumer<T> handler) implements Notify<T> {
+
+        @Override
+        public void handle(T handler) throws StateResolveError {
+            this.handler.accept(handler);
         }
     }
 
