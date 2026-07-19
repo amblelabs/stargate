@@ -1,3 +1,7 @@
+plugins {
+    id "coffee.cypher.json-processor" version "0.1.0"
+}
+
 architectury {
     common rootProject.enabled_platforms.split(',')
 }
@@ -10,4 +14,18 @@ dependencies {
     modImplementation "software.bernie.geckolib:geckolib-common-$minecraft_version:$geckolib_version"
 
     modImplementation("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}") { transitive false }
+}
+
+processResources {
+    filesMatching("**/*.json5") {
+        name = name.dropRight(1) // rename to .json
+
+        processJson {
+            pipeline {
+                flatten {
+                    keyDelimiter = "."
+                }
+            }
+        }
+    }
 }

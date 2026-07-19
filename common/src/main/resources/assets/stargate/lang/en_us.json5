@@ -1,0 +1,52 @@
+{
+  "itemGroup.stargate": {
+    main: "Stargate: Sojourner"
+  },
+  "item.stargate": {
+    naquadah_ingot: "Naquadah Ingot",
+    naquadah_nugget: "Naquadah Nugget",
+    raw_naquadah: "Raw Naquadah",
+    trinium_ingot: "Trinium Ingot",
+    crystal_ingot: "Crystal Ingot",
+    trinium_iris: "Trinium Iris",
+    naquadah_iris: "Naquadah Iris",
+    netherite_iris: "Netherite Iris",
+    diamond_iris: "Diamond Iris",
+    gold_iris: "Gold Iris",
+    iron_iris: "Iron Iris",
+
+    music_disc_theme: {
+      "": "Music Disc",
+      "desc": "lucien - SG:S Theme"
+    }
+  },
+  "block.stargate": {
+    naquadah_ore: "Naquadah Ore",
+    block_of_naquadah: "Block of Naquadah",
+    raw_naquadah_block: "Raw Naquadah Block",
+    dry_grass: "Dry Grass",
+    dry_bush: "Dry Bush",
+    sandstone_bricks: "Sandstone Bricks",
+    sandstone_brick_slab: "Sandstone Brick Slab",
+    sandstone_brick_stairs: "Sandstone Brick Stairs",
+    sandstone_brick_wall: "Sandstone Brick Wall"
+  },
+  "text.autoconfig.stargate": {
+    title: "SG:S Config",
+    category: {
+      common: "Common",
+      client: "Client",
+      server: "Server"
+    },
+    option: {
+      common: {},
+      client: {
+        puddleParticleTick: {
+          "": "Puddle Particle Tick",
+          "@Tooltip": "Sets on which tick should the puddle particle get spawned on."
+        }
+      },
+      server: {}
+    }
+  }
+}
