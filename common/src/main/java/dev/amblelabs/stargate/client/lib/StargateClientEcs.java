@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.client.lib;
 
+import dev.amblelabs.stargate.client.impl.ecs.behavior.ClientPuddleBehavior;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
@@ -33,5 +34,6 @@ public class StargateClientEcs {
 
     @SuppressWarnings("EmptyMethod")
     public static void initBehavior() {
+        TBehaviorRegistry.register(ClientPuddleBehavior::new);
     }
 }
