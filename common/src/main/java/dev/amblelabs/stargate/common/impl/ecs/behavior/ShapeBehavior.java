@@ -57,6 +57,29 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
         }
     }
 
+    @Override
+    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos blockPos, BlockState newState, boolean movedByPiston) {
+        Direction direction = blockState.getValue(StargateBlock.FACING);
+
+        List<String> list = SHAPE.lines().toList();
+
+        int height = list.size();
+        int width = list.stream().mapToInt(String::length).max().orElse(0);
+        int xOffset = width / 2;
+        int yOffset = height / 2;
+
+        for (int j = 0; j < height; j++) {
+            String line = list.get(j);
+
+            for (int i = 0; i < line.length(); i++) {
+                if (line.charAt(i) != 'X') continue;
+
+                BlockPos pos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), blockPos, direction);
+                level.removeBlock(pos, false);
+            }
+        }
+    }
+
     private static BlockPos rotate(BlockPos pos, BlockPos offset, Direction facing) {
         pos = rotate(pos.getX(), pos.getY(), facing);
         return pos.offset(offset);
@@ -79,7 +102,7 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
 
     @Override
-    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) { }
+    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
 
     @Override
     public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) { }

@@ -37,7 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateSubscriber,
-        BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
+        BlockEntityHelper.Placeable, BlockEntityHelper.Breakable, BlockEntityHelper.Ticking {
 
     private static final String ID_TAG = "Ref";
 
@@ -86,6 +86,17 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 stargate, this, level, blockPos, this.getBlockState()));
 
         stargate.setChanged(); // forces sync
+    }
+
+    @Override
+    public void onBreak(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean movedByPiston) {
+        Stargate stargate = this.stargate();
+        if (stargate == null) return;
+
+        StargateBlockEvents.notify(events -> events.stargate$break(stargate, this, blockState, level, blockPos, blockState2, movedByPiston));
+        ServerStargateNetwork.get(level).remove(stargate.getId());
+
+        this.setStargate(null, NbtDeserializer.Context.fromLevel(level));
     }
 
     @Override

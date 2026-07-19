@@ -76,7 +76,7 @@ public class StargateBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
-            StargateBlockEvents.notify(events -> events.stargate$use(stargate, blockEntity, state, player, hitResult));
+            StargateBlockEvents.notify(events -> events.stargate$use(stargate, blockEntity, state, level, pos, player, hitResult));
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
@@ -87,6 +87,14 @@ public class StargateBlock extends BaseEntityBlock {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
             blockEntity.onPlace(blockState, serverLevel, blockPos, blockState2, bl);
         }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
+            blockEntity.onBreak(state, level, pos, newState, movedByPiston);
+
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override

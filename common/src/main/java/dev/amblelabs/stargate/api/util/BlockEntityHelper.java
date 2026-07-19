@@ -29,4 +29,9 @@ public class BlockEntityHelper {
     public interface Placeable {
         void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl);
     }
+
+    public interface Breakable {
+        // TODO: figure out if this ever gets called on a ClientLevel
+        void onBreak(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl);
+    }
 }

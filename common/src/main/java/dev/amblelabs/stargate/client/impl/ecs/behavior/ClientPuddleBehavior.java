@@ -41,6 +41,9 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, ServerLevel level, BlockPos blockPos, BlockState blockState) { }
 
     @Override
+    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
+
+    @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
 
@@ -193,7 +196,7 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
 
     @Override
-    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult) { }
+    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
 
     @Override
     public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) { }

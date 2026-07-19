@@ -20,9 +20,11 @@ public interface StargateBlockEvents extends TEvents {
     Type<StargateBlockEvents> type = new Type<>(StargateBlockEvents.class);
 
     void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, ServerLevel level, BlockPos blockPos, BlockState blockState);
+    void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston);
+
     void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState);
     void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult);
-    void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Player player, BlockHitResult blockHitResult);
+    void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult);
 
     void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers);
 
