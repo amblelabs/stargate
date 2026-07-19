@@ -19,22 +19,17 @@ public abstract class TexturedCubeParticle extends CubeParticle {
     protected TexturedCubeParticle(SpriteSet sprite, Vector2f loc, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
 
-        this.sprite = sprite.get(this.age, this.lifetime);
-        this.setLoc(loc);
+        this.sprite = sprite.get(0, this.lifetime);
+        this.loc = loc;
+
+        this.updateMappedUv();
     }
 
     public void setSpriteFromAge(SpriteSet sprite) {
-        if (!this.removed) this.setSprite(sprite.get(this.age, this.lifetime));
-    }
-
-    protected void setSprite(TextureAtlasSprite sprite) {
-        this.sprite = sprite;
-        this.updateMappedUv();
-    }
-
-    protected void setLoc(Vector2f loc) {
-        this.loc = loc;
-        this.updateMappedUv();
+        if (!this.removed) {
+            this.sprite = sprite.get(this.age, this.lifetime);
+            this.updateMappedUv();
+        }
     }
 
     private void updateMappedUv() {

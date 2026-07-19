@@ -14,7 +14,11 @@ public class StargateConfig {
     }
 
     public interface ClientConfigAccess {
+        int puddleParticleTick();
 
+        int DEFAULT_PUDDLE_PARTICLE_TICK = 1;
+        int MIN_PUDDLE_PARTICLE_TICK = DEFAULT_PUDDLE_PARTICLE_TICK;
+        int MAX_PUDDLE_PARTICLE_TICK = 20;
     }
 
     public interface ServerConfigAccess {
