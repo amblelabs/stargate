@@ -14,7 +14,6 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.resources.ResourceLocation;
 
 @Config(name = StargateAPI.MOD_ID)
-@Config.Gui.Background("minecraft:textures/block/mud.png")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
 
@@ -30,7 +29,7 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     @ConfigEntry.Gui.TransitiveObject
     public final Server server = new Server();
 
-    public static FabricStargateConfig setup() {
+    public static void setup() {
         Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
@@ -43,12 +42,10 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
 
         StargateConfig.setCommon(instance.common);
 
-        if (IXplatAbstractions.INSTANCE.isPhysicalClient()) {
+        if (IXplatAbstractions.INSTANCE.isPhysicalClient())
             StargateConfig.setClient(instance.client);
-        }
 
         StargateConfig.setServer(instance.server);
-        return instance;
     }
 
     @Config(name = "common")
