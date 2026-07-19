@@ -41,10 +41,18 @@
     option: {
       common: {},
       client: {
+        renderPuddleBackground: {
+          "": "Render Puddle Background",
+          "@Tooltip": "Toggles the rendering of the static puddle background."
+        },
+        puddleCycleTicks: {
+          "": "Puddle Cycle Ticks",
+          "@Tooltip": "Sets the amount of ticks in which the puddle cycle completes in."
+        },
         puddleParticleTick: {
           "": "Puddle Particle Tick",
           "@Tooltip": "Sets on which tick should the puddle particle get spawned on. (0 = off)"
-        }
+        },
       },
       server: {}
     }

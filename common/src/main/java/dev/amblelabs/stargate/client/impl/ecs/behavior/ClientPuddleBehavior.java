@@ -27,7 +27,6 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
 
     private static final float MAX_RADIUS = 2.6f;
     private static final float INNER_WHITE_RADIUS = 0.8f;
-    private static final int CYCLE_LENGTH = 35;
 
     private static final int INNER_BG_COLOR = Color.ofRGB(0.85f, 0.85f, 1.0f).getColor();
     private static final int OUTER_BG_COLOR = Color.ofRGB(0.05f, 0.75f, 1.0f).getColor();
@@ -69,54 +68,114 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
         Vec3 center = blockPos.above(3).getCenter();
         long gameTime = level.getGameTime();
 
-        for (float radius = 0.1f; radius <= MAX_RADIUS; radius += 0.25f) {
-            double waveOffset = Mth.sin((gameTime * 0.1f) + radius) * 2;
+        // Calculate current wave progress (0 to 1)
+        int cycleTicks = StargateConfig.client().puddleCycleTicks();
+        float progress = (gameTime % cycleTicks) / (float) cycleTicks;
+        float currentRadius = progress * MAX_RADIUS;
 
-            int bgCount = Math.max((int) (radius + waveOffset), 1);
-            int bgColor = radius <= INNER_WHITE_RADIUS ? INNER_BG_COLOR : OUTER_BG_COLOR;
+        // Spawn a dense ring at the current radius
+        int ringParticleCount = Math.max((int) (currentRadius * 20 + 12), 20); // More particles for larger rings
+        int bgColor = currentRadius <= INNER_WHITE_RADIUS ? INNER_BG_COLOR : OUTER_BG_COLOR;
 
-            for (int i = 0; i < bgCount; i++) {
-                float angle = (2 * Mth.PI * i) / bgCount;
-                float shiftedAngle = angle + (gameTime * 0.25f);
+        // Only spawn a few particles at the center as a source
+        if (currentRadius < 0.5f) {
+            int centerParticles = 1;
+            for (int i = 0; i < centerParticles; i++) {
+                float angle = (float) (Math.random() * 2 * Mth.PI);
+                float radius = (float) (Math.random() * 0.2f);
 
-                float offsetX = Mth.cos(shiftedAngle) * radius;
-                float offsetY = Mth.sin(shiftedAngle) * radius;
+                float offsetX = Mth.cos(angle) * radius;
+                float offsetY = Mth.sin(angle) * radius;
                 Vector2f uv = toEventHorizonUv(offsetX, offsetY);
 
                 double worldX = center.x + (offsetX * localX.x) + (offsetY * localY.x);
                 double worldY = center.y + (offsetX * localX.y) + (offsetY * localY.y);
                 double worldZ = center.z + (offsetX * localX.z) + (offsetY * localY.z);
 
+                // Give center particles slight random outward velocity
+                double velX = Mth.cos(angle) * 0.2;
+                double velY = Mth.sin(angle) * 0.2;
+                double worldVelX = (velX * localX.x) + (velY * localY.x);
+                double worldVelY = (velX * localX.y) + (velY * localY.y);
+                double worldVelZ = (velX * localX.z) + (velY * localY.z);
+
                 level.addAlwaysVisibleParticle(
                         new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
                         worldX, worldY, worldZ,
-                        1, 0, 0
+                        worldVelX, worldVelY, worldVelZ
                 );
             }
         }
 
-        float progress = (gameTime % CYCLE_LENGTH) / (float) CYCLE_LENGTH;
-        float rippleRadius = Math.min(progress * MAX_RADIUS, 0.1f);
-        int rippleCount = (int) rippleRadius;
+        // Main expanding ring - dense enough to look continuous
+        for (int i = 0; i < ringParticleCount; i++) {
+            float angle = (2 * Mth.PI * i) / ringParticleCount;
+            float shiftedAngle = angle + (gameTime * 0.2f); // Rotation for ripple effect
 
-        int rippleColor = rippleRadius <= INNER_WHITE_RADIUS ? INNER_RIPPLE_COLOR : OUTER_RIPPLE_COLOR;
+            // Add slight random variation to make it look organic
+            float jitter = 0.05f;
+            float radiusJitter = currentRadius + (float)(Math.random() - 0.5) * jitter;
+            float angleJitter = (float)(Math.random() - 0.5) * 0.1f;
+            float finalAngle = shiftedAngle + angleJitter;
 
-        for (int i = 0; i < rippleCount; i++) {
-            float angle = (2 * Mth.PI * i) / rippleCount;
-            float offsetX = Mth.cos(angle) * rippleRadius;
-            float offsetY = Mth.sin(angle) * rippleRadius;
-
+            float offsetX = Mth.cos(finalAngle) * radiusJitter;
+            float offsetY = Mth.sin(finalAngle) * radiusJitter;
             Vector2f uv = toEventHorizonUv(offsetX, offsetY);
+
+            // Outward velocity - faster at larger radii for ripple effect
+            float speed = 0.3f + (currentRadius / MAX_RADIUS) * 0.3f;
+            double velX = Mth.cos(finalAngle) * speed;
+            double velY = Mth.sin(finalAngle) * speed;
+
+            // Transform velocity to world space
+            double worldVelX = (velX * localX.x) + (velY * localY.x);
+            double worldVelY = (velX * localX.y) + (velY * localY.y);
+            double worldVelZ = (velX * localX.z) + (velY * localY.z);
 
             double worldX = center.x + (offsetX * localX.x) + (offsetY * localY.x);
             double worldY = center.y + (offsetX * localX.y) + (offsetY * localY.y);
             double worldZ = center.z + (offsetX * localX.z) + (offsetY * localY.z);
 
             level.addAlwaysVisibleParticle(
-                    new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
+                    new PuddleParticleOptions(StargateParticles.PUDDLE, bgColor, uv),
                     worldX, worldY, worldZ,
-                    1, 0, 0
+                    worldVelX, worldVelY, worldVelZ
             );
+        }
+
+        // Ripple effect - secondary wave trailing behind with its own color
+        float rippleRadius = Math.max(0, currentRadius - 0.8f);
+        if (rippleRadius > 0.1f) {
+            int rippleParticleCount = Math.max((int) (rippleRadius * 16 + 8), 12);
+            int rippleColor = rippleRadius <= INNER_WHITE_RADIUS ? INNER_RIPPLE_COLOR : OUTER_RIPPLE_COLOR;
+
+            for (int i = 0; i < rippleParticleCount; i++) {
+                float angle = (2 * Mth.PI * i) / rippleParticleCount;
+                float shiftedAngle = angle + (gameTime * 0.15f);
+
+                float offsetX = Mth.cos(shiftedAngle) * rippleRadius;
+                float offsetY = Mth.sin(shiftedAngle) * rippleRadius;
+                Vector2f uv = toEventHorizonUv(offsetX, offsetY);
+
+                // Slower outward velocity for ripple
+                float speed = 0.2f + (rippleRadius / MAX_RADIUS) * 0.2f;
+                double velX = Mth.cos(shiftedAngle) * speed;
+                double velY = Mth.sin(shiftedAngle) * speed;
+
+                double worldVelX = (velX * localX.x) + (velY * localY.x);
+                double worldVelY = (velX * localX.y) + (velY * localY.y);
+                double worldVelZ = (velX * localX.z) + (velY * localY.z);
+
+                double worldX = center.x + (offsetX * localX.x) + (offsetY * localY.x);
+                double worldY = center.y + (offsetX * localX.y) + (offsetY * localY.y);
+                double worldZ = center.z + (offsetX * localX.z) + (offsetY * localY.z);
+
+                level.addAlwaysVisibleParticle(
+                        new PuddleParticleOptions(StargateParticles.PUDDLE, rippleColor, uv),
+                        worldX, worldY, worldZ,
+                        worldVelX, worldVelY, worldVelZ
+                );
+            }
         }
     }
 

@@ -14,9 +14,17 @@ public class StargateConfig {
     }
 
     public interface ClientConfigAccess {
+        boolean renderPuddleBackground();
+        int puddleCycleTicks();
         int puddleParticleTick();
 
-        int DEFAULT_PUDDLE_PARTICLE_TICK = 1;
+        boolean DEFAULT_RENDER_PUDDLE_BACKGROUND = true;
+
+        int DEFAULT_PUDDLE_CYCLE_TICKS = 50;
+        int MIN_PUDDLE_CYCLE_TICKS = 1;
+        int MAX_PUDDLE_CYCLE_TICKS = 20 * 10; // 10 seconds
+
+        int DEFAULT_PUDDLE_PARTICLE_TICK = 4;
         int MIN_PUDDLE_PARTICLE_TICK = 0;
         int MAX_PUDDLE_PARTICLE_TICK = 20;
     }

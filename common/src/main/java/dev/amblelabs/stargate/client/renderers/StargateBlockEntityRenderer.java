@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.client.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
@@ -62,7 +63,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     public void actuallyRender(PoseStack poseStack, StargateBlockEntity animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 
-        if (isReRender)
+        if (isReRender || !StargateConfig.client().renderPuddleBackground())
             return;
 
         poseStack.pushPose();
