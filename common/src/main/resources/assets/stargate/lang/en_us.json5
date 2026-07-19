@@ -56,5 +56,13 @@
       },
       server: {}
     }
+  },
+  "argument.stargate": {
+    notfound: "No Stargate was found"
+  },
+  "commands.data.stargate": {
+    modified: "Modified Stargate data of %s, %s, %s",
+    query: "%s, %s, %s has the following Stargate data:\n%s",
+    get: "%s on Stargate %s, %s, %s after scale factor of %s is %s"
   }
 }

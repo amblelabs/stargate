@@ -10,6 +10,7 @@
     "title.TitleScreenMixin"
   ],
   "mixins": [
+    "data_command.DataCommandsMixin",
     "stargate_manager.ServerLevelMixin"
   ],
   "injectors": {
