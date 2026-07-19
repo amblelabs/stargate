@@ -1,10 +1,15 @@
 package dev.amblelabs.stargate.common.impl.ecs.behavior;
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
-import dev.amblelabs.stargate.api.ecs.event.StargateTickEvents;
+
+import dev.amblelabs.stargate.api.address.Glyph;
+import dev.amblelabs.stargate.api.ecs.event.*;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.api.util.StargateUtil;
+import dev.amblelabs.stargate.api.util.TeleportableEntity;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
+import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
 import dev.amblelabs.stargate.common.lib.StargateSounds;
 import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
@@ -14,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -29,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimatableManager;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GenericGateBehavior {
 
@@ -62,7 +67,7 @@ public interface GenericGateBehavior {
                 closed.locked = length;
                 closed.timer = 0;
 
-                stargate.markDirty();
+                stargate.setChanged();
                 return;
             }
 
@@ -71,15 +76,15 @@ public interface GenericGateBehavior {
             closed.timer = 0;
             closed.locked++;
 
-            stargate.playSound(StargateSounds.CHEVRON_LOCK);
-            stargate.markDirty();
+            StargateUtil.playSound(stargate, StargateSounds.CHEVRON_LOCK);
+            stargate.setChanged();
 
             // TODO: add energy handling.
             AddressResolveEvent.Result resolved = TEvents.handle(new AddressResolveEvent(stargate, closed.address, closed.locked));
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
                 // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
-                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.kernel().maxChevrons)
+                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.state(ChevronState.state).chevrons)
                     this.fail(stargate);
 
                 return;
@@ -88,7 +93,7 @@ public interface GenericGateBehavior {
             manager.set(stargate, new GateState.Opening(route.stargate(), true));
             manager.set(route.stargate(), new GateState.Opening(null, false));
 
-            route.stargate().markDirty();
+            route.stargate().setChanged();
         }
 
         public static int calculateDelay(int curGlyph, int nextGlyph) {
@@ -106,22 +111,16 @@ public interface GenericGateBehavior {
         }
 
         public void fail(Stargate stargate) {
-            stargate.playSound(StargateSounds.GATE_FAIL);
+            StargateUtil.playSound(stargate, StargateSounds.GATE_FAIL);
             manager.set(stargate, new GateState.Closed());
         }
     }
 
     class Opening implements TBehavior, StargateGateStateEvents, StargateTickEvents {
 
-        static final float p0 = 0;
-        static final float p1 = 22;
-        static final float p2 = -12;
-        static final float p3 = 0;
-
-        @Override
-        public void onStateChanged(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
-            if (newState.gateState() == GateState.StateType.OPENING)
-                stargate.playSound(StargateSounds.GATE_OPEN);
+        public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
+            if (newState instanceof GateState.Opening)
+                StargateUtil.playSound(stargate, StargateSounds.GATE_OPEN);
         }
 
         @Resolve
@@ -130,24 +129,8 @@ public interface GenericGateBehavior {
         @Override
         public void tick(Stargate stargate) {
             GateState.Opening opening = stargate.state(GateState.Opening.state);
+            if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH) return;
 
-            // Adjust Bezier control points and t-mapping to linger longer near p1 and p2
-            float t = (float) opening.timer / (GateState.Opening.TICKS_PER_KAWOOSH * 1.25f);
-
-            // Remap t to ease in and out, spending more time near p1 and p2
-            // Use a custom curve: t' = 3t^2 - 2t^3 (smoothstep), then stretch the middle
-            float tPrime = Mth.clamp((float) (3 * Math.pow(t, 2) - 2 * Math.pow(t, 3)), 0, 1);
-
-            opening.kawooshHeight = (float) (
-                    Math.pow(1 - tPrime, 3) * p0 +
-                            3 * Math.pow(1 - tPrime, 2) * tPrime * p1 +
-                            3 * (1 - tPrime) * Math.pow(tPrime, 2) * p2 +
-                            Math.pow(tPrime, 3) * p3
-            );
-
-            if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH || tPrime != 1) return;
-
-            opening.kawooshHeight = 0;
             opening.timer = 0;
 
             if (stargate.isClient()) return;
@@ -165,14 +148,16 @@ public interface GenericGateBehavior {
 
     class Open implements TBehavior, StargateTickEvents, StargateBlockEvents, StargateGateStateEvents {
 
+        public static final AABB NS_DEFAULT = new AABB(BlockPos.ZERO).inflate(2, 2, 0).inflate(0, 3, 0);
+        public static final AABB WE_DEFAULT = new AABB(BlockPos.ZERO).inflate(0, 2, 2).inflate(0, 3, 0);
+
         @Resolve
         private final GateManagerBehavior manager = behavior();
 
-        @Override
-        public void onStateChanged(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
-            if (oldState.gateState() == GateState.StateType.OPEN
-                    && newState.gateState() == GateState.StateType.CLOSED)
-                stargate.playSound(StargateSounds.GATE_CLOSE);
+        public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
+            if (oldState instanceof GateState.Open
+                    && newState instanceof GateState.Closed)
+                StargateUtil.playSound(stargate, StargateSounds.GATE_CLOSE);
         }
 
         @Override
@@ -202,29 +187,27 @@ public interface GenericGateBehavior {
             Stargate target = open.target;
             if (target == null) return; // this is most likely false, since we do a check every tick, but just in case...
 
-            BlockPos targetBlockPos = target.pos();
-            ServerLevel targetLevel = target.world();
+            LevelState targetPhys = target.resolveState(LevelState.state);
 
             StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
             if (result == StargateTpEvent.Result.DENY) return;
 
-            BlockPos pos = stargate.pos();
+            BlockPos pos = stargate.resolveState(LevelState.state).pos;
             Vec3 offset = entity.position().subtract(pos.getCenter().subtract(0, 0.5, 0));
 
-            entity.level().playSound(null, pos, StargateSounds.GATE_TELEPORT, SoundSource.BLOCKS, 1f, 1);
-            targetLevel.playSound(null, targetBlockPos, StargateSounds.GATE_TELEPORT, SoundSource.BLOCKS, 1f, 1);
+            StargateUtil.playSound(stargate, StargateSounds.GATE_TELEPORT);
+            StargateUtil.playSound(target, StargateSounds.GATE_TELEPORT);
 
             // Retain entity velocity but reorient it towards the target stargate
             Vec3 velocity = entity.getDeltaMovement();
-            Vec3 direction = targetBlockPos.getCenter().subtract(pos.getCenter()).normalize();
+            Vec3 direction = targetPhys.pos.getCenter().subtract(pos.getCenter()).normalize();
 
             double speed = velocity.length();
             Vec3 newVelocity = direction.multiply(speed, speed, speed);
+            Vec3 targetPos = targetPhys.pos.getCenter().add(offset);
 
-            TeleportUtil.teleport(entity, targetLevel,
-                    targetBlockPos.getCenter().add(offset),
-                    target.facing().asRotation()
-            );
+            entity.teleportTo(targetPhys.level, targetPos.x, targetPos.y, targetPos.z,
+                    Set.of(), entity.getYRot(), entity.getXRot());
 
             entity.setDeltaMovement(newVelocity);
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
@@ -232,26 +215,26 @@ public interface GenericGateBehavior {
 
         @Override
         public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
-            if (someGate.isClient()) return;
+            if (stargate.isClient()) return;
             if (level.getGameTime() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
-            Direction facing = state.getValue(StargateBlock.FACING);
-            AABB aabb = someGate.kernel().forDirection(facing).offset(pos);
+            Direction facing = blockState.getValue(StargateBlock.FACING);
 
-            GateState.Open open = someGate.state(GateState.Open.state);
+            AABB aabb = facing.getAxis() == Direction.Axis.Z ? NS_DEFAULT : WE_DEFAULT;
+            aabb = aabb.move(blockPos);
+
+            GateState.Open open = stargate.state(GateState.Open.state);
             List<Entity> entities = level.getEntitiesOfClass(Entity.class, aabb, e -> e.isAlive() && !e.isSpectator());
 
             for (Entity e : entities) {
                 if (e instanceof LivingEntity living)
-                    tryTeleportFrom(someGate, open, living);
+                    tryTeleportFrom(stargate, open, living);
             }
         }
 
         @Override
         public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-            if (random.nextInt(100) < 5) {
-                level.playSound(null, pos, StargateSounds.WORMHOLE_LOOP, SoundSource.BLOCKS);
-            }
+            if (random.nextInt(100) < 5) level.playSound(null, pos, StargateSounds.WORMHOLE_LOOP, SoundSource.BLOCKS);
         }
 
         @Override

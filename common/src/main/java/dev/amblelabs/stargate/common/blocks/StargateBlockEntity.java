@@ -9,6 +9,7 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
+import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.event.TEvents;
@@ -66,6 +67,9 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         stargate.onUpdate(this);
         TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
+
+        if (this.level != null && this.level instanceof ServerLevel serverLevel)
+            stargate.addState(new LevelState(serverLevel, this.getBlockPos()));
 
         this.stargateId = stargate.getId();
         this.setChanged();

@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.api.stargate;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
+import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.network.StargateSyncS2CPayload;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.HolderLookup;
@@ -13,10 +14,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class ServerStargateNetwork extends StargateNetwork {
+
+    public static final Map<UUID, Stargate> GLOBAL = new HashMap<>();
+    public static final Map<String, Stargate> C7 = new HashMap<>();
 
     private static final String NETWORK_FILE_ID = "stargate-networks";
     private static final String GATES_TAG = "Gates";
@@ -49,7 +55,18 @@ public class ServerStargateNetwork extends StargateNetwork {
     public Stargate create() {
         Stargate result = new Stargate(UUID.randomUUID(), false);
         this.lookup.put(result.getId(), result);
+        GLOBAL.put(result.getId(), result);
+        C7.put(result.state(C7State.state).address(), result);
         return result;
+    }
+
+    @Override
+    public void remove(UUID id) {
+        Stargate stargate = this.get(id);
+
+        super.remove(id);
+        GLOBAL.remove(id);
+        C7.remove(stargate.state(C7State.state).address());
     }
 
     class Persistent extends SavedData {
@@ -71,6 +88,8 @@ public class ServerStargateNetwork extends StargateNetwork {
                 Stargate stargate = Stargate.createFromNbt(gateTag, ctx);
 
                 ServerStargateNetwork.this.lookup.put(stargate.getId(), stargate);
+                GLOBAL.put(stargate.getId(), stargate);
+                C7.put(stargate.state(C7State.state).address(), stargate);
             }
         }
 

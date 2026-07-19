@@ -33,5 +33,4 @@ public interface StargateBlockEvents extends TEvents {
     static void notify(Consumer<StargateBlockEvents> handler) {
         TEvents.notify(type, handler);
     }
-
 }

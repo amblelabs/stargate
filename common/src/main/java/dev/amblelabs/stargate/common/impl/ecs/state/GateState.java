@@ -1,22 +1,61 @@
 package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
-import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
+import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
-import dev.amblelabs.stargate.api.util.NbtUtil;
+import dev.drtheo.ecs.state.TState;
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtState<T> {
+import java.util.UUID;
 
-    StateType gateState();
+public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
-    class Closed implements GateState<Closed> {
+    static GateState<?> findAny(Stargate stargate) {
+        GateState<?> state = stargate.stateOrNull(Closed.state);
+
+        if (state != null) return state;
+
+        state = stargate.stateOrNull(Opening.state);
+
+        if (state != null) return state;
+
+        state = stargate.stateOrNull(Open.state);
+        if (state != null) return state;
+
+        state = new Closed();
+        stargate.addState(state);
+
+        return state;
+    }
+
+    final class Holder implements TState<Holder> {
+
+        public static final Type<Holder> state = new Type<>(StargateAPI.modLoc("generic/holder"));
+
+        public TState.Type<?> current;
+
+        public static Holder forStargate(Stargate stargate) {
+            return new Holder(GateState.findAny(stargate).type());
+        }
+
+        public Holder(TState.Type<?> current) {
+            this.current = current;
+        }
+
+        @Override
+        public Type<Holder> type() {
+            return state;
+        }
+    }
+
+    final class Closed implements GateState<Closed> {
 
         public static final Type<Closed> state = new Type<>(StargateAPI.modLoc("generic/closed"), 0) {
+
             @Override
             public Closed fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
                 return new Closed();
@@ -59,11 +98,6 @@ public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtStat
         }
 
         @Override
-        public StateType gateState() {
-            return StateType.CLOSED;
-        }
-
-        @Override
         public void toNbt(CompoundTag nbt, Context context) {
             nbt.putInt("locked", locked);
             nbt.putBoolean("locking", locking);
@@ -76,13 +110,12 @@ public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtStat
         public static final Type<Opening> state = new Type<>(StargateAPI.modLoc("generic/opening"), 0) {
             @Override
             public Opening fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-                long address = nbt.getLong("address");
+                UUID address = nbt.getUUID("address");
                 boolean caller = nbt.getBoolean("caller");
                 int timer = nbt.getInt("timer");
-                float kawooshHeight = nbt.getFloat("kawooshHeight");
 
-                return new Opening(Stargate.resolveGlobal(address, context),
-                        caller, timer, kawooshHeight);
+                return new Opening(ServerStargateNetwork.GLOBAL.get(address),
+                        caller, timer);
             }
         };
 
@@ -92,18 +125,16 @@ public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtStat
         public final boolean caller;
 
         public int timer;
-        public float kawooshHeight;
 
-        public Opening(Stargate target, boolean caller) {
-            this(target, caller, 0, 0);
+        public Opening(@Nullable Stargate target, boolean caller) {
+            this(target, caller, 0);
         }
 
-        private Opening(@Nullable Stargate target, boolean caller, int timer, float kawooshHeight) {
+        private Opening(@Nullable Stargate target, boolean caller, int timer) {
             this.target = target;
             this.caller = caller;
 
             this.timer = timer;
-            this.kawooshHeight = kawooshHeight;
         }
 
         @Override
@@ -112,29 +143,24 @@ public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtStat
         }
 
         @Override
-        public StateType gateState() {
-            return StateType.OPENING;
-        }
-
-        @Override
         public void toNbt(CompoundTag nbt, Context context) {
             if (target != null)
-                nbt.putLong("address", target.globalAddress());
+                nbt.putUUID("address", target.getId());
+
             nbt.putBoolean("caller", caller);
             nbt.putInt("timer", timer);
-            nbt.putFloat("kawooshHeight", kawooshHeight);
         }
     }
 
-    class Open implements GateState<Open> {
+    final class Open implements GateState<Open> {
 
         public static final Type<Open> state = new Type<>(StargateAPI.modLoc("generic/open"), 0) {
             @Override
             public Open fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-                long address = nbt.getLong("address"); // FIXME -1 if doesnt exist
+                UUID address = nbt.getUUID("address");
                 boolean caller = nbt.getBoolean("caller");
 
-                return new Open(Stargate.resolveGlobal(address, context), caller);
+                return new Open(ServerStargateNetwork.GLOBAL.get(address), caller);
             }
         };
 
@@ -158,21 +184,11 @@ public interface GateState<T extends NbtState<T> & GateState<T>> extends NbtStat
         }
 
         @Override
-        public StateType gateState() {
-            return StateType.OPEN;
-        }
-
-        @Override
         public void toNbt(CompoundTag nbt, Context context) {
             if (target != null)
-                nbt.putLong("address", target.globalAddress());
+                nbt.putUUID("address", target.getId());
+
             nbt.putBoolean("caller", this.caller);
         }
-    }
-
-    enum StateType {
-        CLOSED,
-        OPENING,
-        OPEN
     }
 }

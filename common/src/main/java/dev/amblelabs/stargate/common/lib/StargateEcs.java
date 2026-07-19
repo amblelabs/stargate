@@ -1,15 +1,8 @@
 package dev.amblelabs.stargate.common.lib;
 
-import dev.amblelabs.stargate.api.ecs.event.DHDBlockEvents;
-import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
-import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
-import dev.amblelabs.stargate.common.impl.ecs.behavior.IrisBehavior;
-import dev.amblelabs.stargate.common.impl.ecs.behavior.PrototypeBehavior;
-import dev.amblelabs.stargate.common.impl.ecs.behavior.ShapeBehavior;
-import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
-import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
-import dev.amblelabs.stargate.common.impl.ecs.state.ShapeState;
+import dev.amblelabs.stargate.api.ecs.event.*;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.*;
+import dev.amblelabs.stargate.common.impl.ecs.state.*;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
@@ -38,6 +31,13 @@ public class StargateEcs {
         States.register(PrototypeIdentityState.state);
         States.register(IrisState.state);
         States.register(ShapeState.state);
+
+        States.register(C7State.state);
+        States.register(ChevronState.state);
+        States.register(GateState.Closed.state);
+        States.register(GateState.Opening.state);
+        States.register(GateState.Open.state);
+        States.register(LevelState.state);
     }
 
     public static void initEvents() {
@@ -45,11 +45,19 @@ public class StargateEcs {
         TEventsRegistry.register(StargateBlockEvents.type);
         TEventsRegistry.register(IrisEvents.type);
         TEventsRegistry.register(DHDBlockEvents.type);
+
+        TEventsRegistry.register(AddressResolveEvents.type);
+        TEventsRegistry.register(StargateGateStateEvents.type);
+        TEventsRegistry.register(StargateTickEvents.type);
+        TEventsRegistry.register(StargateTpEvents.type);
     }
 
     public static void initBehavior() {
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(PrototypeBehavior::new);
         TBehaviorRegistry.register(ShapeBehavior::new);
+
+        GenericGateBehavior.registerAll();
+        TBehaviorRegistry.register(GateManagerBehavior::new);
     }
 }
