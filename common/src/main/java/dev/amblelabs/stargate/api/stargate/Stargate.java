@@ -21,15 +21,15 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     public static final int DEFAULT_VERSION = 0;
 
-    public static final String ID_TAG = "Id";
-    public static final String STATES_TAG = "States";
+    public static final String TAG_ID = "Id";
+    public static final String TAG_STATES = "States";
 
     private final UUID id;
     private final boolean isClient;
     private final Set<UpdateSubscriber> subscribers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
-        return new Stargate(tag.getUUID(ID_TAG), ctx.isClient()).fromNbt(tag, ctx);
+        return new Stargate(tag.getUUID(TAG_ID), ctx.isClient()).fromNbt(tag, ctx);
     }
 
     public Stargate(UUID id, boolean isClient) {
@@ -55,8 +55,8 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         // FIXME FIXME: i have no idea what i was talking about. by this i mean all this.
         this.forEachState((i, state) -> stateToNbt(states, i, state, context));
 
-        nbt.putUUID(ID_TAG, id);
-        nbt.put(STATES_TAG, states);
+        nbt.putUUID(TAG_ID, id);
+        nbt.put(TAG_STATES, states);
     }
 
     @SuppressWarnings("rawtypes")
@@ -89,7 +89,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     public Stargate fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
         boolean fix = false;
 
-        CompoundTag states = nbt.getCompound(STATES_TAG);
+        CompoundTag states = nbt.getCompound(TAG_STATES);
 
         for (String key : states.getAllKeys()) {
             if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof NbtState.Type<?> serializable) {
