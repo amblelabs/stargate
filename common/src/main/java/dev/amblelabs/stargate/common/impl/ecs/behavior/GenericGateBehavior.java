@@ -93,8 +93,6 @@ public interface GenericGateBehavior {
 
             manager.set(stargate, new GateState.Opening(route.stargate(), true));
             manager.set(route.stargate(), new GateState.Opening(null, false));
-
-            route.stargate().setChanged();
         }
 
         public static int calculateDelay(int curGlyph, int nextGlyph) {
@@ -119,13 +117,14 @@ public interface GenericGateBehavior {
 
     class Opening implements TBehavior, StargateGateStateEvents, StargateTickEvents {
 
+        @Resolve
+        private final GateManagerBehavior manager = behavior();
+
+        @Override
         public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
             if (newState instanceof GateState.Opening)
                 StargateUtil.playSound(stargate, StargateSounds.GATE_OPEN);
         }
-
-        @Resolve
-        private final GateManagerBehavior manager = behavior();
 
         @Override
         public void tick(Stargate stargate) {

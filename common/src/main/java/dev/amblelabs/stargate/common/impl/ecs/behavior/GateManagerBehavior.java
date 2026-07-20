@@ -18,5 +18,7 @@ public class GateManagerBehavior implements TBehavior {
 
         StargateGateStateEvents.notify(events ->
                 events.stargate$gateState(stargate, oldState, newState));
+
+        stargate.setChanged();
     }
 }
