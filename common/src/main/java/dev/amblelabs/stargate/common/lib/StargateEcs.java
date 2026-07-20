@@ -34,6 +34,7 @@ public class StargateEcs {
 
         States.register(C7State.state);
         States.register(ChevronState.state);
+        States.register(GateState.Holder.state);
         States.register(GateState.Closed.state);
         States.register(GateState.Opening.state);
         States.register(GateState.Open.state);

@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
+    // FIXME: this stinks.
     static GateState<?> findAny(Stargate stargate) {
         GateState<?> state = stargate.stateOrNull(Closed.state);
 
