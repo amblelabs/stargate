@@ -168,7 +168,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         };
 
         public static final int TICKS_PER_OPEN = 60 * 20;
-        public static final int TELEPORT_FREQUENCY = 10;
+        public static final int TELEPORT_FREQUENCY = 5;
         public static final int TELEPORT_DELAY = 20;
 
         public final @Nullable Stargate target;
