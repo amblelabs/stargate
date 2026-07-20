@@ -11,7 +11,8 @@
   ],
   "mixins": [
     "data_command.DataCommandsMixin",
-    "stargate_manager.ServerLevelMixin"
+    "stargate_manager.ServerLevelMixin",
+    "tp.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

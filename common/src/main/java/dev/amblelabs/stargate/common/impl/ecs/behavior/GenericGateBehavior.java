@@ -148,8 +148,8 @@ public interface GenericGateBehavior {
 
     class Open implements TBehavior, StargateTickEvents, StargateBlockEvents, StargateGateStateEvents {
 
-        public static final AABB NS_DEFAULT = new AABB(BlockPos.ZERO).inflate(2, 2, 0).inflate(0, 3, 0);
-        public static final AABB WE_DEFAULT = new AABB(BlockPos.ZERO).inflate(0, 2, 2).inflate(0, 3, 0);
+        public static final AABB NS_DEFAULT = new AABB(-1, 0, 0, 1, 3, 0);
+        public static final AABB WE_DEFAULT = new AABB(0, 0, -1, 0, 3, 1);
 
         @Resolve
         private final GateManagerBehavior manager = behavior();
