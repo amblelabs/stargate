@@ -111,12 +111,14 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         public static final Type<Opening> state = new Type<>(StargateAPI.modLoc("generic/opening"), 0) {
             @Override
             public Opening fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-                UUID address = nbt.getUUID("address");
+                Stargate target = null;
+                if (nbt.hasUUID("address"))
+                    target = ServerStargateNetwork.GLOBAL.get(nbt.getUUID("address"));
+
                 boolean caller = nbt.getBoolean("caller");
                 int timer = nbt.getInt("timer");
 
-                return new Opening(ServerStargateNetwork.GLOBAL.get(address),
-                        caller, timer);
+                return new Opening(target, caller, timer);
             }
         };
 
