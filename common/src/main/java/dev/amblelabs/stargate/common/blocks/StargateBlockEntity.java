@@ -66,7 +66,6 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         }
 
         stargate.onUpdate(this);
-        TEvents.handle(new StargateLifecycleEvents.Instantiate(stargate, ctx));
 
         if (this.level != null && this.level instanceof ServerLevel serverLevel)
             stargate.addState(new LevelState(serverLevel, this.getBlockPos()));
@@ -79,10 +78,8 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        Stargate stargate = ServerStargateNetwork.get(level).create();
-
         PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-        entry.mark(stargate);
+        Stargate stargate = ServerStargateNetwork.get(level).create(entry);
 
         this.setStargate(stargate, NbtDeserializer.Context.fromLevel(level));
 

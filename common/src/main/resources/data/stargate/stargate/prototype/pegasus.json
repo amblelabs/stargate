@@ -4,6 +4,10 @@
       "model": "stargate:block/stargate",
       "texture": "stargate:block/pegasus"
     },
-    "stargate:shape": {}
+    "stargate:shape": {},
+    "stargate:c7": {},
+    "stargate:chevrons": {
+      "chevrons": 7
+    }
   }
 }
