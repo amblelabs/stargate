@@ -132,7 +132,7 @@ public class ServerStargateNetwork extends StargateNetwork {
     private SavedData.Factory<Persistent> factory() {
         return new SavedData.Factory<>(Persistent::new, this::load,
                 null /// {@see net.fabricmc.fabric.mixin.object.builder.PersistentStateManagerMixin}
-        ); // FIXME: :P
+        );
     }
 
     public static ServerStargateNetwork get(ServerLevel level) {

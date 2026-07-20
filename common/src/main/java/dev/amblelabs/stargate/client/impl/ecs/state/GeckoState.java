@@ -64,7 +64,8 @@ public class GeckoState implements NbtState<GeckoState> {
 
             // TODO: sorting manually sucks ass.
             private final Supplier<List<GeoBone>> lights = Suppliers.memoize(() ->
-                    this.getAnimationProcessor().getBone("lights").getChildBones().stream().sorted(Comparator.comparing(GeoBone::getName)).toList());
+                    this.getAnimationProcessor().getBone("lights").getChildBones()
+                            .stream().sorted(Comparator.comparing(GeoBone::getName)).toList());
 
             @Override
             public ResourceLocation getModelResource(StargateBlockEntity animatable) {
@@ -88,9 +89,9 @@ public class GeckoState implements NbtState<GeckoState> {
                 if (stargate == null) return;
 
                 int chevrons = 0;
-                GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
+                GateState<?> state = stargate.stateOrNull(GateState.state);
 
-                if (closed != null) {
+                if (state instanceof GateState.Closed closed) {
                     chevrons = closed.locked;
                 } else {
                     ChevronState chevronState = stargate.stateOrNull(ChevronState.state);

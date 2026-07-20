@@ -143,7 +143,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     @Override
-    public @Nullable <T extends TState<T>> T removeState(TState.Type<T> type) {
+    public @Nullable <T extends TState<? extends T>> T removeState(TState.Type<? extends T> type) {
         T result = super.removeState(type);
         if (result != null) this.setChanged();
 

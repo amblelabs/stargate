@@ -20,7 +20,7 @@ public interface TStateContainer {
      * @param <T> the state.
      */
     @Contract(pure = true)
-    <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type);
+    <T extends TState<? extends T>> @Nullable T stateOrNull(TState.Type<? extends T> type);
 
     /**
      * Utility method that gets the queried {@link TState}
@@ -33,7 +33,7 @@ public interface TStateContainer {
      * @see StateResolveError
      */
     @Contract(pure = true)
-    default <T extends TState<T>> T state(TState.Type<T> type) {
+    default <T extends TState<? extends T>> T state(TState.Type<? extends T> type) {
         T result = stateOrNull(type);
 
         if (result == null)
@@ -71,7 +71,7 @@ public interface TStateContainer {
      * @param <T> the state.
      */
     @Contract(mutates = "this")
-    <T extends TState<T>> @Nullable T removeState(TState.Type<T> type);
+    <T extends TState<? extends T>> @Nullable T removeState(TState.Type<? extends T> type);
 
     @Contract(mutates = "this")
     void clearStates();
@@ -130,7 +130,7 @@ public interface TStateContainer {
         @Override
         @Contract(pure = true)
         @SuppressWarnings("unchecked")
-        public <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type) {
+        public <T extends TState<? extends T>> @Nullable T stateOrNull(TState.Type<? extends T> type) {
             int index = type.index;
 
             if (index < 0)
@@ -142,7 +142,7 @@ public interface TStateContainer {
         @Override
         @Contract(mutates = "this")
         @SuppressWarnings("unchecked")
-        public <T extends TState<T>> @Nullable T removeState(TState.Type<T> type) {
+        public <T extends TState<? extends T>> @Nullable T removeState(TState.Type<? extends T> type) {
             T result = (T) data[type.index];
             data[type.index] = null;
 
@@ -196,7 +196,7 @@ public interface TStateContainer {
 
         @Override
         @Contract(pure = true)
-        public <T extends TState<T>> @Nullable T stateOrNull(TState.Type<T> type) {
+        public <T extends TState<? extends T>> @Nullable T stateOrNull(TState.Type<? extends T> type) {
             return parent.stateOrNull(type);
         }
 
@@ -207,13 +207,13 @@ public interface TStateContainer {
         }
 
         @Override
-        public <T extends TState<T>> T state(TState.Type<T> type) {
+        public <T extends TState<? extends T>> T state(TState.Type<? extends T> type) {
             return parent.state(type);
         }
 
         @Override
         @Contract(mutates = "this")
-        public <T extends TState<T>> @Nullable T removeState(TState.Type<T> type) {
+        public <T extends TState<? extends T>> @Nullable T removeState(TState.Type<? extends T> type) {
             return parent.removeState(type);
         }
 

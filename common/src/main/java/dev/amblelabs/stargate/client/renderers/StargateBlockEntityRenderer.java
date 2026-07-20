@@ -80,13 +80,14 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
             return;
 
         Stargate stargate = animatable.stargate();
-        if (stargate == null || stargate.hasState(GateState.Closed.state)) return;
+        if (stargate == null) return;
+
+        GateState<?> gate = stargate.stateOrNull(GateState.state);
+        if (gate == null || gate instanceof GateState.Closed) return;
 
         float scale = 1f;
 
-        GateState.Opening opening = stargate.stateOrNull(GateState.Opening.state);
-
-        if (opening != null)
+        if (gate instanceof GateState.Opening opening)
             scale = opening.timer / (float) GateState.Opening.TICKS_PER_KAWOOSH;
 
         poseStack.pushPose();

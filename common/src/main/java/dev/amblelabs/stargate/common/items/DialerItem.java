@@ -56,9 +56,9 @@ public class DialerItem extends Item {
 		Stargate target = getStargate(context.getLevel(), context.getItemInHand());
 		if (target == null) return InteractionResult.FAIL;
 
-        GateState.Closed closed = stargate.stateOrNull(GateState.Closed.state);
+        GateState<?> state = stargate.stateOrNull(GateState.state);
 
-        if (closed != null) {
+        if (state instanceof GateState.Closed closed) {
             closed.address = target.state(C7State.state).address();
 			stargate.setChanged();
         } else if (context.getPlayer() != null) {

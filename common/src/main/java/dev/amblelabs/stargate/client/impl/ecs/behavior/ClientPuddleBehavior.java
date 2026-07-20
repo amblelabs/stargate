@@ -49,7 +49,7 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
 
-        if (!stargate.hasState(GateState.Opening.state) && !stargate.hasState(GateState.Open.state))
+        if (stargate.state(GateState.state) instanceof GateState.Closed)
             return;
 
         int targetTick = StargateConfig.client().puddleParticleTick();

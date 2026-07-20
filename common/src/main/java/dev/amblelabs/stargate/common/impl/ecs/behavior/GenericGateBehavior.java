@@ -50,7 +50,8 @@ public interface GenericGateBehavior {
 
         @Override
         public void tick(Stargate stargate) {
-            GateState.Closed closed = stargate.state(GateState.Closed.state);
+            if (!(stargate.state(GateState.state) instanceof GateState.Closed closed))
+                return;
 
             if (stargate.isClient()) {
                 if (closed.locking)
@@ -128,7 +129,9 @@ public interface GenericGateBehavior {
 
         @Override
         public void tick(Stargate stargate) {
-            GateState.Opening opening = stargate.state(GateState.Opening.state);
+            if (!(stargate.state(GateState.state) instanceof GateState.Opening opening))
+                return;
+
             if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH) return;
 
             if (stargate.isClient()) return;
@@ -162,7 +165,8 @@ public interface GenericGateBehavior {
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
-            GateState.Open open = stargate.state(GateState.Open.state);
+            if (!(stargate.state(GateState.state) instanceof GateState.Open open))
+                return;
 
             // handle abnormal state
             if (open.target == null) {
@@ -216,12 +220,14 @@ public interface GenericGateBehavior {
             if (stargate.isClient()) return;
             if (level.getGameTime() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
+            if (!(stargate.state(GateState.state) instanceof GateState.Open open))
+                return;
+
             Direction facing = blockState.getValue(StargateBlock.FACING);
 
             AABB aabb = facing.getAxis() == Direction.Axis.Z ? NS_DEFAULT : WE_DEFAULT;
             aabb = aabb.move(blockPos);
 
-            GateState.Open open = stargate.state(GateState.Open.state);
             List<Entity> entities = level.getEntitiesOfClass(Entity.class, aabb, e -> e.isAlive() && !e.isSpectator());
 
             for (Entity e : entities) {

@@ -29,16 +29,14 @@ public class StargateEcs {
 
     public static void initState() {
         States.register(PrototypeIdentityState.state);
-        States.register(IrisState.state);
+        GateState.register(States);
+
         States.register(ShapeState.state);
+        States.register(ChevronState.state);
+        States.register(LevelState.state);
 
         States.register(C7State.state);
-        States.register(ChevronState.state);
-        States.register(GateState.Holder.state);
-        States.register(GateState.Closed.state);
-        States.register(GateState.Opening.state);
-        States.register(GateState.Open.state);
-        States.register(LevelState.state);
+        States.register(IrisState.state);
     }
 
     public static void initEvents() {

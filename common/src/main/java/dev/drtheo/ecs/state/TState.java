@@ -28,7 +28,7 @@ public interface TState<Self extends TState<Self>> {
      *
      * @param <T> the state.
      */
-    abstract class NbtBacked<T extends TState<T> & NbtSerializer<EncodeContext>, EncodeContext, DecodeContext> extends SerializableType<T, CompoundTag, EncodeContext, DecodeContext> implements NbtDeserializer<T, DecodeContext> {
+    abstract class NbtBacked<T extends TState<? extends T> & NbtSerializer<EncodeContext>, EncodeContext, DecodeContext> extends SerializableType<T, CompoundTag, EncodeContext, DecodeContext> implements NbtDeserializer<T, DecodeContext> {
 
         public static final String VERSION_TAG = "DataVersion";
 
@@ -97,7 +97,7 @@ public interface TState<Self extends TState<Self>> {
      * @param <T> the state.
      * @see NbtBacked
      */
-    abstract class SerializableType<T extends TState<T>, S, EncodeContext, DecodeContext> extends Type<T> {
+    abstract class SerializableType<T extends TState<? extends T>, S, EncodeContext, DecodeContext> extends Type<T> {
 
         /**
          * Constructs a new state type with the provided {@link ResourceLocation}, which is later used for registration.
@@ -136,7 +136,7 @@ public interface TState<Self extends TState<Self>> {
      * @param <T> the state.
      */
     @SuppressWarnings("unused")
-    class Type<T extends TState<T>> {
+    class Type<T extends TState<? extends T>> {
 
         protected int index = -1;
         protected final ResourceLocation id;

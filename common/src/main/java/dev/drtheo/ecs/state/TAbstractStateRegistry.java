@@ -48,10 +48,19 @@ public abstract class TAbstractStateRegistry {
      * @throws IllegalStateException if the registry is already frozen.
      */
     public void register(TState.Type<?> type) {
+        type.index = comps.size();
+        this.add(type);
+    }
+
+    /**
+     * Adds a registered {@link TState} by its {@link TState.Type}.
+     *
+     * @param type the {@link TState}'s type.
+     * @throws IllegalStateException if the registry is already frozen.
+     */
+    public void add(TState.Type<?> type) {
         if (frozen)
             throw new IllegalStateException("Registry already frozen");
-
-        type.index = comps.size();
 
         comps.add(type);
         idToHolder.put(type.id(), type);
