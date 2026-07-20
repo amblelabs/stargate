@@ -87,14 +87,15 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         float scale = 1f;
 
-        if (gate instanceof GateState.Opening opening)
-            scale = opening.timer / (float) GateState.Opening.TICKS_PER_KAWOOSH;
+        if (gate instanceof GateState.Opening opening) {
+            scale = Math.clamp(((float) opening.timer) / ((float) GateState.Opening.TICKS_PER_KAWOOSH), 0, 1);
+        }
 
         poseStack.pushPose();
         poseStack.translate(-0.5, 0, -0.5);
 
         StargateBlockEntityRenderer.renderQuad(poseStack, bufferSource.getBuffer(RenderType.breezeEyes(TEXTURE)),
-                0xFFFFFF00 + (int) (255f / scale), scale,
+                (0x00FFFFFF) | ((int) (scale * 255) << 24), scale,
                 1, 6,
                 -2.05f, 0.5f,
                 3.05f, 0.5f,
