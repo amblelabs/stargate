@@ -57,6 +57,7 @@ public class StargateEcs {
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(PrototypeBehavior::new);
         TBehaviorRegistry.register(ShapeBehavior::new);
+        TBehaviorRegistry.register(C7Behavior::new);
 
         GenericGateBehavior.registerAll();
         TBehaviorRegistry.register(GateManagerBehavior::new);
