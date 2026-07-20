@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.api.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
@@ -31,7 +30,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Closed implements GateState<Closed> {
 
-        private static final Type<Closed> state = new GroupedType<>(() -> GateState.state, StargateAPI.modLoc("generic/closed"), 0) {
+        private static final Type<Closed> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/closed"), 0) {
 
             @Override
             public Closed fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -61,15 +60,6 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
             this.address = nbt.getString("address");
         }
 
-        // FIXME(perf)
-        public boolean address$contains(char c) {
-            return address.indexOf(c) != -1;
-        }
-
-        public int glyphIdxAtChevron(int chevronIdx) {
-            return Glyph.charToIdx(address.charAt(chevronIdx));
-        }
-
         @Override
         public Type<Closed> type() {
             return state;
@@ -85,7 +75,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Opening implements GateState<Opening> {
 
-        private static final Type<Opening> state = new GroupedType<>(() -> GateState.state, StargateAPI.modLoc("generic/opening"), 0) {
+        private static final Type<Opening> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/opening"), 0) {
 
             @Override
             public Opening fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -135,7 +125,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Open implements GateState<Open> {
 
-        private static final Type<Open> state = new GroupedType<>(() -> GateState.state, StargateAPI.modLoc("generic/open"), 0) {
+        private static final Type<Open> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/open"), 0) {
 
             @Override
             public Open fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {

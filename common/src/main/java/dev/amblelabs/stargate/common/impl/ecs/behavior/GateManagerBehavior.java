@@ -5,18 +5,18 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.drtheo.ecs.behavior.TBehavior;
 
-import java.util.Objects;
-
 public class GateManagerBehavior implements TBehavior {
 
-    public void set(Stargate stargate, GateState<?> newState) {
-        GateState<?> holder = stargate.stateOrNull(GateState.state);
-        if (holder == null) stargate.addState(holder = new GateState.Closed());
+    private GateState<?> getCurrent(Stargate stargate) {
+        GateState<?> oldState = stargate.stateOrNull(GateState.state);
+        return oldState != null ? oldState : new GateState.Closed();
+    }
 
-        GateState<?> oldState = stargate.removeState(holder.type());
+    public void set(Stargate stargate, GateState<?> newState) {
+        GateState<?> oldState = this.getCurrent(stargate);
         stargate.addState(newState);
 
         StargateGateStateEvents.notify(events ->
-                events.stargate$gateState(stargate, Objects.requireNonNull(oldState), newState));
+                events.stargate$gateState(stargate, oldState, newState));
     }
 }

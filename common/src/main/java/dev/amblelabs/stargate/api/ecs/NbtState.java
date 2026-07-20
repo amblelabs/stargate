@@ -4,8 +4,6 @@ import dev.drtheo.ecs.state.TState;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
-
 public interface NbtState<Self extends NbtState<Self>> extends TState<Self>, NbtSerializer {
 
     abstract class Type<T extends NbtState<? extends T>> extends TState.NbtBacked<T, NbtSerializer.Context, NbtDeserializer.Context> {
@@ -17,9 +15,9 @@ public interface NbtState<Self extends NbtState<Self>> extends TState<Self>, Nbt
 
     abstract class GroupedType<T extends NbtState<T>> extends Type<T> {
 
-        private final Supplier<TState.Type<?>> superType;
+        private final TState.Type<?> superType;
 
-        public GroupedType(Supplier<TState.Type<?>> type, @NotNull ResourceLocation id, int version, Fix... fix) {
+        public GroupedType(TState.Type<?> type, @NotNull ResourceLocation id, int version, Fix... fix) {
             super(id, version, fix);
 
             this.superType = type;
@@ -27,7 +25,10 @@ public interface NbtState<Self extends NbtState<Self>> extends TState<Self>, Nbt
 
         @Override
         public int verifyIndex() {
-            return superType.get().verifyIndex();
+            if (this.index == -1)
+                this.index = this.superType.verifyIndex();
+
+            return super.verifyIndex();
         }
     }
 }

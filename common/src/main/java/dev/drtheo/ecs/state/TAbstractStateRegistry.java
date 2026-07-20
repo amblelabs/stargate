@@ -37,7 +37,6 @@ public abstract class TAbstractStateRegistry {
         if (!frozen)
             throw new IllegalStateException("Registry not frozen yet!");
 
-        // TODO: add Archetypes to pass smaller max array size.
         return new TStateContainer.ArrayBacked(comps.size());
     }
 
@@ -49,6 +48,8 @@ public abstract class TAbstractStateRegistry {
      */
     public void register(TState.Type<?> type) {
         type.index = comps.size();
+
+        comps.add(type);
         this.add(type);
     }
 
@@ -62,8 +63,10 @@ public abstract class TAbstractStateRegistry {
         if (frozen)
             throw new IllegalStateException("Registry already frozen");
 
-        comps.add(type);
         idToHolder.put(type.id(), type);
+
+        //noinspection ResultOfMethodCallIgnored
+        type.verifyIndex();
     }
 
     /**
