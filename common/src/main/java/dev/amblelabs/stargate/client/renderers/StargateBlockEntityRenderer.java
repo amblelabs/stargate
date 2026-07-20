@@ -10,6 +10,7 @@ import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -74,7 +75,13 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     public void actuallyRender(PoseStack poseStack, StargateBlockEntity animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 
+        // FIXME: should be rendered in an event, like the puddle particles
         if (isReRender || !StargateConfig.client().renderPuddleBackground())
+            return;
+
+        Stargate stargate = animatable.stargate();
+
+        if (stargate == null || (!stargate.hasState(GateState.Opening.state) && !stargate.hasState(GateState.Open.state)))
             return;
 
         poseStack.pushPose();

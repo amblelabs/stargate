@@ -5,6 +5,7 @@ import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import dev.drtheo.ecs.behavior.TBehavior;
@@ -47,6 +48,9 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
+
+        if (!stargate.hasState(GateState.Opening.state) && !stargate.hasState(GateState.Open.state))
+            return;
 
         int targetTick = StargateConfig.client().puddleParticleTick();
         if (targetTick == 0 || mc.player.tickCount % StargateConfig.client().puddleParticleTick() != 0) return;
