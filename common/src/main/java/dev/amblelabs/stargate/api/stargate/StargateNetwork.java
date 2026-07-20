@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.api.stargate;
 
+import dev.amblelabs.stargate.api.ecs.event.StargateTickEvents;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ public class StargateNetwork {
     }
 
     protected void tick(Stargate stargate) {
-
+        StargateTickEvents.notify(events -> events.tick(stargate));
     }
 
     public void remove(UUID id) {

@@ -39,6 +39,8 @@ public class ServerStargateNetwork extends StargateNetwork {
 
     @Override
     public void tick(Stargate stargate) {
+        super.tick(stargate);
+
         if (!stargate.isChanged()) return;
 
         Set<ServerPlayer> players = stargate.collectUpdateReceivers();
