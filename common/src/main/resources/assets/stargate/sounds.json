@@ -2,24 +2,72 @@
   "block.toaster.ding": {
     "subtitle": "block.toaster.ding",
     "sounds": [
-      "stargate:toaster/ding"
+      "stargate:block/toaster/ding"
     ]
   },
   "block.toaster.load": {
     "subtitle": "block.toaster.load",
     "sounds": [
-      "stargate:toaster/load"
+      "stargate:block/toaster/load"
     ]
   },
   "block.toaster.active": {
     "subtitle": "block.toaster.active",
     "sounds": [
-      "stargate:toaster/toaster_active"
+      "stargate:block/toaster/active"
     ]
   },
   "music.theme": {
     "sounds": [
       "stargate:music/stargate_theme"
+    ]
+  },
+  "block.stargate.chevron": {
+    "subtitle": "block.stargate.chevron",
+    "sounds": [
+      "stargate:block/stargate/milky_way/chevron_lock"
+    ]
+  },
+  "block.stargate.fail": {
+    "subtitle": "block.stargate.fail",
+    "sounds": [
+      "stargate:block/stargate/milky_way/gate_fail"
+    ]
+  },
+  "block.stargate.close": {
+    "subtitle": "block.stargate.clos",
+    "sounds": [
+      "stargate:block/stargate/milky_way/gate_close"
+    ]
+  },
+  "block.stargate.open": {
+    "subtitle": "block.stargate.open",
+    "sounds": [
+      "stargate:block/stargate/milky_way/gate_open"
+    ]
+  },
+  "block.stargate.ring.loop": {
+    "subtitle": "block.stargate.ring.loop",
+    "sounds": [
+      "stargate:block/stargate/milky_way/ring_loop"
+    ]
+  },
+  "block.stargate.ring.start": {
+    "subtitle": "block.stargate.ring.start",
+    "sounds": [
+      "stargate:block/stargate/milky_way/ring_start"
+    ]
+  },
+  "block.stargate.loop": {
+    "subtitle": "block.stargate.loop",
+    "sounds": [
+      "stargate:block/stargate/loop"
+    ]
+  },
+  "block.stargate.tp": {
+    "subtitle": "block.stargate.tp",
+    "sounds": [
+      "stargate:block/stargate/tp"
     ]
   }
 }
