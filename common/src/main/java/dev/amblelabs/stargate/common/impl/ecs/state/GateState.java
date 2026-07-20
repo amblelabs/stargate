@@ -59,7 +59,8 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
             @Override
             public Closed fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-                return new Closed();
+                if (nbt.isEmpty()) return new Closed();
+                return new Closed(nbt);
             }
         };
 
