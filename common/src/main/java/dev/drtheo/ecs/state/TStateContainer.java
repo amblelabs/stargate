@@ -117,7 +117,6 @@ public interface TStateContainer {
      */
     class ArrayBacked implements TStateContainer {
 
-        private static final Object REMOVED = new Object();
         private final @Nullable Object[] data;
 
         /**
@@ -137,8 +136,7 @@ public interface TStateContainer {
             if (index < 0)
                 return null;
 
-            Object res = data[index];
-            return res == REMOVED ? null : (T) res;
+            return (T) data[index];
         }
 
         @Override
@@ -146,7 +144,7 @@ public interface TStateContainer {
         @SuppressWarnings("unchecked")
         public <T extends TState<T>> @Nullable T removeState(TState.Type<T> type) {
             T result = (T) data[type.index];
-            data[type.index] = REMOVED;
+            data[type.index] = null;
 
             return result;
         }
@@ -174,11 +172,6 @@ public interface TStateContainer {
 
                 if (state == null)
                     continue;
-
-                if (state == REMOVED) {
-                    state = null;
-                    objects[i] = null;
-                }
 
                 consumer.consume(i, (TState<?>) state);
             }

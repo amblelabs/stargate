@@ -87,35 +87,48 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     @Override
     @Contract(mutates = "this")
     public Stargate fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-        boolean fix = false;
-
         CompoundTag states = nbt.getCompound(TAG_STATES);
 
-        for (String key : states.getAllKeys()) {
-            if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof NbtState.Type<?> serializable) {
-                Tag state = states.get(key);
+        if (this.isClient()) {
+            this.forEachState((index, state) -> {
+                if (state != null && state.type() instanceof NbtState.Type<?> serializable) {
+                    CompoundTag stateTag = null;
 
-                if (state instanceof CompoundTag compound) {
-                    if (fix) {
-                        try {
-                            compound = serializable.update(compound, DEFAULT_VERSION);
-                        } catch (Exception e) {
-                            StargateAPI.LOGGER.error("Failed to update {}", serializable, e);
-                        }
-                    }
+                    if (states.contains(serializable.id().toString(), Tag.TAG_COMPOUND))
+                        stateTag = states.getCompound(serializable.id().toString());
 
-                    try {
-                        this.addState(serializable.decode(compound, context));
-                    } catch (Exception e) {
-                        StargateAPI.LOGGER.error("Failed to decode {}", serializable, e);
-                    }
-                } else {
-                    this.removeState(serializable);
+                    this.fromNbt(serializable, stateTag, context);
+                }
+            });
+        } else {
+            for (String key : states.getAllKeys()) {
+                if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof NbtState.Type<?> serializable) {
+                    this.fromNbt(serializable, states.getCompound(key), context);
                 }
             }
         }
 
         return this;
+    }
+
+    private void fromNbt(NbtState.Type<?> type, @Nullable CompoundTag tag, NbtDeserializer.Context context) {
+        if (tag == null) {
+            this.removeState(type);
+            return;
+        }
+
+        try {
+            // FIXME: should only trigger on load
+            tag = type.update(tag, DEFAULT_VERSION);
+        } catch (Exception e) {
+            StargateAPI.LOGGER.error("Failed to update {}", type, e);
+        }
+
+        try {
+            this.addState(type.decode(tag, context));
+        } catch (Exception e) {
+            StargateAPI.LOGGER.error("Failed to decode {}", type, e);
+        }
     }
 
     @Override
