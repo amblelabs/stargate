@@ -61,7 +61,7 @@ public interface TState<Self extends TState<Self>> {
             try {
                 return this.fromNbt(element, context);
             } catch (Exception e) {
-                TEventsRegistry.LOGGER.info(element.toString());
+                TEventsRegistry.LOGGER.error("Failed to decode: {}", element, e);
                 throw e;
             }
         }
