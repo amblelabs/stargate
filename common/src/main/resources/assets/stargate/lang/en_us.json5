@@ -15,9 +15,14 @@
     gold_iris: "Gold Iris",
     iron_iris: "Iron Iris",
 
+    dialer: {
+      "": "Address Cartouche",
+      fail: ""
+    },
+
     music_disc_theme: {
       "": "Music Disc",
-      "desc": "lucien - SG:S Theme"
+      desc: "lucien - SG:S Theme"
     }
   },
   "block.stargate": {

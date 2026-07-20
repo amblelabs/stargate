@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.common.items;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
+import dev.amblelabs.stargate.common.I18n;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
@@ -60,7 +61,9 @@ public class DialerItem extends Item {
         if (closed != null) {
             closed.address = target.state(C7State.state).address();
 			stargate.setChanged();
-        }
+        } else if (context.getPlayer() != null) {
+			context.getPlayer().sendSystemMessage(I18n.DIALER_FAIL);
+		}
 
 		stack.consume(1, context.getPlayer());
         return InteractionResult.SUCCESS;
@@ -68,7 +71,7 @@ public class DialerItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-		tooltipComponents.add(Component.translatable("tooltip.stargate.dialer.hint")
+		tooltipComponents.add(I18n.DIALER_TOOLTIP.copy()
 				.withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
 
 		this.handleTooltip(stack, tooltipComponents);
@@ -82,7 +85,7 @@ public class DialerItem extends Item {
 			return;
 
 		if (!Screen.hasShiftDown()) {
-			tooltip.add(Component.translatable("tooltip.stargate.link_item.holdformoreinfo")
+			tooltip.add(I18n.GENERIC_SHIFT_TOOLTIP.copy()
 					.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			return;
 		}
