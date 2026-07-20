@@ -80,18 +80,42 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
             return;
 
         Stargate stargate = animatable.stargate();
+        if (stargate == null || stargate.hasState(GateState.Closed.state)) return;
 
-        if (stargate == null || (!stargate.hasState(GateState.Opening.state) && !stargate.hasState(GateState.Open.state)))
-            return;
+        float scale = 1f;
+
+        GateState.Opening opening = stargate.stateOrNull(GateState.Opening.state);
+
+        if (opening != null)
+            scale = opening.timer / (float) GateState.Opening.TICKS_PER_KAWOOSH;
 
         poseStack.pushPose();
         poseStack.translate(-0.5, 0, -0.5);
-        StargateBlockEntityRenderer.renderQuad(poseStack.last(), bufferSource.getBuffer(RenderType.breezeEyes(TEXTURE)), 0xFFFFFFFF, 1, 6, -2.05f, 0.5f, 3.05f, 0.5f, 0, 1, 0, 1);
+
+        StargateBlockEntityRenderer.renderQuad(poseStack, bufferSource.getBuffer(RenderType.breezeEyes(TEXTURE)),
+                0xFFFFFF00 + (int) (255f / scale), scale,
+                1, 6,
+                -2.05f, 0.5f,
+                3.05f, 0.5f,
+                0, 1,
+                0, 1
+        );
+
         poseStack.popPose();
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void renderQuad(PoseStack.Pose pose, VertexConsumer consumer, int color, float minY, float maxY, float minX, float minZ, float maxX, float maxZ, float minU, float maxU, float minV, float maxV) {
+    private static void renderQuad(PoseStack poseStack, VertexConsumer consumer, int color, float scale, float minY, float maxY, float minX, float minZ, float maxX, float maxZ, float minU, float maxU, float minV, float maxV) {
+        float centerX = (minX + maxX) / 2;
+        float centerY = (minY + maxY) / 2;
+        float centerZ = (minZ + maxZ) / 2;
+
+        poseStack.translate(centerX, centerY, centerZ);
+        poseStack.scale(scale, scale, scale);
+        poseStack.translate(-centerX, -centerY, -centerZ);
+
+        PoseStack.Pose pose = poseStack.last();
+
         addVertex(pose, consumer, color, maxY, minX, minZ, maxU, minV);
         addVertex(pose, consumer, color, minY, minX, minZ, maxU, maxV);
         addVertex(pose, consumer, color, minY, maxX, maxZ, minU, maxV);

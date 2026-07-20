@@ -131,8 +131,6 @@ public interface GenericGateBehavior {
             GateState.Opening opening = stargate.state(GateState.Opening.state);
             if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH) return;
 
-            opening.timer = 0;
-
             if (stargate.isClient()) return;
 
             // Handle missing gates by address gracefully
