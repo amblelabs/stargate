@@ -69,7 +69,7 @@ public class StargateBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
-            if (stack.isEmpty()) {
+            if (stack.isEmpty() && blockEntity.getBlockSet() != null) {
                 blockEntity.setBlockSet(null);
                 return ItemInteractionResult.SUCCESS;
             }

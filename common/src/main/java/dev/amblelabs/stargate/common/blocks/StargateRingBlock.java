@@ -29,7 +29,7 @@ public class StargateRingBlock extends BaseEntityBlock {
         if (!(level.getBlockEntity(pos) instanceof StargateRingBlockEntity ring))
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() && ring.getBlockSet() != null) {
             ring.setBlockSet(null);
             return ItemInteractionResult.SUCCESS;
         }
