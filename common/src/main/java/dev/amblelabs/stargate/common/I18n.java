@@ -7,8 +7,8 @@ import net.minecraft.world.item.Item;
 
 public interface I18n {
     Component GENERIC_SHIFT_TOOLTIP = item("generic.tooltip.shift");
-    Component DIALER_TOOLTIP = item(StargateItems.DIALER, "tooltip");
-    Component DIALER_FAIL = item(StargateItems.DIALER, "fail");
+    Component DIALER_TOOLTIP = item(StargateItems.ADDRESS_CARTOUCHE, "tooltip");
+    Component DIALER_FAIL = item(StargateItems.ADDRESS_CARTOUCHE, "fail");
 
     private static Component modText(String type, String value) {
         return Component.translatable(type + "." + StargateAPI.MOD_ID + "." + value);
@@ -24,6 +24,6 @@ public interface I18n {
 
     @SuppressWarnings("deprecation")
     private static Component item(Item item, String suffix) {
-        return Component.translatable(item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix);
+        return Component.translatable("item." + item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix);
     }
 }

@@ -3,6 +3,10 @@
     main: "Stargate: Sojourner"
   },
   "item.stargate": {
+    generic: {
+      "tooltip.shift": "Hold [Shift] to see more",
+    },
+
     naquadah_ingot: "Naquadah Ingot",
     naquadah_nugget: "Naquadah Nugget",
     raw_naquadah: "Raw Naquadah",
@@ -15,9 +19,13 @@
     gold_iris: "Gold Iris",
     iron_iris: "Iron Iris",
 
-    dialer: {
+    toast: "Toast",
+    burnt_toast: "Burnt Toast",
+
+    address_cartouche: {
       "": "Address Cartouche",
-      fail: ""
+      fail: "",
+      tooltip: "(TBD)"
     },
 
     music_disc_theme: {
@@ -26,15 +34,21 @@
     }
   },
   "block.stargate": {
+    stargate: "Stargate",
+    dhd: "DHD",
     naquadah_ore: "Naquadah Ore",
-    block_of_naquadah: "Block of Naquadah",
+    naquadah_block: "Block of Naquadah",
     raw_naquadah_block: "Raw Naquadah Block",
     dry_grass: "Dry Grass",
     dry_bush: "Dry Bush",
     sandstone_bricks: "Sandstone Bricks",
     sandstone_brick_slab: "Sandstone Brick Slab",
     sandstone_brick_stairs: "Sandstone Brick Stairs",
-    sandstone_brick_wall: "Sandstone Brick Wall"
+    sandstone_brick_wall: "Sandstone Brick Wall",
+    toaster: "Toaster"
+  },
+  "text.stargate": {
+    gate: "Stargate"
   },
   "text.autoconfig.stargate": {
     title: "SG:S Config",

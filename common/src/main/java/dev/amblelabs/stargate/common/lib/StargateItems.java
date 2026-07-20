@@ -3,7 +3,6 @@ package dev.amblelabs.stargate.common.lib;
 import com.google.common.base.Suppliers;
 import dev.amblelabs.stargate.common.items.DialerItem;
 import dev.amblelabs.stargate.common.items.IrisItem;
-import dev.amblelabs.stargate.common.items.component.StargateLinkedComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -64,7 +63,8 @@ public class StargateItems {
     public static final Item GOLD_IRIS = make("gold_iris", new IrisItem(IrisItem.Type.GOLD, props()));
     public static final Item IRON_IRIS = make("iron_iris", new IrisItem(IrisItem.Type.IRON, props()));
 
-    public static final Item DIALER = make("dialer", new DialerItem(props().component(StargateComponents.STARGATE, null)));
+    public static final Item ADDRESS_CARTOUCHE = make("address_cartouche",
+            new DialerItem(props().component(StargateComponents.STARGATE, null)));
 
     public static final ResourceKey<JukeboxSong> STARGATE_THEME_SONG =
             ResourceKey.create(Registries.JUKEBOX_SONG,

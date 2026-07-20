@@ -49,8 +49,10 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
+        gen.generateFlatItem(StargateBlocks.STARGATE.asItem(), ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateBlocks.TOASTER.asItem(), ModelTemplates.FLAT_ITEM);
 
+        gen.generateFlatItem(StargateItems.ADDRESS_CARTOUCHE, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.TOAST, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.BURNT_TOAST, ModelTemplates.FLAT_ITEM);
 
