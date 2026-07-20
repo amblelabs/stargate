@@ -93,18 +93,21 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
             this.forEachState((index, state) -> {
                 if (state != null && state.type() instanceof NbtState.Type<?> serializable) {
                     CompoundTag stateTag = null;
+                    String key = serializable.id().toString();
 
-                    if (states.contains(serializable.id().toString(), Tag.TAG_COMPOUND))
-                        stateTag = states.getCompound(serializable.id().toString());
+                    if (states.contains(key, Tag.TAG_COMPOUND)) {
+                        stateTag = states.getCompound(key);
+                        states.remove(key);
+                    }
 
                     this.fromNbt(serializable, stateTag, context);
                 }
             });
-        } else {
-            for (String key : states.getAllKeys()) {
-                if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof NbtState.Type<?> serializable) {
-                    this.fromNbt(serializable, states.getCompound(key), context);
-                }
+        }
+
+        for (String key : states.getAllKeys()) {
+            if (StargateEcs.States.get(ResourceLocation.parse(key)) instanceof NbtState.Type<?> serializable) {
+                this.fromNbt(serializable, states.getCompound(key), context);
             }
         }
 
