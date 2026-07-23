@@ -23,6 +23,16 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
     }
 
     public void make(ResourceLocation self, TAbstractStateRegistry registry, TStateContainer container, NbtDeserializer.Context context) {
+        for (Map.Entry<ResourceLocation, CompoundTag> entry : states.entrySet()) {
+            TState.Type<?> type = registry.get(entry.getKey());
+
+            if (!(type instanceof NbtState.Type<?> serializable) || container.hasState(type))
+                return;
+
+            TState<?> state = serializable.decode(entry.getValue(), context);
+            container.addState(state);
+        }
+
         this.extending.ifPresent(prototypeId -> {
             if (self.equals(prototypeId)) return;
             PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(prototypeId);
@@ -34,16 +44,6 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
 
             entry.make(prototypeId, registry, container, context);
         });
-
-        for (Map.Entry<ResourceLocation, CompoundTag> entry : states.entrySet()) {
-            TState.Type<?> type = registry.get(entry.getKey());
-
-            if (!(type instanceof NbtState.Type<?> serializable) || container.hasState(type))
-                return;
-
-            TState<?> state = serializable.decode(entry.getValue(), context);
-            container.addState(state);
-        }
     }
 
     public static final Codec<PrototypeRegistryEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
