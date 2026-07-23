@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.fabric.network;
 
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.mod.network.StargateC2SPacket;
 import dev.amblelabs.stargate.client.api.mod.network.StargateS2CPacket;
 import dev.amblelabs.stargate.client.lib.StargateClientPackets;
@@ -25,11 +26,13 @@ public class FabricPacketHandler {
     }
 
     private static <T extends CustomPacketPayload> void registerCommon(StargatePackets.Entry<T> entry) {
-        PayloadTypeRegistry.playC2S().register(entry.type(), entry.codec());
         if (entry instanceof StargatePackets.C2S<?> packet) registerC2S(packet);
+        else PayloadTypeRegistry.playS2C().register(entry.type(), entry.codec());
     }
 
     private static <T extends CustomPacketPayload & StargateC2SPacket> void registerC2S(StargatePackets.C2S<T> packet) {
+        PayloadTypeRegistry.playC2S().register(packet.type(), packet.codec());
+
         ServerPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context)
                 -> context.server().execute(() -> payload.handle(context.server(), context.player())));
     }
