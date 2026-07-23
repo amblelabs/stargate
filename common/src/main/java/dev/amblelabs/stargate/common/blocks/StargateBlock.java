@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
-import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
@@ -106,7 +105,7 @@ public class StargateBlock extends BaseEntityBlock {
         // always ServerLevel, actually.
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
             PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-            Stargate stargate = ServerStargateNetwork.get(level).create(entry);
+            Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
 
             blockEntity.setStargate(stargate);
 
