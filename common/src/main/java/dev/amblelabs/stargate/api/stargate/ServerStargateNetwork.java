@@ -43,6 +43,8 @@ public class ServerStargateNetwork extends StargateNetwork {
 
         if (!stargate.isChanged()) return;
 
+        this.persistent.setDirty();
+
         Set<ServerPlayer> players = stargate.collectUpdateReceivers();
         if (players == null) return;
 
@@ -67,6 +69,8 @@ public class ServerStargateNetwork extends StargateNetwork {
                 -> events.stargate$instantiate(result, NbtDeserializer.Context.forCreate(level).get()));
 
         C7.put(result.state(C7State.state).address(), result);
+
+        this.persistent.setDirty();
         return result;
     }
 
@@ -77,13 +81,11 @@ public class ServerStargateNetwork extends StargateNetwork {
         super.remove(id);
         GLOBAL.remove(id);
         C7.remove(stargate.state(C7State.state).address());
+
+        this.persistent.setDirty();
     }
 
     class Persistent extends SavedData {
-
-        public Persistent() {
-            this.setDirty();
-        }
 
         public void load(CompoundTag tag) {
             ListTag gates = tag.getList(GATES_TAG, Tag.TAG_COMPOUND);
