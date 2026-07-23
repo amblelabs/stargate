@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
@@ -107,6 +108,7 @@ public class StargateBlock extends BaseEntityBlock {
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        StargateAPI.LOGGER.info("Side: client? {}", level.isClientSide);
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
             blockEntity.onBreak(state, level, pos, newState, movedByPiston);
 

@@ -51,8 +51,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     public void toNbt(CompoundTag nbt, NbtSerializer.Context context) {
         CompoundTag states = new CompoundTag();
 
-        // FIXME: this only works once. by this i mean diffing.
-        // FIXME FIXME: i have no idea what i was talking about. by this i mean all this.
+        // TODO: diff updates
         this.forEachState((i, state) -> stateToNbt(states, i, state, context));
 
         nbt.putUUID(TAG_ID, id);

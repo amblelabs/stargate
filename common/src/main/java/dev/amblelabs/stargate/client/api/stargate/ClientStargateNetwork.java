@@ -24,7 +24,7 @@ public class ClientStargateNetwork extends StargateNetwork {
         UUID id = tag.getUUID(Stargate.TAG_ID); // FIXME kinda sucks
         Stargate stargate = this.get(id);
 
-        NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
+        NbtDeserializer.Context ctx = NbtDeserializer.Context.forUpdate(level).get();
 
         if (stargate != null) {
             stargate.fromNbt(tag, ctx);

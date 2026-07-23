@@ -64,7 +64,7 @@ public class ServerStargateNetwork extends StargateNetwork {
         GLOBAL.put(result.getId(), result);
 
         StargateLifecycleEvents.notify(events
-                -> events.stargate$instantiate(result, NbtDeserializer.Context.fromLevel(level)));
+                -> events.stargate$instantiate(result, NbtDeserializer.Context.forCreate(level).get()));
 
         C7.put(result.state(C7State.state).address(), result);
         return result;
@@ -94,7 +94,7 @@ public class ServerStargateNetwork extends StargateNetwork {
                     continue;
                 }
 
-                NbtDeserializer.Context ctx = NbtDeserializer.Context.fromLevel(level);
+                NbtDeserializer.Context ctx = NbtDeserializer.Context.forLoad(level).get();
                 Stargate stargate = Stargate.createFromNbt(gateTag, ctx);
 
                 ServerStargateNetwork.this.lookup.put(stargate.getId(), stargate);

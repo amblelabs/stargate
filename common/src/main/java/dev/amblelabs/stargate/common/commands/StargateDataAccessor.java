@@ -65,7 +65,7 @@ public class StargateDataAccessor implements DataAccessor {
         CompoundTag tag = new CompoundTag();
         tag.put(Stargate.TAG_STATES, other);
 
-        this.stargate.fromNbt(tag, new NbtDeserializer.Context(false));
+        this.stargate.fromNbt(tag, NbtDeserializer.Context.forLoad().get());
         this.stargateBlockEntity.setChanged(); // this sends a level update as well
     }
 
