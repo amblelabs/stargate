@@ -1,52 +1,41 @@
 package dev.amblelabs.stargate.fabric.network;
 
-import dev.amblelabs.stargate.common.network.StargateSyncS2CPayload;
+import dev.amblelabs.stargate.api.mod.network.StargateC2SPacket;
+import dev.amblelabs.stargate.client.api.mod.network.StargateS2CPacket;
+import dev.amblelabs.stargate.client.lib.StargateClientPackets;
+import dev.amblelabs.stargate.common.lib.StargatePackets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-
-import java.util.function.Function;
 
 public class FabricPacketHandler {
 
     @SuppressWarnings("EmptyMethod")
     public static void init() {
-        PayloadTypeRegistry.playS2C().register(StargateSyncS2CPayload.ID, StargateSyncS2CPayload.CODEC);
+        StargatePackets.registerPackets(FabricPacketHandler::registerCommon);
     }
 
     @SuppressWarnings("EmptyMethod")
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        ClientPlayNetworking.registerGlobalReceiver(StargateSyncS2CPayload.ID, s2c(p -> p::handle));
+        StargateClientPackets.registerPackets(FabricPacketHandler::registerClient);
     }
 
-    @SuppressWarnings("unused") // will be used later
-    private static <T extends CustomPacketPayload> ServerPlayNetworking.PlayPayloadHandler<T> c2s(Function<T, C2SPacketHandler> handler) {
-        return (payload, context) -> context.server().execute(() -> handler.apply(payload).handle(context.server(), context.player()));
+    private static <T extends CustomPacketPayload> void registerCommon(StargatePackets.Entry<T> entry) {
+        PayloadTypeRegistry.playC2S().register(entry.type(), entry.codec());
+        if (entry instanceof StargatePackets.C2S<?> packet) registerC2S(packet);
     }
 
-    @SuppressWarnings("unused") // will be used later
-    @Environment(EnvType.CLIENT)
-    private static <T extends CustomPacketPayload> ClientPlayNetworking.PlayPayloadHandler<T> s2c(Function<T, S2CPacketHandler> handler) {
-        return (payload, context) -> handler.apply(payload).handle(context.client(), context.player());
-    }
-
-    // TODO: move these to common side
-    @FunctionalInterface
-    interface C2SPacketHandler {
-        void handle(MinecraftServer server, ServerPlayer player);
+    private static <T extends CustomPacketPayload & StargateC2SPacket> void registerC2S(StargatePackets.C2S<T> packet) {
+        ServerPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context)
+                -> context.server().execute(() -> payload.handle(context.server(), context.player())));
     }
 
     @Environment(EnvType.CLIENT)
-    @FunctionalInterface
-    interface S2CPacketHandler {
-        void handle(Minecraft minecraft, LocalPlayer player);
+    private static <T extends CustomPacketPayload & StargateS2CPacket> void registerClient(StargateClientPackets.S2C<T> packet) {
+        ClientPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context) -> payload.handle(context.client(), context.player()));
     }
 }

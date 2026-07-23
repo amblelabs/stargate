@@ -1,7 +1,8 @@
 package dev.amblelabs.stargate.common.network;
 
-import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.client.api.mod.network.StargateS2CPacket;
 import dev.amblelabs.stargate.client.api.stargate.ClientStargateNetwork;
+import dev.amblelabs.stargate.common.lib.StargatePackets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -11,12 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 
-public record StargateSyncS2CPayload(CompoundTag tag) implements CustomPacketPayload {
-
-    public static final ResourceLocation PAYLOAD_ID = StargateAPI.modLoc("stargate/sync");
-    public static final CustomPacketPayload.Type<StargateSyncS2CPayload> ID = new CustomPacketPayload.Type<>(PAYLOAD_ID);
+public record StargateSyncS2CPayload(CompoundTag tag) implements StargateS2CPacket {
 
     public static final StreamCodec<FriendlyByteBuf, StargateSyncS2CPayload> CODEC =
             StreamCodec.composite(ByteBufCodecs.TRUSTED_COMPOUND_TAG, StargateSyncS2CPayload::tag, StargateSyncS2CPayload::new);
@@ -29,6 +26,6 @@ public record StargateSyncS2CPayload(CompoundTag tag) implements CustomPacketPay
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
-        return ID;
+        return StargatePackets.STARGATE_SYNC;
     }
 }
