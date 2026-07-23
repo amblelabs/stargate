@@ -102,7 +102,8 @@ public class GeckoState implements NbtState<GeckoState> {
 
         private static final ResourceLocation MODEL = StargateAPI.modLoc("block/stargate");
 
-        public static final Type<GeckoState> state = new Type<>(StargateAPI.modLoc("gecko/default"), 0) {
+        public static final Type<GeckoState> state = new GroupedType<>(GeckoState.state, StargateAPI.modLoc("gecko/default"), 0) {
+
             @Override
             public GeckoState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
                 ResourceLocation texture = Objects.requireNonNull(NbtUtil.getLoc(nbt, "texture"));

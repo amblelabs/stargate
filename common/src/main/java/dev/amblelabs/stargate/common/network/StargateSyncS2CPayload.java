@@ -18,6 +18,7 @@ public record StargateSyncS2CPayload(CompoundTag tag) implements StargateS2CPack
     public static final StreamCodec<FriendlyByteBuf, StargateSyncS2CPayload> CODEC =
             StreamCodec.composite(ByteBufCodecs.TRUSTED_COMPOUND_TAG, StargateSyncS2CPayload::tag, StargateSyncS2CPayload::new);
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void handle(Minecraft minecraft, LocalPlayer player) {
         if (minecraft.level != null)
