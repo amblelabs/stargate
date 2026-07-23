@@ -1,14 +1,8 @@
 {
+  "extends": "stargate:base",
   "states": {
-    "stargate:gecko": {
-      "model": "stargate:block/stargate",
+    "stargate:gecko/default": {
       "texture": "stargate:block/pegasus"
-    },
-    "stargate:shape": {},
-    "stargate:c7": {},
-    "stargate:generic/closed": {},
-    "stargate:chevrons": {
-      "chevrons": 7
     }
   }
 }
