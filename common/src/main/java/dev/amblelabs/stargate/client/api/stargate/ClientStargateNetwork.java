@@ -16,8 +16,8 @@ public class ClientStargateNetwork extends StargateNetwork {
         this.level = level;
     }
 
-    public void add(Stargate tardis) {
-        this.lookup.put(tardis.getId(), tardis);
+    public void add(Stargate stargate) {
+        this.lookup.put(stargate.getId(), stargate);
     }
 
     public void upsert(CompoundTag tag) {

@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.fabric.network;
 
-import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.mod.network.StargateC2SPacket;
 import dev.amblelabs.stargate.client.api.mod.network.StargateS2CPacket;
 import dev.amblelabs.stargate.client.lib.StargateClientPackets;

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 /**
  * A {@link RuntimeException} that <i>usually</i> gets handled internally. Used to exit early on {@link TStateContainer#state(TState.Type)}.
- * @apiNote To handle this exception use events instead of running behaviors directly or use {@link TEvent}s' {@code #handleSilent} methods.
+ * @apiNote To handle this exception use events instead of running behaviors directly or use {@link TEvent}'s {@code #handleSilent} methods.
  *
  * @see TEvent#handleSilent(TEvent, TEvents, Runnable)
  * @see TEvent#handleSilent(TEvent, TEvents, Supplier, Object)
