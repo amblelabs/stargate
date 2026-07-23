@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.fabric.datagen;
 
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleModelProvider;
+import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -13,7 +14,6 @@ import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
@@ -23,7 +23,9 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators gen) {
-        gen.blockEntityModels(StargateBlocks.STARGATE, Blocks.IRON_BLOCK);
+        // TODO: figure out how to datagen blockstate with direction...
+        gen.blockEntityModels(StargateBlocks.STARGATE, StargateBlocks.NAQUADAH_BLOCK);
+
         gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
         gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
         gen.createTrivialCube(StargateBlocks.NAQUADAH_BLOCK);
@@ -50,6 +52,12 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
         gen.generateFlatItem(StargateBlocks.STARGATE.asItem(), ModelTemplates.FLAT_ITEM);
+
+        StargateItems.registerItems((item, resourceLocation) -> {
+            if (item instanceof StargateBlockItem)
+                gen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
+        });
+
         gen.generateFlatItem(StargateBlocks.TOASTER.asItem(), ModelTemplates.FLAT_ITEM);
 
         gen.generateFlatItem(StargateItems.ADDRESS_CARTOUCHE, ModelTemplates.FLAT_ITEM);

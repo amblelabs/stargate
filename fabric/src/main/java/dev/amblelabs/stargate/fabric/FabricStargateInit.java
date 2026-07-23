@@ -24,6 +24,8 @@ public final class FabricStargateInit implements ModInitializer {
         FabricPacketHandler.init();
 
         this.initListeners();
+
+        StargateInterop.earlyInit();
         this.initRegistries();
 
         StargateComposting.setup();

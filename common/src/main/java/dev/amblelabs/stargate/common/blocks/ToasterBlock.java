@@ -52,7 +52,7 @@ public class ToasterBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE = Block.box(5, 1, 5, 11, 7, 11);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public static final MapCodec<StargateBlock> CODEC = simpleCodec(StargateBlock::new);
+    public static final MapCodec<ToasterBlock> CODEC = simpleCodec(ToasterBlock::new);
 
     private static final BlockPos[] POSITIONS_NORTH = buildPositions(Direction.NORTH);
     private static final BlockPos[] POSITIONS_EAST = buildPositions(Direction.EAST);

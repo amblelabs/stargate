@@ -1,8 +1,10 @@
 package dev.amblelabs.stargate.common.lib;
 
 import com.google.common.base.Suppliers;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.items.DialerItem;
 import dev.amblelabs.stargate.common.items.IrisItem;
+import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +36,18 @@ public class StargateItems {
 
     private static final Map<ResourceLocation, Item> ITEMS = new LinkedHashMap<>(); // preserve insertion order
     private static final Map<CreativeModeTab, List<TabEntry>> ITEM_TABS = new LinkedHashMap<>();
+
+    // TODO: make it put gates *dynamically* into the tab
+    private static final String[] BUILT_IN_GATES = new String[] {
+            "destiny", "milky_way", "pegasus"
+    };
+
+    static {
+        for (String path : BUILT_IN_GATES) {
+            ResourceLocation prototypeId = StargateAPI.modLoc(path);
+            make("stargate/" + path, new StargateBlockItem(prototypeId, new Item.Properties()));
+        }
+    }
 
     public static final Item TOAST = make("toast", new Item(props().food(
             new FoodProperties.Builder().nutrition(2)
@@ -68,7 +82,7 @@ public class StargateItems {
 
     public static final ResourceKey<JukeboxSong> STARGATE_THEME_SONG =
             ResourceKey.create(Registries.JUKEBOX_SONG,
-                    ResourceLocation.fromNamespaceAndPath("stargate", "stargate_theme"));
+                    StargateAPI.modLoc("stargate_theme"));
 
     public static final Item MUSIC_DISC_THEME = make(
             "music_disc_theme",
@@ -107,9 +121,9 @@ public class StargateItems {
     }
 
     private static Supplier<ItemStack> addToTab(Supplier<ItemStack> stack, CreativeModeTab tab) {
-        var memoised = Suppliers.memoize(stack::get);
-        ITEM_TABS.computeIfAbsent(tab, t -> new ArrayList<>()).add(new TabEntry.StackEntry(memoised));
-        return memoised;
+        var memoized = Suppliers.memoize(stack::get);
+        ITEM_TABS.computeIfAbsent(tab, t -> new ArrayList<>()).add(new TabEntry.StackEntry(memoized));
+        return memoized;
     }
 
     private static abstract class TabEntry {

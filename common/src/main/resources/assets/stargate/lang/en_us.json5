@@ -2,6 +2,19 @@
   "itemGroup.stargate": {
     main: "Stargate: Sojourner"
   },
+  "achievement.stargate": {
+    title: {
+      root: "Stargate: Sojourner",
+      obtain_toaster: "Obtain Toaster", // TODO
+      obtain_burnt_toast: "mmm crispy"
+    },
+    // TODO
+    description: {
+      root: "(TBD)",
+      obtain_toaster: "(TBD)",
+      obtain_burnt_toast: "(TBD)"
+    },
+  },
   "item.stargate": {
     generic: {
       "tooltip.shift": "Hold [Shift] to see more",

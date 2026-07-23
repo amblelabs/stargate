@@ -1,13 +1,11 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 public class StargateBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
     public static final MapCodec<StargateBlock> CODEC = simpleCodec(StargateBlock::new);
 
     public StargateBlock(Properties properties) {
@@ -104,10 +103,10 @@ public class StargateBlock extends BaseEntityBlock {
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         // always ServerLevel, actually.
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-            Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
+            Stargate stargate = blockEntity.stargate();
 
-            blockEntity.setStargate(stargate);
+            if (stargate == null)
+                return;
 
             StargateBlockEvents.notify(events -> events.stargate$place(
                     stargate, blockEntity, state, serverLevel, pos, oldState, movedByPiston));

@@ -56,7 +56,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public void initPlatformSpecific() {
         DynamicRegistries.registerSynced(StargateRegistries.PROTOTYPE, PrototypeRegistryEntry.CODEC);
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             PROTOTYPE_REGISTRY = Suppliers.memoize(() -> server.registryAccess().registryOrThrow(StargateRegistries.PROTOTYPE));
         });
     }
