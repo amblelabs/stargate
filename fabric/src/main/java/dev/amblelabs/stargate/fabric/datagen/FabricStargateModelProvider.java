@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.fabric.datagen;
 
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleModelProvider;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
@@ -51,11 +52,11 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
-        gen.generateFlatItem(StargateBlocks.STARGATE.asItem(), ModelTemplates.FLAT_ITEM);
-
         StargateItems.registerItems((item, resourceLocation) -> {
-            if (item instanceof StargateBlockItem)
+            if (item instanceof StargateBlockItem) {
+                StargateAPI.LOGGER.error("model: {}", ModelLocationUtils.getModelLocation(item));
                 gen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
+            }
         });
 
         gen.generateFlatItem(StargateBlocks.TOASTER.asItem(), ModelTemplates.FLAT_ITEM);

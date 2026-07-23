@@ -1,0 +1,35 @@
+{
+  "parent": "stargate:root",
+  "criteria": {
+    "obtain": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stargate:address_cartouche"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "achievement.stargate.description.address_cartouche"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "stargate:address_cartouche"
+    },
+    "title": {
+      "translate": "achievement.stargate.title.address_cartouche"
+    }
+  },
+  "requirements": [
+    [
+      "obtain"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

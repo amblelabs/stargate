@@ -1,11 +1,11 @@
 {
-  "parent": "stargate:obtain_toaster",
+  "parent": "stargate:root",
   "criteria": {
-    "obtain_burnt_toast": {
+    "obtain": {
       "conditions": {
         "items": [
           {
-            "items": "stargate:burnt_toast"
+            "items": "stargate:raw_naquadah"
           }
         ]
       },
@@ -14,21 +14,21 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.obtain_burnt_toast"
+      "translate": "achievement.stargate.description.raw_naquadah"
     },
     "frame": "challenge",
     "hidden": true,
     "icon": {
       "count": 1,
-      "id": "stargate:burnt_toast"
+      "id": "stargate:raw_naquadah"
     },
     "title": {
-      "translate": "achievement.stargate.title.obtain_burnt_toast"
+      "translate": "achievement.stargate.title.raw_naquadah"
     }
   },
   "requirements": [
     [
-      "obtain_burnt_toast"
+      "obtain"
     ]
   ],
   "sends_telemetry_event": true

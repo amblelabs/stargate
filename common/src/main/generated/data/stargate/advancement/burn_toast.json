@@ -1,11 +1,11 @@
 {
-  "parent": "stargate:root",
+  "parent": "stargate:toaster",
   "criteria": {
-    "obtain_toaster": {
+    "burn_toast": {
       "conditions": {
         "items": [
           {
-            "items": "stargate:toaster"
+            "items": "stargate:burnt_toast"
           }
         ]
       },
@@ -14,21 +14,21 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.obtain_toaster"
+      "translate": "achievement.stargate.description.burn_toast"
     },
-    "frame": "goal",
+    "frame": "challenge",
     "hidden": true,
     "icon": {
       "count": 1,
-      "id": "stargate:toaster"
+      "id": "stargate:burnt_toast"
     },
     "title": {
-      "translate": "achievement.stargate.title.obtain_toaster"
+      "translate": "achievement.stargate.title.burn_toast"
     }
   },
   "requirements": [
     [
-      "obtain_toaster"
+      "burn_toast"
     ]
   ],
   "sends_telemetry_event": true

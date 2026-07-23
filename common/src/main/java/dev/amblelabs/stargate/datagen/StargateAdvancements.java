@@ -24,27 +24,27 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
                         StargateBlocks.STARGATE
                 )).build(consumer);
 
-//        AdvancementHolder rawNaquadah = challenge(root, "obtain_raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
-//                .condition("obtain_raw_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.RAW_NAQUADAH))
-//                .hidden().build();
+        AdvancementHolder rawNaquadah = challenge(root, "raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
+                .condition("obtain", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.RAW_NAQUADAH))
+                .hidden().build(consumer);
 
-//        AdvancementHolder addressCartouche = goal(root, "obtain_address_cartouche").icon(StargateItems.ADDRESS_CARTOUCHE)
-//                .condition("obtain_address_cartouche", InventoryChangedCriterion.Conditions.items(StargateItems.ADDRESS_CARTOUCHE))
-//                .hidden().build();
+        AdvancementHolder addressCartouche = goal(root, "address_cartouche").icon(StargateItems.ADDRESS_CARTOUCHE)
+                .condition("obtain", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.ADDRESS_CARTOUCHE))
+                .hidden().build(consumer);
 
 //        AdvancementHolder liquidNaquadah = goal(rawNaquadah, "obtain_liquid_naquadah").icon(StargateItems.LIQUID_NAQUADAH)
 //                .condition("obtain_liquid_naquadah", InventoryChangedCriterion.Conditions.items(StargateItems.LIQUID_NAQUADAH))
 //                .hidden().build();
 
-        AdvancementHolder toaster = goal(root, "obtain_toaster").icon(StargateBlocks.TOASTER)
-                .condition("obtain_toaster", InventoryChangeTrigger.TriggerInstance.hasItems(StargateBlocks.TOASTER))
+        AdvancementHolder toaster = goal(root, "toaster").icon(StargateBlocks.TOASTER)
+                .condition("obtain", InventoryChangeTrigger.TriggerInstance.hasItems(StargateBlocks.TOASTER))
                 .hidden().build(consumer);
 
-        AdvancementHolder burntToast = challenge(toaster, "obtain_burnt_toast").icon(StargateItems.BURNT_TOAST)
-                .condition("obtain_burnt_toast", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.BURNT_TOAST))
+        AdvancementHolder burntToast = challenge(toaster, "burn_toast").icon(StargateItems.BURNT_TOAST)
+                .condition("burn_toast", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.BURNT_TOAST))
                 .hidden().build(consumer);
 
-//        AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateItems.DESTINY_STARGATE)
+//        AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateBlocks.STARGATE)
 //                .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
 
 //        AdvancementHolder goldenIris = goal(root, "golden_iris").icon(StargateItems.GOLD_IRIS)

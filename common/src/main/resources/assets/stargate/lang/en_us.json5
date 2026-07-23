@@ -2,17 +2,21 @@
   "itemGroup.stargate": {
     main: "Stargate: Sojourner"
   },
+  // TODO
   "achievement.stargate": {
     title: {
       root: "Stargate: Sojourner",
-      obtain_toaster: "Obtain Toaster", // TODO
-      obtain_burnt_toast: "mmm crispy"
+      raw_naquadah: "(TBD)",
+      address_cartouche: "(TBD)",
+      toaster: "Obtain Toaster",
+      burn_toast: "mmm crispy"
     },
-    // TODO
     description: {
       root: "(TBD)",
-      obtain_toaster: "(TBD)",
-      obtain_burnt_toast: "(TBD)"
+      raw_naquadah: "(TBD)",
+      address_cartouche: "(TBD)",
+      toaster: "(TBD)",
+      burn_toast: "(TBD)"
     },
   },
   "item.stargate": {
