@@ -20,8 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import software.bernie.geckolib.animation.AnimatableManager;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-// TODO: refactor
 public class ShapeBehavior implements TBehavior, StargateBlockEvents {
 
     private static final String SHAPE = """
@@ -36,10 +36,7 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
 				___X_X___.
 				""";
 
-    @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        Direction direction = state.getValue(StargateBlock.FACING);
-
+    private static void forEachPos(Direction direction, BlockPos origin, Consumer<BlockPos> consumer) {
         List<String> list = SHAPE.lines().toList();
 
         int height = list.size();
@@ -53,33 +50,25 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
             for (int i = 0; i < line.length(); i++) {
                 if (line.charAt(i) != 'X') continue;
 
-                BlockPos ringPos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), pos, direction);
-                level.setBlock(ringPos, StargateBlocks.RING.defaultBlockState(), Block.UPDATE_ALL);
+                BlockPos ringPos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), origin, direction);
+                consumer.accept(ringPos);
             }
         }
+    }
+
+    @Override
+    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        Direction direction = state.getValue(StargateBlock.FACING);
+
+        forEachPos(direction, pos, ringPos -> level.setBlock(
+                ringPos, StargateBlocks.RING.defaultBlockState(), Block.UPDATE_ALL));
     }
 
     @Override
     public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         Direction direction = state.getValue(StargateBlock.FACING);
 
-        List<String> list = SHAPE.lines().toList();
-
-        int height = list.size();
-        int width = list.stream().mapToInt(String::length).max().orElse(0);
-        int xOffset = width / 2;
-        int yOffset = height / 2;
-
-        for (int j = 0; j < height; j++) {
-            String line = list.get(j);
-
-            for (int i = 0; i < line.length(); i++) {
-                if (line.charAt(i) != 'X') continue;
-
-                BlockPos ringPos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), pos, direction);
-                level.removeBlock(ringPos, false);
-            }
-        }
+        forEachPos(direction, pos, ringPos -> level.removeBlock(ringPos, false));
     }
 
     private static BlockPos rotate(BlockPos pos, BlockPos offset, Direction facing) {
