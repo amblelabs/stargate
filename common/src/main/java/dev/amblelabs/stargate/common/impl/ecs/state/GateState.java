@@ -46,7 +46,6 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         public int locked;
         public boolean locking;
 
-        // FIXME: use a fixed size char array here instead
         public String address;
         public int timer;
 
