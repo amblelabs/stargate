@@ -119,11 +119,12 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
             return;
         }
 
-        try {
-            // FIXME: should only trigger on load
-            tag = type.update(tag, DEFAULT_VERSION);
-        } catch (Exception e) {
-            StargateAPI.LOGGER.error("Failed to update {}", type, e);
+        if (context.type() == NbtDeserializer.Context.Type.LOAD) {
+            try {
+                tag = type.update(tag, DEFAULT_VERSION);
+            } catch (Exception e) {
+                StargateAPI.LOGGER.error("Failed to update {}", type, e);
+            }
         }
 
         try {

@@ -39,8 +39,6 @@ public class FabricStargateClientInit implements ClientModInitializer {
         RegisterClientStuff.init();
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), StargateBlocks.DRY_BUSH, StargateBlocks.DRY_GRASS, StargateBlocks.RING);
 
-//        YoureFiredModelLayers.init((loc, def) -> EntityModelLayerRegistry.registerModelLayer(loc, def::get));
-
         StargateParticles.FactoryHandler.registerFactories(new StargateParticles.FactoryHandler.Consumer() {
 
             @Override
