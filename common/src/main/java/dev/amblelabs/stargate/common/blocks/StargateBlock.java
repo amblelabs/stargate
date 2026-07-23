@@ -2,10 +2,13 @@ package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
+import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -99,18 +102,32 @@ public class StargateBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         // always ServerLevel, actually.
-        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(blockPos) instanceof StargateBlockEntity blockEntity) {
-            blockEntity.onPlace(blockState, serverLevel, blockPos, blockState2, bl);
+        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
+            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
+            Stargate stargate = ServerStargateNetwork.get(level).create(entry);
+
+            blockEntity.setStargate(stargate);
+
+            StargateBlockEvents.notify(events -> events.stargate$place(
+                    stargate, blockEntity, state, serverLevel, pos, oldState, movedByPiston));
+
+            stargate.setChanged(); // forces sync
         }
     }
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        StargateAPI.LOGGER.info("Side: client? {}", level.isClientSide);
-        if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)
-            blockEntity.onBreak(state, level, pos, newState, movedByPiston);
+        Stargate stargate;
+
+        // always ServerLevel, actually.
+        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
+            StargateBlockEvents.notify(events -> events.stargate$break(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston));
+            ServerStargateNetwork.get(level).remove(stargate.getId()); // TODO: make a behavior do this maybe
+
+            blockEntity.setStargate(null);
+        }
 
         super.onRemove(state, level, pos, newState, movedByPiston);
     }

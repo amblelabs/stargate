@@ -66,7 +66,7 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
     }
 
     @Override
-    public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    public void onPlace(BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
 
     }
 

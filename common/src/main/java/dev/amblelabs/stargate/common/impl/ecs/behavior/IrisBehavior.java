@@ -39,10 +39,10 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
     }
 
     @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, ServerLevel level, BlockPos blockPos, BlockState blockState) { }
+    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) { }
 
     @Override
-    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
+    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
 
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) { }

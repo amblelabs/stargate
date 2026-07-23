@@ -1,15 +1,12 @@
 package dev.amblelabs.stargate.common.blocks;
 
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
-import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
 import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -34,8 +31,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Set;
 import java.util.UUID;
 
-public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateSubscriber,
-        BlockEntityHelper.Placeable, BlockEntityHelper.Breakable, BlockEntityHelper.Ticking {
+public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, Stargate.UpdateSubscriber, BlockEntityHelper.Ticking {
 
     private static final String ID_TAG = "Ref";
 
@@ -71,30 +67,6 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         this.setChanged();
 
         return this.stargate = stargate;
-    }
-
-    @Override
-    public void onPlace(BlockState blockState, ServerLevel level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-        Stargate stargate = ServerStargateNetwork.get(level).create(entry);
-
-        this.setStargate(stargate);
-
-        StargateBlockEvents.notify(events -> events.stargate$place(
-                stargate, this, level, blockPos, this.getBlockState()));
-
-        stargate.setChanged(); // forces sync
-    }
-
-    @Override
-    public void onBreak(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean movedByPiston) {
-        Stargate stargate = this.stargate();
-        if (stargate == null) return;
-
-        StargateBlockEvents.notify(events -> events.stargate$break(stargate, this, blockState, level, blockPos, blockState2, movedByPiston));
-        ServerStargateNetwork.get(level).remove(stargate.getId());
-
-        this.setStargate(null);
     }
 
     @Override

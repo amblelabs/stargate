@@ -21,6 +21,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 
 import java.util.List;
 
+// TODO: refactor
 public class ShapeBehavior implements TBehavior, StargateBlockEvents {
 
     private static final String SHAPE = """
@@ -36,8 +37,8 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
 				""";
 
     @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, ServerLevel level, BlockPos blockPos, BlockState blockState) {
-        Direction direction = blockState.getValue(StargateBlock.FACING);
+    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        Direction direction = state.getValue(StargateBlock.FACING);
 
         List<String> list = SHAPE.lines().toList();
 
@@ -52,15 +53,15 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
             for (int i = 0; i < line.length(); i++) {
                 if (line.charAt(i) != 'X') continue;
 
-                BlockPos pos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), blockPos, direction);
-                level.setBlock(pos, StargateBlocks.RING.defaultBlockState(), Block.UPDATE_ALL);
+                BlockPos ringPos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), pos, direction);
+                level.setBlock(ringPos, StargateBlocks.RING.defaultBlockState(), Block.UPDATE_ALL);
             }
         }
     }
 
     @Override
-    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos blockPos, BlockState newState, boolean movedByPiston) {
-        Direction direction = blockState.getValue(StargateBlock.FACING);
+    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        Direction direction = state.getValue(StargateBlock.FACING);
 
         List<String> list = SHAPE.lines().toList();
 
@@ -75,8 +76,8 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
             for (int i = 0; i < line.length(); i++) {
                 if (line.charAt(i) != 'X') continue;
 
-                BlockPos pos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), blockPos, direction);
-                level.removeBlock(pos, false);
+                BlockPos ringPos = rotate(new BlockPos(i - xOffset + 2, yOffset - j + 4, 0), pos, direction);
+                level.removeBlock(ringPos, false);
             }
         }
     }
