@@ -57,15 +57,14 @@ public class GeckoState implements NbtState<GeckoState> {
         this.texture = texture;
         this.animation = animation;
 
-        this.geoModel = MODEL_CACHE.computeIfAbsent(Objects.hash(model, texture, animation), i -> new GeoModel<>() {
+        this.geoModel = MODEL_CACHE.computeIfAbsent(Objects.hash(model, texture, animation), i -> createModel());
+    }
+
+    protected GeoModel<StargateBlockEntity> createModel() {
+        return new GeoModel<>() {
             private final ResourceLocation model = GeckoState.this.model.withPath(s -> "geo/" + s + ".geo.json");
             private final ResourceLocation texture = GeckoState.this.texture.withPath(s -> "textures/" + s + ".png");
             private final ResourceLocation animation = GeckoState.this.animation.withPath(s -> "animations/" + s + ".animation.json");
-
-            // TODO: sorting manually sucks ass.
-            private final Supplier<List<GeoBone>> lights = Suppliers.memoize(() ->
-                    this.getAnimationProcessor().getBone("lights").getChildBones()
-                            .stream().sorted(Comparator.comparing(GeoBone::getName)).toList());
 
             @Override
             public ResourceLocation getModelResource(StargateBlockEntity animatable) {
@@ -81,31 +80,7 @@ public class GeckoState implements NbtState<GeckoState> {
             public ResourceLocation getAnimationResource(StargateBlockEntity animatable) {
                 return animation;
             }
-
-            // TODO: this also sucks ass
-            @Override
-            public void setCustomAnimations(StargateBlockEntity animatable, long instanceId, AnimationState<StargateBlockEntity> animationState) {
-                Stargate stargate = animatable.stargate();
-                if (stargate == null) return;
-
-                int chevrons = 0;
-                GateState<?> state = stargate.stateOrNull(GateState.state);
-
-                if (state instanceof GateState.Closed closed) {
-                    chevrons = closed.locked;
-                } else {
-                    ChevronState chevronState = stargate.stateOrNull(ChevronState.state);
-
-                    if (chevronState != null)
-                        chevrons = chevronState.chevrons;
-                }
-
-                List<GeoBone> lights = this.lights.get();
-                for (int j = 0; j < lights.size(); j++) {
-                    lights.get(j).setHidden(j >= chevrons);
-                }
-            }
-        });
+        };
     }
 
     @Override
@@ -121,5 +96,79 @@ public class GeckoState implements NbtState<GeckoState> {
         // yes, this is correct. see deserialization code.
         if (this.model != this.animation)
             nbt.putString("animation", this.animation.toString());
+    }
+
+    public static class Default extends GeckoState {
+
+        private static final ResourceLocation MODEL = StargateAPI.modLoc("block/stargate");
+
+        public static final Type<GeckoState> state = new Type<>(StargateAPI.modLoc("gecko/default"), 0) {
+            @Override
+            public GeckoState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
+                ResourceLocation texture = Objects.requireNonNull(NbtUtil.getLoc(nbt, "texture"));
+
+                return new Default(texture);
+            }
+        };
+
+        public Default(ResourceLocation texture) {
+            super(MODEL, texture, MODEL);
+        }
+
+        @Override
+        protected GeoModel<StargateBlockEntity> createModel() {
+            return new GeoModel<>() {
+                private final ResourceLocation model = Default.this.model.withPath(s -> "geo/" + s + ".geo.json");
+                private final ResourceLocation texture = Default.this.texture.withPath(s -> "textures/" + s + ".png");
+                private final ResourceLocation animation = Default.this.animation.withPath(s -> "animations/" + s + ".animation.json");
+
+                private final Supplier<List<GeoBone>> lights = Suppliers.memoize(() ->
+                        this.getAnimationProcessor().getBone("lights").getChildBones()
+                                .stream().sorted(Comparator.comparing(GeoBone::getName)).toList());
+
+                @Override
+                public ResourceLocation getModelResource(StargateBlockEntity animatable) {
+                    return model;
+                }
+
+                @Override
+                public ResourceLocation getTextureResource(StargateBlockEntity animatable) {
+                    return texture;
+                }
+
+                @Override
+                public ResourceLocation getAnimationResource(StargateBlockEntity animatable) {
+                    return animation;
+                }
+
+                @Override
+                public void setCustomAnimations(StargateBlockEntity animatable, long instanceId, AnimationState<StargateBlockEntity> animationState) {
+                    Stargate stargate = animatable.stargate();
+                    if (stargate == null) return;
+
+                    int chevrons = 0;
+                    GateState<?> state = stargate.stateOrNull(GateState.state);
+
+                    if (state instanceof GateState.Closed closed) {
+                        chevrons = closed.locked;
+                    } else {
+                        ChevronState chevronState = stargate.stateOrNull(ChevronState.state);
+
+                        if (chevronState != null)
+                            chevrons = chevronState.chevrons;
+                    }
+
+                    List<GeoBone> lights = this.lights.get();
+                    for (int j = 0; j < lights.size(); j++) {
+                        lights.get(j).setHidden(j >= chevrons);
+                    }
+                }
+            };
+        }
+
+        @Override
+        public Type<GeckoState> type() {
+            return state;
+        }
     }
 }
