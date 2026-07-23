@@ -12,6 +12,6 @@ public class PrototypeBehavior implements TBehavior, StargateLifecycleEvents {
     @Override
     public void stargate$instantiate(Stargate stargate, NbtDeserializer.Context ctx) {
         PrototypeIdentityState identity = stargate.resolveState(PrototypeIdentityState.state);
-        identity.prototype().make(StargateEcs.States, stargate, ctx);
+        identity.prototype().make(identity.key(), StargateEcs.States, stargate, ctx);
     }
 }
