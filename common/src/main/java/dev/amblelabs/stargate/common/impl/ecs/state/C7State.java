@@ -1,7 +1,7 @@
 package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.api.address.Glyph;
+import dev.amblelabs.stargate.api.stargate.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.drtheo.ecs.state.TState;

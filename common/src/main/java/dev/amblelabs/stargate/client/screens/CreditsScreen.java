@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.client.screens;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,8 +10,6 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.lib.StargateMusic;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
@@ -28,8 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreditsScreen extends Screen {
@@ -48,8 +45,9 @@ public class CreditsScreen extends Screen {
     private final Runnable onFinished;
     private float scroll;
 
-    private List<FormattedCharSequence> lines;
-    private IntSet centeredLines;
+    private final List<FormattedCharSequence> lines = new ArrayList<>();
+    private final IntSet centeredLines = new IntOpenHashSet();
+
     private int totalScrollLength;
     private boolean speedupActive;
     private final IntSet speedupModifiers = new IntOpenHashSet();
@@ -80,6 +78,8 @@ public class CreditsScreen extends Screen {
 
     @Override
     public void tick() {
+        if (this.minecraft == null) return;
+
         this.minecraft.getMusicManager().tick();
         this.minecraft.getSoundManager().tick(false);
 
@@ -129,22 +129,18 @@ public class CreditsScreen extends Screen {
 
     @Override
     protected void init() {
-        if (this.lines == null) {
-            this.lines = Lists.newArrayList();
-            this.centeredLines = new IntOpenHashSet();
+        if (this.minecraft == null) return;
 
-            this.wrapCreditsIO(CREDITS_LOCATION, this::addCreditsFile);
+        this.lines.clear();
+        this.centeredLines.clear();
 
-            this.totalScrollLength = this.lines.size() * 12;
-        }
-    }
-
-    private void wrapCreditsIO(ResourceLocation location, CreditsReader credits) {
-        try (Reader reader = this.minecraft.getResourceManager().openAsReader(location)) {
-            credits.read(reader);
+        try (Reader reader = this.minecraft.getResourceManager().openAsReader(CREDITS_LOCATION)) {
+            this.addCreditsFile(reader);
         } catch (Exception exception) {
-            LOGGER.error("Couldn't load credits from file {}", location, exception);
+            LOGGER.error("Couldn't load credits from file {}", CREDITS_LOCATION, exception);
         }
+
+        this.totalScrollLength = this.lines.size() * 12;
     }
 
     private void addCreditsFile(Reader reader) {
@@ -257,17 +253,12 @@ public class CreditsScreen extends Screen {
 
     @Override
     public void removed() {
-        this.minecraft.getMusicManager().stopPlaying(StargateMusic.CREDITS);
+        if (this.minecraft != null)
+            this.minecraft.getMusicManager().stopPlaying(StargateMusic.CREDITS);
     }
 
     @Override
     public Music getBackgroundMusic() {
         return StargateMusic.CREDITS;
-    }
-
-    @FunctionalInterface
-    @Environment(EnvType.CLIENT)
-    interface CreditsReader {
-        void read(Reader reader) throws IOException;
     }
 }

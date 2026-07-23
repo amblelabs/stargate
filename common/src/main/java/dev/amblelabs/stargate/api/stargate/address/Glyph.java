@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.api.address;
+package dev.amblelabs.stargate.api.stargate.address;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import net.minecraft.core.registries.Registries;

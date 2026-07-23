@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
-import dev.amblelabs.stargate.api.address.Glyph;
+import dev.amblelabs.stargate.api.stargate.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.event.*;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.StargateUtil;

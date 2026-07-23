@@ -35,6 +35,8 @@ public class CustomLogoRenderer extends LogoRenderer {
     }
 
     public boolean mouseClicked(int screenWidth, double mouseX, double mouseY, int button) {
+        if (button != 1) return false;
+
         int x = (screenWidth - LOGO_WIDTH) / 2;
         int y = 30 - LOGO_HEIGHT / 4 + 4;
 
