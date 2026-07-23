@@ -35,8 +35,8 @@ import java.util.UUID;
 public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
         BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
 
-    private static final String TAG_CONTROLS = "ControlUUIDs"; // TODO: rename
-    private static final String TAG_INITIALIZED = "ControlsInitialized"; // TODO: rename
+    private static final String TAG_CONTROLS = "Controls";
+    private static final String TAG_INITIALIZED = "Initialized";
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
