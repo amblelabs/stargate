@@ -57,10 +57,9 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
     }
 
     @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos) {
         Direction direction = state.getValue(StargateBlock.FACING);
-
-        forEachPos(direction, pos, ringPos -> level.setBlock(
+                forEachPos(direction, pos, ringPos -> level.setBlock(
                 ringPos, StargateBlocks.RING.defaultBlockState(), Block.UPDATE_ALL));
     }
 

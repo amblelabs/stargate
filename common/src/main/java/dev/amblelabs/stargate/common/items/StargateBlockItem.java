@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.common.items;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
@@ -56,6 +57,11 @@ public class StargateBlockItem extends BlockItem {
             Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
 
             blockEntity.setStargate(stargate);
+
+            StargateBlockEvents.notify(events -> events.stargate$place(
+                    stargate, blockEntity, level.getBlockState(pos), serverLevel, pos));
+
+            stargate.setChanged(); // forces sync
         }
 
         return result;
