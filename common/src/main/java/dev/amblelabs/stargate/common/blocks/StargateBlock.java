@@ -71,7 +71,7 @@ public class StargateBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
-            if (stack.isEmpty() && blockEntity.getBlockSet() != null) {
+            if (player.isCrouching() && stack.isEmpty() && blockEntity.getBlockSet() != null) {
                 blockEntity.setBlockSet(null);
                 return ItemInteractionResult.SUCCESS;
             }
@@ -79,7 +79,8 @@ public class StargateBlock extends BaseEntityBlock {
             if (!(stack.getItem() instanceof BlockItem blockItem))
                 return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
-            if (blockItem.getBlock().defaultBlockState() != blockEntity.getBlockSet()) {
+            if (hand == InteractionHand.OFF_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()
+                    && blockItem.getBlock().defaultBlockState() != blockEntity.getBlockSet()) {
                 blockEntity.setBlockSet(blockItem.getBlock().getStateForPlacement(new BlockPlaceContext(player, hand, stack, hitResult)));
                 return ItemInteractionResult.SUCCESS;
             }
