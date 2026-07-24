@@ -2,10 +2,7 @@ package dev.amblelabs.stargate.fabric;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.client.lib.StargateClientEcs;
-import dev.amblelabs.stargate.client.renderers.DHDBlockEntityRenderer;
-import dev.amblelabs.stargate.client.renderers.DHDControlEntityRenderer;
-import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
-import dev.amblelabs.stargate.client.renderers.StargateRingBlockEntityRenderer;
+import dev.amblelabs.stargate.client.renderers.*;
 import dev.amblelabs.stargate.client.renderers.skybox.AbydosSkyRenderer;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
@@ -18,6 +15,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -46,7 +44,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(StargateAPI.modLoc("menu"), container, ResourcePackActivationType.DEFAULT_ENABLED);
         });
 
-//        HudRenderCallback.EVENT.register(AitAdditionalRenderers::overlayGui);
+        HudRenderCallback.EVENT.register(StargateAdditionalRenderers::overlayGui);
 
         IClientXplatAbstractions.INSTANCE.registerSkyRenderer(AbydosSkyRenderer.DIMENSION_KEY, new AbydosSkyRenderer());
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), StargateBlocks.DRY_BUSH, StargateBlocks.DRY_GRASS, StargateBlocks.RING);
