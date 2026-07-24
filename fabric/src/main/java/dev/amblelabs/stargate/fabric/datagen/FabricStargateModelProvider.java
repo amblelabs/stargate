@@ -26,6 +26,7 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     public void generateBlockStateModels(BlockModelGenerators gen) {
         // TODO: figure out how to datagen blockstate with direction...
         gen.blockEntityModels(StargateBlocks.STARGATE, StargateBlocks.NAQUADAH_BLOCK);
+        gen.blockEntityModels(StargateBlocks.RING, StargateBlocks.NAQUADAH_BLOCK);
 
         gen.createTrivialCube(StargateBlocks.NAQUADAH_ORE);
         gen.createTrivialCube(StargateBlocks.RAW_NAQUADAH_BLOCK);
@@ -53,10 +54,8 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
         StargateItems.registerItems((item, resourceLocation) -> {
-            if (item instanceof StargateBlockItem) {
-                StargateAPI.LOGGER.error("model: {}", ModelLocationUtils.getModelLocation(item));
+            if (item instanceof StargateBlockItem)
                 gen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
-            }
         });
 
         gen.generateFlatItem(StargateBlocks.TOASTER.asItem(), ModelTemplates.FLAT_ITEM);
