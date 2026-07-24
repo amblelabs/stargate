@@ -7,7 +7,7 @@
     {
       "type": "bitmap",
       "file": "amblekit:font/ambleglyph.png",
-      "ascent": 7,
+      "ascent": 8,
       "chars": [
         "_\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
         "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000ABCDEFGHIJKLM",
