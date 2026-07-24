@@ -100,22 +100,6 @@ public class StargateBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        // always ServerLevel, actually.
-        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            Stargate stargate = blockEntity.stargate();
-
-            if (stargate == null)
-                return;
-
-            StargateBlockEvents.notify(events -> events.stargate$place(
-                    stargate, blockEntity, state, serverLevel, pos, oldState, movedByPiston));
-
-            stargate.setChanged(); // forces sync
-        }
-    }
-
-    @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         Stargate stargate;
 
