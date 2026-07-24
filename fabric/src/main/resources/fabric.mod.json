@@ -9,6 +9,7 @@
   ],
   "contact": {
     "homepage": "https://amblelabs.dev/wiki/en/stargate",
+    "wiki": "https://amblelabs.dev/wiki/en/stargate",
     "issues": "https://codeberg.org/amblelabs/stargate/issues",
     "sources": "https://codeberg.org/amblelabs/stargate"
   },
@@ -34,6 +35,16 @@
     "modmenu": [
       "dev.amblelabs.stargate.fabric.interop.ModMenuInterop"
     ]
+  },
+  "custom" : {
+    "modmenu" : {
+      "links" : {
+        "modmenu.donate": "https://boosty.to/dr.theo",
+        "modmenu.discord": "https://discord.gg/amblelabs",
+        "modmenu.github_releases": "https://codeberg.org/amblelabs/stargate/releases",
+        "modmenu.modrinth": "https://modrinth.com/mod/stargate-sojourner"
+      }
+    }
   },
   "mixins": [
     "stargate.mixins.json",
