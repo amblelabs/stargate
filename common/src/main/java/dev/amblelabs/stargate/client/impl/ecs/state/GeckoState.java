@@ -7,11 +7,15 @@ import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.NbtUtil;
+import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.GenericGateBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
@@ -158,6 +162,33 @@ public class GeckoState implements NbtState<GeckoState> {
                     List<GeoBone> lights = this.lights.get();
                     for (int j = 0; j < lights.size(); j++) {
                         lights.get(j).setHidden(j >= chevrons);
+                    }
+
+                    if (state instanceof GateState.Closed closed) {
+                        if (!closed.locking) return;
+
+                        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.state);
+                        if (glyphs == null) return;
+
+                        GeoBone bone = this.getAnimationProcessor().getBone("SymbolRing");
+                        if (bone == null) return;
+
+                        int delay = GenericGateBehavior.Closed.calculateDelay(closed);
+                        if (delay == 0) return;
+
+                        float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+                        float progress = Math.clamp((closed.timer + partialTicks) / (float) (delay - GateState.Closed.EXTRA_TICKS_PER_GLYPH), 0, 1);
+
+                        char curGlyph = closed.locked != 0 ? closed.address.charAt(closed.locked - 1) : 'a';
+                        char nextGlyph = closed.address.charAt(closed.locked);
+
+                        int curIdx = GlyphRenderLayer.ALPHABET.indexOf(curGlyph);
+                        int targetIdx = GlyphRenderLayer.ALPHABET.indexOf(nextGlyph);
+
+                        float prevRot = 2 * Mth.PI / glyphs.amount * curIdx;
+                        float targetRot = 2 * Mth.PI / glyphs.amount * targetIdx;
+
+                        bone.setRotZ(Mth.lerp(progress, prevRot, targetRot));
                     }
                 }
             };

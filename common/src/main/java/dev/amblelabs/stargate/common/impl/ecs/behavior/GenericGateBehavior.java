@@ -5,6 +5,7 @@ import dev.amblelabs.stargate.api.ecs.event.*;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.StargateUtil;
 import dev.amblelabs.stargate.api.util.TeleportableEntity;
+import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
@@ -54,9 +55,7 @@ public interface GenericGateBehavior {
                 return;
 
             if (stargate.isClient()) {
-                if (closed.locking)
-                    closed.timer = (closed.timer + 1) % calculateDelay(closed);
-
+                if (closed.locking) closed.timer++;
                 return;
             }
 
@@ -72,7 +71,7 @@ public interface GenericGateBehavior {
                 return;
             }
 
-            if (!closed.locking || closed.timer++ < GateState.Closed.TICKS_PER_GLYPH2) return;
+            if (!closed.locking || closed.timer++ < calculateDelay(closed)) return;
 
             closed.timer = 0;
             closed.locked++;
@@ -96,16 +95,18 @@ public interface GenericGateBehavior {
         }
 
         public static int calculateDelay(int curGlyph, int nextGlyph) {
-            return Math.abs(nextGlyph - curGlyph) * GateState.Closed.TICKS_PER_GLYPH;
+            return Math.abs(nextGlyph - curGlyph) * GateState.Closed.TICKS_PER_GLYPH + GateState.Closed.EXTRA_TICKS_PER_GLYPH;
         }
 
         public static int calculateDelay(GateState.Closed closed) {
+            if (closed.address.length() <= closed.locked) return 0;
+
             char curGlyph = closed.locked != 0 ? closed.address.charAt(closed.locked - 1) : (char) (Glyph.ALL.length / 2);
             char nextGlyph = closed.address.charAt(closed.locked);
 
             return calculateDelay(
-                    Glyph.charToIdx(curGlyph),
-                    Glyph.charToIdx(nextGlyph)
+                    GlyphRenderLayer.ALPHABET.indexOf(curGlyph),
+                    GlyphRenderLayer.ALPHABET.indexOf(nextGlyph)
             );
         }
 

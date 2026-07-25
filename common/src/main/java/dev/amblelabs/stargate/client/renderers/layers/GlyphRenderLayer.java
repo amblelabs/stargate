@@ -28,7 +28,9 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLayer<T> {
 
     // bigger alphabet in case people want to do some crazy shit
-    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // TODO: move this to a place that isn't client-side lmfao
+    @Deprecated(forRemoval = true)
+    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     // TODO: make this state-ful
     private static final int COLOR = 0x7d8daf;
@@ -88,7 +90,8 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
             poseStack.mulPose(Axis.ZN.rotationDegrees(90));
 
             // TODO This rotates the symbols with the ring, implement animation timing
-            // poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(rotateGlyph / 10f));
+            float rotateGlyph = this.getGeoModel().getAnimationProcessor().getBone("SymbolRing").getRotZ();
+            poseStack.mulPose(com.mojang.math.Axis.ZP.rotation(rotateGlyph));
 
             poseStack.translate(radius, 0, 0);
 

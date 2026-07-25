@@ -40,8 +40,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         };
 
         public static final int TICKS_PER_GLYPH = 5;
-
-        public static final int TICKS_PER_GLYPH2 = 60;
+        public static final int EXTRA_TICKS_PER_GLYPH = 30;
 
         public int locked;
         public boolean locking;
@@ -66,7 +65,8 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
         @Override
         public void migrate(Closed prev) {
-            this.timer = prev.timer;
+            if (this.locked == prev.locked)
+                this.timer = prev.timer;
         }
 
         @Override
