@@ -4,6 +4,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.stargate.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
+import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.drtheo.ecs.state.TState;
 import net.minecraft.nbt.CompoundTag;
 
@@ -19,7 +20,7 @@ public record C7State(String address) implements NbtState<C7State> {
             if (address.isEmpty()) {
                 for (int i = 0; i < 7; i++) {
                     int idx = new Random().nextInt(Glyph.ALPHABET_LENGTH);
-                    address += Glyph.idxToChar(idx);
+                    address += GlyphRenderLayer.ALPHABET.charAt(idx);
                 }
             }
 
