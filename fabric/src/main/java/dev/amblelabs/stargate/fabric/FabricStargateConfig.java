@@ -60,6 +60,9 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     public static final class Client implements StargateConfig.ClientConfigAccess, ConfigData {
 
         @ConfigEntry.Gui.Tooltip
+        private boolean renderOverlay = DEFAULT_RENDER_OVERLAY;
+
+        @ConfigEntry.Gui.Tooltip
         private boolean renderPuddleBackground = DEFAULT_RENDER_PUDDLE_BACKGROUND;
 
         @ConfigEntry.Gui.Tooltip
@@ -72,7 +75,13 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
 
         @Override
         public void validatePostLoad() {
+            this.puddleCycleTicks = Math.clamp(puddleCycleTicks, MIN_PUDDLE_CYCLE_TICKS, MAX_PUDDLE_CYCLE_TICKS);
             this.puddleParticleTick = Math.clamp(puddleParticleTick, MIN_PUDDLE_PARTICLE_TICK, MAX_PUDDLE_PARTICLE_TICK);
+        }
+
+        @Override
+        public boolean renderOverlay() {
+            return renderOverlay;
         }
 
         @Override
