@@ -145,6 +145,6 @@ public class StargateBlock extends BaseEntityBlock {
                 .strength(50f, 1200f)
                 .noOcclusion()
                 .dynamicShape()
-                .lightLevel(state -> 8);
+                .lightLevel(state -> 0); // TODO
     }
 }
