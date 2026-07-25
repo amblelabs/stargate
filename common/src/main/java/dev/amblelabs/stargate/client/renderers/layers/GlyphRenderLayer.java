@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.client.renderers.layers;
 
+import com.mojang.blaze3d.font.GlyphInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -51,10 +52,13 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
         final Style style = Style.EMPTY.withFont(glyphs.font);
 
         final FontSet set = ((FontAccessor) mc.font).invokeGetFontSet(style.getFont());
-        final CustomGlyph glyphInfo = (CustomGlyph) set.getGlyphInfo('a', false);
+        GlyphInfo glyphInfo = set.getGlyphInfo('a', false);
 
-        final int charWidth = glyphInfo.stargate$width();
-        final int charHeight = glyphInfo.stargate$height();
+        if (!(glyphInfo instanceof CustomGlyph customGlyph))
+            return;
+
+        final int charWidth = customGlyph.stargate$width();
+        final int charHeight = customGlyph.stargate$height();
 
         final Direction direction = ((StargateBlockEntityRenderer) this.renderer).getFacing(animatable);
         packedLight = this.getLight(direction, partialTick, packedLight);
