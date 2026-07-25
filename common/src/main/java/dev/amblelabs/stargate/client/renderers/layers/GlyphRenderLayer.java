@@ -3,8 +3,9 @@ package dev.amblelabs.stargate.client.renderers.layers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.client.api.mod.CustomGlyph;
+import dev.amblelabs.stargate.client.impl.ecs.state.GlyphsState;
 import dev.amblelabs.stargate.client.renderers.StargateBlockEntityRenderer;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.mixin.stargate_rendering.FontAccessor;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -24,9 +26,8 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLayer<T> {
 
-    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890";
-    private static final float ANGLE_STEP = (float) (2f * Math.PI / ALPHABET.length());
-    private static final float RADIUS = 142; // i have no idea why that is
+    // bigger alphabet in case people want to do some crazy shit
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private static final int COLOR = 0x7d8daf;
 
@@ -38,42 +39,36 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
 
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        Stargate stargate = animatable.stargate();
+        if (stargate == null) return;
+
+        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.state);
+        if (glyphs == null) return;
+
+        final float radius = glyphs.radius;
+        final float angleStep = 2f * Mth.PI / glyphs.amount;
+
+        final Style style = Style.EMPTY.withFont(glyphs.font);
+
+        final FontSet set = ((FontAccessor) mc.font).invokeGetFontSet(style.getFont());
+        final CustomGlyph glyphInfo = (CustomGlyph) set.getGlyphInfo('a', false);
+
+        final int charWidth = glyphInfo.stargate$width();
+        final int charHeight = glyphInfo.stargate$height();
+
+        final Direction direction = ((StargateBlockEntityRenderer) this.renderer).getFacing(animatable);
+        packedLight = this.getLight(direction, partialTick, packedLight);
+
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(0, 3.5, 0.21);
         poseStack.scale(0.022f, -0.022f, 0.022f);
 
-        Style style = Style.EMPTY.withFont(StargateAPI.modLoc("milky_way"));
-
-        FontSet set = ((FontAccessor) mc.font).invokeGetFontSet(style.getFont());
-        CustomGlyph glyphInfo = (CustomGlyph) set.getGlyphInfo('a', false);
-
-        int charWidth = glyphInfo.stargate$width();
-        int charHeight = glyphInfo.stargate$height();
-
-        Direction direction = ((StargateBlockEntityRenderer) this.renderer).getFacing(animatable);
-
-        float blockLight = LightTexture.block(packedLight);
-        float skyLight = LightTexture.sky(packedLight);
-
-        float darken = mc.level.getSkyDarken(partialTick);
-        float shade = Math.min(mc.level.getShade(direction, true) + 0.2f, 1);
-
-        skyLight *= 1f + (shade - 1) * Math.clamp((darken - 0.2f) / 0.8f, 0, 1);
-        skyLight *= darken;
-
-        blockLight *= shade;
-
-        int outBlock = (int) Math.clamp(blockLight, 0, 15);
-        int outSky = (int) Math.clamp(skyLight, 0, 15);
-
-        packedLight = LightTexture.pack(outBlock, outSky);
-
-        for (int i = 0; i < ALPHABET.length(); i++) {
+        for (int i = 0; i < glyphs.amount; i++) {
             Component character = Component.literal(String.valueOf(ALPHABET.charAt(i)))
                     .withStyle(style);
 
-            float theta = i * ANGLE_STEP;
+            float theta = i * angleStep;
 
             poseStack.pushPose();
 
@@ -86,7 +81,7 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
             // TODO This rotates the symbols with the ring, implement animation timing
             // poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(rotateGlyph / 10f));
 
-            poseStack.translate(RADIUS, 0, 0);
+            poseStack.translate(radius, 0, 0);
 
             // Reset pivot position to the center of the character, and rotate it around its axis to point its ass to the center
             poseStack.translate(-charWidth / 2f, -charHeight / 2f, 0);
@@ -122,5 +117,23 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
         }
 
         poseStack.popPose();
+    }
+
+    private int getLight(Direction direction, float partialTick, int packedLight) {
+        float blockLight = LightTexture.block(packedLight);
+        float skyLight = LightTexture.sky(packedLight);
+
+        final float darken = mc.level.getSkyDarken(partialTick);
+        float shade = Math.min(mc.level.getShade(direction, true) + 0.2f, 1);
+
+        skyLight *= 1f + (shade - 1) * Math.clamp((darken - 0.2f) / 0.8f, 0, 1);
+        skyLight *= darken;
+
+        blockLight *= shade;
+
+        int outBlock = (int) Math.clamp(blockLight, 0, 15);
+        int outSky = (int) Math.clamp(skyLight, 0, 15);
+
+        return LightTexture.pack(outBlock, outSky);
     }
 }

@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.client.lib;
 
 import dev.amblelabs.stargate.client.impl.ecs.behavior.ClientPuddleBehavior;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
+import dev.amblelabs.stargate.client.impl.ecs.state.GlyphsState;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
@@ -29,6 +30,8 @@ public class StargateClientEcs {
     public static void initState() {
         StaticStates.register(GeckoState.state);
         StaticStates.add(GeckoState.Default.state);
+
+        StaticStates.register(GlyphsState.state);
     }
 
     @SuppressWarnings("EmptyMethod")

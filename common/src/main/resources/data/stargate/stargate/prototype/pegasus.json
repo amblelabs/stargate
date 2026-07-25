@@ -1,8 +1,12 @@
 {
   "extends": "stargate:base",
-  "states": {
+  "states": {},
+  "static": {
     "stargate:gecko/default": {
       "texture": "stargate:block/pegasus"
+    },
+    "stargate:glyphs": {
+      "font": "stargate:pegasus"
     }
   }
 }
