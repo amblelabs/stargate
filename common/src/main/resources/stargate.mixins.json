@@ -6,6 +6,8 @@
   "minVersion": "0.8",
   "client": [
     "stargate_manager.ClientLevelMixin",
+    "stargate_rendering.BitmapGlyphMixin",
+    "stargate_rendering.FontAccessor",
     "title.LogoRendererAccessor",
     "title.TitleScreenMixin"
   ],
