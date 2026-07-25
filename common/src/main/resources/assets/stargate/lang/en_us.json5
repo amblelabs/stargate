@@ -77,6 +77,10 @@
     option: {
       common: {},
       client: {
+        renderOverlay: {
+          "": "Render Overlay",
+          "@Tooltip": "Toggles the rendering of the \"WIP\" overlay."
+        },
         renderPuddleBackground: {
           "": "Render Puddle Background",
           "@Tooltip": "Toggles the rendering of the static puddle background."
