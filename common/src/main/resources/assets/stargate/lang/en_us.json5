@@ -24,6 +24,12 @@
       "tooltip.shift": "Hold [Shift] to see more",
     },
 
+    stargate: {
+      destiny: "Stargate (Destiny)",
+      milky_way: "Stargate (Milky Way)",
+      pegasus: "Stargate (Pegasus)"
+    },
+
     naquadah_ingot: "Naquadah Ingot",
     naquadah_nugget: "Naquadah Nugget",
     raw_naquadah: "Raw Naquadah",

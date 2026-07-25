@@ -8,8 +8,10 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -17,15 +19,26 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 public class StargateBlockItem extends BlockItem {
 
     private final ResourceLocation prototypeId;
 
+    private @Nullable String descriptionId;
+
     public StargateBlockItem(ResourceLocation prototypeId, Properties properties) {
         super(StargateBlocks.STARGATE, properties);
 
         this.prototypeId = prototypeId;
+    }
+
+    @Override
+    public String getDescriptionId() {
+        if (this.descriptionId == null)
+            this.descriptionId = Util.makeDescriptionId("item", BuiltInRegistries.ITEM.getKey(this));
+
+        return this.descriptionId;
     }
 
     // this is needed, because who knows when this item will be registered...
