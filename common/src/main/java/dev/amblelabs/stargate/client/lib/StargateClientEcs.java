@@ -7,6 +7,7 @@ import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
 
 import static dev.amblelabs.stargate.common.lib.StargateEcs.States;
+import static dev.amblelabs.stargate.common.lib.StargateEcs.StaticStates;
 
 public class StargateClientEcs {
 
@@ -14,6 +15,7 @@ public class StargateClientEcs {
         StargateEcs.initState();
         initState();
         States.freeze();
+        StaticStates.freeze();
 
         StargateEcs.initEvents();
         initEvents();
@@ -25,8 +27,8 @@ public class StargateClientEcs {
     }
 
     public static void initState() {
-        States.register(GeckoState.state);
-        States.add(GeckoState.Default.state);
+        StaticStates.register(GeckoState.state);
+        StaticStates.add(GeckoState.Default.state);
     }
 
     @SuppressWarnings("EmptyMethod")

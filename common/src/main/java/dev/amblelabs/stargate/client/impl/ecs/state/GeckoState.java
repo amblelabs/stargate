@@ -10,8 +10,6 @@ import dev.amblelabs.stargate.api.util.NbtUtil;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;
@@ -25,8 +23,6 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("deprecated")
 public class GeckoState implements NbtState<GeckoState> {
-
-    private static final Int2ObjectMap<GeoModel<StargateBlockEntity>> MODEL_CACHE = new Int2ObjectOpenHashMap<>();
 
     public static final Type<GeckoState> state = new Type<>(StargateAPI.modLoc("gecko"), 0) {
         @Override
@@ -57,7 +53,7 @@ public class GeckoState implements NbtState<GeckoState> {
         this.texture = texture;
         this.animation = animation;
 
-        this.geoModel = MODEL_CACHE.computeIfAbsent(Objects.hash(model, texture, animation), i -> createModel());
+        this.geoModel = createModel();
     }
 
     protected GeoModel<StargateBlockEntity> createModel() {

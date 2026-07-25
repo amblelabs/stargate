@@ -63,7 +63,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         Stargate stargate = blockEntity.stargate();
         if (stargate == null) return;
 
-        GeckoState gecko = stargate.stateOrNull(GeckoState.state);
+        GeckoState gecko = stargate.getStatic().stateOrNull(GeckoState.state);
         if (gecko == null) return;
 
         this.model = gecko.geoModel;

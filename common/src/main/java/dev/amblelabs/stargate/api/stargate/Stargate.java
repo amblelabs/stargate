@@ -4,6 +4,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
+import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.drtheo.ecs.state.TState;
 import dev.drtheo.ecs.state.TStateContainer;
@@ -132,6 +133,13 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         } catch (Exception e) {
             StargateAPI.LOGGER.error("Failed to decode {}", type, e);
         }
+    }
+
+    public TStateContainer getStatic() {
+        PrototypeIdentityState prototype = this.stateOrNull(PrototypeIdentityState.state);
+        if (prototype == null) return this;
+
+        return prototype.prototype().staticStates().orElse(this);
     }
 
     @Override
