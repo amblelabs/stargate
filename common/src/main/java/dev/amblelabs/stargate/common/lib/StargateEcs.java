@@ -11,6 +11,7 @@ import dev.drtheo.ecs.state.TAbstractStateRegistry;
 public class StargateEcs {
 
     public static final TAbstractStateRegistry States = new TAbstractStateRegistry() { };
+    public static final TAbstractStateRegistry StaticStates = new TAbstractStateRegistry() { };
 
     public static void init() {
         TAbstractStateRegistry.debug = IXplatAbstractions.INSTANCE.isDev();
@@ -19,6 +20,7 @@ public class StargateEcs {
     public static void registerAll() {
         initState();
         States.freeze();
+        StaticStates.freeze();
 
         initEvents();
         TEventsRegistry.freeze();
