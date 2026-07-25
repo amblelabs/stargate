@@ -47,7 +47,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     }
 
     @Override
-    protected Direction getFacing(StargateBlockEntity block) {
+    public Direction getFacing(StargateBlockEntity block) {
         return block.getBlockState().getValue(StargateBlock.FACING);
     }
 
