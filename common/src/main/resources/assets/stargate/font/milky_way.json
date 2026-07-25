@@ -1,0 +1,21 @@
+{
+  "providers": [
+    {
+      "type": "reference",
+      "id": "minecraft:include/space"
+    },
+    {
+      "type": "bitmap",
+      "file": "stargate:font/milky_way.png",
+      "ascent": 12,
+      "height": 13,
+      "chars": [
+        "abcdefgh",
+        "ijklmnop",
+        "qrstuvwx",
+        "yz012345",
+        "6789!@#\u0000"
+      ]
+    }
+  ]
+}

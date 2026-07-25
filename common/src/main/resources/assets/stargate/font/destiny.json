@@ -1,0 +1,19 @@
+{
+  "providers": [
+    {
+      "type": "reference",
+      "id": "minecraft:include/space"
+    },
+    {
+      "type": "bitmap",
+      "file": "stargate:font/destiny.png",
+      "ascent": 22,
+      "height": 23,
+      "chars": [
+        "abcdefghijkl",
+        "mnopqrstuvwx",
+        "yz0123456789"
+      ]
+    }
+  ]
+}
