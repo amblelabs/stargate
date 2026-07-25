@@ -45,7 +45,8 @@ public interface TEvent<T extends TEvents> {
         } catch (StateResolveError ignored) {
             // ignored
         } catch (Throwable e) {
-            TEventsRegistry.LOGGER.error("Failed to handle event '{}' for handler '{}'", event.getClass(), handler.getClass(), e);
+            TEventsRegistry.LOGGER.error("Failed to handle event '{}' for handler '{}'", event.getClass(), handler.getClass());
+            TEventsRegistry.LOGGER.error("Details:", e);
         }
     }
 
