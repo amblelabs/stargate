@@ -30,6 +30,7 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
     // bigger alphabet in case people want to do some crazy shit
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    // TODO: make this state-ful
     private static final int COLOR = 0x7d8daf;
 
     private static final Minecraft mc = Minecraft.getInstance();
@@ -47,7 +48,9 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
         if (glyphs == null) return;
 
         final float radius = glyphs.radius;
-        final float angleStep = 2f * Mth.PI / glyphs.amount;
+        final int amount = glyphs.amount;
+
+        final float angleStep = 2f * Mth.PI / amount;
 
         final Style style = Style.EMPTY.withFont(glyphs.font);
 
@@ -65,10 +68,12 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
+
+        // TODO: make these state-ful
         poseStack.translate(0, 3.5, 0.21);
         poseStack.scale(0.022f, -0.022f, 0.022f);
 
-        for (int i = 0; i < glyphs.amount; i++) {
+        for (int i = 0; i < amount; i++) {
             Component character = Component.literal(String.valueOf(ALPHABET.charAt(i)))
                     .withStyle(style);
 
@@ -88,7 +93,8 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
             poseStack.translate(radius, 0, 0);
 
             // Reset pivot position to the center of the character, and rotate it around its axis to point its ass to the center
-            poseStack.translate(-charWidth / 2f, -charHeight / 2f, 0);
+            poseStack.translate(-charWidth / 2f, -charHeight / 2f, 0); // TODO: make this state-ful
+
             poseStack.mulPose(Axis.ZP.rotationDegrees(90));
 
             mc.font.drawInBatch(
