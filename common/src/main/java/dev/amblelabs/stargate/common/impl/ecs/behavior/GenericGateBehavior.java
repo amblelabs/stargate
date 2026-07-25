@@ -32,6 +32,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
 
 import java.util.List;
 import java.util.Set;
@@ -44,7 +47,9 @@ public interface GenericGateBehavior {
         TBehaviorRegistry.register(Open::new);
     }
 
-    class Closed implements TBehavior, StargateTickEvents {
+    class Closed implements TBehavior, StargateTickEvents, StargateBlockEvents {
+
+        public static final RawAnimation LOCK_SYMBOL = RawAnimation.begin().thenPlay("LOCK_SYMBOL");
 
         @Resolve
         private final GateManagerBehavior manager = behavior();
@@ -113,6 +118,38 @@ public interface GenericGateBehavior {
         public void fail(Stargate stargate) {
             StargateUtil.playSound(stargate, StargateSounds.GATE_FAIL);
             manager.set(stargate, new GateState.Closed());
+        }
+
+        @Override
+        public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos) { }
+
+        @Override
+        public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
+
+        @Override
+        public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) { }
+
+        @Override
+        public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
+
+        @Override
+        public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
+
+        @Override
+        public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
+
+        @Override
+        public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
+            controllers.add(new AnimationController<>(blockEntity, "Lock",
+                    anim -> {
+                        GateState<?> state = stargate.stateOrNull(GateState.state);
+                        if (state instanceof GateState.Closed closed && closed.locking
+                                && closed.timer >= calculateDelay(closed) - GateState.Closed.EXTRA_TICKS_PER_GLYPH)
+                            return anim.setAndContinue(LOCK_SYMBOL);
+
+                        anim.resetCurrentAnimation();
+                        return PlayState.STOP;
+                    }));
         }
     }
 
