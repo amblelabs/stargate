@@ -61,7 +61,7 @@ public interface TEvents {
         /**
          * Subscribes the {@link TBehavior} to the event.
          *
-         * @param behavior the behavior to subscrive.
+         * @param behavior the behavior to subscribe.
          */
         @Contract(pure = true)
         void subscribe(TBehavior behavior);
