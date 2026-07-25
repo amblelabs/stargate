@@ -14,10 +14,12 @@ public class StargateConfig {
     }
 
     public interface ClientConfigAccess {
+        boolean renderOverlay();
         boolean renderPuddleBackground();
         int puddleCycleTicks();
         int puddleParticleTick();
 
+        boolean DEFAULT_RENDER_OVERLAY = true;
         boolean DEFAULT_RENDER_PUDDLE_BACKGROUND = true;
 
         int DEFAULT_PUDDLE_CYCLE_TICKS = 50;

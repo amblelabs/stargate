@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.client.renderers;
 
+import dev.amblelabs.stargate.api.mod.StargateConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,8 @@ public class StargateAdditionalRenderers {
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void overlayGui(GuiGraphics graphics, DeltaTracker tracker) {
+        if (!StargateConfig.client().renderOverlay()) return;
+
         final Component title = Component.literal("STARGATE").withStyle(style -> style.withFont(ResourceLocation.fromNamespaceAndPath("amblekit", "amblestone")));
         final Component edition = Component.literal(": sojourner").withStyle(style -> style.withFont(ResourceLocation.fromNamespaceAndPath("amblekit", "amblestonelite")));
         final Component wip = Component.literal("(work in progress)").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
