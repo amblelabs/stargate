@@ -138,6 +138,8 @@ public interface TState<Self extends TState<Self>> {
     @SuppressWarnings("unused")
     class Type<T extends TState<? extends T>> {
 
+        protected @Nullable TAbstractStateRegistry registry;
+
         protected int index = -1;
         protected final ResourceLocation id;
 
@@ -172,6 +174,11 @@ public interface TState<Self extends TState<Self>> {
                 throw new IllegalStateException("State " + id + " is not registered!");
 
             return index;
+        }
+
+        @Contract(pure = true)
+        public @Nullable TAbstractStateRegistry getRegistry() {
+            return registry;
         }
 
         @Override

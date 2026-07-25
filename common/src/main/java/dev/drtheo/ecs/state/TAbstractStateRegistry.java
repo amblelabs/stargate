@@ -48,6 +48,7 @@ public abstract class TAbstractStateRegistry {
      */
     public void register(TState.Type<?> type) {
         type.index = comps.size();
+        type.registry = this;
 
         comps.add(type);
         this.add(type);
