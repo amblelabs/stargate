@@ -157,7 +157,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         if (!this.hasState(state.type())) return;
 
         T prev = this.stateOrNull(state.type());
-        if (prev == null) return;
+        if (prev == null || prev.getClass() != state.getClass()) return;
 
         state.migrate(prev);
     }
