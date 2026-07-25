@@ -65,6 +65,11 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         }
 
         @Override
+        public void migrate(Closed prev) {
+            this.timer = prev.timer;
+        }
+
+        @Override
         public void toNbt(CompoundTag nbt, Context context) {
             nbt.putInt("locked", locked);
             nbt.putBoolean("locking", locking);
@@ -110,6 +115,11 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
         @Override
         public Type<Opening> type() {
             return state;
+        }
+
+        @Override
+        public void migrate(Opening prev) {
+            this.timer = prev.timer;
         }
 
         @Override

@@ -144,10 +144,22 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     @Override
     public boolean addState(TState<?> state) {
+        if (state instanceof NbtState<?> nbtState)
+            this.updateState(nbtState);
+
         boolean result = super.addState(state);
         if (result) this.setChanged();
 
         return result;
+    }
+
+    private <T extends NbtState<T>> void updateState(NbtState<T> state) {
+        if (!this.hasState(state.type())) return;
+
+        T prev = this.stateOrNull(state.type());
+        if (prev == null) return;
+
+        state.migrate(prev);
     }
 
     @Override

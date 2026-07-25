@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface NbtState<Self extends NbtState<Self>> extends TState<Self>, NbtSerializer {
 
+    default void migrate(Self prev) { }
+
     abstract class Type<T extends NbtState<? extends T>> extends TState.NbtBacked<T, NbtSerializer.Context, NbtDeserializer.Context> {
 
         public Type(ResourceLocation id, int version, Fix... fix) {
