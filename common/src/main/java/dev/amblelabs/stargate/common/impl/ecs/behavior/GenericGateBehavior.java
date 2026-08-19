@@ -246,7 +246,7 @@ public interface GenericGateBehavior {
             Vec3 targetPos = targetPhys.pos.getCenter().add(offset);
 
             entity.teleportTo(targetPhys.level, targetPos.x, targetPos.y, targetPos.z,
-                    Set.of(), entity.getYRot(), entity.getXRot());
+                    Set.of(), entity.getYRot() + targetPhys.getBlockState().getValue(StargateBlock.FACING).toYRot(), entity.getXRot());
 
             entity.setDeltaMovement(newVelocity);
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);

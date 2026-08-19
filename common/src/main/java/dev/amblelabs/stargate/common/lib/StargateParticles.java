@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.common.lib;
 
+import dev.amblelabs.stargate.client.particles.KawooshParticle;
 import dev.amblelabs.stargate.client.particles.PuddleParticle;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import net.minecraft.client.particle.ParticleProvider;
@@ -30,6 +31,9 @@ public class StargateParticles {
     public static final ParticleType<PuddleParticleOptions> PUDDLE = register(
             "puddle", new PuddleParticleOptions.Type(false));
 
+    public static final ParticleType<PuddleParticleOptions> KAWOOSH = register(
+            "kawoosh", new PuddleParticleOptions.Type(true));
+
     private static <T extends ParticleOptions> ParticleType<T> register(String id, ParticleType<T> type) {
         ParticleType<?> old = PARTICLES.put(modLoc(id), type);
         if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + id);
@@ -47,6 +51,7 @@ public class StargateParticles {
 
         public static void registerFactories(Consumer consumer) {
             consumer.register(PUDDLE, PuddleParticle.Provider::new);
+            consumer.register(KAWOOSH, KawooshParticle.Provider::new);
         }
     }
 }

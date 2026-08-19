@@ -59,6 +59,10 @@ public class PuddleParticleOptions extends ScalableParticleOptionsBase implement
         return this.loc;
     }
 
+    public int color() {
+        return this.color;
+    }
+
     public static PuddleParticleOptions create(ParticleType<PuddleParticleOptions> type, int color, Vector2f loc) {
         return new PuddleParticleOptions(type, color, loc);
     }

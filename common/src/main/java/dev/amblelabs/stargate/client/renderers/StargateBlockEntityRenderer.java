@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.client.impl.ecs.behavior.ClientPuddleBehavior;
 import dev.amblelabs.stargate.client.impl.ecs.state.GeckoState;
 import dev.amblelabs.stargate.client.renderers.layers.GlowRenderLayer;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
@@ -85,11 +86,10 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         GateState<?> gate = stargate.stateOrNull(GateState.state);
         if (gate == null || gate instanceof GateState.Closed) return;
 
-        float scale = 1f;
+        if (gate instanceof GateState.Opening opening && opening.timer < ClientPuddleBehavior.KAWOOSH_CONVERGE_TICKS)
+            return;
 
-        if (gate instanceof GateState.Opening opening) {
-            scale = Math.clamp(((float) opening.timer) / ((float) GateState.Opening.TICKS_PER_KAWOOSH), 0, 1);
-        }
+        float scale = 1f;
 
         poseStack.pushPose();
         poseStack.translate(-0.5, 0, -0.5);
