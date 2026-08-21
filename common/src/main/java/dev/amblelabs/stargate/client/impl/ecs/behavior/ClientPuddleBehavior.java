@@ -39,7 +39,7 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
 
     private static final float KAWOOSH_MAX_DISTANCE = 5.5f;
     private static final float KAWOOSH_BULB_RADIUS = 1.3f;
-    public static final float JET_STEM = 1.1f;
+    public static final float JET_STEM = 0.9f;
 
     public static final int KAWOOSH_CONVERGE_TICKS = 10;
     private static final int KAWOOSH_JET_OUT_TICKS = 8;
