@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import java.util.Locale;
 
 public interface I18n {
-    Component LOGO_TOOLTIP = modText("tooltip", "logo");
+    Component LOGO_TOOLTIP = modText("text", "logo");
 
     interface Items {
         Component GENERIC_ITEM_SHIFT_TOOLTIP = item("generic.tooltip.shift");

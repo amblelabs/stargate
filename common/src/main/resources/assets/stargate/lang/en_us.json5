@@ -75,7 +75,8 @@
     toaster: "Toaster"
   },
   "text.stargate": {
-    gate: "Stargate"
+    gate: "Stargate",
+    logo: "Click here to see credits."
   },
   "text.autoconfig.stargate": {
     title: "SG:S Config",
