@@ -5,8 +5,6 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.items.DialerItem;
 import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.amblelabs.stargate.common.items.StargateBlockItem;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -77,14 +75,11 @@ public class StargateItems {
     public static final Item ADDRESS_CARTOUCHE = make("address_cartouche",
             new DialerItem(props().component(StargateComponents.STARGATE, null).rarity(Rarity.EPIC)));
 
-    public static final ResourceKey<JukeboxSong> STARGATE_THEME_SONG =
-            ResourceKey.create(Registries.JUKEBOX_SONG,
-                    StargateAPI.modLoc("stargate_theme"));
 
     public static final Item MUSIC_DISC_THEME = make(
             "music_disc/theme",
             new Item(new Item.Properties()
-                    .jukeboxPlayable(STARGATE_THEME_SONG)
+                    .jukeboxPlayable(StargateJukeboxSongs.THEME_SONG)
                     .stacksTo(1)
                     .rarity(Rarity.RARE)
             )
