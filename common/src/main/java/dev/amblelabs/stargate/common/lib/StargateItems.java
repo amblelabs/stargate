@@ -47,6 +47,10 @@ public class StargateItems {
             ResourceLocation prototypeId = StargateAPI.modLoc(path);
             make("stargate/" + path, new StargateBlockItem(prototypeId, new Item.Properties()));
         }
+
+        for (IrisItem.Type irisType : IrisItem.Type.ALL) {
+            make(irisType.loc().withSuffix("iris/"), new IrisItem(irisType, props()));
+        }
     }
 
     public static final Item TOAST = make("toast", new Item(props().food(
@@ -70,22 +74,15 @@ public class StargateItems {
 
     public static final Item CRYSTAL_INGOT = make("crystal_ingot", new Item(props()));
 
-    public static final Item TRINIUM_IRIS = make("trinium_iris", new IrisItem(IrisItem.Type.TRINIUM, props()));
-    public static final Item NAQUADAH_IRIS = make("naquadah_iris", new IrisItem(IrisItem.Type.NAQUADAH, props()));
-    public static final Item NETHERITE_IRIS = make("netherite_iris", new IrisItem(IrisItem.Type.NETHERITE, props()));
-    public static final Item DIAMOND_IRIS = make("diamond_iris", new IrisItem(IrisItem.Type.DIAMOND, props()));
-    public static final Item GOLD_IRIS = make("gold_iris", new IrisItem(IrisItem.Type.GOLD, props()));
-    public static final Item IRON_IRIS = make("iron_iris", new IrisItem(IrisItem.Type.IRON, props()));
-
     public static final Item ADDRESS_CARTOUCHE = make("address_cartouche",
-            new DialerItem(props().component(StargateComponents.STARGATE, null)));
+            new DialerItem(props().component(StargateComponents.STARGATE, null).rarity(Rarity.EPIC)));
 
     public static final ResourceKey<JukeboxSong> STARGATE_THEME_SONG =
             ResourceKey.create(Registries.JUKEBOX_SONG,
                     StargateAPI.modLoc("stargate_theme"));
 
     public static final Item MUSIC_DISC_THEME = make(
-            "music_disc_theme",
+            "music_disc/theme",
             new Item(new Item.Properties()
                     .jukeboxPlayable(STARGATE_THEME_SONG)
                     .stacksTo(1)
@@ -109,6 +106,11 @@ public class StargateItems {
                 .add(new TabEntry.ItemEntry(item));
 
         return item;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    private static <T extends Item> T make(ResourceLocation id, T item) {
+        return make(id, item, StargateCreativeTabs.STARGATE);
     }
 
     @SuppressWarnings("SameParameterValue")

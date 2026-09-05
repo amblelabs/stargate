@@ -1,7 +1,7 @@
 package dev.amblelabs.stargate.fabric.datagen;
 
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleModelProvider;
-import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
@@ -54,7 +54,7 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
         StargateItems.registerItems((item, resourceLocation) -> {
-            if (item instanceof StargateBlockItem)
+            if (item instanceof StargateBlockItem || item instanceof IrisItem)
                 gen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
         });
 
@@ -70,12 +70,6 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.generateFlatItem(StargateItems.RAW_NAQUADAH, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.CRYSTAL_INGOT, ModelTemplates.FLAT_ITEM);
 
-        gen.generateFlatItem(StargateItems.TRINIUM_IRIS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(StargateItems.NAQUADAH_IRIS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(StargateItems.NETHERITE_IRIS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(StargateItems.DIAMOND_IRIS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(StargateItems.GOLD_IRIS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(StargateItems.IRON_IRIS, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.MUSIC_DISC_THEME, ModelTemplates.FLAT_ITEM);
     }
 }
