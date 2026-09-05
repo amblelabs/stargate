@@ -46,7 +46,7 @@ public class GeckoState implements NbtState<GeckoState> {
     public final ResourceLocation texture;
     public final ResourceLocation animation;
 
-    public final GeoModel<StargateBlockEntity> geoModel;
+    public final Model geoModel;
 
     public GeckoState(ResourceLocation loc) {
         this(loc, loc, loc);
@@ -57,11 +57,11 @@ public class GeckoState implements NbtState<GeckoState> {
         this.texture = texture;
         this.animation = animation;
 
-        this.geoModel = createModel();
+        this.geoModel = this.createModel();
     }
 
-    protected GeoModel<StargateBlockEntity> createModel() {
-        return new GeoModel<>() {
+    protected Model createModel() {
+        return new Model() {
             private final ResourceLocation model = GeckoState.this.model.withPath(s -> "geo/" + s + ".geo.json");
             private final ResourceLocation texture = GeckoState.this.texture.withPath(s -> "textures/" + s + ".png");
             private final ResourceLocation animation = GeckoState.this.animation.withPath(s -> "animations/" + s + ".animation.json");
@@ -79,6 +79,11 @@ public class GeckoState implements NbtState<GeckoState> {
             @Override
             public ResourceLocation getAnimationResource(StargateBlockEntity animatable) {
                 return animation;
+            }
+
+            @Override
+            public boolean shouldReRender(StargateBlockEntity animatable) {
+                return true;
             }
         };
     }
@@ -117,8 +122,8 @@ public class GeckoState implements NbtState<GeckoState> {
         }
 
         @Override
-        protected GeoModel<StargateBlockEntity> createModel() {
-            return new GeoModel<>() {
+        protected Model createModel() {
+            return new Model() {
                 private final ResourceLocation model = Default.this.model.withPath(s -> "geo/" + s + ".geo.json");
                 private final ResourceLocation texture = Default.this.texture.withPath(s -> "textures/" + s + ".png");
                 private final ResourceLocation animation = Default.this.animation.withPath(s -> "animations/" + s + ".animation.json");
@@ -191,6 +196,19 @@ public class GeckoState implements NbtState<GeckoState> {
                         bone.setRotZ(Mth.lerp(progress, prevRot, targetRot));
                     }
                 }
+
+                @Override
+                public boolean shouldReRender(StargateBlockEntity animatable) {
+                    Stargate stargate = animatable.stargate();
+                    if (stargate == null) return false;
+
+                    GateState<?> state = stargate.stateOrNull(GateState.state);
+
+                    if (state instanceof GateState.Closed closed)
+                        return closed.locked > 0;
+
+                    return stargate.hasState(ChevronState.state);
+                }
             };
         }
 
@@ -198,5 +216,9 @@ public class GeckoState implements NbtState<GeckoState> {
         public Type<GeckoState> type() {
             return state;
         }
+    }
+
+    public abstract static class Model extends GeoModel<StargateBlockEntity> {
+        public abstract boolean shouldReRender(StargateBlockEntity animatable);
     }
 }
