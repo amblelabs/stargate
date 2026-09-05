@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -44,6 +45,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(StargateAPI.modLoc("menu"), container, ResourcePackActivationType.DEFAULT_ENABLED);
         });
 
+        WorldRenderEvents.START.register(context -> RenderDeduper.clear());
         HudRenderCallback.EVENT.register(StargateAdditionalRenderers::overlayGui);
 
         IClientXplatAbstractions.INSTANCE.registerSkyRenderer(AbydosSkyRenderer.DIMENSION_KEY, new AbydosSkyRenderer());
