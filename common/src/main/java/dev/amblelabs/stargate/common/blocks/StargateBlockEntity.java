@@ -87,7 +87,8 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        this.blockSet = NbtUtils.readBlockState(provider.asGetterLookup().lookupOrThrow(Registries.BLOCK), nbt.getCompound(StargateRingBlockEntity.ID_BLOCK));
+        if (nbt.contains(StargateRingBlockEntity.ID_BLOCK))
+            this.blockSet = NbtUtils.readBlockState(provider.asGetterLookup().lookupOrThrow(Registries.BLOCK), nbt.getCompound(StargateRingBlockEntity.ID_BLOCK));
 
         if (nbt.hasUUID(ID_TAG))
             this.stargateId = nbt.getUUID(ID_TAG);

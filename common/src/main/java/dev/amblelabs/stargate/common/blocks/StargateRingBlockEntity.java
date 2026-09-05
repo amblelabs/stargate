@@ -31,7 +31,8 @@ public class StargateRingBlockEntity extends BlockEntity {
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        this.blockSet = NbtUtils.readBlockState(registries.asGetterLookup().lookupOrThrow(Registries.BLOCK), tag.getCompound(ID_BLOCK));
+        if (tag.contains(StargateRingBlockEntity.ID_BLOCK))
+            this.blockSet = NbtUtils.readBlockState(registries.asGetterLookup().lookupOrThrow(Registries.BLOCK), tag.getCompound(ID_BLOCK));
     }
 
     @Override
