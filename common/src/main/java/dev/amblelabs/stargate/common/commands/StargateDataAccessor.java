@@ -8,6 +8,7 @@ import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.CustomComponentTagVisitor;
+import dev.amblelabs.stargate.common.I18n;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -25,7 +26,17 @@ import java.util.function.Function;
 
 public class StargateDataAccessor implements DataAccessor {
 
-    public static final SimpleCommandExceptionType NO_STARGATE_FOUND = new SimpleCommandExceptionType(Component.translatable("argument.stargate.notfound"));
+    private static final CustomComponentTagVisitor STRINGIFIER = new CustomComponentTagVisitor("  ") {
+        @Override
+        public Tag onTag(String key, Tag tag) {
+            if (key.equals(Stargate.TAG_ID) && tag.getId() == Tag.TAG_INT_ARRAY)
+                tag = StringTag.valueOf(NbtUtils.loadUUID(tag).toString());
+
+            return tag;
+        }
+    };
+
+    public static final SimpleCommandExceptionType NO_STARGATE_FOUND = new SimpleCommandExceptionType(I18n.Commands.Arguments.NOT_FOUND);
 
     public static final Function<String, DataCommands.DataProvider> PROVIDER = (string) -> new DataCommands.DataProvider() {
         public DataAccessor access(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -83,26 +94,18 @@ public class StargateDataAccessor implements DataAccessor {
     @Override
     public Component getModifiedSuccess() {
         BlockPos pos = this.stargateBlockEntity.getBlockPos();
-        return Component.translatable("commands.data.stargate.modified", pos.getX(), pos.getY(), pos.getZ());
+        return I18n.Commands.dataModified(pos);
     }
 
     @Override
     public Component getPrintSuccess(Tag nbt) {
         BlockPos pos = this.stargateBlockEntity.getBlockPos();
-        return Component.translatable("commands.data.stargate.query", pos.getX(), pos.getY(), pos.getZ(), new CustomComponentTagVisitor("  ") {
-            @Override
-            public Tag onTag(String key, Tag tag) {
-                if (key.equals(Stargate.TAG_ID) && tag.getId() == Tag.TAG_INT_ARRAY)
-                    tag = StringTag.valueOf(NbtUtils.loadUUID(tag).toString());
-
-                return tag;
-            }
-        }.visit(nbt));
+        return I18n.Commands.dataQuery(pos, STRINGIFIER.visit(nbt));
     }
 
     @Override
     public Component getPrintSuccess(NbtPathArgument.NbtPath path, double scale, int value) {
         BlockPos pos = this.stargateBlockEntity.getBlockPos();
-        return Component.translatable("commands.data.stargate.get", path.asString(), pos.getX(), pos.getY(), pos.getZ(), String.format(Locale.ROOT, "%.2f", scale), value);
+        return I18n.Commands.dataGet(path.asString(), pos, scale, value);
     }
 }

@@ -34,6 +34,8 @@ import java.util.UUID;
  */
 public class DialerItem extends Item {
 
+	public static final String TAG_ADDRESS = "Address";
+
 	public DialerItem(Properties settings) {
 		super(settings);
 	}
@@ -62,7 +64,7 @@ public class DialerItem extends Item {
             closed.address = target.state(C7State.state).address();
 			stargate.setChanged();
         } else if (context.getPlayer() != null) {
-			context.getPlayer().sendSystemMessage(I18n.DIALER_FAIL);
+			context.getPlayer().sendSystemMessage(I18n.Items.DIALER_FAIL);
 		}
 
 		stack.consume(1, context.getPlayer());
@@ -71,7 +73,7 @@ public class DialerItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-		tooltipComponents.add(I18n.DIALER_TOOLTIP.copy()
+		tooltipComponents.add(I18n.Items.DIALER_TOOLTIP.copy()
 				.withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
 
 		this.handleTooltip(stack, tooltipComponents);
@@ -79,13 +81,13 @@ public class DialerItem extends Item {
 
 	@Environment(EnvType.CLIENT)
 	private void handleTooltip(ItemStack stack, List<Component> tooltip) {
-		UUID id = getStargateAddressFromKey(stack, "Address");
+		UUID id = getStargateAddressFromKey(stack, TAG_ADDRESS);
 
 		if (id == null)
 			return;
 
 		if (!Screen.hasShiftDown()) {
-			tooltip.add(I18n.GENERIC_SHIFT_TOOLTIP.copy()
+			tooltip.add(I18n.Items.GENERIC_ITEM_SHIFT_TOOLTIP.copy()
 					.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			return;
 		}
@@ -94,16 +96,13 @@ public class DialerItem extends Item {
 		Stargate stargate = getStargate(level, id);
 
 		if (stargate != null) {
-			tooltip.add(Component.translatable("text.stargate.gate").append(Component.literal(": "))
-					.withStyle(ChatFormatting.BLUE));
-
-			tooltip.add(Component.literal("> " + stargate.getId())
-					.withStyle(ChatFormatting.DARK_GRAY));
+			tooltip.add(I18n.Items.DIALER_TOOLTIP_HEADER.copy().withStyle(ChatFormatting.BLUE));
+			tooltip.add(I18n.Items.dialerDetails(stargate).withStyle(ChatFormatting.DARK_GRAY));
 		}
 	}
 
 	public static @Nullable Stargate getStargate(Level world, ItemStack stack) {
-		return getStargateFromKey(world, stack, "Address");
+		return getStargateFromKey(world, stack, TAG_ADDRESS);
 	}
 
 	public static @Nullable UUID getStargateAddressFromKey(ItemStack stack, String path) {

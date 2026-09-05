@@ -48,7 +48,11 @@
     address_cartouche: {
       "": "Address Cartouche",
       fail: "",
-      tooltip: "(TBD)"
+      tooltip: {
+        "": "(TBD)",
+        header: "Stargate:",
+        details: "> %s"
+      },
     },
 
     music_disc_theme: {

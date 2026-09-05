@@ -72,8 +72,8 @@ public class CreditsScreen extends Screen {
     }
 
     private float calculateScrollSpeed() {
-        return this.speedupActive ? this.unmodifiedScrollSpeed * (SPEEDUP_FACTOR + (float) this.speedupModifiers.size() * SPEEDUP_FACTOR_FAST) * (float) this.direction
-                : this.unmodifiedScrollSpeed * (float) this.direction;
+        return (this.speedupActive ? this.unmodifiedScrollSpeed * (SPEEDUP_FACTOR + (float) this.speedupModifiers.size() * SPEEDUP_FACTOR_FAST)
+                : this.unmodifiedScrollSpeed) * (float) this.direction;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class CreditsScreen extends Screen {
             LOGGER.error("Couldn't load credits from file {}", CREDITS_LOCATION, exception);
         }
 
-        this.totalScrollLength = this.lines.size() * 12;
+        this.totalScrollLength = this.lines.size() * 11;
     }
 
     private void addCreditsFile(Reader reader) {
@@ -199,34 +199,36 @@ public class CreditsScreen extends Screen {
 
         this.scroll = Math.max(0.0F, this.scroll + partialTick * this.scrollSpeed);
 
-        int i = this.width / 2 - 128;
-        int j = this.height + 50;
-        float f = -this.scroll;
+        int xPadding = this.width / 2 - 128;
+        int logoY = this.height + 20;
+        float scrollOffset = -this.scroll;
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, f, 0.0F);
+        guiGraphics.pose().translate(0, scrollOffset, 0);
 
-        this.logoRenderer.renderLogo(guiGraphics, this.width, 1.0F, j);
-        int k = j + 100;
+        this.logoRenderer.renderLogo(guiGraphics, this.width, 1, logoY);
+        int creditsY = logoY + 100;
 
-        for (int l = 0; l < this.lines.size(); ++l) {
-            if (l == this.lines.size() - 1) {
-                float g = (float) k + f - (this.height / 2f - 6);
-                if (g < 0.0F) {
-                    guiGraphics.pose().translate(0.0F, -g, 0.0F);
+        for (int lineIdx = 0; lineIdx < this.lines.size(); lineIdx++) {
+            if (lineIdx == this.lines.size() - 1) {
+                float g = (float) creditsY + scrollOffset - (this.height / 2f - 6);
+
+                if (g < 0) {
+                    guiGraphics.pose().translate(0, -g, 0);
                 }
             }
 
-            if ((float) k + f + 12.0F + 8.0F > 0.0F && (float) k + f < (float) this.height) {
-                FormattedCharSequence formattedCharSequence = this.lines.get(l);
-                if (this.centeredLines.contains(l)) {
-                    guiGraphics.drawCenteredString(this.font, formattedCharSequence, i + 128, k, -1);
+            if ((float) creditsY + scrollOffset + 20 > 0 && (float) creditsY + scrollOffset < (float) this.height) {
+                FormattedCharSequence formattedCharSequence = this.lines.get(lineIdx);
+
+                if (this.centeredLines.contains(lineIdx)) {
+                    guiGraphics.drawCenteredString(this.font, formattedCharSequence, xPadding + 128, creditsY, -1);
                 } else {
-                    guiGraphics.drawString(this.font, formattedCharSequence, i, k, -1);
+                    guiGraphics.drawString(this.font, formattedCharSequence, xPadding, creditsY, -1);
                 }
             }
 
-            k += 12;
+            creditsY += 12;
         }
 
         guiGraphics.pose().popPose();
@@ -235,15 +237,14 @@ public class CreditsScreen extends Screen {
     private void renderVignette(GuiGraphics guiGraphics) {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);
-        guiGraphics.blit(VIGNETTE_LOCATION, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
+        guiGraphics.blit(VIGNETTE_LOCATION, 0, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     }
 
     @Override
     protected void renderMenuBackground(GuiGraphics guiGraphics, int x, int y, int width, int height) {
-        float f = this.scroll * 0.5F;
-        Screen.renderMenuBackgroundTexture(guiGraphics, Screen.MENU_BACKGROUND, 0, 0, 0.0F, f, width, height);
+        Screen.renderMenuBackgroundTexture(guiGraphics, Screen.MENU_BACKGROUND, 0, 0, 0, this.scroll * 0.5f, width, height);
     }
 
     @Override

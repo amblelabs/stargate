@@ -3,7 +3,7 @@
   "id": "stargate",
   "version": "${version}",
   "name": "Stargate: Sojourner",
-  "description": "",
+  "description": "SG:S adds Stargates into your game, for Fabric and NeoForge 1.21.1.",
   "authors": [
     "AmbleLabs"
   ],
