@@ -35,12 +35,15 @@
     raw_naquadah: "Raw Naquadah",
     trinium_ingot: "Trinium Ingot",
     crystal_ingot: "Crystal Ingot",
-    trinium_iris: "Trinium Iris",
-    naquadah_iris: "Naquadah Iris",
-    netherite_iris: "Netherite Iris",
-    diamond_iris: "Diamond Iris",
-    gold_iris: "Gold Iris",
-    iron_iris: "Iron Iris",
+
+    iris: {
+      trinium: "Trinium Iris",
+      naquadah: "Naquadah Iris",
+      netherite: "Netherite Iris",
+      diamond: "Diamond Iris",
+      gold: "Gold Iris",
+      iron: "Iron Iris"
+    },
 
     toast: "Toast",
     burnt_toast: "Burnt Toast",
@@ -55,10 +58,12 @@
       },
     },
 
-    music_disc_theme: {
-      "": "Music Disc",
-      desc: "lucien - SG:S Theme"
-    }
+    music_disc: {
+      theme: {
+        "": "Music Disc",
+        desc: "lucien - SG:S Theme"
+      },
+    },
   },
   "block.stargate": {
     stargate: "Stargate",

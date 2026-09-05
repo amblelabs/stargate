@@ -49,7 +49,7 @@ public class StargateItems {
         }
 
         for (IrisItem.Type irisType : IrisItem.Type.ALL) {
-            make(irisType.loc().withSuffix("iris/"), new IrisItem(irisType, props()));
+            make(irisType.loc().withPrefix("iris/"), new IrisItem(irisType, props()));
         }
     }
 
