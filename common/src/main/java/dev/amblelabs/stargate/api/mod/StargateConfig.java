@@ -32,7 +32,11 @@ public class StargateConfig {
     }
 
     public interface ServerConfigAccess {
+        int worldGenStargateDistance();
 
+        int DEFAULT_WORLD_GEN_STARGATE_DISTANCE = 15;
+        int MIN_WORLD_GEN_STARGATE_DISTANCE = 0;
+        int MAX_WORLD_GEN_STARGATE_DISTANCE = 256;
     }
 
     public static boolean anyMatch(List<? extends String> keys, ResourceLocation key) {

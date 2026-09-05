@@ -6,13 +6,18 @@ import dev.amblelabs.stargate.common.lib.*;
 import dev.amblelabs.stargate.fabric.network.FabricPacketHandler;
 import dev.amblelabs.stargate.interop.StargateInterop;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 import java.util.function.BiConsumer;
 
@@ -51,7 +56,7 @@ public final class FabricStargateInit implements ModInitializer {
         StargateBlockSetTypes.registerBlocks(BlockSetType::register);
 
         StargateCreativeTabs.registerCreativeTabs(bind(BuiltInRegistries.CREATIVE_MODE_TAB));
-
+        StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
         StargateSounds.registerSounds(bind(BuiltInRegistries.SOUND_EVENT));
         StargateBlocks.registerBlocks(bind(BuiltInRegistries.BLOCK));
         StargateBlocks.registerBlockItems(bind(BuiltInRegistries.ITEM));
@@ -72,6 +77,16 @@ public final class FabricStargateInit implements ModInitializer {
         StargateParticles.registerParticles(bind(BuiltInRegistries.PARTICLE_TYPE));
 
 //        AitLootFunctions.registerSerializers(bind(BuiltInRegistries.LOOT_FUNCTION_TYPE));
+
+        // FIXME: smelly
+        StargateFeatures.registerFeatures((feature, resourceLocation) -> {
+            BiomeModifications.addFeature(BiomeSelectors.all(), GenerationStep.Decoration.VEGETAL_DECORATION,
+                    ResourceKey.create(Registries.PLACED_FEATURE, resourceLocation));
+
+            bind(BuiltInRegistries.FEATURE).accept(feature, resourceLocation);
+        });
+
+        StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
 
         this.dieInAFire();
 

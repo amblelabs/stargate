@@ -103,8 +103,18 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     @Config(name = "server")
     public static final class Server implements StargateConfig.ServerConfigAccess, ConfigData {
 
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = MIN_WORLD_GEN_STARGATE_DISTANCE, max = MAX_WORLD_GEN_STARGATE_DISTANCE)
+        private int worldGenStargateDistance = DEFAULT_WORLD_GEN_STARGATE_DISTANCE;
+
         @Override
         public void validatePostLoad() {
+            this.worldGenStargateDistance = Math.clamp(worldGenStargateDistance, MIN_WORLD_GEN_STARGATE_DISTANCE, MAX_WORLD_GEN_STARGATE_DISTANCE);
+        }
+
+        @Override
+        public int worldGenStargateDistance() {
+            return worldGenStargateDistance;
         }
     }
 }

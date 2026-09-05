@@ -1,10 +1,7 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.common.blocks.DHDBlockEntity;
-import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
-import dev.amblelabs.stargate.common.blocks.StargateRingBlockEntity;
-import dev.amblelabs.stargate.common.blocks.ToasterBlockEntity;
+import dev.amblelabs.stargate.common.blocks.*;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
