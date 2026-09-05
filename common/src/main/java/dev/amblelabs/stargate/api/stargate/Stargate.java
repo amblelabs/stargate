@@ -137,9 +137,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     public TStateContainer getStatic() {
         PrototypeIdentityState prototype = this.stateOrNull(PrototypeIdentityState.state);
-        if (prototype == null) return this;
-
-        return prototype.prototype().staticStates().orElse(this);
+        return Objects.requireNonNull(prototype, "No prototype state attached!").prototype().staticStates();
     }
 
     @Override
@@ -173,6 +171,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     private boolean dirty = false;
 
     public void setChanged() {
+        new Throwable("#setChanged: " + (this.isClient ? "client" : "server")).printStackTrace();
         this.dirty = true;
     }
 

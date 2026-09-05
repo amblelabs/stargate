@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, Optional<TStateContainer> staticStates, Optional<ResourceLocation> extending) {
+// TODO: use a custom tag instead of "is abstract" for placeability checks.
+public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, TStateContainer staticStates, Optional<ResourceLocation> extending, boolean isAbstract) {
 
     public void mark(TStateContainer container) {
         ResourceLocation loc = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
@@ -53,7 +54,7 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
     }
 
     private static TStateContainer map2Container(Map<ResourceLocation, CompoundTag> map) {
-        TStateContainer container = new TStateContainer.Delegate(StargateEcs.StaticStates.createArrayHolder()) { };
+        TStateContainer container = StargateEcs.StaticStates.createArrayHolder();
 
         for (Map.Entry<ResourceLocation, CompoundTag> entry : map.entrySet()) {
             TState.Type<?> type = StargateEcs.StaticStates.get(entry.getKey());
@@ -64,15 +65,16 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
             container.addState(serializable.fromNbt(entry.getValue(), NbtDeserializer.Context.forLoad().get()));
         }
 
-        return container;
+        return new ImmutableTStateContainer(container);
     }
 
     public static final Codec<PrototypeRegistryEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.unboundedMap(ResourceLocation.CODEC, CompoundTag.CODEC).fieldOf("states").forGetter(PrototypeRegistryEntry::states),
                 Codec.unboundedMap(ResourceLocation.CODEC, CompoundTag.CODEC).optionalFieldOf("static").xmap(
-                        optional -> optional.map(PrototypeRegistryEntry::map2Container),
+                        optional -> optional.map(PrototypeRegistryEntry::map2Container).orElse(ImmutableTStateContainer.EMPTY),
                         optional -> Optional.empty()
                 ).forGetter(PrototypeRegistryEntry::staticStates),
-                ResourceLocation.CODEC.optionalFieldOf("extends").forGetter(PrototypeRegistryEntry::extending)
+                ResourceLocation.CODEC.optionalFieldOf("extends").forGetter(PrototypeRegistryEntry::extending),
+                Codec.BOOL.optionalFieldOf("abstract", false).forGetter(PrototypeRegistryEntry::isAbstract)
         ).apply(instance, PrototypeRegistryEntry::new));
 }
