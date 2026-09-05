@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
+import org.lwjgl.glfw.GLFW;
 
 public class CustomLogoRenderer extends LogoRenderer {
 
@@ -24,18 +25,18 @@ public class CustomLogoRenderer extends LogoRenderer {
 
     @Override
     public void renderLogo(GuiGraphics guiGraphics, int screenWidth, float transparency, int height) {
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.keepLogoThroughFade ? 1.0F : transparency);
+        guiGraphics.setColor(1, 1, 1, this.keepLogoThroughFade ? 1 : transparency);
         RenderSystem.enableBlend();
 
         int x = (screenWidth - LOGO_WIDTH) / 2;
-        guiGraphics.blit(MINECRAFT_LOGO, x, height, 0.0F, 0.0F, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
+        guiGraphics.blit(MINECRAFT_LOGO, x, height, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
 
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.setColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
     }
 
     public boolean mouseClicked(int screenWidth, double mouseX, double mouseY, int button) {
-        if (button != 1) return false;
+        if (button != GLFW.GLFW_MOUSE_BUTTON_1) return false;
 
         int x = (screenWidth - LOGO_WIDTH) / 2;
         int y = 30 - LOGO_HEIGHT / 4 + 4;
