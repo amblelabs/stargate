@@ -1,7 +1,7 @@
 {
   "sound_event": "stargate:music.theme",
   "description": {
-    "translate": "item.stargate.music_disc_theme.desc"
+    "translate": "item.stargate.music_disc.theme.desc"
   },
   "length_in_seconds": 64,
   "comparator_output": 13
