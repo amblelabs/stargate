@@ -5,11 +5,14 @@ import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.ShapeBehavior;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +23,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Predicate;
 
 public class StargateBlockItem extends BlockItem {
 
@@ -58,25 +63,34 @@ public class StargateBlockItem extends BlockItem {
 
         BlockPos pos = context.getClickedPos();
 
-        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity) {
-            Registry<PrototypeRegistryEntry> registry = IXplatAbstractions.INSTANCE.getPrototypeRegistry();
-            PrototypeRegistryEntry entry = registry.get(this.prototypeId);
+        if (!(level instanceof ServerLevel serverLevel) || !(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity))
+            return result;
 
-            if (entry == null) {
-                StargateAPI.LOGGER.error("Failed to find prototype by id {}", this.prototypeId);
-                entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().getAny().orElseThrow().value();
-            }
+        Registry<PrototypeRegistryEntry> registry = IXplatAbstractions.INSTANCE.getPrototypeRegistry();
+        PrototypeRegistryEntry entry = registry.get(this.prototypeId);
 
-            Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
-
-            blockEntity.setStargate(stargate);
-
-            StargateBlockEvents.notify(events -> events.stargate$place(
-                    stargate, blockEntity, level.getBlockState(pos), serverLevel, pos));
-
-            stargate.setChanged(); // forces sync
+        if (entry == null) {
+            StargateAPI.LOGGER.error("Failed to find prototype by id {}", this.prototypeId);
+            entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().stream()
+                    .filter(Predicate.not(PrototypeRegistryEntry::isAbstract)).findAny().orElseThrow();
         }
 
+        Direction direction = blockEntity.getBlockState().getValue(StargateBlock.FACING);
+        boolean success = ShapeBehavior.INSTANCE.stargate$prePlace(direction, serverLevel, pos);
+
+        if (!success) {
+            serverLevel.removeBlock(pos, false);
+            return InteractionResult.FAIL;
+        }
+
+        Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
+
+        blockEntity.setStargate(stargate);
+
+        StargateBlockEvents.notify(events -> events.stargate$place(
+                stargate, blockEntity, level.getBlockState(pos), serverLevel, pos));
+
+        stargate.setChanged(); // forces sync
         return result;
     }
 }
