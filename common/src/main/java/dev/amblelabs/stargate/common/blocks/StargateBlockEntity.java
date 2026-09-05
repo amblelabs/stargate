@@ -124,8 +124,8 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
     @Override
     public void onStargateUpdate(Stargate stargate, Set<ServerPlayer> receivers) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            StargateAPI.LOGGER.info("Tried to process a stargate server update on client", new IllegalStateException());
+        if (!(this.level instanceof ServerLevel serverLevel)) {
+            StargateAPI.LOGGER.throwing(new IllegalStateException("Tried to process a stargate server update on " + level));
             return;
         }
 
