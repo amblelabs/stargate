@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
@@ -32,7 +33,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     private final BlockRenderDispatcher blockRenderer;
 
     @SuppressWarnings("NotNullFieldNotInitialized")
-    private GeoModel<StargateBlockEntity> model;
+    private GeckoState.Model model;
 
     public StargateBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super((GeoModel<StargateBlockEntity>) null);
@@ -43,7 +44,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     }
 
     @Override
-    public GeoModel<StargateBlockEntity> getGeoModel() {
+    public GeckoState.Model getGeoModel() {
         return model;
     }
 
@@ -55,11 +56,17 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void render(StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        if (blockEntity.getBlockSet() != null) {
-            poseStack.pushPose();
-            blockRenderer.renderSingleBlock(blockEntity.getBlockSet(), poseStack, bufferSource, packedLight, packedOverlay);
-            poseStack.popPose();
-        }
+        if (blockEntity.getLevel() == null) return;
+        ProfilerFiller profiler = blockEntity.getLevel().getProfiler();
+
+        profiler.push("stargate:stargate");
+        this.render0(profiler, blockEntity, f, poseStack, bufferSource, packedLight, packedOverlay);
+        profiler.pop();
+    }
+
+    private void render0(ProfilerFiller profiler, StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        if (RenderDeduper.shouldSkipRendering(blockEntity)) return;
+        RenderDeduper.count(blockEntity);
 
         Stargate stargate = blockEntity.stargate();
         if (stargate == null) return;
@@ -70,16 +77,39 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         this.model = gecko.geoModel;
 
         super.render(blockEntity, f, poseStack, bufferSource, packedLight, packedOverlay);
+
+        if (blockEntity.getBlockSet() != null) {
+            profiler.popPush("stargate:blockset");
+            profiler.push(() -> blockEntity.getBlockSet().getBlockHolder().getRegisteredName());
+            poseStack.pushPose();
+            blockRenderer.renderSingleBlock(blockEntity.getBlockSet(), poseStack, bufferSource, packedLight, packedOverlay);
+            poseStack.popPose();
+            profiler.pop();
+        }
     }
 
     @Override
-    public void actuallyRender(PoseStack poseStack, StargateBlockEntity animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    public void actuallyRender(PoseStack poseStack, StargateBlockEntity animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        if (animatable.getLevel() == null) return;
+        ProfilerFiller profiler = animatable.getLevel().getProfiler();
+
+        if (isReRender && !this.model.shouldReRender(animatable))
+            return;
+
+        profiler.push("render");
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+        profiler.pop();
 
         // FIXME: should be rendered in an event, like the puddle particles
         if (isReRender || !StargateConfig.client().renderPuddleBackground())
             return;
 
+        profiler.push("background");
+        this.renderBackground(poseStack, animatable, bufferSource);
+        profiler.pop();
+    }
+
+    private void renderBackground(PoseStack poseStack, StargateBlockEntity animatable, MultiBufferSource bufferSource) {
         Stargate stargate = animatable.stargate();
         if (stargate == null) return;
 
