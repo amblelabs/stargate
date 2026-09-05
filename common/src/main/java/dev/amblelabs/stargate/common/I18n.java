@@ -10,11 +10,12 @@ import net.minecraft.world.item.Item;
 
 import java.util.Locale;
 
+@SuppressWarnings({"deprecation", "SameParameterValue"})
 public interface I18n {
     Component LOGO_TOOLTIP = modText("text", "logo");
 
     interface Items {
-        Component GENERIC_ITEM_SHIFT_TOOLTIP = item("generic.tooltip.shift");
+        Component GENERIC_ITEM_SHIFT_TOOLTIP = item("generic.tooltip.shift", Component.keybind("key.sneak"));
         Component DIALER_FAIL = item(StargateItems.ADDRESS_CARTOUCHE, "fail");
         Component DIALER_TOOLTIP = item(StargateItems.ADDRESS_CARTOUCHE, "tooltip");
         Component DIALER_TOOLTIP_HEADER = item(StargateItems.ADDRESS_CARTOUCHE, "tooltip.header");
@@ -57,6 +58,7 @@ public interface I18n {
             return modText("commands." + name, value);
         }
 
+        @SuppressWarnings("SameParameterValue")
         private static MutableComponent command(String name, String value, Object... args) {
             return modText("commands." + name, value, args);
         }
@@ -74,12 +76,15 @@ public interface I18n {
         return modText("item", value);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("SameParameterValue")
+    private static MutableComponent item(String value, Object... args) {
+        return modText("item", value, args);
+    }
+
     private static MutableComponent item(Item item, String suffix) {
         return Component.translatable("item." + item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix);
     }
 
-    @SuppressWarnings("deprecation")
     private static MutableComponent item(Item item, String suffix, Object... args) {
         return Component.translatable("item." + item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix, args);
     }

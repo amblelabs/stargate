@@ -21,13 +21,13 @@
   },
   "item.stargate": {
     generic: {
-      "tooltip.shift": "Hold [Shift] to see more",
+      "tooltip.shift": "Hold [%s] to see details",
     },
 
     stargate: {
-      destiny: "Stargate (Destiny)",
-      milky_way: "Stargate (Milky Way)",
-      pegasus: "Stargate (Pegasus)"
+      destiny: "Stargate (§eDestiny§r)",
+      milky_way: "Stargate (§4Milky Way§r)",
+      pegasus: "Stargate (§1Pegasus§r)"
     },
 
     naquadah_ingot: "Naquadah Ingot",
