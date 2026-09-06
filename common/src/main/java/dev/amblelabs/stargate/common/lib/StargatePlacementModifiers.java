@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.common.lib;
 
+import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.common.worldgen.StargatePlacementModifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
@@ -21,10 +22,12 @@ public class StargatePlacementModifiers {
 
     private static final Map<ResourceLocation, PlacementModifierType<?>> PLACEMENT_MODIFIERS = new LinkedHashMap<>();
 
-    public static final PlacementModifierType<?> STARGATE = placementModifier("stargate", () -> StargatePlacementModifier.CODEC);
+    public static final PlacementModifierType<?> STARGATE = placementModifier("stargate", StargatePlacementModifier.CODEC);
 
-    private static <T extends PlacementModifier> PlacementModifierType<T> placementModifier(String name, PlacementModifierType<T> type) {
+    private static <T extends PlacementModifier> PlacementModifierType<T> placementModifier(String name, MapCodec<T> codec) {
         var id = modLoc(name);
+
+        PlacementModifierType<T> type = () -> codec;
 
         var old = PLACEMENT_MODIFIERS.put(id, type);
         if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + name);

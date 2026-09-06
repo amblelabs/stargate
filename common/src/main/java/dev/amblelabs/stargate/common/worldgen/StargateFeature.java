@@ -2,17 +2,15 @@ package dev.amblelabs.stargate.common.worldgen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
-import dev.amblelabs.stargate.api.mod.StargateTags;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.ShapeBehavior;
+import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -41,8 +39,6 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
         if (!context.config().force() && !ShapeBehavior.INSTANCE.stargate$prePlace(facing, level, pos))
             return false;
 
-        StargateAPI.LOGGER.info("Placed ts here {}", pos);
-
         FluidState fluidState = level.getFluidState(pos);
 
         // TODO: use a proper BlockState resolver
@@ -51,10 +47,7 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
 
         if (!(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)) return false;
 
-        Prototype entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry()
-                .getRandomElementOf(StargateTags.Prototypes.PLACEABLE, random)
-                .orElseThrow().value();
-
+        Prototype entry = StargateBlockItem.pickRandomPrototype(random).value();
         Stargate stargate = ServerStargateNetwork.get(level.getLevel()).create(entry);
 
         blockEntity.setStargate(stargate);
