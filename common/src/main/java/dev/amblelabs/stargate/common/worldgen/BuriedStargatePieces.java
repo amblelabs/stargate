@@ -65,8 +65,8 @@ public class BuriedStargatePieces {
                         }
                     }
 
+                    mutableBlockPos.below(random.nextIntBetweenInclusive(0, 6));
                     this.boundingBox = new BoundingBox(mutableBlockPos);
-                    StargateAPI.LOGGER.info("Placed ts here {}", mutableBlockPos);
 
                     Direction facing = Direction.values()[2 + random.nextInt(4)];
 
