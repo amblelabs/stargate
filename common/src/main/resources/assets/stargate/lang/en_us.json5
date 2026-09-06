@@ -24,6 +24,8 @@
       "tooltip.shift": "Hold [%s] to see details",
     },
 
+    "filled_map.stargate": "Stargate Map",
+
     stargate: {
       destiny: "Stargate (§eDestiny§r)",
       milky_way: "Stargate (§4Milky Way§r)",

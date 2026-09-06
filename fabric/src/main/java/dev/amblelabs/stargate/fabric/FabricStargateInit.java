@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.fabric;
 
 import dev.amblelabs.lib.api.mod.AmblekitTags;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.mod.StargateTags;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateComposting;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateStrippable;
 import dev.amblelabs.stargate.common.lib.*;
@@ -90,14 +91,15 @@ public final class FabricStargateInit implements ModInitializer {
 
         TradeOfferHelper.registerWanderingTraderOffers(1, listings -> {
             listings.add(new VillagerTrades.TreasureMapForEmeralds(
-                    14, StructureTags.ON_WOODLAND_EXPLORER_MAPS, "filled_map.stargate",
-                    MapDecorationTypes.RED_X, 12, 10)
+                    14, StargateTags.Structures.ON_STARGATE_MAPS, "item.stargate.filled_map.stargate",
+                    MapDecorationTypes.RED_X, 1, 10)
             );
         });
 
         StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
-
         StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
+        StargateStructureTypes.registerStructureTypes(bind(BuiltInRegistries.STRUCTURE_TYPE));
+        StargateStructurePieces.registerStructurePieces(bind(BuiltInRegistries.STRUCTURE_PIECE));
 
         // TODO: move to amblekit
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->

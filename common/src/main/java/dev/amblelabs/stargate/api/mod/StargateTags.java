@@ -8,6 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 
@@ -41,9 +42,11 @@ public class StargateTags {
 
     public static final class Structures {
 
+        public static final TagKey<Structure> ON_STARGATE_MAPS = create("on_stargate_maps");
+
         @SuppressWarnings("unused")
-        public static TagKey<EntityType<?>> create(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, modLoc(name));
+        public static TagKey<Structure> create(String name) {
+            return TagKey.create(Registries.STRUCTURE, modLoc(name));
         }
     }
 
