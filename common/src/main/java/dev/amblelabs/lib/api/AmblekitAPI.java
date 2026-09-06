@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.api;
+package dev.amblelabs.lib.api;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.resources.ResourceLocation;
@@ -7,21 +7,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
-public interface StargateAPI {
-    String MOD_ID = "stargate";
+public interface AmblekitAPI {
+    String MOD_ID = "amblekit";
     Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    Supplier<StargateAPI> INSTANCE = Suppliers.memoize(() -> {
+    Supplier<AmblekitAPI> INSTANCE = Suppliers.memoize(() -> {
         try {
-            return (StargateAPI) Class.forName("dev.amblelabs.stargate.common.impl.StargateAPIImpl")
+            return (AmblekitAPI) Class.forName("dev.amblelabs.lib.common.impl.AmblekitAPIImpl")
                     .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
-            LogManager.getLogger().warn("Unable to find StargateAPIImpl, using a dummy");
-            return new StargateAPI() { };
+            LogManager.getLogger().warn("Unable to find AmblekitAPIImpl, using a dummy");
+            return new AmblekitAPI() { };
         }
     });
 
-    static StargateAPI instance() {
+    static AmblekitAPI instance() {
         return INSTANCE.get();
     }
 

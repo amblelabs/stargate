@@ -1,5 +1,7 @@
 package dev.amblelabs.stargate.fabric;
 
+import dev.amblelabs.lib.api.mod.AmblekitTags;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateComposting;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateStrippable;
 import dev.amblelabs.stargate.common.lib.*;
@@ -9,6 +11,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
@@ -79,14 +82,13 @@ public final class FabricStargateInit implements ModInitializer {
 //        AitLootFunctions.registerSerializers(bind(BuiltInRegistries.LOOT_FUNCTION_TYPE));
 
         // FIXME: smelly
-        StargateFeatures.registerFeatures((feature, resourceLocation) -> {
-            BiomeModifications.addFeature(BiomeSelectors.all(), GenerationStep.Decoration.VEGETAL_DECORATION,
-                    ResourceKey.create(Registries.PLACED_FEATURE, resourceLocation));
-
-            bind(BuiltInRegistries.FEATURE).accept(feature, resourceLocation);
-        });
+        StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
 
         StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
+
+        // TODO: move to amblekit
+        PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
+                !state.is(AmblekitTags.Blocks.UNBREAKABLE));
 
         this.dieInAFire();
 

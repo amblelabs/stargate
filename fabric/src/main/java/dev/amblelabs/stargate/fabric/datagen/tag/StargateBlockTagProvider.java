@@ -1,5 +1,6 @@
 package dev.amblelabs.stargate.fabric.datagen.tag;
 
+import dev.amblelabs.lib.api.mod.AmblekitTags;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.xplat.IXplatTags;
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleBlockTagProvider;
@@ -42,5 +43,9 @@ public class StargateBlockTagProvider extends FabricAmbleBlockTagProvider {
 
         this.getOrCreateTagBuilder(BlockTags.WALLS)
                 .add(StargateBlocks.SANDSTONE_BRICK_WALL);
+
+        this.getOrCreateTagBuilder(AmblekitTags.Blocks.UNBREAKABLE)
+                .add(StargateBlocks.STARGATE)
+                .add(StargateBlocks.RING);
     }
 }
