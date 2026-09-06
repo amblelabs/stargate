@@ -1,4 +1,4 @@
 @NotNullByDefault
-package dev.amblelabs.lib.util;
+package dev.amblelabs.lib.api.util;
 
 import org.jetbrains.annotations.NotNullByDefault;

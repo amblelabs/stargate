@@ -1,10 +1,13 @@
-package dev.amblelabs.stargate.api.ecs;
+package dev.amblelabs.lib.api.ecs;
 
 import dev.amblelabs.stargate.common.lib.StargateEcs;
 import dev.drtheo.ecs.state.TState;
 import dev.drtheo.ecs.state.TStateContainer;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A {@link TStateContainer} that wraps around another container, preventing the original container from being modified.
+ */
 public class ImmutableTStateContainer extends TStateContainer.Delegate {
 
     public static final TStateContainer EMPTY = new ImmutableTStateContainer(StargateEcs.StaticStates.createArrayHolder());
