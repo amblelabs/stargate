@@ -4,7 +4,6 @@ import dev.amblelabs.stargate.common.worldgen.StargateFeature;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class StargateFeatures {
 
     private static final Map<ResourceLocation, Feature<?>> FEATURES = new LinkedHashMap<>();
 
-    public static final Feature<?> STARGATE_DESTINY = feature("stargate_destiny", new StargateFeature(NoneFeatureConfiguration.CODEC));
+    public static final Feature<?> STARGATE = feature("stargate", new StargateFeature());
 
     private static <T extends FeatureConfiguration> Feature<T> feature(String name, Feature<T> feature) {
         var id = modLoc(name);

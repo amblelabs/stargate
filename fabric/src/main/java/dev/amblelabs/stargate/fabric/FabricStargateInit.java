@@ -13,14 +13,18 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.StructureTags;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 
 import java.util.function.BiConsumer;
 
@@ -81,7 +85,16 @@ public final class FabricStargateInit implements ModInitializer {
 
 //        AitLootFunctions.registerSerializers(bind(BuiltInRegistries.LOOT_FUNCTION_TYPE));
 
-        // FIXME: smelly
+        BiomeModifications.addFeature(BiomeSelectors.all(), GenerationStep.Decoration.VEGETAL_DECORATION,
+                ResourceKey.create(Registries.PLACED_FEATURE, StargateAPI.modLoc("buried_stargate")));
+
+        TradeOfferHelper.registerWanderingTraderOffers(1, listings -> {
+            listings.add(new VillagerTrades.TreasureMapForEmeralds(
+                    14, StructureTags.ON_WOODLAND_EXPLORER_MAPS, "filled_map.stargate",
+                    MapDecorationTypes.RED_X, 12, 10)
+            );
+        });
+
         StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
 
         StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));

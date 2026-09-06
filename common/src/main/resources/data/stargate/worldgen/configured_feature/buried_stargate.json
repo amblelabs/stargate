@@ -1,0 +1,6 @@
+{
+  "type": "stargate:stargate",
+  "config": {
+    "force": true
+  }
+}

@@ -1,8 +1,9 @@
 package dev.amblelabs.stargate.common.worldgen;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.amblelabs.lib.util.MutableBlockPos;
+import dev.amblelabs.lib.api.util.MutableBlockPos;
 import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.common.lib.StargatePlacementModifiers;
 import net.minecraft.core.BlockPos;
@@ -22,13 +23,16 @@ import java.util.stream.Stream;
 public class StargatePlacementModifier extends PlacementModifier {
 
     public static final MapCodec<StargatePlacementModifier> CODEC = RecordCodecBuilder.mapCodec(builder ->
-            builder.group(Heightmap.Types.CODEC.fieldOf("heightmap").forGetter(placement -> placement.heightmap))
+            builder.group(Heightmap.Types.CODEC.optionalFieldOf("heightmap", Heightmap.Types.OCEAN_FLOOR_WG).forGetter(placement -> placement.heightmap),
+                            Codec.INT.optionalFieldOf("y_offset", 0).forGetter(placement -> placement.yOffset))
                     .apply(builder, StargatePlacementModifier::new));
 
     private final Heightmap.Types heightmap;
+    private final int yOffset;
 
-    public StargatePlacementModifier(Heightmap.Types heightmap) {
+    public StargatePlacementModifier(Heightmap.Types heightmap, int yOffset) {
         this.heightmap = heightmap;
+        this.yOffset = yOffset;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class StargatePlacementModifier extends PlacementModifier {
         WorldGenLevel level = context.getLevel();
         int y = context.getHeight(heightmap, pos.getX(), pos.getZ());
 
-        MutableBlockPos mutablePos = new MutableBlockPos(pos.getX(), y, pos.getZ());
+        MutableBlockPos mutablePos = new MutableBlockPos(pos.getX(), y + this.yOffset, pos.getZ());
 
         if (level.dimensionType().hasCeiling()) {
             BlockState stateAbove = level.getBlockState(mutablePos);

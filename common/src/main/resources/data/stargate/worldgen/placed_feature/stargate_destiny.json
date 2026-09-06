@@ -1,9 +1,0 @@
-{
-  "feature": "stargate:stargate_destiny",
-  "placement": [
-    {
-      "type": "stargate:stargate",
-      "heightmap": "OCEAN_FLOOR_WG"
-    }
-  ]
-}
