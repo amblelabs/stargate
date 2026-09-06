@@ -12,6 +12,7 @@ import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -20,6 +21,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
@@ -64,6 +67,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         profiler.pop();
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void render0(ProfilerFiller profiler, StargateBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         if (RenderDeduper.shouldSkipRendering(blockEntity)) return;
         RenderDeduper.count(blockEntity);
@@ -78,14 +82,31 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         super.render(blockEntity, f, poseStack, bufferSource, packedLight, packedOverlay);
 
-        if (blockEntity.getBlockSet() != null) {
+        BlockState state = blockEntity.getBlockSet();
+        Level level = blockEntity.getLevel();
+
+        if (state != null && level != null) {
             profiler.popPush("stargate:blockset");
-            profiler.push(() -> blockEntity.getBlockSet().getBlockHolder().getRegisteredName());
+            profiler.push(() -> state.getBlockHolder().getRegisteredName());
+
             poseStack.pushPose();
-            blockRenderer.renderSingleBlock(blockEntity.getBlockSet(), poseStack, bufferSource, packedLight, packedOverlay);
+            RenderType type = ItemBlockRenderTypes.getChunkRenderType(state);
+            VertexConsumer consumer = bufferSource.getBuffer(type);
+
+            // renders the fake block with AO and other fancy stuff
+            blockRenderer.renderBatched(state, blockEntity.getBlockPos(), level, poseStack, consumer, true, level.getRandom());
             poseStack.popPose();
+
             profiler.pop();
         }
+
+        // FIXME: should be rendered in an event, like the puddle particles
+        if (!StargateConfig.client().renderPuddleBackground())
+            return;
+
+        profiler.push("background");
+        this.renderBackground(poseStack, animatable, bufferSource);
+        profiler.pop();
     }
 
     @Override
@@ -98,14 +119,6 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         profiler.push("render");
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
-        profiler.pop();
-
-        // FIXME: should be rendered in an event, like the puddle particles
-        if (isReRender || !StargateConfig.client().renderPuddleBackground())
-            return;
-
-        profiler.push("background");
-        this.renderBackground(poseStack, animatable, bufferSource);
         profiler.pop();
     }
 
