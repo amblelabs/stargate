@@ -20,6 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -29,14 +30,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class StargateBlockItem extends BlockItem {
 
-    private final ResourceLocation prototypeId;
+    private final @Nullable ResourceLocation prototypeId;
 
     private @Nullable String descriptionId;
 
-    public StargateBlockItem(ResourceLocation prototypeId, Properties properties) {
+    public StargateBlockItem(@Nullable ResourceLocation prototypeId, Properties properties) {
         super(StargateBlocks.STARGATE, properties);
 
         this.prototypeId = prototypeId;
+    }
+
+    public StargateBlockItem(Properties properties) {
+        this(null, properties);
     }
 
     @Override
@@ -67,19 +72,6 @@ public class StargateBlockItem extends BlockItem {
         if (!(level instanceof ServerLevel serverLevel) || !(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity))
             return result;
 
-        Registry<Prototype> registry = IXplatAbstractions.INSTANCE.getPrototypeRegistry();
-        Prototype entry = registry.get(this.prototypeId);
-
-        if (entry == null) {
-            StargateAPI.LOGGER.error("Failed to find prototype by id {}", this.prototypeId);
-            Holder<Prototype> holder = IXplatAbstractions.INSTANCE.getPrototypeRegistry()
-                    .getRandomElementOf(StargateTags.Prototypes.PLACEABLE, level.random)
-                    .orElseThrow();
-
-            StargateAPI.LOGGER.warn("...falling back to {}", holder.unwrapKey().map(ResourceKey::location));
-            entry = holder.value();
-        }
-
         Direction direction = blockEntity.getBlockState().getValue(StargateBlock.FACING);
         boolean success = ShapeBehavior.INSTANCE.stargate$prePlace(direction, serverLevel, pos);
 
@@ -88,7 +80,8 @@ public class StargateBlockItem extends BlockItem {
             return InteractionResult.FAIL;
         }
 
-        Stargate stargate = ServerStargateNetwork.get(serverLevel).create(entry);
+        Prototype prototype = findPrototype(this.prototypeId, level.random);
+        Stargate stargate = ServerStargateNetwork.get(serverLevel).create(prototype);
 
         blockEntity.setStargate(stargate);
 
@@ -97,5 +90,30 @@ public class StargateBlockItem extends BlockItem {
 
         stargate.setChanged(); // forces sync
         return result;
+    }
+
+    public static Prototype findPrototype(@Nullable ResourceLocation prototypeId, RandomSource random) {
+        Registry<Prototype> registry = IXplatAbstractions.INSTANCE.getPrototypeRegistry();
+
+        if (prototypeId == null)
+            return pickRandomPrototype(random).value();
+
+        Prototype entry = registry.get(prototypeId);
+
+        if (entry == null) {
+            StargateAPI.LOGGER.error("Failed to find prototype by id {}", prototypeId);
+            Holder<Prototype> holder = pickRandomPrototype(random);
+
+            StargateAPI.LOGGER.warn("...falling back to {}", holder.unwrapKey().map(ResourceKey::location));
+            entry = holder.value();
+        }
+
+        return entry;
+    }
+
+    public static Holder<Prototype> pickRandomPrototype(RandomSource random) {
+        return IXplatAbstractions.INSTANCE.getPrototypeRegistry()
+                .getRandomElementOf(StargateTags.Prototypes.PLACEABLE, random)
+                .orElseThrow();
     }
 }

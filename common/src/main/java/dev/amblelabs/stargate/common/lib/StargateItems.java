@@ -41,6 +41,8 @@ public class StargateItems {
     };
 
     static {
+        make("stargate/any", new StargateBlockItem(new Item.Properties()));
+
         for (String path : BUILT_IN_GATES) {
             ResourceLocation prototypeId = StargateAPI.modLoc(path);
             make("stargate/" + path, new StargateBlockItem(prototypeId, new Item.Properties()));
@@ -74,7 +76,6 @@ public class StargateItems {
 
     public static final Item ADDRESS_CARTOUCHE = make("address_cartouche",
             new DialerItem(props().component(StargateComponents.STARGATE, null).rarity(Rarity.EPIC)));
-
 
     public static final Item MUSIC_DISC_THEME = make(
             "music_disc/theme",
