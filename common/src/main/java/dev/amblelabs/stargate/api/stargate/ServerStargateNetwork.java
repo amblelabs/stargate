@@ -3,7 +3,7 @@ package dev.amblelabs.stargate.api.stargate;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
 import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.network.StargateSyncS2CPayload;
@@ -58,7 +58,7 @@ public class ServerStargateNetwork extends StargateNetwork {
         IXplatAbstractions.INSTANCE.sendPacketToAll(players.stream(), new StargateSyncS2CPayload(tag));
     }
 
-    public Stargate create(PrototypeRegistryEntry entry) {
+    public Stargate create(Prototype entry) {
         Stargate result = new Stargate(UUID.randomUUID(), false);
         entry.mark(result);
 

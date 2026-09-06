@@ -171,7 +171,6 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     private boolean dirty = false;
 
     public void setChanged() {
-        new Throwable("#setChanged: " + (this.isClient ? "client" : "server")).printStackTrace();
         this.dirty = true;
     }
 

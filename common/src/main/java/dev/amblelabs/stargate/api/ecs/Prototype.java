@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.api.ecs;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.amblelabs.lib.api.ecs.ImmutableTStateContainer;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
@@ -16,8 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-// TODO: use a custom tag instead of "is abstract" for placeability checks.
-public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, TStateContainer staticStates, Optional<ResourceLocation> extending, boolean isAbstract) {
+public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContainer staticStates, Optional<ResourceLocation> extending) {
 
     public void mark(TStateContainer container) {
         ResourceLocation loc = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
@@ -42,7 +42,7 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
 
         this.extending.ifPresent(prototypeId -> {
             if (self.equals(prototypeId)) return;
-            PrototypeRegistryEntry entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(prototypeId);
+            Prototype entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(prototypeId);
 
             if (entry == null) {
                 StargateAPI.LOGGER.error("Can't extend {} for prototype {}: doesn't exist", prototypeId, self);
@@ -68,13 +68,12 @@ public record PrototypeRegistryEntry(Map<ResourceLocation, CompoundTag> states, 
         return new ImmutableTStateContainer(container);
     }
 
-    public static final Codec<PrototypeRegistryEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.unboundedMap(ResourceLocation.CODEC, CompoundTag.CODEC).fieldOf("states").forGetter(PrototypeRegistryEntry::states),
+    public static final Codec<Prototype> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.unboundedMap(ResourceLocation.CODEC, CompoundTag.CODEC).fieldOf("states").forGetter(Prototype::states),
                 Codec.unboundedMap(ResourceLocation.CODEC, CompoundTag.CODEC).optionalFieldOf("static").xmap(
-                        optional -> optional.map(PrototypeRegistryEntry::map2Container).orElse(ImmutableTStateContainer.EMPTY),
+                        optional -> optional.map(Prototype::map2Container).orElse(ImmutableTStateContainer.EMPTY),
                         optional -> Optional.empty()
-                ).forGetter(PrototypeRegistryEntry::staticStates),
-                ResourceLocation.CODEC.optionalFieldOf("extends").forGetter(PrototypeRegistryEntry::extending),
-                Codec.BOOL.optionalFieldOf("abstract", false).forGetter(PrototypeRegistryEntry::isAbstract)
-        ).apply(instance, PrototypeRegistryEntry::new));
+                ).forGetter(Prototype::staticStates),
+                ResourceLocation.CODEC.optionalFieldOf("extends").forGetter(Prototype::extending)
+        ).apply(instance, Prototype::new));
 }

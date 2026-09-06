@@ -1,7 +1,7 @@
 package dev.amblelabs.stargate.fabric.xplat;
 
 import com.google.common.base.Suppliers;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.common.lib.StargateRegistries;
 import dev.amblelabs.stargate.xplat.IXplatAbstractions;
 import dev.amblelabs.stargate.xplat.IXplatTags;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 public class FabricXplatImpl implements IXplatAbstractions {
 
-    private static Supplier<Registry<PrototypeRegistryEntry>> PROTOTYPE_REGISTRY = Suppliers.memoize(() -> {
+    private static Supplier<Registry<Prototype>> PROTOTYPE_REGISTRY = Suppliers.memoize(() -> {
         throw new IllegalStateException("Asked for the registry too early!");
     });
 
@@ -54,7 +54,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
 
     @Override
     public void initPlatformSpecific() {
-        DynamicRegistries.registerSynced(StargateRegistries.PROTOTYPE, PrototypeRegistryEntry.CODEC);
+        DynamicRegistries.registerSynced(StargateRegistries.PROTOTYPE, Prototype.CODEC);
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             PROTOTYPE_REGISTRY = Suppliers.memoize(() -> server.registryAccess().registryOrThrow(StargateRegistries.PROTOTYPE));
@@ -94,7 +94,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public Registry<PrototypeRegistryEntry> getPrototypeRegistry() {
+    public Registry<Prototype> getPrototypeRegistry() {
         return PROTOTYPE_REGISTRY.get();
     }
 

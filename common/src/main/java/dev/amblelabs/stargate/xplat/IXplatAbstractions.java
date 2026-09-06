@@ -1,7 +1,7 @@
 package dev.amblelabs.stargate.xplat;
 
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.api.ecs.PrototypeRegistryEntry;
+import dev.amblelabs.stargate.api.ecs.Prototype;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
@@ -49,7 +49,7 @@ public interface IXplatAbstractions {
     <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func,
                                                                      Block... blocks);
 
-    Registry<PrototypeRegistryEntry> getPrototypeRegistry();
+    Registry<Prototype> getPrototypeRegistry();
 
     IXplatAbstractions INSTANCE = find();
 

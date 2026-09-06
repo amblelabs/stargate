@@ -1,5 +1,7 @@
 package dev.amblelabs.stargate.api.mod;
 
+import dev.amblelabs.stargate.api.ecs.Prototype;
+import dev.amblelabs.stargate.common.lib.StargateRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,6 +36,24 @@ public class StargateTags {
         @SuppressWarnings("unused")
         public static TagKey<EntityType<?>> create(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, modLoc(name));
+        }
+    }
+
+    public static final class Structures {
+
+        @SuppressWarnings("unused")
+        public static TagKey<EntityType<?>> create(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, modLoc(name));
+        }
+    }
+
+    public static final class Prototypes {
+
+        public static final TagKey<Prototype> PLACEABLE = create("placeable");
+
+        @SuppressWarnings("unused")
+        public static TagKey<Prototype> create(String name) {
+            return TagKey.create(StargateRegistries.PROTOTYPE, modLoc(name));
         }
     }
 }
