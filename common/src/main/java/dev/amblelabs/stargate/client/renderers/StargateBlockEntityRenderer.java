@@ -105,7 +105,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
             return;
 
         profiler.push("background");
-        this.renderBackground(poseStack, animatable, bufferSource);
+        this.renderBackground(poseStack, blockEntity, bufferSource);
         profiler.pop();
     }
 
