@@ -11,10 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -62,10 +59,9 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (oldState.hasBlockEntity() || !(level.getBlockEntity(pos) instanceof StargateRingBlockEntity blockEntity)) return;
-
+        if (oldState.isAir() || oldState.is(Blocks.WATER) || oldState.hasBlockEntity()
+                || !(level.getBlockEntity(pos) instanceof StargateRingBlockEntity blockEntity)) return;
         blockEntity.setBlockSet(oldState);
-        blockEntity.setChanged();
     }
 
     @Override

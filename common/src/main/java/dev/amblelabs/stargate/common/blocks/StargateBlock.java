@@ -70,7 +70,8 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (oldState.hasBlockEntity() || !(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)) return;
+        if (oldState.isAir() || oldState.is(Blocks.WATER) || oldState.hasBlockEntity()
+                || !(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)) return;
         blockEntity.setBlockSet(oldState);
     }
 
