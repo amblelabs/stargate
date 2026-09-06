@@ -103,7 +103,7 @@ public final class FabricStargateInit implements ModInitializer {
 
         // TODO: move to amblekit
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
-                !state.is(AmblekitTags.Blocks.UNBREAKABLE));
+                player.isCrouching() || !state.is(AmblekitTags.Blocks.UNBREAKABLE));
 
         this.dieInAFire();
 

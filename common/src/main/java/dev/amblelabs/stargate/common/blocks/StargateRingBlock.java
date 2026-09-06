@@ -61,6 +61,14 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
     }
 
     @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        if (oldState.hasBlockEntity() || !(level.getBlockEntity(pos) instanceof StargateRingBlockEntity blockEntity)) return;
+
+        blockEntity.setBlockSet(oldState);
+        blockEntity.setChanged();
+    }
+
+    @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof StargateRingBlockEntity ring))
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
