@@ -3,7 +3,6 @@
   "placement": [
     {
       "type": "stargate:stargate",
-      "heightmap": "OCEAN_FLOOR_WG",
       "y_offset": -10
     }
   ]

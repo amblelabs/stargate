@@ -1,0 +1,21 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "frequency": 0.005,
+    "frequency_reduction_method": "legacy_type_2",
+    "locate_offset": [
+      12,
+      0,
+      9
+    ],
+    "salt": 0,
+    "separation": 0,
+    "spacing": 1
+  },
+  "structures": [
+    {
+      "structure": "stargate:buried_stargate",
+      "weight": 1
+    }
+  ]
+}
