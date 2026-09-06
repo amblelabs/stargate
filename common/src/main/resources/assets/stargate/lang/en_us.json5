@@ -27,6 +27,7 @@
     "filled_map.stargate": "Stargate Map",
 
     stargate: {
+      any: "Stargate (Random)",
       destiny: "Stargate (§eDestiny§r)",
       milky_way: "Stargate (§4Milky Way§r)",
       pegasus: "Stargate (§1Pegasus§r)"
