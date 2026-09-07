@@ -121,5 +121,19 @@
     modified: "Modified Stargate data of %s, %s, %s",
     query: "%s, %s, %s has the following Stargate data:\n%s",
     get: "%s on Stargate %s, %s, %s after scale factor of %s is %s"
+  },
+  "death.attack.stargate": {
+    flow: {
+      "": "%s tried to go against the flow",
+      player: "%s tried to go against the flow, pushed to their demise by %s"
+    },
+    iris: {
+      "": "%s was shredded by the iris",
+      player: "%s was shredded by the iris, pushed to their demise by %s"
+    },
+    kawoosh: {
+      "": "%s was disintegrated by an Unstable Vortex",
+      player: "%s was reduced to atoms, because of %s"
+    }
   }
 }
