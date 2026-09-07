@@ -32,6 +32,10 @@ public class StargateSounds {
     public static final SoundEvent GATE_CLOSE = sound("block.stargate.close");
     public static final SoundEvent GATE_FAIL = sound("block.stargate.fail");
 
+    public static final SoundEvent IRIS_HIT = sound("block.stargate.iris.hit");
+    public static final SoundEvent IRIS_OPEN = sound("block.stargate.iris.open");
+    public static final SoundEvent IRIS_CLOSE = sound("block.stargate.iris.close");
+
     public static final SoundEvent CHEVRON_LOCK = sound("block.stargate.chevron");
 
     private static SoundEvent sound(String name) {

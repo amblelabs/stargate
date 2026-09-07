@@ -69,5 +69,23 @@
     "sounds": [
       "stargate:block/stargate/tp"
     ]
+  },
+  "block.stargate.iris.close": {
+    "subtitle": "block.stargate.iris.close",
+    "sounds": [
+      "stargate:block/stargate/iris/close"
+    ]
+  },
+  "block.stargate.iris.hit": {
+    "subtitle": "block.stargate.iris.hit",
+    "sounds": [
+      "stargate:block/stargate/iris/hit"
+    ]
+  },
+  "block.stargate.iris.open": {
+    "subtitle": "block.stargate.iris.open",
+    "sounds": [
+      "stargate:block/stargate/iris/open"
+    ]
   }
 }
