@@ -18,6 +18,7 @@ public class StargateAdvancementTriggers {
 
     public static final Supplier<PassedThroughTrigger> PASSED_THROUGH = REGISTER.register("passed_through", PassedThroughTrigger::new);
     public static final Supplier<BreakIrisTrigger> BREAK_IRIS = REGISTER.register("break_iris", BreakIrisTrigger::new);
+    public static final Supplier<StargateDialTrigger> DIAL = REGISTER.register("dial", StargateDialTrigger::new);
 
     public static final Supplier<FlowDamageTrigger> FLOW_DAMAGE = REGISTER.register("damage/flow", FlowDamageTrigger::new);
     public static final Supplier<IrisDamageTrigger> IRIS_DAMAGE = REGISTER.register("damage/iris", IrisDamageTrigger::new);

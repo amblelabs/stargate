@@ -23,15 +23,23 @@ public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvi
         return ResourceLocation.fromNamespaceAndPath(modId, name);
     }
 
+    public Builder create(ResourceLocation parent, String name) {
+        return new Builder(parent, name);
+    }
+
     public Builder create(AdvancementHolder parent, String name) {
         return new Builder(parent, name);
     }
 
     public Builder create(String name) {
-        return create(null, name);
+        return create((AdvancementHolder) null, name);
     }
 
     public Builder task(AdvancementHolder parent, String name) {
+        return create(parent, name);
+    }
+
+    public Builder task(ResourceLocation parent, String name) {
         return create(parent, name);
     }
 
@@ -43,7 +51,15 @@ public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvi
         return create(parent, name).frame(AdvancementType.CHALLENGE);
     }
 
+    public Builder challenge(ResourceLocation parent, String name) {
+        return create(parent, name).frame(AdvancementType.CHALLENGE);
+    }
+
     public Builder goal(AdvancementHolder parent, String name) {
+        return create(parent, name).frame(AdvancementType.GOAL);
+    }
+
+    public Builder goal(ResourceLocation parent, String name) {
         return create(parent, name).frame(AdvancementType.GOAL);
     }
 
@@ -59,6 +75,16 @@ public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvi
         private boolean showToast = true;
 
         private final String name;
+
+        @SuppressWarnings("removal")
+        public Builder(@Nullable ResourceLocation parent, String name) {
+            this.builder = Advancement.Builder.advancement();
+
+            if (parent != null)
+                this.builder.parent(parent);
+
+            this.name = name;
+        }
 
         public Builder(@Nullable AdvancementHolder parent, String name) {
             this.builder = Advancement.Builder.advancement();

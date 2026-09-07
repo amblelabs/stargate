@@ -7,7 +7,6 @@ import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.api.util.StargateUtil;
 import dev.amblelabs.stargate.api.util.TeleportableEntity;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
-import dev.amblelabs.stargate.common.advancements.PassedThroughTrigger;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
@@ -97,6 +96,14 @@ public interface GenericGateBehavior {
                     this.fail(stargate);
 
                 return;
+            }
+
+            for (Player nearbyPlayer : StargateUtil.getPlayersNearby(stargate, 16)) {
+                StargateAdvancementTriggers.DIAL.get().trigger((ServerPlayer) nearbyPlayer, closed.locked);
+            }
+
+            for (Player nearbyPlayer : StargateUtil.getPlayersNearby(route.stargate(), 16)) {
+                StargateAdvancementTriggers.DIAL.get().trigger((ServerPlayer) nearbyPlayer, closed.locked);
             }
 
             manager.set(stargate, new GateState.Opening(route.stargate(), true));

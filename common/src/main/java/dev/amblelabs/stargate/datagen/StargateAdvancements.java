@@ -9,6 +9,7 @@ import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Blocks;
@@ -64,6 +65,10 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
 
         AdvancementHolder goldenIris = challenge(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
                 .condition("was_broken", BreakIrisTrigger.TriggerInstance.broken(IrisItem.Type.GOLD))
+                .build(consumer);
+
+        AdvancementHolder activation = goal(StargateAPI.modLoc("find_gate"), "activate")
+                .condition("dialed", StargateDialTrigger.TriggerInstance.dialed(MinMaxBounds.Ints.atLeast(7)))
                 .build(consumer);
 
         // defined manually because of datagen being gay

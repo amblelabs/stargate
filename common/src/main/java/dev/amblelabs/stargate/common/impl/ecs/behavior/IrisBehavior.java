@@ -6,6 +6,7 @@ import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.SoundUtil;
+import dev.amblelabs.stargate.api.util.StargateUtil;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
@@ -22,12 +23,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
@@ -54,9 +53,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
             globalPos.level().playSound(null, globalPos.pos(), SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
 
             // TODO: iris break event
-            AABB aabb = AABB.ofSize(globalPos.pos().getCenter(), 16, 16, 16);
-
-            for (Player nearbyPlayer : globalPos.level().getNearbyPlayers(TargetingConditions.forNonCombat(), null, aabb)) {
+            for (Player nearbyPlayer : StargateUtil.getPlayersNearby(stargate, 16)) {
                 StargateAdvancementTriggers.BREAK_IRIS.get().trigger((ServerPlayer) nearbyPlayer, iris);
             }
         }

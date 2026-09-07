@@ -31,6 +31,10 @@
     golden_iris: {
       "": "Did you really think that would work?",
       desc: "Break a Gold Iris."
+    },
+    activate: {
+      "": "Chevron 7... Locked!",
+      desc: "Successfully dial the gate."
     }
   },
   "item.stargate": {

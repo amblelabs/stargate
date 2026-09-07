@@ -6,33 +6,35 @@ import dev.amblelabs.stargate.common.lib.StargateAdvancementTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
 
-public class PassedThroughTrigger extends SimpleCriterionTrigger<PassedThroughTrigger.TriggerInstance> {
+public class StargateDialTrigger extends SimpleCriterionTrigger<StargateDialTrigger.TriggerInstance> {
 
     @Override
     public Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player) {
-        super.trigger(player, instance -> true);
+    public void trigger(ServerPlayer player, int chevrons) {
+        super.trigger(player, instance -> instance.chevrons.matches(chevrons));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints chevrons) implements SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 inst -> inst.group(
-                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player)
+                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+                                MinMaxBounds.Ints.CODEC.fieldOf("chevrons").forGetter(TriggerInstance::chevrons)
                         )
                         .apply(inst, TriggerInstance::new)
         );
 
-        public static Criterion<?> passedThrough() {
-            return StargateAdvancementTriggers.PASSED_THROUGH.get().createCriterion(new TriggerInstance(Optional.empty()));
+        public static Criterion<?> dialed(MinMaxBounds.Ints chevrons) {
+            return StargateAdvancementTriggers.DIAL.get().createCriterion(new TriggerInstance(Optional.empty(), chevrons));
         }
     }
 }
