@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.fabric.xplat;
 
-import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
+import dev.amblelabs.stargate.xplat.ClientXplatAbstractions;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-public class FabricClientXplatImpl implements IClientXplatAbstractions {
+public class FabricClientXplatImpl implements ClientXplatAbstractions {
 
     @Override
     public void sendPacketToServer(CustomPacketPayload packet) {

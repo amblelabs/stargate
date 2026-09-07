@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -21,11 +22,11 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface IXplatAbstractions {
+public interface XplatAbstractions {
 
     Platform platform();
 
-    IXplatTags tags();
+    XplatTags tags();
 
     boolean isDev();
 
@@ -51,10 +52,13 @@ public interface IXplatAbstractions {
 
     Registry<Prototype> getPrototypeRegistry();
 
-    IXplatAbstractions INSTANCE = find();
+    <B> XplatRegister<B> createRegister(ResourceKey<Registry<B>> registryKey);
+    <B> XplatRegister<B> createRegister(Registry<B> registry);
 
-    private static IXplatAbstractions find() {
-        var providers = ServiceLoader.load(IXplatAbstractions.class).stream().toList();
+    XplatAbstractions INSTANCE = find();
+
+    private static XplatAbstractions find() {
+        var providers = ServiceLoader.load(XplatAbstractions.class).stream().toList();
 
         if (providers.size() != 1) {
             var names = providers.stream().map(p -> p.type().getName()).collect(Collectors.joining(",", "[", "]"));

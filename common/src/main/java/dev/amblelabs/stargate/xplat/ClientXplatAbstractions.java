@@ -20,7 +20,7 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public interface IClientXplatAbstractions {
+public interface ClientXplatAbstractions {
     void sendPacketToServer(CustomPacketPayload packet);
 
     void setRenderLayer(Block block, RenderType type);
@@ -34,10 +34,10 @@ public interface IClientXplatAbstractions {
     @SuppressWarnings("deprecation")
     void registerItemProperty(Item item, ResourceLocation id, ItemPropertyFunction func);
 
-    IClientXplatAbstractions INSTANCE = find();
+    ClientXplatAbstractions INSTANCE = find();
 
-    private static IClientXplatAbstractions find() {
-        var providers = ServiceLoader.load(IClientXplatAbstractions.class).stream().toList();
+    private static ClientXplatAbstractions find() {
+        var providers = ServiceLoader.load(ClientXplatAbstractions.class).stream().toList();
 
         if (providers.size() != 1) {
             var names = providers.stream().map(p -> p.type().getName()).collect(Collectors.joining(",", "[", "]"));

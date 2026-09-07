@@ -10,7 +10,7 @@ import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.ShapeBehavior;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -93,7 +93,7 @@ public class StargateBlockItem extends BlockItem {
     }
 
     public static Prototype findPrototype(@Nullable ResourceLocation prototypeId, RandomSource random) {
-        Registry<Prototype> registry = IXplatAbstractions.INSTANCE.getPrototypeRegistry();
+        Registry<Prototype> registry = XplatAbstractions.INSTANCE.getPrototypeRegistry();
 
         if (prototypeId == null)
             return pickRandomPrototype(random).value();
@@ -112,7 +112,7 @@ public class StargateBlockItem extends BlockItem {
     }
 
     public static Holder<Prototype> pickRandomPrototype(RandomSource random) {
-        return IXplatAbstractions.INSTANCE.getPrototypeRegistry()
+        return XplatAbstractions.INSTANCE.getPrototypeRegistry()
                 .getRandomElementOf(StargateTags.Prototypes.PLACEABLE, random)
                 .orElseThrow();
     }

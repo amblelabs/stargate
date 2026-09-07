@@ -1,12 +1,12 @@
 package dev.amblelabs.stargate.interop;
 
-import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.ClientXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 
 public class StargateInterop {
 
     public static void earlyInit() {
-        IXplatAbstractions xplat = IXplatAbstractions.INSTANCE;
+        XplatAbstractions xplat = XplatAbstractions.INSTANCE;
         xplat.initPlatformSpecific();
     }
 
@@ -14,6 +14,6 @@ public class StargateInterop {
     }
 
     public static void clientInit() {
-        IClientXplatAbstractions.INSTANCE.initPlatformSpecific();
+        ClientXplatAbstractions.INSTANCE.initPlatformSpecific();
     }
 }

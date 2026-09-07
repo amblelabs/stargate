@@ -3,9 +3,10 @@ package dev.amblelabs.stargate.fabric.xplat;
 import com.google.common.base.Suppliers;
 import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.common.lib.StargateRegistries;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
-import dev.amblelabs.stargate.xplat.IXplatTags;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatTags;
 import dev.amblelabs.stargate.xplat.Platform;
+import dev.amblelabs.stargate.xplat.XplatRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -18,6 +19,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -31,11 +33,11 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class FabricXplatImpl implements IXplatAbstractions {
+public class FabricXplatImpl implements XplatAbstractions {
 
-    private static Supplier<Registry<Prototype>> PROTOTYPE_REGISTRY = Suppliers.memoize(() -> {
+    private static Supplier<Registry<Prototype>> PROTOTYPE_REGISTRY = () -> {
         throw new IllegalStateException("Asked for the registry too early!");
-    });
+    };
 
     @Override
     public Platform platform() {
@@ -98,12 +100,22 @@ public class FabricXplatImpl implements IXplatAbstractions {
         return PROTOTYPE_REGISTRY.get();
     }
 
-    private static final IXplatTags TAGS = new IXplatTags() {
+    @Override
+    public <B> XplatRegister<B> createRegister(ResourceKey<Registry<B>> registryKey) {
+        return new FabricRegister<>(registryKey);
+    }
+
+    @Override
+    public <B> XplatRegister<B> createRegister(Registry<B> registry) {
+        return new FabricRegister<>(registry);
+    }
+
+    private static final XplatTags TAGS = new XplatTags() {
 
     };
 
     @Override
-    public IXplatTags tags() {
+    public XplatTags tags() {
         return TAGS;
     }
 

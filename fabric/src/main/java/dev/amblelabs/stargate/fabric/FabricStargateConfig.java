@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.mod.StargateConfig;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -42,7 +42,7 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
 
         StargateConfig.setCommon(instance.common);
 
-        if (IXplatAbstractions.INSTANCE.isPhysicalClient())
+        if (XplatAbstractions.INSTANCE.isPhysicalClient())
             StargateConfig.setClient(instance.client);
 
         StargateConfig.setServer(instance.server);

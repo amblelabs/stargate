@@ -1,12 +1,12 @@
 package dev.amblelabs.stargate.fabric.datagen;
 
-import dev.amblelabs.stargate.datagen.IXplatIngredients;
+import dev.amblelabs.stargate.datagen.XplatIngredients;
 import dev.amblelabs.stargate.datagen.StargateAdvancements;
 import dev.amblelabs.stargate.datagen.StargateLootTables;
 import dev.amblelabs.stargate.datagen.recipe.StargateXplatRecipes;
 import dev.amblelabs.stargate.fabric.datagen.tag.StargateBlockTagProvider;
 import dev.amblelabs.stargate.fabric.datagen.tag.StargateItemTagProvider;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +26,7 @@ public class FabricStargateDataGenerators implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator gen) {
         var pack = gen.createPack();
-        var tags = IXplatAbstractions.INSTANCE.tags();
+        var tags = XplatAbstractions.INSTANCE.tags();
 
 
         pack.addProvider((output, lookup) -> new StargateXplatRecipes(
@@ -52,7 +52,7 @@ public class FabricStargateDataGenerators implements DataGeneratorEntrypoint {
         StargateBlockTagProvider provider;
     }
 
-    private static final IXplatIngredients INGREDIENTS = new IXplatIngredients() {
+    private static final XplatIngredients INGREDIENTS = new XplatIngredients() {
 
     };
 

@@ -10,7 +10,7 @@ import dev.amblelabs.stargate.common.lib.StargateEntities;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.fabric.network.FabricPacketHandler;
 import dev.amblelabs.stargate.interop.StargateInterop;
-import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
+import dev.amblelabs.stargate.xplat.ClientXplatAbstractions;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
@@ -48,7 +48,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
         WorldRenderEvents.START.register(context -> RenderDeduper.clear());
         HudRenderCallback.EVENT.register(StargateAdditionalRenderers::overlayGui);
 
-        IClientXplatAbstractions.INSTANCE.registerSkyRenderer(AbydosSkyRenderer.DIMENSION_KEY, new AbydosSkyRenderer());
+        ClientXplatAbstractions.INSTANCE.registerSkyRenderer(AbydosSkyRenderer.DIMENSION_KEY, new AbydosSkyRenderer());
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), StargateBlocks.DRY_BUSH, StargateBlocks.DRY_GRASS, StargateBlocks.RING);
 
         StargateParticles.FactoryHandler.registerFactories(new StargateParticles.FactoryHandler.Consumer() {

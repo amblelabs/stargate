@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.xplat.IClientXplatAbstractions;
+import dev.amblelabs.stargate.xplat.ClientXplatAbstractions;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,7 +27,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class AbydosSkyRenderer implements IClientXplatAbstractions.SkyRenderer {
+public class AbydosSkyRenderer implements ClientXplatAbstractions.SkyRenderer {
 
     public static final ResourceLocation DIMENSION_ID = StargateAPI.modLoc("abydos");
     public static final ResourceKey<Level> DIMENSION_KEY = ResourceKey.create(Registries.DIMENSION, DIMENSION_ID);

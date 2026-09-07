@@ -6,7 +6,7 @@ import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
 import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.api.util.NbtUtil;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,7 +18,7 @@ public record PrototypeIdentityState(ResourceLocation key, Prototype prototype) 
         @Override
         public PrototypeIdentityState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             ResourceLocation loc = Objects.requireNonNull(NbtUtil.getLoc(nbt, "prototype"));
-            Prototype prototype = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(loc));
+            Prototype prototype = Objects.requireNonNull(XplatAbstractions.INSTANCE.getPrototypeRegistry().get(loc));
 
             return new PrototypeIdentityState(loc, prototype);
         }

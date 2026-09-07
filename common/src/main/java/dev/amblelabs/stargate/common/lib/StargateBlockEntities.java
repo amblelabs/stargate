@@ -2,7 +2,7 @@ package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.blocks.*;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -34,7 +34,7 @@ public class StargateBlockEntities {
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id,
                                                                        BiFunction<BlockPos, BlockState, T> func, Block... blocks) {
-        var ret = IXplatAbstractions.INSTANCE.createBlockEntityType(func, blocks);
+        var ret = XplatAbstractions.INSTANCE.createBlockEntityType(func, blocks);
 
         var old = BLOCK_ENTITIES.put(StargateAPI.modLoc(id), ret);
         if (old != null) {

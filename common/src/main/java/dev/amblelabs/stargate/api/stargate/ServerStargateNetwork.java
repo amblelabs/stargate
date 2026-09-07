@@ -7,7 +7,7 @@ import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
 import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.network.StargateSyncS2CPayload;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -55,7 +55,7 @@ public class ServerStargateNetwork extends StargateNetwork {
         CompoundTag tag = new CompoundTag();
         stargate.toNbt(tag, NbtSerializer.Context.fromLevel(level));
 
-        IXplatAbstractions.INSTANCE.sendPacketToAll(players.stream(), new StargateSyncS2CPayload(tag));
+        XplatAbstractions.INSTANCE.sendPacketToAll(players.stream(), new StargateSyncS2CPayload(tag));
     }
 
     public Stargate create(Prototype entry) {

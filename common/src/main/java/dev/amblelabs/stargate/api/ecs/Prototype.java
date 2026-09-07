@@ -6,7 +6,7 @@ import dev.amblelabs.lib.api.ecs.ImmutableTStateContainer;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.impl.ecs.state.PrototypeIdentityState;
 import dev.amblelabs.stargate.common.lib.StargateEcs;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import dev.drtheo.ecs.state.TAbstractStateRegistry;
 import dev.drtheo.ecs.state.TState;
 import dev.drtheo.ecs.state.TStateContainer;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContainer staticStates, Optional<ResourceLocation> extending) {
 
     public void mark(TStateContainer container) {
-        ResourceLocation loc = Objects.requireNonNull(IXplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
+        ResourceLocation loc = Objects.requireNonNull(XplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
         container.addState(new PrototypeIdentityState(loc, this));
     }
 
@@ -42,7 +42,7 @@ public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContain
 
         this.extending.ifPresent(prototypeId -> {
             if (self.equals(prototypeId)) return;
-            Prototype entry = IXplatAbstractions.INSTANCE.getPrototypeRegistry().get(prototypeId);
+            Prototype entry = XplatAbstractions.INSTANCE.getPrototypeRegistry().get(prototypeId);
 
             if (entry == null) {
                 StargateAPI.LOGGER.error("Can't extend {} for prototype {}: doesn't exist", prototypeId, self);

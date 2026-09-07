@@ -3,7 +3,7 @@ package dev.amblelabs.stargate.common.lib;
 import dev.amblelabs.stargate.api.ecs.event.*;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.*;
 import dev.amblelabs.stargate.common.impl.ecs.state.*;
-import dev.amblelabs.stargate.xplat.IXplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEventsRegistry;
 import dev.drtheo.ecs.state.TAbstractStateRegistry;
@@ -14,7 +14,7 @@ public class StargateEcs {
     public static final TAbstractStateRegistry StaticStates = new TAbstractStateRegistry() { };
 
     public static void init() {
-        TAbstractStateRegistry.debug = IXplatAbstractions.INSTANCE.isDev();
+        TAbstractStateRegistry.debug = XplatAbstractions.INSTANCE.isDev();
     }
 
     public static void registerAll() {
@@ -61,5 +61,6 @@ public class StargateEcs {
 
         GenericGateBehavior.registerAll();
         TBehaviorRegistry.register(GateManagerBehavior::new);
+        TBehaviorRegistry.register(SpacialResistanceBehavior::new);
     }
 }

@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class StargateBlockSetTypes {
+
     public static void registerBlocks(Consumer<BlockSetType> r) {
         for (var type : TYPES) {
             r.accept(type);

@@ -5,7 +5,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import dev.amblelabs.stargate.common.recipe.ToastingRecipe;
-import dev.amblelabs.stargate.datagen.IXplatIngredients;
+import dev.amblelabs.stargate.datagen.XplatIngredients;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -25,9 +25,9 @@ import java.util.concurrent.CompletableFuture;
 public class StargateXplatRecipes extends AmbleRecipeProvider {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final IXplatIngredients ingredients;
+    private final XplatIngredients ingredients;
 
-    public StargateXplatRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> future, IXplatIngredients ingredients) {
+    public StargateXplatRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> future, XplatIngredients ingredients) {
         super(output, future, StargateAPI.MOD_ID);
 
         this.ingredients = ingredients;
