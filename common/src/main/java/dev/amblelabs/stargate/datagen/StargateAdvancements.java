@@ -71,6 +71,14 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
                 .condition("dialed", StargateDialTrigger.TriggerInstance.dialed(MinMaxBounds.Ints.atLeast(7)))
                 .build(consumer);
 
+        AdvancementHolder c8 = goal(activation, "c8")
+                .condition("dialed", StargateDialTrigger.TriggerInstance.dialed(MinMaxBounds.Ints.exactly(8)))
+                .build(consumer);
+
+        AdvancementHolder c9 = goal(c8, "c9")
+                .condition("dialed", StargateDialTrigger.TriggerInstance.dialed(MinMaxBounds.Ints.exactly(9)))
+                .build(consumer);
+
         // defined manually because of datagen being gay
 //        AdvancementHolder findBuriedGate = goal(root, "find_gate").icon(StargateBlocks.STARGATE)
 //                .condition("found", PlayerTrigger.TriggerInstance.located(LocationPredicate.Builder.inStructure(

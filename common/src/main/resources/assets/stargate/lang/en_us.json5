@@ -35,6 +35,14 @@
     activate: {
       "": "Chevron 7... Locked!",
       desc: "Successfully dial the gate."
+    },
+    c8: {
+      "": "This is it...",
+      desc: "Encode the 8th Chevron and dial to a Pegasus gate."
+    },
+    c9: {
+      "": "The Ancients' Final Destination...",
+      desc: "Successfully encode the 9th and final Chevron, may your Destiny await..."
     }
   },
   "item.stargate": {
