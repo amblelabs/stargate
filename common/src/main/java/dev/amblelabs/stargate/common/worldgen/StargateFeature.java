@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -42,8 +43,10 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
         FluidState fluidState = level.getFluidState(pos);
 
         // TODO: use a proper BlockState resolver
-        level.setBlock(pos, StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing)
-                .setValue(StargateBlock.WATERLOGGED, fluidState.getType() == Fluids.WATER), Block.UPDATE_CLIENTS);
+        BlockState placedState = StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing)
+                .setValue(StargateBlock.WATERLOGGED, fluidState.getType() == Fluids.WATER);
+
+        level.setBlock(pos, placedState, Block.UPDATE_CLIENTS);
 
         if (!(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)) return false;
 
@@ -52,8 +55,7 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
 
         blockEntity.setStargate(stargate);
 
-        StargateBlockEvents.notify(events -> events.stargate$place(
-                stargate, blockEntity, level.getBlockState(pos), level, pos));
+        StargateBlockEvents.Lifecycle.place(stargate, blockEntity, level.getBlockState(pos), level, pos);
 
         stargate.setChanged(); // force sync
         return true;

@@ -6,6 +6,7 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.KawooshBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
@@ -14,24 +15,16 @@ import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
-import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.Color;
 
-public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
+public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents.Tick {
 
-    private static final float MAX_RADIUS = 2.6f;
+    private static final float MAX_RADIUS = KawooshBehavior.MAX_RADIUS;
     private static final float INNER_WHITE_RADIUS = 0.8f;
 
     private static final int INNER_BG_COLOR = Color.ofRGB(0.85f, 0.85f, 1.0f).getColor();
@@ -40,8 +33,8 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     private static final int INNER_RIPPLE_COLOR = Color.WHITE.getColor();
     private static final int OUTER_RIPPLE_COLOR = Color.ofRGB(0.2f, 0.65f, 1.0f).getColor();
 
-    private static final float KAWOOSH_MAX_DISTANCE = 5.5f;
-    private static final float KAWOOSH_BULB_RADIUS = 1.3f;
+    private static final float KAWOOSH_MAX_DISTANCE = KawooshBehavior.KAWOOSH_MAX_DISTANCE;
+    private static final float KAWOOSH_BULB_RADIUS = MAX_RADIUS / 2f;
     public static final float JET_STEM = 0.75f;
 
     public static final int KAWOOSH_CONVERGE_TICKS = 10;
@@ -58,12 +51,6 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
 
     @Resolve
     private final GateManagerBehavior manager = behavior();
-
-    @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) { }
-
-    @Override
-    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
 
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
@@ -366,16 +353,4 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
         float v = (float) (offsetY / (MAX_RADIUS * 2.0) + 0.5);
         return new Vector2f(Mth.clamp(u, 0, 1), Mth.clamp(1 - v, 0, 1));
     }
-
-    @Override
-    public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
-
-    @Override
-    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
-
-    @Override
-    public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
-
-    @Override
-    public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) { }
 }

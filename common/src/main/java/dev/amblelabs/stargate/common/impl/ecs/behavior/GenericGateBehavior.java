@@ -28,7 +28,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -49,7 +48,7 @@ public interface GenericGateBehavior {
         TBehaviorRegistry.register(Open::new);
     }
 
-    class Closed implements TBehavior, StargateTickEvents, StargateBlockEvents {
+    class Closed implements TBehavior, StargateTickEvents, StargateBlockEvents.Animate {
 
         public static final RawAnimation LOCK_SYMBOL = RawAnimation.begin().thenPlay("LOCK_SYMBOL");
 
@@ -123,24 +122,6 @@ public interface GenericGateBehavior {
         }
 
         @Override
-        public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) { }
-
-        @Override
-        public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
-
-        @Override
-        public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) { }
-
-        @Override
-        public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
-
-        @Override
-        public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
-
-        @Override
-        public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
-
-        @Override
         public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
             controllers.add(new AnimationController<>(blockEntity, "Lock",
                     anim -> {
@@ -186,7 +167,7 @@ public interface GenericGateBehavior {
         }
     }
 
-    class Open implements TBehavior, StargateTickEvents, StargateBlockEvents, StargateGateStateEvents {
+    class Open implements TBehavior, StargateTickEvents, StargateBlockEvents.Tick, StargateBlockEvents, StargateGateStateEvents {
 
         public static final AABB NS_DEFAULT = new AABB(-1, 0, 0, 1, 3, 0);
         public static final AABB WE_DEFAULT = new AABB(0, 0, -1, 0, 3, 1);
@@ -276,23 +257,14 @@ public interface GenericGateBehavior {
         }
 
         @Override
+        public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
+
+        @Override
+        public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
+
+        @Override
         public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
             SoundUtil.playSound(level, pos, StargateSounds.WORMHOLE_LOOP, SoundSource.BLOCKS, 0.5f);
         }
-
-        @Override
-        public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) { }
-
-        @Override
-        public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
-
-        @Override
-        public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {}
-
-        @Override
-        public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {}
-
-        @Override
-        public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {}
     }
 }

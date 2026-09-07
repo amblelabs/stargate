@@ -70,17 +70,18 @@ public class BuriedStargatePieces {
 
                     Direction facing = Direction.values()[2 + random.nextInt(4)];
 
-                    level.setBlock(mutableBlockPos, StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing), Block.UPDATE_CLIENTS);
+                    // TODO: use a proper BlockState resolver
+                    BlockState placedState = StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing);
+                    level.setBlock(mutableBlockPos, placedState, Block.UPDATE_CLIENTS);
 
                     if (!(level.getBlockEntity(mutableBlockPos) instanceof StargateBlockEntity blockEntity)) return;
 
-                    Prototype entry = StargateBlockItem.pickRandomPrototype(level.getRandom()).value();
+                    Prototype entry = StargateBlockItem.pickRandomPrototype(random).value();
                     Stargate stargate = ServerStargateNetwork.get(level.getLevel()).create(entry);
 
                     blockEntity.setStargate(stargate);
 
-                    StargateBlockEvents.notify(events -> events.stargate$place(
-                            stargate, blockEntity, level.getBlockState(mutableBlockPos), level, mutableBlockPos));
+                    StargateBlockEvents.Lifecycle.place(stargate, blockEntity, placedState, level, mutableBlockPos);
 
                     stargate.setChanged(); // force sync
                     return;

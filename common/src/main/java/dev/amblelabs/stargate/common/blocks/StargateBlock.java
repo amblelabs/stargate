@@ -134,7 +134,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
         // always ServerLevel, actually.
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
-            StargateBlockEvents.notify(events -> events.stargate$break(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston));
+            StargateBlockEvents.Lifecycle.broken(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston);
             ServerStargateNetwork.get(level).remove(stargate.getId()); // TODO: make a behavior do this maybe
 
             blockEntity.setStargate(null);

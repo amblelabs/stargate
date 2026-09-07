@@ -99,7 +99,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         Stargate stargate = this.stargate();
         if (stargate == null) return;
 
-        StargateBlockEvents.notify(events -> events.stargate$registerControllers(stargate, this, controllers));
+        StargateBlockEvents.Animate.registerControllers(stargate, this, controllers);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         Stargate stargate = this.stargate();
         if (stargate == null) return;
 
-        StargateBlockEvents.notify(events -> events.stargate$tick(stargate, this, level, blockPos, blockState));
+        StargateBlockEvents.Tick.tick(stargate, this, level, blockPos, blockState);
     }
 
     public void setBlockSet(@Nullable BlockState state) {

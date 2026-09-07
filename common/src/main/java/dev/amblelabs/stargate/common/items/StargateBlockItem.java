@@ -85,8 +85,7 @@ public class StargateBlockItem extends BlockItem {
 
         blockEntity.setStargate(stargate);
 
-        StargateBlockEvents.notify(events -> events.stargate$place(
-                stargate, blockEntity, level.getBlockState(pos), serverLevel, pos));
+        StargateBlockEvents.Lifecycle.place(stargate, blockEntity, level.getBlockState(pos), serverLevel, pos);
 
         stargate.setChanged(); // forces sync
         return result;

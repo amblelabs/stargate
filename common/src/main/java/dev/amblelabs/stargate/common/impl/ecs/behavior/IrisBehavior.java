@@ -30,7 +30,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 
-public class IrisBehavior implements TBehavior, StargateBlockEvents, StargateTpEvents {
+public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, StargateBlockEvents, StargateTpEvents {
 
     public static final RawAnimation IRIS_OPEN = RawAnimation.begin().thenPlay("IRIS_OPEN");
     public static final RawAnimation IRIS_CLOSE = RawAnimation.begin().thenPlay("IRIS_CLOSE");
@@ -51,15 +51,6 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents, StargateTpE
             globalPos.level.playSound(null, globalPos.pos, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
         }
     }
-
-    @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) { }
-
-    @Override
-    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) { }
-
-    @Override
-    public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) { }
 
     @Override
     public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {

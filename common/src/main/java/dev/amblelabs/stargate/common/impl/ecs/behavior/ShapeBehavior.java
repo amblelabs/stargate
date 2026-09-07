@@ -10,25 +10,18 @@ import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
-import software.bernie.geckolib.animation.AnimatableManager;
 
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ShapeBehavior implements TBehavior, StargateBlockEvents {
+public class ShapeBehavior implements TBehavior, StargateBlockEvents.Lifecycle {
 
     private static final String SHAPE = """
 				_________
@@ -111,19 +104,4 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
             default -> BlockPos.ZERO;
         };
     }
-
-    @Override
-    public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) { }
-
-    @Override
-    public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) { }
-
-    @Override
-    public void stargate$use(Stargate stargate, StargateBlockEntity blockEntity, BlockState blockState, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) { }
-
-    @Override
-    public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
-
-    @Override
-    public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) { }
 }

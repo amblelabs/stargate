@@ -43,7 +43,12 @@ public class StargateEcs {
 
     public static void initEvents() {
         TEventsRegistry.register(StargateLifecycleEvents.type);
+
         TEventsRegistry.register(StargateBlockEvents.type);
+        TEventsRegistry.register(StargateBlockEvents.Tick.type);
+        TEventsRegistry.register(StargateBlockEvents.Lifecycle.type);
+        TEventsRegistry.register(StargateBlockEvents.Animate.type);
+
         TEventsRegistry.register(IrisEvents.type);
         TEventsRegistry.register(DHDBlockEvents.type);
 
@@ -62,5 +67,6 @@ public class StargateEcs {
         GenericGateBehavior.registerAll();
         TBehaviorRegistry.register(GateManagerBehavior::new);
         TBehaviorRegistry.register(SpacialResistanceBehavior::new);
+        TBehaviorRegistry.register(KawooshBehavior::new);
     }
 }
