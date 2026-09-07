@@ -87,6 +87,9 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
     }
 
     @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) { }
+
+    @Override
     protected RenderShape getRenderShape(BlockState state) {
         return RenderShape.INVISIBLE;
     }

@@ -154,6 +154,9 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) { }
+
+    @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new StargateBlockEntity(blockPos, blockState);
     }
