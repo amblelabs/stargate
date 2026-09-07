@@ -15,7 +15,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.*;
 
-import java.lang.reflect.AccessFlag;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -81,29 +80,9 @@ public abstract class FabricAmbleModelProvider extends FabricModelProvider {
     
     @SuppressWarnings("UnusedReturnValue")
     public static class AmbleBlockModelGenerators extends BlockModelGenerators {
-        
-        private static final Supplier<Field> SKIPPED_AUTO_MODELS_OUTPUT = Suppliers.memoize(() -> {
-            for (Field declaredField : BlockModelGenerators.class.getDeclaredFields()) {
-                if (declaredField.getType() == Supplier.class 
-                        && declaredField.accessFlags().contains(AccessFlag.PRIVATE) 
-                        && declaredField.accessFlags().contains(AccessFlag.FINAL))
-                    return declaredField;
-            }
-            
-            throw new RuntimeException(new IllegalStateException("No skippedAutoModelsOutput field found on " + BlockModelGenerators.class.getSimpleName()));
-        });
-
-        @SuppressWarnings("unchecked")
-        private static Consumer<Item> getSkippedAutoModelsOutput(BlockModelGenerators gen) {
-            try {
-                return (Consumer<Item>) SKIPPED_AUTO_MODELS_OUTPUT.get().get(gen);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         public AmbleBlockModelGenerators(BlockModelGenerators gen) {
-            super(gen.blockStateOutput, gen.modelOutput, getSkippedAutoModelsOutput(gen));
+            super(gen.blockStateOutput, gen.modelOutput, gen.skippedAutoModelsOutput);
         }
         
         public void skipAutoItemBlock(Supplier<? extends Block> block) {
