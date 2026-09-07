@@ -1,0 +1,30 @@
+{
+  "parent": "stargate:passed_through",
+  "criteria": {
+    "died": {
+      "conditions": {
+        "died": true
+      },
+      "trigger": "stargate:damage/flow"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.stargate.death_flow.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:skeleton_skull"
+    },
+    "title": {
+      "translate": "advancement.stargate.death_flow"
+    }
+  },
+  "requirements": [
+    [
+      "died"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

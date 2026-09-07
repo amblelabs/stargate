@@ -1,0 +1,30 @@
+{
+  "parent": "stargate:passed_through",
+  "criteria": {
+    "died": {
+      "conditions": {
+        "died": true
+      },
+      "trigger": "stargate:damage/iris"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.stargate.death_iris.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "stargate:iris/netherite"
+    },
+    "title": {
+      "translate": "advancement.stargate.death_iris"
+    }
+  },
+  "requirements": [
+    [
+      "died"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

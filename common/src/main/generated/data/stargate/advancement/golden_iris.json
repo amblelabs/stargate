@@ -1,0 +1,30 @@
+{
+  "parent": "stargate:root",
+  "criteria": {
+    "was_broken": {
+      "conditions": {
+        "iris": "stargate:gold"
+      },
+      "trigger": "stargate:break_iris"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.stargate.golden_iris.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "stargate:iris/gold"
+    },
+    "title": {
+      "translate": "advancement.stargate.golden_iris"
+    }
+  },
+  "requirements": [
+    [
+      "was_broken"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

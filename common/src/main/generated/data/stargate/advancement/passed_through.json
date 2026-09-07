@@ -1,0 +1,27 @@
+{
+  "parent": "stargate:root",
+  "criteria": {
+    "has_passed_through": {
+      "trigger": "stargate:passed_through"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.stargate.passed_through.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "stargate:stargate/pegasus"
+    },
+    "title": {
+      "translate": "advancement.stargate.passed_through"
+    }
+  },
+  "requirements": [
+    [
+      "has_passed_through"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

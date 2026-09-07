@@ -1,14 +1,7 @@
 {
   "criteria": {
     "root": {
-      "conditions": {
-        "items": [
-          {
-            "items": "stargate:stargate/pegasus"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:tick"
     }
   },
   "display": {
@@ -31,5 +24,8 @@
       "root"
     ]
   ],
+  "rewards": {
+    "function": "stargate:welcome"
+  },
   "sends_telemetry_event": true
 }
