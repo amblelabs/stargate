@@ -98,7 +98,7 @@ public class StargateItems {
     }
 
     private static Lazy<IrisItem> iris(IrisItem.Type type) {
-        return make("iris/" + type.toString().toLowerCase(Locale.ROOT), () -> new IrisItem(type, props()));
+        return make(type.loc().withPrefix("iris/"), () -> new IrisItem(type, props()));
     }
 
     private static <T extends Item> Lazy<T> make(ResourceLocation id, Supplier<T> supplier, @Nullable ResourceKey<CreativeModeTab> tabKey) {
