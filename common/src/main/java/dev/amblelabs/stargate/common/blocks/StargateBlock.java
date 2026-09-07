@@ -105,6 +105,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
                 return ItemInteractionResult.SUCCESS;
             }
 
+            //noinspection deprecation
             if (stack.getItem() instanceof BlockItem blockItem &&
                     blockItem.getBlock().defaultBlockState().isSolid() && hand == InteractionHand.OFF_HAND
                     && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()

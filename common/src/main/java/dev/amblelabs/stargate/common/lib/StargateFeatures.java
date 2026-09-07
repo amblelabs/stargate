@@ -18,6 +18,7 @@ public class StargateFeatures {
 
     public static final Supplier<Feature<?>> STARGATE = feature("stargate", StargateFeature::new);
 
+    @SuppressWarnings("SameParameterValue")
     private static <T extends Feature<?>> Supplier<T> feature(String name, Supplier<T> feature) {
         return REGISTER.register(name, feature);
     }

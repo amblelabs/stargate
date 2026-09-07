@@ -14,6 +14,7 @@ public class StargateJukeboxSongs {
         return ResourceKey.create(Registries.JUKEBOX_SONG, id);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static ResourceKey<JukeboxSong> song(String name) {
         return song(StargateAPI.modLoc(name));
     }

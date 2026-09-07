@@ -22,6 +22,7 @@ public class StargateAttributes {
     public static final Holder<Attribute> SPACIAL_RESISTANCE = ranged("spacial_resistance", 0, 0, 100,
             attribute -> attribute.setSyncable(true).setSentiment(Attribute.Sentiment.POSITIVE));
 
+    @SuppressWarnings("SameParameterValue")
     private static Holder<Attribute> ranged(String name, double fallback, double min, double max, UnaryOperator<Attribute> op) {
         return make(name, () -> op.apply(new RangedAttribute("attribute." + StargateAPI.MOD_ID + "." + name, fallback, min, max)));
     }

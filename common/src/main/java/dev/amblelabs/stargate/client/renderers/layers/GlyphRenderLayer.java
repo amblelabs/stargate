@@ -49,12 +49,12 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
         GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.state);
         if (glyphs == null) return;
 
-        final float radius = glyphs.radius;
-        final int amount = glyphs.amount;
+        final float radius = glyphs.radius();
+        final int amount = glyphs.amount();
 
         final float angleStep = 2f * Mth.PI / amount;
 
-        final Style style = Style.EMPTY.withFont(glyphs.font);
+        final Style style = Style.EMPTY.withFont(glyphs.font());
 
         final FontSet set = ((FontAccessor) mc.font).invokeGetFontSet(style.getFont());
         GlyphInfo glyphInfo = set.getGlyphInfo('a', false);

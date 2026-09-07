@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -94,7 +95,7 @@ public class DialerItem extends Item {
 		}
 
 		ClientLevel level = Minecraft.getInstance().level;
-		Stargate stargate = getStargate(level, id);
+		Stargate stargate = getStargate(Objects.requireNonNull(level), id);
 
 		if (stargate != null) {
 			tooltip.add(I18n.Items.DIALER_TOOLTIP_HEADER.copy().withStyle(ChatFormatting.BLUE));

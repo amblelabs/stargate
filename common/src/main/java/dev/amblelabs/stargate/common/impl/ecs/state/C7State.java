@@ -15,16 +15,16 @@ public record C7State(String address) implements NbtState<C7State> {
     public static final Type<C7State> state = new Type<>(StargateAPI.modLoc("c7"), 0) {
         @Override
         public C7State fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
-            String address = nbt.getString("address");
+            StringBuilder address = new StringBuilder(nbt.getString("address"));
 
             if (address.isEmpty()) {
                 for (int i = 0; i < 7; i++) {
                     int idx = new Random().nextInt(Glyph.ALPHABET_LENGTH);
-                    address += GlyphRenderLayer.ALPHABET.charAt(idx);
+                    address.append(GlyphRenderLayer.ALPHABET.charAt(idx));
                 }
             }
 
-            return new C7State(address);
+            return new C7State(address.toString());
         }
     };
 

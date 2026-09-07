@@ -15,7 +15,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 import java.util.stream.Stream;
@@ -36,7 +35,7 @@ public class StargatePlacementModifier extends PlacementModifier {
     }
 
     @Override
-    public @NotNull Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
+    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         if (!this.isStargateChunk(context, pos)) return Stream.empty();
 
         WorldGenLevel level = context.getLevel();
@@ -64,7 +63,7 @@ public class StargatePlacementModifier extends PlacementModifier {
     }
 
     @Override
-    public @NotNull PlacementModifierType<?> type() {
+    public PlacementModifierType<?> type() {
         return StargatePlacementModifiers.STARGATE;
     }
 

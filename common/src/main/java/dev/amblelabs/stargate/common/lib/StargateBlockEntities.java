@@ -1,22 +1,16 @@
 package dev.amblelabs.stargate.common.lib;
 
-import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.blocks.*;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import dev.amblelabs.stargate.xplat.XplatRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 

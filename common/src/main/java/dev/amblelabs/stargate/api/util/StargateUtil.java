@@ -12,6 +12,6 @@ public class StargateUtil {
         LevelState state = stargate.stateOrNull(LevelState.state);
         if (state == null) return;
 
-        SoundUtil.playSound(state.level, state.pos, sound, SoundSource.BLOCKS);
+        SoundUtil.playSound(state.level(), state.pos(), sound, SoundSource.BLOCKS);
     }
 }

@@ -2,11 +2,10 @@ package dev.amblelabs.stargate.common.impl.ecs.state;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
-import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.NbtState;
 import net.minecraft.nbt.CompoundTag;
 
-public class ChevronState implements NbtState<ChevronState> {
+public record ChevronState(int chevrons) implements NbtState<ChevronState> {
 
     public static final Type<ChevronState> state = new Type<>(StargateAPI.modLoc("chevrons"), 0) {
         @Override
@@ -15,14 +14,8 @@ public class ChevronState implements NbtState<ChevronState> {
         }
     };
 
-    public int chevrons;
-
-    public ChevronState(int chevrons) {
-        this.chevrons = chevrons;
-    }
-
     @Override
-    public void toNbt(CompoundTag nbt, NbtSerializer.Context context) {
+    public void toNbt(CompoundTag nbt, Context context) {
         nbt.putInt("chevrons", chevrons);
     }
 

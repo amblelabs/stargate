@@ -28,10 +28,6 @@ public class IrisItem extends Item {
         public static final Type GOLD = new Type(StargateAPI.modLoc("gold"), 5);
         public static final Type IRON = new Type(StargateAPI.modLoc("iron"), 200);
 
-        public static final Type[] ALL = {
-                TRINIUM, NAQUADAH, NETHERITE, DIAMOND, GOLD, IRON
-        };
-
         public IrisState toState() {
             return new IrisState(loc, durability);
         }

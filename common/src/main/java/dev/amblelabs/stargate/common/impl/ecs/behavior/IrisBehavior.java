@@ -23,7 +23,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -48,7 +47,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
 
         if (broken) {
             LevelState globalPos = stargate.state(LevelState.state);
-            globalPos.level.playSound(null, globalPos.pos, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
+            globalPos.level().playSound(null, globalPos.pos(), SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
         }
     }
 
@@ -68,7 +67,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
         stargate.setChanged();
 
         LevelState globalPos = stargate.state(LevelState.state);
-        SoundUtil.playSound(globalPos.level, globalPos.pos,
+        SoundUtil.playSound(globalPos.level(), globalPos.pos(),
                 iris.closed ? StargateSounds.IRIS_CLOSE : StargateSounds.IRIS_OPEN, SoundSource.BLOCKS);
     }
 
@@ -92,10 +91,10 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
             return StargateTpEvent.Result.PASS;
 
         LevelState globalPos = to.state(LevelState.state);
-        Level targetWorld = globalPos.level;
+        Level targetWorld = globalPos.level();
 
         entity.hurt(StargateDamageTypes.source(targetWorld, StargateDamageTypes.IRIS), Integer.MAX_VALUE);
-        SoundUtil.playSound(targetWorld, globalPos.pos, StargateSounds.IRIS_HIT, SoundSource.BLOCKS);
+        SoundUtil.playSound(targetWorld, globalPos.pos(), StargateSounds.IRIS_HIT, SoundSource.BLOCKS);
 
         this.damage(to, 5); // TODO: scale the amount
         return StargateTpEvent.Result.DENY;

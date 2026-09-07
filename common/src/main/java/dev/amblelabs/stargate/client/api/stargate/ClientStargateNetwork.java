@@ -31,8 +31,6 @@ public class ClientStargateNetwork extends StargateNetwork {
         } else {
             stargate = Stargate.createFromNbt(tag, ctx);
             this.add(stargate);
-
-//            TardisLifecycleEvents.handleLoaded(this, tardis);
         }
     }
 

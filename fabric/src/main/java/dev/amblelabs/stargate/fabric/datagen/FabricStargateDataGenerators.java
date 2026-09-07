@@ -49,6 +49,7 @@ public class FabricStargateDataGenerators implements DataGeneratorEntrypoint {
     }
 
     private static class BlockTagProviderWrapper {
+        @SuppressWarnings("NotNullFieldNotInitialized")
         StargateBlockTagProvider provider;
     }
 

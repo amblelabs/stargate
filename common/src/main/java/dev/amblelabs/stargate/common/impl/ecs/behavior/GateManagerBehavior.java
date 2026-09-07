@@ -7,12 +7,11 @@ import dev.drtheo.ecs.behavior.TBehavior;
 
 public class GateManagerBehavior implements TBehavior {
 
-    private static GateManagerBehavior INSTANCE = new GateManagerBehavior();
+    private static final GateManagerBehavior INSTANCE = new GateManagerBehavior();
 
     private GateManagerBehavior() { }
 
     public GateState<?> get(Stargate stargate) {
-        //noinspection removal - this is THE place to use it.
         GateState<?> oldState = stargate.stateOrNull(GateState.state);
         return oldState != null ? oldState : new GateState.Closed();
     }

@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class GlyphsState implements NbtState<GlyphsState> {
+public record GlyphsState(int amount, float radius, @Nullable ResourceLocation font) implements NbtState<GlyphsState> {
 
     public static final Type<GlyphsState> state = new Type<>(StargateAPI.modLoc("glyphs"), 0) {
         @Override
@@ -21,20 +21,8 @@ public class GlyphsState implements NbtState<GlyphsState> {
         }
     };
 
-    public final int amount;
-    public final float radius;
-    public final @Nullable ResourceLocation font;
-
-    public GlyphsState(int amount, float radius, @Nullable ResourceLocation font) {
-        this.amount = amount;
-        this.radius = radius;
-        this.font = font;
-    }
-
     @Override
-    public void toNbt(CompoundTag nbt, Context context) {
-
-    }
+    public void toNbt(CompoundTag nbt, Context context) { }
 
     @Override
     public TState.Type<GlyphsState> type() {

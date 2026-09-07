@@ -23,6 +23,7 @@ public class StargateEntities {
     public static final Supplier<EntityType<DHDControlEntity>> DHD_CONTROL = type("dhd_control", DHDControlEntity::new, MobCategory.MISC,
             builder -> builder.sized(0.125F, 0.125F).noSummon());
 
+    @SuppressWarnings("SameParameterValue")
     private static <T extends Entity> Supplier<EntityType<T>> type(String id, EntityType.EntityFactory<T> factory, MobCategory category, UnaryOperator<EntityType.Builder<T>> op) {
         return type(id, () -> op.apply(EntityType.Builder.of(factory, category)).build(StargateAPI.MOD_ID + ":" + id));
     }

@@ -21,7 +21,6 @@ import net.minecraft.server.commands.data.DataAccessor;
 import net.minecraft.server.commands.data.DataCommands;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.*;
 import java.util.function.Function;
 
 public class StargateDataAccessor implements DataAccessor {

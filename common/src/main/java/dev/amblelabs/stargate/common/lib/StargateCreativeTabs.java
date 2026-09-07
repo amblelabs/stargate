@@ -24,6 +24,7 @@ public class StargateCreativeTabs {
 
     public static final ResourceKey<CreativeModeTab> STARGATE_KEY = key(STARGATE);
 
+    @SuppressWarnings("SameParameterValue")
     private static Holder<CreativeModeTab> tab(String name, CreativeModeTab.Row row, int column, UnaryOperator<CreativeModeTab.Builder> op) {
         return REGISTER.registerHolder(name, () -> op.apply(CreativeModeTab.builder(row, column).title(I18n.itemGroup(name))).build());
     }

@@ -162,7 +162,7 @@ public class GeckoState implements NbtState<GeckoState> {
                         ChevronState chevronState = stargate.stateOrNull(ChevronState.state);
 
                         if (chevronState != null)
-                            chevrons = chevronState.chevrons;
+                            chevrons = chevronState.chevrons();
                     }
 
                     List<GeoBone> lights = this.lights.get();
@@ -191,8 +191,8 @@ public class GeckoState implements NbtState<GeckoState> {
                         int curIdx = GlyphRenderLayer.ALPHABET.indexOf(curGlyph);
                         int targetIdx = GlyphRenderLayer.ALPHABET.indexOf(nextGlyph);
 
-                        float prevRot = 2 * Mth.PI / glyphs.amount * curIdx;
-                        float targetRot = 2 * Mth.PI / glyphs.amount * targetIdx;
+                        float prevRot = 2 * Mth.PI / glyphs.amount() * curIdx;
+                        float targetRot = 2 * Mth.PI / glyphs.amount() * targetIdx;
 
                         bone.setRotZ(Mth.lerp(progress, prevRot, targetRot));
                     }

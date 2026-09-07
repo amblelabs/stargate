@@ -23,6 +23,7 @@ public class StargateComponents {
             builder -> builder.persistent(StargateLinkedComponent.CODEC)
                     .networkSynchronized(StargateLinkedComponent.STREAM_CODEC).cacheEncoding());
 
+    @SuppressWarnings("SameParameterValue")
     private static <T> Supplier<DataComponentType<T>> make(String name, UnaryOperator<DataComponentType.Builder<T>> unaryOperator) {
         return make(StargateAPI.modLoc(name), unaryOperator);
     }

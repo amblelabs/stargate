@@ -49,6 +49,7 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     }
 
     @Config(name = "common")
+    @SuppressWarnings("CanBeFinal")
     public static final class Common implements StargateConfig.CommonConfigAccess, ConfigData {
 
         @Override
@@ -57,6 +58,7 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     }
 
     @Config(name = "client")
+    @SuppressWarnings("CanBeFinal")
     public static final class Client implements StargateConfig.ClientConfigAccess, ConfigData {
 
         @ConfigEntry.Gui.Tooltip
@@ -101,6 +103,7 @@ public class FabricStargateConfig extends PartitioningSerializer.GlobalData {
     }
 
     @Config(name = "server")
+    @SuppressWarnings("CanBeFinal")
     public static final class Server implements StargateConfig.ServerConfigAccess, ConfigData {
 
         @ConfigEntry.Gui.Tooltip

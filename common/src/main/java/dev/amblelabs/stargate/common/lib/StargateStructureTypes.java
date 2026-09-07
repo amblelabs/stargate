@@ -20,6 +20,7 @@ public class StargateStructureTypes {
 
     public static final Lazy<?> BURIED_STARGATE = type("buried_stargate", BuriedStargateStructure.CODEC);
 
+    @SuppressWarnings("SameParameterValue")
     private static <T extends Structure> Lazy<T> type(String name, MapCodec<T> codec) {
         Supplier<StructureType<T>> type = REGISTER.register(name, () -> () -> codec);
         return () -> type.get().codec(); // FIXME: this is absolutely horrible

@@ -79,6 +79,7 @@ public abstract class FabricAmbleModelProvider extends FabricModelProvider {
         }
     }
     
+    @SuppressWarnings("UnusedReturnValue")
     public static class AmbleBlockModelGenerators extends BlockModelGenerators {
         
         private static final Supplier<Field> SKIPPED_AUTO_MODELS_OUTPUT = Suppliers.memoize(() -> {
@@ -611,6 +612,7 @@ public abstract class FabricAmbleModelProvider extends FabricModelProvider {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static class AmbleBlockFamilyProvider {
 
         private final BlockModelGenerators.BlockFamilyProvider provider;

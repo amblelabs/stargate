@@ -27,7 +27,7 @@ public class StargateRecipes {
     private static <T extends Recipe<?>> Supplier<RecipeType<T>> recipe(String name, RecipeSerializer<T> serializer) {
         REGISTER_SERIALIZERS.register(name, () -> serializer);
 
-        return REGISTER_TYPES.register(name, () -> new RecipeType<T>() {
+        return REGISTER_TYPES.register(name, () -> new RecipeType<>() {
 
             @Override
             public String toString() {

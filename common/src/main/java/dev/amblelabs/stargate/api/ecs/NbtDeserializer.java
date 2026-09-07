@@ -3,6 +3,8 @@ package dev.amblelabs.stargate.api.ecs;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public interface NbtDeserializer<T> extends dev.drtheo.ecs.state.NbtDeserializer<T, NbtDeserializer.Context> {
 
     /**
@@ -41,7 +43,7 @@ public interface NbtDeserializer<T> extends dev.drtheo.ecs.state.NbtDeserializer
         public static class Builder {
 
             private @Nullable Level level;
-            private Type type;
+            private @Nullable Type type;
 
             /**
              * Indicates that this context is used for loading the state from disk for the first time.
@@ -67,7 +69,7 @@ public interface NbtDeserializer<T> extends dev.drtheo.ecs.state.NbtDeserializer
             }
 
             public NbtDeserializer.Context get() {
-                return new Context(this.level, this.level != null && this.level.isClientSide, this.type);
+                return new Context(this.level, this.level != null && this.level.isClientSide, Objects.requireNonNull(this.type));
             }
         }
     }

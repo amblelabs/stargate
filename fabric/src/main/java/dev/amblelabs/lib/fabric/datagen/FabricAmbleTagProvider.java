@@ -60,6 +60,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         protected ResourceKey<Block> reverseLookup(Block element) {
             return element.builtInRegistryHolder().key();
         }
@@ -72,7 +73,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
 
         @Override
         protected ResourceKey<BlockEntityType<?>> reverseLookup(BlockEntityType<?> element) {
-            return element.builtInRegistryHolder().key();
+            return Objects.requireNonNull(element.builtInRegistryHolder()).key();
         }
     }
 
@@ -97,6 +98,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         protected ResourceKey<Item> reverseLookup(Item element) {
             return element.builtInRegistryHolder().key();
         }
@@ -108,6 +110,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         protected ResourceKey<Fluid> reverseLookup(Fluid element) {
             return element.builtInRegistryHolder().key();
         }
@@ -125,6 +128,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         protected ResourceKey<EntityType<?>> reverseLookup(EntityType<?> element) {
             return element.builtInRegistryHolder().key();
         }
@@ -145,6 +149,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
          *
          * @return the {@link AmbleTagBuilder} instance
          */
+        @SuppressWarnings("UnstableApiUsage")
         public AmbleTagBuilder setReplace(boolean replace) {
             ((FabricTagBuilder) this.builder).fabric_setReplace(replace);
             return this;
@@ -185,7 +190,8 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
          *
          * @return the {@link AmbleTagBuilder} instance
          */
-        public AmbleTagBuilder add(Supplier<? extends T>... element) {
+        @SafeVarargs
+        public final AmbleTagBuilder add(Supplier<? extends T>... element) {
             Stream.of(element).map(Supplier::get).forEach(this::add);
             return this;
         }
@@ -281,6 +287,7 @@ public abstract class FabricAmbleTagProvider<T> extends TagsProvider<T> {
          *
          * @return the {@link AmbleTagBuilder} instance
          */
+        @SuppressWarnings("UnstableApiUsage")
         public AmbleTagBuilder forceAddTag(TagKey<T> tag) {
             builder.add(new ForcedTagEntry(TagEntry.element(tag.location())));
             return this;

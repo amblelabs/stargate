@@ -248,11 +248,6 @@ public class CreditsScreen extends Screen {
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return true;
-    }
-
-    @Override
     public void removed() {
         if (this.minecraft != null)
             this.minecraft.getMusicManager().stopPlaying(StargateMusic.CREDITS);

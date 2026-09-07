@@ -90,7 +90,7 @@ public interface GenericGateBehavior {
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
                 // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
-                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.state(ChevronState.state).chevrons)
+                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.state(ChevronState.state).chevrons())
                     this.fail(stargate);
 
                 return;
@@ -214,7 +214,7 @@ public interface GenericGateBehavior {
             StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
             if (result == StargateTpEvent.Result.DENY) return;
 
-            BlockPos pos = stargate.resolveState(LevelState.state).pos;
+            BlockPos pos = stargate.resolveState(LevelState.state).pos();
             Vec3 offset = entity.position().subtract(pos.getCenter().subtract(0, 0.5, 0));
 
             StargateUtil.playSound(stargate, StargateSounds.GATE_TELEPORT);
@@ -222,13 +222,13 @@ public interface GenericGateBehavior {
 
             // Retain entity velocity but reorient it towards the target stargate
             Vec3 velocity = entity.getDeltaMovement();
-            Vec3 direction = targetPhys.pos.getCenter().subtract(pos.getCenter()).normalize();
+            Vec3 direction = targetPhys.pos().getCenter().subtract(pos.getCenter()).normalize();
 
             double speed = velocity.length();
             Vec3 newVelocity = direction.multiply(speed, speed, speed);
-            Vec3 targetPos = targetPhys.pos.getCenter().add(offset);
+            Vec3 targetPos = targetPhys.pos().getCenter().add(offset);
 
-            entity.teleportTo(targetPhys.level, targetPos.x, targetPos.y, targetPos.z,
+            entity.teleportTo(targetPhys.level(), targetPos.x, targetPos.y, targetPos.z,
                     Set.of(), entity.getYRot() + targetPhys.getBlockState().getValue(StargateBlock.FACING).toYRot(), entity.getXRot());
 
             entity.setDeltaMovement(newVelocity);

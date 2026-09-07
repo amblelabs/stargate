@@ -18,11 +18,6 @@ public class LivingEntityMixin implements TeleportableEntity {
     @Unique
     private int stargate$ticks;
 
-//    @Inject(method = "createLivingAttributes", at = @At("RETURN"))
-//    private static void addAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
-//        cir.getReturnValue().add(StargateAttributes.SPACIAL_RESISTANCE);
-//    }
-
     @Inject(method = "tick", at = @At("RETURN"))
     public void tick(CallbackInfo ci) {
         this.stargate$tickTicks();

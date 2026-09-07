@@ -20,6 +20,7 @@ public class StargatePlacementModifiers {
 
     public static final Lazy<?> STARGATE = placementModifier("stargate", StargatePlacementModifier.CODEC);
 
+    @SuppressWarnings("SameParameterValue")
     private static <T extends PlacementModifier> Lazy<T> placementModifier(String name, MapCodec<T> codec) {
         Supplier<PlacementModifierType<T>> type = REGISTER.register(name, () -> () -> codec);
         return () -> type.get().codec(); // FIXME: this is absolutely horrible

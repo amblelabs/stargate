@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -79,27 +78,16 @@ public final class FabricStargateInit implements ModInitializer {
         StargateItems.register();
 
         StargateRecipes.register();
-
         StargateEntities.register();
-//        AitAttributes.register(bind(BuiltInRegistries.ATTRIBUTE));
-//        AitMobEffects.register(bind(BuiltInRegistries.MOB_EFFECT));
-//        AitPotions.register(bind(BuiltInRegistries.POTION));
-
-//        AitComponents.registerComponents(bind(BuiltInRegistries.DATA_COMPONENT_TYPE));
-
         StargateParticles.register();
-
-//        AitLootFunctions.registerSerializers(bind(BuiltInRegistries.LOOT_FUNCTION_TYPE));
 
         BiomeModifications.addFeature(BiomeSelectors.all(), GenerationStep.Decoration.VEGETAL_DECORATION,
                 ResourceKey.create(Registries.PLACED_FEATURE, StargateAPI.modLoc("buried_stargate")));
 
-        TradeOfferHelper.registerWanderingTraderOffers(1, listings -> {
-            listings.add(new VillagerTrades.TreasureMapForEmeralds(
-                    14, StargateTags.Structures.ON_STARGATE_MAPS, "item.stargate.filled_map.stargate",
-                    MapDecorationTypes.RED_X, 1, 10)
-            );
-        });
+        TradeOfferHelper.registerWanderingTraderOffers(1, listings -> listings.add(new VillagerTrades.TreasureMapForEmeralds(
+                14, StargateTags.Structures.ON_STARGATE_MAPS, "item.stargate.filled_map.stargate",
+                MapDecorationTypes.RED_X, 1, 10)
+        ));
 
         StargateFeatures.register();
         StargatePlacementModifiers.register();
@@ -108,6 +96,7 @@ public final class FabricStargateInit implements ModInitializer {
 
         StargateAttributes.register();
 
+        //noinspection DataFlowIssue - no issue, actually.
         FabricDefaultAttributeRegistry.register(EntityType.PLAYER,
                 Player.createAttributes().add(StargateAttributes.SPACIAL_RESISTANCE));
 

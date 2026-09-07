@@ -47,11 +47,11 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
                 .condition("burn_toast", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.BURNT_TOAST))
                 .hidden().build(consumer);
 
-//        AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateBlocks.STARGATE)
-//                .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
+        AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateBlocks.STARGATE)
+                .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
 
-//        AdvancementHolder goldenIris = goal(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
-//                .condition("was_broken", BreakIrisCriterion.Conditions.create(StargateIrisTiers.GOLD))
-//                .build();
+        AdvancementHolder goldenIris = goal(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
+                .condition("was_broken", BreakIrisCriterion.Conditions.create(StargateIrisTiers.GOLD))
+                .build();
     }
 }

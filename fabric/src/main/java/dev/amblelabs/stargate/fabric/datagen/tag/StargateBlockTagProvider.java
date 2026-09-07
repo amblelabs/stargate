@@ -12,11 +12,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class StargateBlockTagProvider extends FabricAmbleTagProvider.BlockTagProvider {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final XplatTags xtags;
+    private final XplatTags xplatTags;
 
-    public StargateBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, XplatTags xtags) {
+    public StargateBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, XplatTags xplatTags) {
         super(output, lookupProvider);
-        this.xtags = xtags;
+        this.xplatTags = xplatTags;
     }
 
     @Override

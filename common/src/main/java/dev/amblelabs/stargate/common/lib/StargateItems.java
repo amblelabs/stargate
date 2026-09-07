@@ -52,11 +52,14 @@ public class StargateItems {
             ResourceLocation prototypeId = StargateAPI.modLoc(path);
             make("stargate/" + path, () -> new StargateBlockItem(prototypeId, props()));
         }
-
-        for (IrisItem.Type irisType : IrisItem.Type.ALL) {
-            make(irisType.loc().withPrefix("iris/"), () -> new IrisItem(irisType, props()));
-        }
     }
+
+    public static final Lazy<IrisItem> TRINIUM_IRIS = iris(IrisItem.Type.TRINIUM);
+    public static final Lazy<IrisItem> NAQUADAH_IRIS = iris(IrisItem.Type.NAQUADAH);
+    public static final Lazy<IrisItem> NETHERITE_IRIS = iris(IrisItem.Type.NETHERITE);
+    public static final Lazy<IrisItem> DIAMOND_IRIS = iris(IrisItem.Type.DIAMOND);
+    public static final Lazy<IrisItem> GOLD_IRIS = iris(IrisItem.Type.GOLD);
+    public static final Lazy<IrisItem> IRON_IRIS = iris(IrisItem.Type.IRON);
 
     public static final Lazy<Item> TOAST = make("toast", props().food(
             new FoodProperties.Builder().nutrition(2)
@@ -79,6 +82,7 @@ public class StargateItems {
 
     public static final Lazy<Item> CRYSTAL_INGOT = make("crystal_ingot");
 
+    @SuppressWarnings("DataFlowIssue")
     public static final Lazy<Item> ADDRESS_CARTOUCHE = make("address_cartouche", () ->
             new DialerItem(props().component(StargateComponents.STARGATE.get(), null).rarity(Rarity.EPIC)));
 
@@ -91,6 +95,10 @@ public class StargateItems {
 
     private static Item.Properties unstackable() {
         return props().stacksTo(1);
+    }
+
+    private static Lazy<IrisItem> iris(IrisItem.Type type) {
+        return make("iris/" + type.toString().toLowerCase(Locale.ROOT), () -> new IrisItem(type, props()));
     }
 
     private static <T extends Item> Lazy<T> make(ResourceLocation id, Supplier<T> supplier, @Nullable ResourceKey<CreativeModeTab> tabKey) {

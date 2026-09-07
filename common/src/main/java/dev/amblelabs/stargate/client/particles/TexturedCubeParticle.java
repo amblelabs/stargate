@@ -9,7 +9,7 @@ import org.joml.Vector2f;
 public abstract class TexturedCubeParticle extends CubeParticle {
 
     protected TextureAtlasSprite sprite;
-    protected Vector2f loc;
+    protected final Vector2f loc;
 
     private float mappedU0;
     private float mappedU1;

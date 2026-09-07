@@ -37,6 +37,13 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
     @Override
     public void generateItemModels(AmbleItemModelGenerators gen) {
+        gen.generateFlatItem(StargateItems.TRINIUM_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.NAQUADAH_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.NETHERITE_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.DIAMOND_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.GOLD_IRIS, ModelTemplates.FLAT_ITEM);
+        gen.generateFlatItem(StargateItems.IRON_IRIS, ModelTemplates.FLAT_ITEM);
+
         gen.generateFlatItem(StargateBlocks.TOASTER, ModelTemplates.FLAT_ITEM);
 
         gen.generateFlatItem(StargateItems.ADDRESS_CARTOUCHE, ModelTemplates.FLAT_ITEM);

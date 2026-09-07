@@ -74,6 +74,7 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
             return ItemInteractionResult.SUCCESS;
         }
 
+        //noinspection deprecation
         if (!(stack.getItem() instanceof BlockItem blockItem) || !blockItem.getBlock().defaultBlockState().isSolid())
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
@@ -88,11 +89,6 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
 
     @Override
     protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) { }
-
-    @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.INVISIBLE;
-    }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {

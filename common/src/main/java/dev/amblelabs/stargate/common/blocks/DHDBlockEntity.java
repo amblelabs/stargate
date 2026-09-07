@@ -20,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -32,8 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
-        BlockEntityHelper.Placeable, BlockEntityHelper.Ticking {
+public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity, BlockEntityHelper.Ticking {
 
     private static final String TAG_CONTROLS = "Controls";
     private static final String TAG_INITIALIZED = "Initialized";
@@ -59,11 +57,6 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    public void onPlace(BlockState state, ServerLevel level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-
     }
 
     @Override

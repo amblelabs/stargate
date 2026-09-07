@@ -18,6 +18,7 @@ public class StargateStructurePieces {
 
     public static final Supplier<StructurePieceType> BURIED_STARGATE = piece("buried_stargate", BuriedStargatePieces.BuriedStargatePiece::new);
 
+    @SuppressWarnings("SameParameterValue")
     private static Supplier<StructurePieceType> piece(String name, StructurePieceType.ContextlessType type) {
         return REGISTER.register(name, () -> type);
     }
