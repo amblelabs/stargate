@@ -56,8 +56,7 @@ public abstract class AmbleLootTableSubProvider implements LootTableSubProvider 
     @SafeVarargs
     protected final void dropSelf(Map<Block, LootTable.Builder> lootTables, Supplier<? extends Block>... blocks) {
         for (var blockSupp : blocks) {
-            var block = blockSupp.get();
-            dropSelf(block, lootTables);
+            dropSelf(blockSupp.get(), lootTables);
         }
     }
 

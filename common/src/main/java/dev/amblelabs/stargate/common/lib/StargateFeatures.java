@@ -1,34 +1,24 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.common.worldgen.StargateFeature;
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.Supplier;
 
 public class StargateFeatures {
 
-    public static void registerFeatures(BiConsumer<Feature<?>, ResourceLocation> r) {
-        for (var e : FEATURES.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<Feature<?>> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.FEATURE);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, Feature<?>> FEATURES = new LinkedHashMap<>();
+    public static final Supplier<Feature<?>> STARGATE = feature("stargate", StargateFeature::new);
 
-    public static final Feature<?> STARGATE = feature("stargate", new StargateFeature());
-
-    private static <T extends FeatureConfiguration> Feature<T> feature(String name, Feature<T> feature) {
-        var id = modLoc(name);
-
-        var old = FEATURES.put(id, feature);
-        if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + name);
-
-        return feature;
+    private static <T extends Feature<?>> Supplier<T> feature(String name, Supplier<T> feature) {
+        return REGISTER.register(name, feature);
     }
 }

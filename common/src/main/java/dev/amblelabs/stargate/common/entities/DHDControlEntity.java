@@ -31,7 +31,7 @@ public class DHDControlEntity extends Entity {
     }
 
     public DHDControlEntity(Level level) {
-        super(StargateEntities.DHD_CONTROL, level);
+        super(StargateEntities.DHD_CONTROL.get(), level);
     }
 
     @Override
@@ -62,11 +62,6 @@ public class DHDControlEntity extends Entity {
     @Override
     public boolean isPickable() {
         return !this.isRemoved();
-    }
-
-    @Override
-    public boolean isAttackable() {
-        return true;
     }
 
     @Override

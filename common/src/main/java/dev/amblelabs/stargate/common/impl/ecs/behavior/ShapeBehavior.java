@@ -85,7 +85,7 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents {
             FluidState fluidState = level.getFluidState(ringPos);
 
             // TODO: use a proper BlockState resolver
-            level.setBlock(ringPos, StargateBlocks.RING.defaultBlockState()
+            level.setBlock(ringPos, StargateBlocks.RING.get().defaultBlockState()
                     .setValue(StargateRingBlock.WATERLOGGED, fluidState.getType() == Fluids.WATER), Block.UPDATE_ALL);
         });
     }

@@ -1,7 +1,10 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.api.util.BlockEntityHelper;
+import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateSounds;
@@ -31,6 +34,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ToasterBlock extends BaseEntityBlock {
 
@@ -57,16 +61,16 @@ public class ToasterBlock extends BaseEntityBlock {
     private static final BlockPos[] POSITIONS_NORTH = buildPositions(Direction.NORTH);
     private static final BlockPos[] POSITIONS_EAST = buildPositions(Direction.EAST);
 
-    private static final Block[] requiredBlocks = {
+    private static final Supplier<Block[]> requiredBlocks = Suppliers.memoize(() -> new Block[] {
             Blocks.IRON_BLOCK, // up
             Blocks.IRON_BLOCK, // east
             Blocks.IRON_BLOCK, // west
-            StargateBlocks.NAQUADAH_BLOCK, // down
+            StargateBlocks.NAQUADAH_BLOCK.get(), // down
             Blocks.CUT_COPPER_STAIRS, // upEast
             Blocks.CUT_COPPER_STAIRS, // upWest
             Blocks.CUT_COPPER_STAIRS, // downEast
             Blocks.CUT_COPPER_STAIRS // downWest
-    };
+    });
 
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
 
@@ -117,17 +121,17 @@ public class ToasterBlock extends BaseEntityBlock {
                 if (!level.isClientSide && toaster.placeFood(player, stack, optional.get().value().getCookingTime())) {
                     state.setValue(ACTIVE, true);
 
-                    level.playSound(
-                            null,
+                    SoundUtil.playSound(
+                            level,
                             pos,
                             StargateSounds.TOASTER_LOAD,
                             SoundSource.BLOCKS,
-                            1.0F,
+                            1,
                             1.5F
                     );
 
-                    level.playSound(
-                            null,
+                    SoundUtil.playSound(
+                            level,
                             pos,
                             StargateSounds.TOASTER_ACTIVE,
                             SoundSource.BLOCKS
@@ -155,9 +159,10 @@ public class ToasterBlock extends BaseEntityBlock {
             finalPos[i] = blockPos;
 
             BlockState block = level.getBlockState(blockPos);
+            Block[] blocks = requiredBlocks.get();
 
-            if (block.getBlock() != requiredBlocks[i]) {
-                StargateAPI.LOGGER.debug("Block {}@{} != {}", block.getBlock(), blockPos, requiredBlocks[i]);
+            if (block.getBlock() != blocks[i]) {
+                StargateAPI.LOGGER.debug("Block {}@{} != {}", block.getBlock(), blockPos, blocks[i]);
                 return InteractionResult.PASS;
             }
         }
@@ -177,7 +182,7 @@ public class ToasterBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return !level.isClientSide() && state.getValue(ACTIVE) ? createTickerHelper(blockEntityType, StargateBlockEntities.TOASTER, ToasterBlockEntity::cookTick) : null;
+        return !level.isClientSide() && state.getValue(ACTIVE) ? BlockEntityHelper.createTicker(blockEntityType, StargateBlockEntities.TOASTER, ToasterBlockEntity::cookTick) : null;
     }
 
     @Override

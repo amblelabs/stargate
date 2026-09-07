@@ -2,36 +2,35 @@ package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.common.worldgen.StargatePlacementModifier;
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.Supplier;
 
 public class StargatePlacementModifiers {
 
-    public static void registerPlacementModifiers(BiConsumer<PlacementModifierType<?>, ResourceLocation> r) {
-        for (var e : PLACEMENT_MODIFIERS.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<PlacementModifierType<?>> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, PlacementModifierType<?>> PLACEMENT_MODIFIERS = new LinkedHashMap<>();
+    public static final Lazy<?> STARGATE = placementModifier("stargate", StargatePlacementModifier.CODEC);
 
-    public static final PlacementModifierType<?> STARGATE = placementModifier("stargate", StargatePlacementModifier.CODEC);
+    private static <T extends PlacementModifier> Lazy<T> placementModifier(String name, MapCodec<T> codec) {
+        Supplier<PlacementModifierType<T>> type = REGISTER.register(name, () -> () -> codec);
+        return () -> type.get().codec(); // FIXME: this is absolutely horrible
+    }
 
-    private static <T extends PlacementModifier> PlacementModifierType<T> placementModifier(String name, MapCodec<T> codec) {
-        var id = modLoc(name);
+    @FunctionalInterface
+    public interface Lazy<P extends PlacementModifier> extends Supplier<PlacementModifierType<P>>, PlacementModifierType<P> {
 
-        PlacementModifierType<T> type = () -> codec;
-
-        var old = PLACEMENT_MODIFIERS.put(id, type);
-        if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + name);
-
-        return type;
+        @Override
+        default PlacementModifierType<P> get() {
+            return this;
+        }
     }
 }

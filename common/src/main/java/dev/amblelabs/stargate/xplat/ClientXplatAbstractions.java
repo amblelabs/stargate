@@ -4,6 +4,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -14,9 +15,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.joml.Matrix4f;
 
 import java.util.ServiceLoader;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -25,9 +29,26 @@ public interface ClientXplatAbstractions {
 
     void setRenderLayer(Block block, RenderType type);
 
+    default void setRenderLayer(Supplier<Block> block, RenderType type) {
+        setRenderLayer(block.get(), type);
+    }
+
+    @SuppressWarnings("unchecked")
+    void setRenderLayer(RenderType type, Supplier<? extends Block>... blocks);
+
     void initPlatformSpecific();
 
     <T extends Entity> void registerEntityRenderer(EntityType<? extends T> type, EntityRendererProvider<T> renderer);
+
+    default <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderer) {
+        registerEntityRenderer(type.get(), renderer);
+    }
+
+    <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> renderer);
+
+    default <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderer) {
+        registerBlockEntityRenderer(type.get(), renderer);
+    }
 
     void registerSkyRenderer(ResourceKey<Level> resourceKey, SkyRenderer skyRenderer);
 

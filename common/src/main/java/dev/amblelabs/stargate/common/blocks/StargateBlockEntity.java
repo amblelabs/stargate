@@ -43,7 +43,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
     private @Nullable BlockState blockSet;
 
     public StargateBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(StargateBlockEntities.STARGATE, blockPos, blockState);
+        super(StargateBlockEntities.STARGATE.get(), blockPos, blockState);
     }
 
     public @Nullable Stargate stargate() {

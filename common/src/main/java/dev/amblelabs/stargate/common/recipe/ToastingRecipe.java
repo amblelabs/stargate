@@ -10,7 +10,7 @@ public class ToastingRecipe extends AbstractCookingRecipe {
     public static final RecipeSerializer<ToastingRecipe> SERIALIZER = new SimpleCookingSerializer<>(ToastingRecipe::new, 20*3);
 
     public ToastingRecipe(String group, CookingBookCategory category, Ingredient ingredient, ItemStack result, float experience, int cookingTime) {
-        super(StargateRecipes.TOASTING, group, category, ingredient, result, experience, cookingTime);
+        super(StargateRecipes.TOASTING.get(), group, category, ingredient, result, experience, cookingTime);
     }
 
     @Override

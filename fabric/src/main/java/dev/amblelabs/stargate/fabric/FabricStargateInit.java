@@ -15,25 +15,27 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 
-import java.util.function.BiConsumer;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class FabricStargateInit implements ModInitializer {
 
     @Override
     public void onInitialize() {
         FabricStargateConfig.setup();
+
+        FabricPacketHandler.initPackets();
         FabricPacketHandler.init();
 
         this.initListeners();
@@ -54,35 +56,38 @@ public final class FabricStargateInit implements ModInitializer {
 //            dispatcher.register(root);
         });
 
-        ItemGroupEvents.MODIFY_ENTRIES_ALL.register((tab, entries) -> {
-            StargateBlocks.registerBlockCreativeTab(entries::accept, tab);
-            StargateItems.registerItemCreativeTab(entries, tab);
-        });
+        Set<ResourceKey<CreativeModeTab>> tabKeys = new HashSet<>(StargateBlocks.getCreativeTabs());
+        tabKeys.addAll(StargateItems.getCreativeTabs());
+
+        for (ResourceKey<CreativeModeTab> tabKey : tabKeys) {
+            ItemGroupEvents.modifyEntriesEvent(tabKey).register(entries -> {
+                StargateBlocks.registerCreativeTabBlocks(tabKey, entries);
+                StargateItems.registerCreativeTabItems(tabKey, entries);
+            });
+        }
     }
 
     private void initRegistries() {
         StargateBlockSetTypes.registerBlocks(BlockSetType::register);
 
-        StargateCreativeTabs.registerCreativeTabs(bind(BuiltInRegistries.CREATIVE_MODE_TAB));
-        StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
-        StargateSounds.registerSounds(bind(BuiltInRegistries.SOUND_EVENT));
-        StargateBlocks.registerBlocks(bind(BuiltInRegistries.BLOCK));
-        StargateBlocks.registerBlockItems(bind(BuiltInRegistries.ITEM));
-        StargateBlockEntities.registerTiles(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE));
-        StargateComponents.registerComponents(bind(BuiltInRegistries.DATA_COMPONENT_TYPE));
-        StargateItems.registerItems(bind(BuiltInRegistries.ITEM));
+        StargateCreativeTabs.register();
+        StargateFeatures.register();
+        StargateSounds.register();
+        StargateBlocks.register();
+        StargateBlockEntities.register();
+        StargateComponents.register();
+        StargateItems.register();
 
-        StargateRecipes.registerSerializers(bind(BuiltInRegistries.RECIPE_SERIALIZER));
-        StargateRecipes.registerTypes(bind(BuiltInRegistries.RECIPE_TYPE));
+        StargateRecipes.register();
 
-        StargateEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE));
+        StargateEntities.register();
 //        AitAttributes.register(bind(BuiltInRegistries.ATTRIBUTE));
 //        AitMobEffects.register(bind(BuiltInRegistries.MOB_EFFECT));
 //        AitPotions.register(bind(BuiltInRegistries.POTION));
 
 //        AitComponents.registerComponents(bind(BuiltInRegistries.DATA_COMPONENT_TYPE));
 
-        StargateParticles.registerParticles(bind(BuiltInRegistries.PARTICLE_TYPE));
+        StargateParticles.register();
 
 //        AitLootFunctions.registerSerializers(bind(BuiltInRegistries.LOOT_FUNCTION_TYPE));
 
@@ -96,10 +101,10 @@ public final class FabricStargateInit implements ModInitializer {
             );
         });
 
-        StargateFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE));
-        StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
-        StargateStructureTypes.registerStructureTypes(bind(BuiltInRegistries.STRUCTURE_TYPE));
-        StargateStructurePieces.registerStructurePieces(bind(BuiltInRegistries.STRUCTURE_PIECE));
+        StargateFeatures.register();
+        StargatePlacementModifiers.register();
+        StargateStructureTypes.register();
+        StargateStructurePieces.register();
 
         StargateAttributes.register();
 
@@ -113,9 +118,5 @@ public final class FabricStargateInit implements ModInitializer {
 
     private void dieInAFire() {
         FlammableBlockRegistry.getDefaultInstance();
-    }
-
-    private <T> BiConsumer<T, ResourceLocation> bind(Registry<T> registry) {
-        return (t, id) -> Registry.register(registry, id, t);
     }
 }

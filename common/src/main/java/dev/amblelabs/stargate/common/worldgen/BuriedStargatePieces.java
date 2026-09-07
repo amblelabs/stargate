@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.common.worldgen;
 
 import dev.amblelabs.lib.api.util.MutableBlockPos;
-import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.Prototype;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
@@ -30,12 +29,13 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 public class BuriedStargatePieces {
 
     public static class BuriedStargatePiece extends StructurePiece {
+
         public BuriedStargatePiece(BlockPos pos) {
-            super(StargateStructurePieces.BURIED_STARGATE, 0, new BoundingBox(pos));
+            super(StargateStructurePieces.BURIED_STARGATE.get(), 0, new BoundingBox(pos));
         }
 
         public BuriedStargatePiece(CompoundTag tag) {
-            super(StargateStructurePieces.BURIED_STARGATE, tag);
+            super(StargateStructurePieces.BURIED_STARGATE.get(), tag);
         }
 
         protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
@@ -70,7 +70,7 @@ public class BuriedStargatePieces {
 
                     Direction facing = Direction.values()[2 + random.nextInt(4)];
 
-                    level.setBlock(mutableBlockPos, StargateBlocks.STARGATE.defaultBlockState().setValue(StargateBlock.FACING, facing), Block.UPDATE_CLIENTS);
+                    level.setBlock(mutableBlockPos, StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing), Block.UPDATE_CLIENTS);
 
                     if (!(level.getBlockEntity(mutableBlockPos) instanceof StargateBlockEntity blockEntity)) return;
 

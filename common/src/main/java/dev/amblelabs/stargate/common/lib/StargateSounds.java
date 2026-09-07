@@ -1,50 +1,40 @@
 package dev.amblelabs.stargate.common.lib;
 
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 
 public class StargateSounds {
 
-    public static void registerSounds(BiConsumer<SoundEvent, ResourceLocation> r) {
-        for (var e : SOUNDS.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<SoundEvent> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.SOUND_EVENT);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, SoundEvent> SOUNDS = new LinkedHashMap<>();
+    public static final Holder<SoundEvent> STARGATE_THEME = sound("music.theme");
 
-    public static final SoundEvent STARGATE_THEME = sound("music.theme");
+    public static final Holder<SoundEvent> WORMHOLE_LOOP = sound("block.stargate.loop");
 
-    public static final SoundEvent WORMHOLE_LOOP = sound("block.stargate.loop");
+    public static final Holder<SoundEvent> TOASTER_DING = sound("block.toaster.ding");
+    public static final Holder<SoundEvent> TOASTER_LOAD = sound("block.toaster.load");
+    public static final Holder<SoundEvent> TOASTER_ACTIVE = sound("block.toaster.active");
 
-    public static final SoundEvent TOASTER_DING = sound("block.toaster.ding");
-    public static final SoundEvent TOASTER_LOAD = sound("block.toaster.load");
-    public static final SoundEvent TOASTER_ACTIVE = sound("block.toaster.active");
+    public static final Holder<SoundEvent> GATE_TELEPORT = sound("block.stargate.tp");
+    public static final Holder<SoundEvent> GATE_OPEN = sound("block.stargate.open");
+    public static final Holder<SoundEvent> GATE_CLOSE = sound("block.stargate.close");
+    public static final Holder<SoundEvent> GATE_FAIL = sound("block.stargate.fail");
 
-    public static final SoundEvent GATE_TELEPORT = sound("block.stargate.tp");
-    public static final SoundEvent GATE_OPEN = sound("block.stargate.open");
-    public static final SoundEvent GATE_CLOSE = sound("block.stargate.close");
-    public static final SoundEvent GATE_FAIL = sound("block.stargate.fail");
+    public static final Holder<SoundEvent> IRIS_HIT = sound("block.stargate.iris.hit");
+    public static final Holder<SoundEvent> IRIS_OPEN = sound("block.stargate.iris.open");
+    public static final Holder<SoundEvent> IRIS_CLOSE = sound("block.stargate.iris.close");
 
-    public static final SoundEvent IRIS_HIT = sound("block.stargate.iris.hit");
-    public static final SoundEvent IRIS_OPEN = sound("block.stargate.iris.open");
-    public static final SoundEvent IRIS_CLOSE = sound("block.stargate.iris.close");
+    public static final Holder<SoundEvent> CHEVRON_LOCK = sound("block.stargate.chevron");
 
-    public static final SoundEvent CHEVRON_LOCK = sound("block.stargate.chevron");
-
-    private static SoundEvent sound(String name) {
-        var id = modLoc(name);
-        var sound = SoundEvent.createVariableRangeEvent(id);
-        var old = SOUNDS.put(id, sound);
-        if (old != null) {
-            throw new IllegalArgumentException("Typo? Duplicate id " + name);
-        }
-        return sound;
+    private static Holder<SoundEvent> sound(String name) {
+        return REGISTER.registerHolder(name, () -> SoundEvent.createVariableRangeEvent(StargateAPI.modLoc(name)));
     }
 }

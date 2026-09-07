@@ -1,5 +1,7 @@
 package dev.amblelabs.stargate.common.blocks;
 
+import com.google.common.base.Suppliers;
+import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
 import dev.amblelabs.stargate.common.lib.StargateRecipes;
 import dev.amblelabs.stargate.common.lib.StargateSounds;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ToasterBlockEntity extends BlockEntity {
 
@@ -26,7 +29,8 @@ public class ToasterBlockEntity extends BlockEntity {
     private static final String TAG_COOKING_PROGRESS = "CookingTime";
     private static final String TAG_COOKING_TIME = "CookingTotalTime";
 
-    private final RecipeManager.CachedCheck<SingleRecipeInput, ToastingRecipe> quickCheck;
+    private final Supplier<RecipeManager.CachedCheck<SingleRecipeInput, ToastingRecipe>> quickCheck = Suppliers.memoize(() ->
+            RecipeManager.createCheck(StargateRecipes.TOASTING.get()));
 
     private ItemStack heldItem = ItemStack.EMPTY;
 
@@ -34,8 +38,7 @@ public class ToasterBlockEntity extends BlockEntity {
     private int cookingProgress;
 
     public ToasterBlockEntity(BlockPos pos, BlockState state) {
-        super(StargateBlockEntities.TOASTER, pos, state);
-        this.quickCheck = RecipeManager.createCheck(StargateRecipes.TOASTING);
+        super(StargateBlockEntities.TOASTER.get(), pos, state);
     }
 
     public ItemStack getHeldItem() {
@@ -43,7 +46,7 @@ public class ToasterBlockEntity extends BlockEntity {
     }
 
     public Optional<RecipeHolder<ToastingRecipe>> getToastableRecipe(ItemStack stack) {
-        return this.heldItem.isEmpty() ? Optional.empty() : this.quickCheck.getRecipeFor(new SingleRecipeInput(stack), this.level);
+        return this.heldItem.isEmpty() ? Optional.empty() : this.quickCheck.get().getRecipeFor(new SingleRecipeInput(stack), this.level);
     }
 
     public boolean placeFood(@Nullable LivingEntity entity, ItemStack stack, int cookTime) {
@@ -81,35 +84,34 @@ public class ToasterBlockEntity extends BlockEntity {
         tag.putInt(TAG_COOKING_TIME, this.cookingTime);
     }
 
-    public static void cookTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity blockEntity) {
-        if (blockEntity.heldItem.isEmpty())
+    public void cookTick(Level level, BlockPos pos, BlockState state) {
+        if (this.heldItem.isEmpty())
             return;
 
-        blockEntity.cookingProgress++;
+        this.cookingProgress++;
 
-        if (blockEntity.cookingProgress >= blockEntity.cookingTime) {
-            SingleRecipeInput singleRecipeInput = new SingleRecipeInput(blockEntity.heldItem);
-            ItemStack result = blockEntity.quickCheck.getRecipeFor(singleRecipeInput, level)
+        if (this.cookingProgress >= this.cookingTime) {
+            SingleRecipeInput singleRecipeInput = new SingleRecipeInput(this.heldItem);
+            ItemStack result = this.quickCheck.get().getRecipeFor(singleRecipeInput, level)
                     .map((recipeHolder) -> recipeHolder.value().assemble(singleRecipeInput, level.registryAccess()))
-                    .orElse(blockEntity.heldItem);
+                    .orElse(this.heldItem);
 
             if (result.isItemEnabled(level.enabledFeatures())) {
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), result);
-                blockEntity.heldItem = ItemStack.EMPTY;
+                this.heldItem = ItemStack.EMPTY;
 
                 state.setValue(ToasterBlock.ACTIVE, false);
 
-                level.playSound(
-                        null,
+                SoundUtil.playSound(
+                        level,
                         pos,
                         StargateSounds.TOASTER_LOAD,
                         SoundSource.BLOCKS,
-                        0.75F,
-                        1.0F
+                        0.75F
                 );
 
-                level.playSound(
-                        null,
+                SoundUtil.playSound(
+                        level,
                         pos,
                         StargateSounds.TOASTER_DING,
                         SoundSource.BLOCKS
@@ -123,6 +125,7 @@ public class ToasterBlockEntity extends BlockEntity {
         setChanged(level, pos, state);
     }
 
+    // TODO: copy this method from StargateBlock
     private void markUpdated() {
         this.setChanged();
         this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);

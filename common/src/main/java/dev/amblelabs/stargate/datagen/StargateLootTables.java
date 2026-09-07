@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.datagen;
 import dev.amblelabs.lib.datagen.AmbleLootTableSubProvider;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
+import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.resources.ResourceKey;
@@ -40,8 +41,6 @@ public class StargateLootTables extends AmbleLootTableSubProvider {
         makeDryGrassTable(blockTables, StargateBlocks.DRY_BUSH);
     }
 
-
-
     private void makeSlabTable(Map<Block, LootTable.Builder> lootTables, Block block) {
         var leafPool = dropThisPool(block, 1)
             .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))
@@ -52,13 +51,13 @@ public class StargateLootTables extends AmbleLootTableSubProvider {
         lootTables.put(block, LootTable.lootTable().withPool(leafPool));
     }
 
-    private void makeDryGrassTable(Map<Block, LootTable.Builder> lootTables, Block block) {
+    private void makeDryGrassTable(Map<Block, LootTable.Builder> lootTables, StargateItems.Lazy<Block> block) {
         var shearsPool = LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(block))
                 .when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS)))
                 .apply(ApplyExplosionDecay.explosionDecay());
 
-        lootTables.put(block, LootTable.lootTable().withPool(shearsPool));
+        lootTables.put(block.get(), LootTable.lootTable().withPool(shearsPool));
     }
 }

@@ -47,12 +47,8 @@ public class DHDBlockEntity extends BlockEntity implements GeoBlockEntity,
     private static final double INNER_RING_RADIUS = 0.4;
     private static final double OUTER_RING_RADIUS = 0.8;
 
-    public DHDBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
-    }
-
     public DHDBlockEntity(BlockPos blockPos, BlockState blockState) {
-        this(StargateBlockEntities.DHD, blockPos, blockState);
+        super(StargateBlockEntities.DHD.get(), blockPos, blockState);
     }
 
     @Override

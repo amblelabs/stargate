@@ -35,7 +35,7 @@ public class DHDBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new DHDBlockEntity(StargateBlockEntities.DHD, pos, state);
+        return new DHDBlockEntity(pos, state);
     }
 
     @Override

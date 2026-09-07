@@ -1,63 +1,38 @@
 package dev.amblelabs.stargate.common.lib;
 
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.recipe.ToastingRecipe;
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.Supplier;
 
 public class StargateRecipes {
 
-    public static void registerSerializers(BiConsumer<RecipeSerializer<?>, ResourceLocation> r) {
-        for (var e : SERIALIZERS.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<RecipeSerializer<?>> REGISTER_SERIALIZERS = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_SERIALIZER);
+    private static final XplatRegister<RecipeType<?>> REGISTER_TYPES = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_TYPE);
+
+    public static void register() {
+        REGISTER_SERIALIZERS.registerAll();
+        REGISTER_TYPES.registerAll();
     }
 
-    public static void registerTypes(BiConsumer<RecipeType<?>, ResourceLocation> r) {
-        for (var e : TYPES.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
-    }
-
-    private static final Map<ResourceLocation, RecipeSerializer<?>> SERIALIZERS = new LinkedHashMap<>();
-    private static final Map<ResourceLocation, RecipeType<?>> TYPES = new LinkedHashMap<>();
-
-    public static final RecipeType<ToastingRecipe> TOASTING = recipe("toasting", ToastingRecipe.SERIALIZER);
+    public static final Supplier<RecipeType<ToastingRecipe>> TOASTING = recipe("toasting", ToastingRecipe.SERIALIZER);
 
     @SuppressWarnings("SameParameterValue")
-    private static <T extends net.minecraft.world.item.crafting.Recipe<?>> RecipeType<T> recipe(String name, RecipeSerializer<T> serializer) {
-        var id = modLoc(name);
+    private static <T extends Recipe<?>> Supplier<RecipeType<T>> recipe(String name, RecipeSerializer<T> serializer) {
+        REGISTER_SERIALIZERS.register(name, () -> serializer);
 
-        var type = new RecipeType<T>() {
+        return REGISTER_TYPES.register(name, () -> new RecipeType<T>() {
 
             @Override
             public String toString() {
-                return id.toString();
+                return StargateAPI.MOD_ID + ":" + name;
             }
-        };
-
-        {
-            var old = TYPES.put(id, type);
-
-            if (old != null) {
-                throw new IllegalArgumentException("Typo? Duplicate type id " + name);
-            }
-        }
-
-        {
-            var old = SERIALIZERS.put(id, serializer);
-
-            if (old != null) {
-                throw new IllegalArgumentException("Typo? Duplicate serializer id " + name);
-            }
-        }
-
-        return type;
+        });
     }
 }

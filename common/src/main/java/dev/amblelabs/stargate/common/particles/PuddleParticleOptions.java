@@ -14,6 +14,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.FastColor;
 import org.joml.Vector2f;
 
+import java.util.function.Supplier;
+
 public class PuddleParticleOptions extends ScalableParticleOptionsBase implements ParticleOptions {
 
     private final ParticleType<PuddleParticleOptions> type;
@@ -37,6 +39,10 @@ public class PuddleParticleOptions extends ScalableParticleOptionsBase implement
                 ByteBufCodecs.FLOAT, options -> options.loc().y, (color, u, v) ->
                         new PuddleParticleOptions(type, color, u, v)
         );
+    }
+
+    public PuddleParticleOptions(Supplier<ParticleType<PuddleParticleOptions>> type, int color, Vector2f loc) {
+        this(type.get(), color, loc);
     }
 
     public PuddleParticleOptions(ParticleType<PuddleParticleOptions> type, int color, Vector2f loc) {

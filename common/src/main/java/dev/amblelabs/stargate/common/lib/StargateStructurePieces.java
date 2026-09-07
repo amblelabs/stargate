@@ -1,34 +1,24 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.common.worldgen.BuriedStargatePieces;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.Supplier;
 
 public class StargateStructurePieces {
 
-    public static void registerStructurePieces(BiConsumer<StructurePieceType, ResourceLocation> r) {
-        for (var e : STRUCTURE_PIECES.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<StructurePieceType> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.STRUCTURE_PIECE);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, StructurePieceType> STRUCTURE_PIECES = new LinkedHashMap<>();
+    public static final Supplier<StructurePieceType> BURIED_STARGATE = piece("buried_stargate", BuriedStargatePieces.BuriedStargatePiece::new);
 
-    public static final StructurePieceType BURIED_STARGATE = piece("buried_stargate", BuriedStargatePieces.BuriedStargatePiece::new);
-
-    private static <T extends Structure> StructurePieceType piece(String name, StructurePieceType.ContextlessType type) {
-        var id = modLoc(name);
-
-        var old = STRUCTURE_PIECES.put(id, type);
-        if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + name);
-
-        return type;
+    private static Supplier<StructurePieceType> piece(String name, StructurePieceType.ContextlessType type) {
+        return REGISTER.register(name, () -> type);
     }
 }

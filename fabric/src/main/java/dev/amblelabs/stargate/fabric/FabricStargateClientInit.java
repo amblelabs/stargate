@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.fabric;
 
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.client.RegisterClientStuff;
 import dev.amblelabs.stargate.client.lib.StargateClientEcs;
 import dev.amblelabs.stargate.client.renderers.*;
 import dev.amblelabs.stargate.client.renderers.skybox.AbydosSkyRenderer;
@@ -48,8 +49,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
         WorldRenderEvents.START.register(context -> RenderDeduper.clear());
         HudRenderCallback.EVENT.register(StargateAdditionalRenderers::overlayGui);
 
-        ClientXplatAbstractions.INSTANCE.registerSkyRenderer(AbydosSkyRenderer.DIMENSION_KEY, new AbydosSkyRenderer());
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), StargateBlocks.DRY_BUSH, StargateBlocks.DRY_GRASS, StargateBlocks.RING);
+        RegisterClientStuff.init();
 
         StargateParticles.FactoryHandler.registerFactories(new StargateParticles.FactoryHandler.Consumer() {
 
@@ -59,33 +59,8 @@ public class FabricStargateClientInit implements ClientModInitializer {
             }
         });
 
-        FabricStargateClientInit.registerBlockEntityRenderers(BlockEntityRenderers::register);
-        FabricStargateClientInit.registerEntityRenderers(EntityRendererRegistry::register);
-
         StargateInterop.clientInit();
 
         StargateClientEcs.registerAll();
-    }
-
-    private static void registerBlockEntityRenderers(BlockEntityRendererRegisterer registerer) {
-        registerer.registerBlockEntityRenderer(StargateBlockEntities.STARGATE, StargateBlockEntityRenderer::new);
-        registerer.registerBlockEntityRenderer(StargateBlockEntities.RING, StargateRingBlockEntityRenderer::new);
-        registerer.registerBlockEntityRenderer(StargateBlockEntities.DHD, DHDBlockEntityRenderer::new);
-    }
-
-    private static void registerEntityRenderers(EntityRendererRegisterer registerer) {
-        registerer.registerEntityRenderer(StargateEntities.DHD_CONTROL, DHDControlEntityRenderer::new);
-    }
-
-    @FunctionalInterface
-    public interface BlockEntityRendererRegisterer {
-        <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type,
-                                                                 BlockEntityRendererProvider<? super T> provider);
-    }
-
-    @FunctionalInterface
-    public interface EntityRendererRegisterer {
-        <T extends Entity> void registerEntityRenderer(EntityType<T> type,
-                                                       EntityRendererProvider<? super T> provider);
     }
 }

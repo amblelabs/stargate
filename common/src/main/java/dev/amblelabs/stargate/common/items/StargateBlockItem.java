@@ -35,7 +35,7 @@ public class StargateBlockItem extends BlockItem {
     private @Nullable String descriptionId;
 
     public StargateBlockItem(@Nullable ResourceLocation prototypeId, Properties properties) {
-        super(StargateBlocks.STARGATE, properties);
+        super(StargateBlocks.STARGATE.get(), properties);
 
         this.prototypeId = prototypeId;
     }
@@ -56,7 +56,7 @@ public class StargateBlockItem extends BlockItem {
     // the block reference may be null at that point.
     @Override
     public Block getBlock() {
-        return StargateBlocks.STARGATE;
+        return StargateBlocks.STARGATE.get();
     }
 
     @Override

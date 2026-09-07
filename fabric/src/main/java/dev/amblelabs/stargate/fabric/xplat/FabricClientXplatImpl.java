@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -21,7 +23,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class FabricClientXplatImpl implements ClientXplatAbstractions {
 
@@ -35,6 +42,12 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
         BlockRenderLayerMap.INSTANCE.putBlock(block, type);
     }
 
+    @SafeVarargs
+    @Override
+    public final void setRenderLayer(RenderType type, Supplier<? extends Block>... blocks) {
+        BlockRenderLayerMap.INSTANCE.putBlocks(type, Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new));
+    }
+
     @Override
     public void initPlatformSpecific() {
 
@@ -44,6 +57,11 @@ public class FabricClientXplatImpl implements ClientXplatAbstractions {
     public <T extends Entity> void registerEntityRenderer(EntityType<? extends T> type,
                                                           EntityRendererProvider<T> renderer) {
         EntityRendererRegistry.register(type, renderer);
+    }
+
+    @Override
+    public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> renderer) {
+        BlockEntityRenderers.register(type, renderer);
     }
 
     @Override

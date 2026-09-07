@@ -3,6 +3,7 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 import dev.amblelabs.stargate.api.stargate.address.Glyph;
 import dev.amblelabs.stargate.api.ecs.event.*;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.api.util.StargateUtil;
 import dev.amblelabs.stargate.api.util.TeleportableEntity;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
@@ -276,7 +277,7 @@ public interface GenericGateBehavior {
 
         @Override
         public void stargate$randomTick(Stargate stargate, BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-            if (random.nextInt(100) < 5) level.playSound(null, pos, StargateSounds.WORMHOLE_LOOP, SoundSource.BLOCKS);
+            SoundUtil.playSound(level, pos, StargateSounds.WORMHOLE_LOOP, SoundSource.BLOCKS, 0.5f);
         }
 
         @Override

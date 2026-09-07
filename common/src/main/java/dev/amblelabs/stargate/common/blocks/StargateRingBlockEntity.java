@@ -21,7 +21,7 @@ public class StargateRingBlockEntity extends BlockEntity {
     private @Nullable BlockState blockSet;
 
     public StargateRingBlockEntity(BlockPos pos, BlockState state) {
-        super(StargateBlockEntities.RING, pos, state);
+        super(StargateBlockEntities.RING.get(), pos, state);
     }
 
     @Override

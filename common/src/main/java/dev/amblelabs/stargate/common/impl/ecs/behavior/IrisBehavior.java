@@ -5,6 +5,7 @@ import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
 import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
@@ -76,7 +77,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents, StargateTpE
         stargate.setChanged();
 
         LevelState globalPos = stargate.state(LevelState.state);
-        globalPos.level.playSound(null, globalPos.pos,
+        SoundUtil.playSound(globalPos.level, globalPos.pos,
                 iris.closed ? StargateSounds.IRIS_CLOSE : StargateSounds.IRIS_OPEN, SoundSource.BLOCKS);
     }
 
@@ -103,7 +104,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents, StargateTpE
         Level targetWorld = globalPos.level;
 
         entity.hurt(StargateDamageTypes.source(targetWorld, StargateDamageTypes.IRIS), Integer.MAX_VALUE);
-        targetWorld.playSound(null, globalPos.pos, StargateSounds.IRIS_HIT, SoundSource.BLOCKS);
+        SoundUtil.playSound(targetWorld, globalPos.pos, StargateSounds.IRIS_HIT, SoundSource.BLOCKS);
 
         this.damage(to, 5); // TODO: scale the amount
         return StargateTpEvent.Result.DENY;

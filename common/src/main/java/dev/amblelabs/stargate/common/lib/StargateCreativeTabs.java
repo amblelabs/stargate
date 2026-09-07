@@ -1,38 +1,35 @@
 package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.common.I18n;
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.UnaryOperator;
 
 public class StargateCreativeTabs {
 
-    public static void registerCreativeTabs(BiConsumer<CreativeModeTab, ResourceLocation> r) {
-        for (var e : TABS.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<CreativeModeTab> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.CREATIVE_MODE_TAB);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, CreativeModeTab> TABS = new LinkedHashMap<>();
+    public static final Holder<CreativeModeTab> STARGATE = tab("main", CreativeModeTab.Row.TOP, 7,
+            tab -> tab.icon(() -> new ItemStack(StargateBlocks.STARGATE)));
 
-    public static final CreativeModeTab STARGATE = register("main", CreativeModeTab.builder(CreativeModeTab.Row.TOP, 7)
-            .icon(() -> new ItemStack(StargateBlocks.STARGATE)));
+    public static final ResourceKey<CreativeModeTab> STARGATE_KEY = key(STARGATE);
 
-    @SuppressWarnings("SameParameterValue")
-    private static CreativeModeTab register(String name, CreativeModeTab.Builder tabBuilder) {
-        var tab = tabBuilder.title(I18n.itemGroup(name)).build();
-        var old = TABS.put(modLoc(name), tab);
+    private static Holder<CreativeModeTab> tab(String name, CreativeModeTab.Row row, int column, UnaryOperator<CreativeModeTab.Builder> op) {
+        return REGISTER.registerHolder(name, () -> op.apply(CreativeModeTab.builder(row, column).title(I18n.itemGroup(name))).build());
+    }
 
-        if (old != null) {
-            throw new IllegalArgumentException("Typo? Duplicate id " + name);
-        }
-
-        return tab;
+    @SuppressWarnings({"SameParameterValue", "OptionalGetWithoutIsPresent"})
+    private static ResourceKey<CreativeModeTab> key(Holder<CreativeModeTab> holder) {
+        return holder.unwrapKey().get();
     }
 }

@@ -42,7 +42,7 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
         FluidState fluidState = level.getFluidState(pos);
 
         // TODO: use a proper BlockState resolver
-        level.setBlock(pos, StargateBlocks.STARGATE.defaultBlockState().setValue(StargateBlock.FACING, facing)
+        level.setBlock(pos, StargateBlocks.STARGATE.get().defaultBlockState().setValue(StargateBlock.FACING, facing)
                 .setValue(StargateBlock.WATERLOGGED, fluidState.getType() == Fluids.WATER), Block.UPDATE_CLIENTS);
 
         if (!(level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity)) return false;

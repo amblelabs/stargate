@@ -50,8 +50,8 @@ public class DialerItem extends Item {
 
 		ItemStack stack = context.getItemInHand();
 
-		if (!stack.has(StargateComponents.STARGATE)) {
-			stack.set(StargateComponents.STARGATE, new StargateLinkedComponent(stargate.getId()));
+		if (!stack.has(StargateComponents.STARGATE.get())) {
+			stack.set(StargateComponents.STARGATE.get(), new StargateLinkedComponent(stargate.getId()));
 			return InteractionResult.SUCCESS;
 		}
 
@@ -81,7 +81,7 @@ public class DialerItem extends Item {
 
 	@Environment(EnvType.CLIENT)
 	private void handleTooltip(ItemStack stack, List<Component> tooltip) {
-		UUID id = getStargateAddressFromKey(stack, TAG_ADDRESS);
+		UUID id = getStargateAddressFromKey(stack);
 
 		if (id == null)
 			return;
@@ -102,16 +102,16 @@ public class DialerItem extends Item {
 	}
 
 	public static @Nullable Stargate getStargate(Level world, ItemStack stack) {
-		return getStargateFromKey(world, stack, TAG_ADDRESS);
+		return getStargateFromKey(world, stack);
 	}
 
-	public static @Nullable UUID getStargateAddressFromKey(ItemStack stack, String path) {
-		StargateLinkedComponent linked = stack.get(StargateComponents.STARGATE);
+	public static @Nullable UUID getStargateAddressFromKey(ItemStack stack) {
+		StargateLinkedComponent linked = stack.get(StargateComponents.STARGATE.get());
 		return linked == null ? null : linked.stargate();
 	}
 
-	public static @Nullable Stargate getStargateFromKey(Level world, ItemStack stack, String path) {
-		UUID id = getStargateAddressFromKey(stack, path);
+	public static @Nullable Stargate getStargateFromKey(Level world, ItemStack stack) {
+		UUID id = getStargateAddressFromKey(stack);
 		if (id == null) return null;
 
 		return getStargate(world, id);

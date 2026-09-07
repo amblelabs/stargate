@@ -2,36 +2,35 @@ package dev.amblelabs.stargate.common.lib;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.common.worldgen.BuriedStargateStructure;
-import net.minecraft.resources.ResourceLocation;
+import dev.amblelabs.stargate.xplat.XplatAbstractions;
+import dev.amblelabs.stargate.xplat.XplatRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
+import java.util.function.Supplier;
 
 public class StargateStructureTypes {
 
-    public static void registerStructureTypes(BiConsumer<StructureType<?>, ResourceLocation> r) {
-        for (var e : STRUCTURE_TYPES.entrySet()) {
-            r.accept(e.getValue(), e.getKey());
-        }
+    private static final XplatRegister<StructureType<?>> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.STRUCTURE_TYPE);
+
+    public static void register() {
+        REGISTER.registerAll();
     }
 
-    private static final Map<ResourceLocation, StructureType<?>> STRUCTURE_TYPES = new LinkedHashMap<>();
+    public static final Lazy<?> BURIED_STARGATE = type("buried_stargate", BuriedStargateStructure.CODEC);
 
-    public static final StructureType<?> BURIED_STARGATE = type("buried_stargate", BuriedStargateStructure.CODEC);
+    private static <T extends Structure> Lazy<T> type(String name, MapCodec<T> codec) {
+        Supplier<StructureType<T>> type = REGISTER.register(name, () -> () -> codec);
+        return () -> type.get().codec(); // FIXME: this is absolutely horrible
+    }
 
-    private static <T extends Structure> StructureType<T> type(String name, MapCodec<T> codec) {
-        var id = modLoc(name);
+    @FunctionalInterface
+    public interface Lazy<S extends Structure> extends Supplier<StructureType<S>>, StructureType<S> {
 
-        StructureType<T> type = () -> codec;
-
-        var old = STRUCTURE_TYPES.put(id, type);
-        if (old != null) throw new IllegalArgumentException("Typo? Duplicate id " + name);
-
-        return type;
+        @Override
+        default StructureType<S> get() {
+            return this;
+        }
     }
 }

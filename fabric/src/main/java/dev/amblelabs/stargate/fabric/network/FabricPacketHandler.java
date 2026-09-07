@@ -1,43 +1,41 @@
 package dev.amblelabs.stargate.fabric.network;
 
-import dev.amblelabs.stargate.api.mod.network.StargateC2SPacket;
-import dev.amblelabs.stargate.client.api.mod.network.StargateS2CPacket;
-import dev.amblelabs.stargate.client.lib.StargateClientPackets;
-import dev.amblelabs.stargate.common.lib.StargatePackets;
+import dev.amblelabs.stargate.common.network.MsgStargateSyncS2C;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.util.TriConsumer;
+
+import java.util.function.Consumer;
 
 public class FabricPacketHandler {
 
+    public static void initPackets() {
+        PayloadTypeRegistry.playS2C().register(MsgStargateSyncS2C.TYPE, MsgStargateSyncS2C.STREAM_CODEC);
+    }
+
     @SuppressWarnings("EmptyMethod")
     public static void init() {
-        StargatePackets.registerPackets(FabricPacketHandler::registerCommon);
+
     }
 
     @SuppressWarnings("EmptyMethod")
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        StargateClientPackets.registerPackets(FabricPacketHandler::registerClient);
+        ClientPlayNetworking.registerGlobalReceiver(MsgStargateSyncS2C.TYPE, makeClientBoundHandler(MsgStargateSyncS2C::handle));
     }
 
-    private static <T extends CustomPacketPayload> void registerCommon(StargatePackets.Entry<T> entry) {
-        if (entry instanceof StargatePackets.C2S<?> packet) registerC2S(packet);
-        else PayloadTypeRegistry.playS2C().register(entry.type(), entry.codec());
+    private static <T extends CustomPacketPayload> ClientPlayNetworking.PlayPayloadHandler<T> makeClientBoundHandler(Consumer<T> handler) {
+        return (payload, context) -> handler.accept(payload);
     }
 
-    private static <T extends CustomPacketPayload & StargateC2SPacket> void registerC2S(StargatePackets.C2S<T> packet) {
-        PayloadTypeRegistry.playC2S().register(packet.type(), packet.codec());
-
-        ServerPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context)
-                -> context.server().execute(() -> payload.handle(context.server(), context.player())));
-    }
-
-    @Environment(EnvType.CLIENT)
-    private static <T extends CustomPacketPayload & StargateS2CPacket> void registerClient(StargateClientPackets.S2C<T> packet) {
-        ClientPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context) -> payload.handle(context.client(), context.player()));
+    private static <T extends CustomPacketPayload> ServerPlayNetworking.PlayPayloadHandler<T> makeServerBoundHandler(
+            TriConsumer<T, MinecraftServer, ServerPlayer> handle) {
+        return (payload, context) -> handle.accept(payload, context.server(), context.player());
     }
 }

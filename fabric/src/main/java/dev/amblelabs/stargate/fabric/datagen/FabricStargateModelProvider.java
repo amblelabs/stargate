@@ -1,21 +1,13 @@
 package dev.amblelabs.stargate.fabric.datagen;
 
 import dev.amblelabs.lib.fabric.datagen.FabricAmbleModelProvider;
-import dev.amblelabs.stargate.common.items.IrisItem;
-import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
+// TODO: pass suppliers instead
 public class FabricStargateModelProvider extends FabricAmbleModelProvider {
 
     public FabricStargateModelProvider(FabricDataOutput output) {
@@ -23,7 +15,7 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators gen) {
+    public void generateBlockStateModels(AmbleBlockModelGenerators gen) {
         // TODO: figure out how to datagen blockstate with direction...
         gen.blockEntityModels(StargateBlocks.STARGATE, StargateBlocks.NAQUADAH_BLOCK);
         gen.blockEntityModels(StargateBlocks.RING, StargateBlocks.NAQUADAH_BLOCK);
@@ -40,25 +32,12 @@ public class FabricStargateModelProvider extends FabricAmbleModelProvider {
         gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_BUSH, BlockModelGenerators.TintState.NOT_TINTED);
         gen.createCrossBlockWithDefaultItem(StargateBlocks.DRY_GRASS, BlockModelGenerators.TintState.NOT_TINTED);
 
-        createToaster(gen, StargateBlocks.TOASTER);
-    }
-
-    private static void createToaster(BlockModelGenerators generator, Block horizontalBlock) {
-        ResourceLocation model = ModelLocationUtils.getModelLocation(horizontalBlock, "");
-
-        generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(horizontalBlock, Variant.variant()
-                        .with(VariantProperties.MODEL, model))
-                .with(BlockModelGenerators.createHorizontalFacingDispatch()));
+        gen.createNonTemplateHorizontalBlock(StargateBlocks.TOASTER);
     }
 
     @Override
-    public void generateItemModels(ItemModelGenerators gen) {
-        StargateItems.registerItems((item, resourceLocation) -> {
-            if (item instanceof StargateBlockItem || item instanceof IrisItem)
-                gen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
-        });
-
-        gen.generateFlatItem(StargateBlocks.TOASTER.asItem(), ModelTemplates.FLAT_ITEM);
+    public void generateItemModels(AmbleItemModelGenerators gen) {
+        gen.generateFlatItem(StargateBlocks.TOASTER, ModelTemplates.FLAT_ITEM);
 
         gen.generateFlatItem(StargateItems.ADDRESS_CARTOUCHE, ModelTemplates.FLAT_ITEM);
         gen.generateFlatItem(StargateItems.TOAST, ModelTemplates.FLAT_ITEM);

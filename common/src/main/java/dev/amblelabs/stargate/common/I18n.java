@@ -6,7 +6,7 @@ import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.Locale;
 
@@ -81,12 +81,12 @@ public interface I18n {
         return modText("item", value, args);
     }
 
-    private static MutableComponent item(Item item, String suffix) {
-        return Component.translatable("item." + item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix);
+    private static MutableComponent item(ItemLike item, String suffix) {
+        return Component.translatable("item." + item.asItem().builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix);
     }
 
-    private static MutableComponent item(Item item, String suffix, Object... args) {
-        return Component.translatable("item." + item.builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix, args);
+    private static MutableComponent item(ItemLike item, String suffix, Object... args) {
+        return Component.translatable("item." + item.asItem().builtInRegistryHolder().key().location().toLanguageKey() + "." + suffix, args);
     }
 
     static MutableComponent itemGroup(String name) {

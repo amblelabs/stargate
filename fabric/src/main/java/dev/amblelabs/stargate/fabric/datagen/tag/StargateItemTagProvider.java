@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.fabric.datagen.tag;
 
-import dev.amblelabs.lib.fabric.datagen.FabricAmbleItemTagProvider;
+import dev.amblelabs.lib.fabric.datagen.FabricAmbleTagProvider;
 import dev.amblelabs.stargate.xplat.XplatTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class StargateItemTagProvider extends FabricAmbleItemTagProvider {
+public class StargateItemTagProvider extends FabricAmbleTagProvider.ItemTagProvider {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final XplatTags xtags;
 
