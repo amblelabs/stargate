@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.fabric;
 
-import dev.amblelabs.lib.api.mod.AmblekitTags;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.mod.StargateTags;
 import dev.amblelabs.stargate.common.blocks.behavior.StargateComposting;
@@ -12,7 +11,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -99,10 +97,6 @@ public final class FabricStargateInit implements ModInitializer {
         StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
         StargateStructureTypes.registerStructureTypes(bind(BuiltInRegistries.STRUCTURE_TYPE));
         StargateStructurePieces.registerStructurePieces(bind(BuiltInRegistries.STRUCTURE_PIECE));
-
-        // TODO: move to amblekit
-        PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
-                player.isCrouching() || !state.is(AmblekitTags.Blocks.UNBREAKABLE));
 
         this.dieInAFire();
 
