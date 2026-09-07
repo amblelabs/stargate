@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
@@ -19,7 +20,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
@@ -97,6 +100,11 @@ public final class FabricStargateInit implements ModInitializer {
         StargatePlacementModifiers.registerPlacementModifiers(bind(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE));
         StargateStructureTypes.registerStructureTypes(bind(BuiltInRegistries.STRUCTURE_TYPE));
         StargateStructurePieces.registerStructurePieces(bind(BuiltInRegistries.STRUCTURE_PIECE));
+
+        StargateAttributes.register();
+
+        FabricDefaultAttributeRegistry.register(EntityType.PLAYER,
+                Player.createAttributes().add(StargateAttributes.SPACIAL_RESISTANCE));
 
         this.dieInAFire();
 
