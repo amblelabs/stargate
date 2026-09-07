@@ -12,6 +12,10 @@
       "": "You're gonna need a new Toaster.",
       desc: "Acquire a Toaster, the building block of all advanced technology."
     },
+    raw_naquadah: {
+      "": "...the building block of all his technology.",
+      desc: "Acquire Naquadah, the building block of all advanced technology."
+    }
   },
   "item.stargate": {
     generic: {
