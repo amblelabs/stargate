@@ -5,7 +5,9 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
 
 import java.util.function.Consumer;
@@ -18,11 +20,12 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, Consumer<AdvancementHolder> consumer) {
+        // TODO: make this trigger just once - on join.
         AdvancementHolder root = create("root").icon(StargateBlocks.STARGATE)
                 .noToast().silent().background("textures/block/raw_naquadah_block.png")
-                .condition("root", InventoryChangeTrigger.TriggerInstance.hasItems(
-                        StargateBlocks.STARGATE
-                )).build(consumer);
+                .condition("root", PlayerTrigger.TriggerInstance.tick())
+                .rewards(AdvancementRewards.Builder.function(StargateAPI.modLoc("welcome")))
+                .build(consumer);
 
         AdvancementHolder rawNaquadah = challenge(root, "raw_naquadah").icon(StargateItems.RAW_NAQUADAH)
                 .condition("obtain", InventoryChangeTrigger.TriggerInstance.hasItems(StargateItems.RAW_NAQUADAH))

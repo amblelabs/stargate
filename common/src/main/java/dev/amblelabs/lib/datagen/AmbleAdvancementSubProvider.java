@@ -69,6 +69,15 @@ public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvi
             this.name = name;
         }
 
+        public Builder rewards(AdvancementRewards.Builder rewardsBuilder) {
+            return this.rewards(rewardsBuilder.build());
+        }
+
+        public Builder rewards(AdvancementRewards rewards) {
+            this.builder.rewards(rewards);
+            return this;
+        }
+
         public Builder condition(String name, Criterion<?> conditions) {
             this.builder.addCriterion(name, conditions);
             return this;

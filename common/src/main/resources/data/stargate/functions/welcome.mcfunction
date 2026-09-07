@@ -1,0 +1,1 @@
+tellraw @s {"translate":"text.stargate.welcome.wiki","with":[{"translate":"text.stargate.welcome.here","color":"blue","underlined":true,"clickEvent":{"action":"open_url","value":"https://amblelabs.dev/wiki/en/stargate"},"hoverEvent":{"action":"show_text","contents":{"translate":"ait.text.chat.hover"}}}]}

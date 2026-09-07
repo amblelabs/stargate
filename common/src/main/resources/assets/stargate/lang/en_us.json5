@@ -82,7 +82,12 @@
   },
   "text.stargate": {
     gate: "Stargate",
-    logo: "Click here to see credits."
+    logo: "Click here to see credits.",
+    welcome: {
+      wiki: "To learn how to play Stargate: Sojourner, we suggest you read the wiki, which is %s",
+      here: "here",
+      hover: "Click here to open the wiki in your browser"
+    }
   },
   "text.autoconfig.stargate": {
     title: "SG:S Config",
