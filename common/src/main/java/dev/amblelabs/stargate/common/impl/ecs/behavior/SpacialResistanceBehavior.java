@@ -4,11 +4,13 @@ import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
+import dev.amblelabs.stargate.common.lib.StargateAdvancementTriggers;
 import dev.amblelabs.stargate.common.lib.StargateAttributes;
 import dev.amblelabs.stargate.common.lib.StargateDamageTypes;
 import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,6 +41,9 @@ public class SpacialResistanceBehavior implements TBehavior, StargateTpEvents {
 
             if (spacialResistance != null)
                 resistance = spacialResistance.getValue();
+
+            if (entity instanceof ServerPlayer serverPlayer)
+                StargateAdvancementTriggers.FLOW_DAMAGE.get().trigger(serverPlayer);
 
             entity.hurt(flow, (float) (living.getMaxHealth() * (1 - resistance / 100f)));
         } else {

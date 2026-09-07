@@ -2,6 +2,8 @@ package dev.amblelabs.stargate.datagen;
 
 import dev.amblelabs.lib.datagen.AmbleAdvancementSubProvider;
 import dev.amblelabs.stargate.api.StargateAPI;
+import dev.amblelabs.stargate.common.advancements.*;
+import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
 import net.minecraft.advancements.AdvancementHolder;
@@ -9,6 +11,7 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
@@ -48,10 +51,19 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
                 .hidden().build(consumer);
 
         AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateBlocks.STARGATE)
-                .condition("has_passed_through", StargateCriterions.PASSED_THROUGH.conditions()).build();
+                .condition("has_passed_through", PassedThroughTrigger.TriggerInstance.passedThrough()).build(consumer);
 
-        AdvancementHolder goldenIris = goal(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
-                .condition("was_broken", BreakIrisCriterion.Conditions.create(StargateIrisTiers.GOLD))
-                .build();
+        AdvancementHolder diedToIris = goal(passedThrough, "death.iris").icon(StargateItems.NETHERITE_IRIS)
+                .condition("died", IrisDamageTrigger.TriggerInstance.dead()).build(consumer);
+
+        AdvancementHolder diedToFlow = goal(passedThrough, "death.flow").icon(Blocks.SKELETON_SKULL)
+                .condition("died", FlowDamageTrigger.TriggerInstance.dead()).build(consumer);
+
+        AdvancementHolder diedToKawoosh = goal(passedThrough, "death.kawoosh").icon(Blocks.SKELETON_SKULL)
+                .condition("died", KawooshDamageTrigger.TriggerInstance.dead()).build(consumer);
+
+        AdvancementHolder goldenIris = challenge(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
+                .condition("was_broken", BreakIrisTrigger.TriggerInstance.broken(IrisItem.Type.GOLD))
+                .build(consumer);
     }
 }

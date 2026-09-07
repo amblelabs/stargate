@@ -95,6 +95,7 @@ public final class FabricStargateInit implements ModInitializer {
         StargateStructurePieces.register();
 
         StargateAttributes.register();
+        StargateAdvancementTriggers.register();
 
         //noinspection DataFlowIssue - no issue, actually.
         FabricDefaultAttributeRegistry.register(EntityType.PLAYER,

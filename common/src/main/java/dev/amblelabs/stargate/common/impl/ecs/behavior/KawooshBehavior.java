@@ -2,15 +2,18 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
+import dev.amblelabs.stargate.common.advancements.KawooshDamageTrigger;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
+import dev.amblelabs.stargate.common.lib.StargateAdvancementTriggers;
 import dev.amblelabs.stargate.common.lib.StargateDamageTypes;
 import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,6 +40,9 @@ public class KawooshBehavior implements TBehavior, StargateBlockEvents.Tick {
 
             for (Entity entity : level.getEntities(null, aabb)) {
                 entity.hurt(StargateDamageTypes.source(level, StargateDamageTypes.KAWOOSH), Integer.MAX_VALUE);
+
+                if (entity instanceof ServerPlayer serverPlayer)
+                    StargateAdvancementTriggers.KAWOOSH_DAMAGE.get().trigger(serverPlayer);
             }
         }
     }

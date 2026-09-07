@@ -7,11 +7,13 @@ import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.api.util.StargateUtil;
 import dev.amblelabs.stargate.api.util.TeleportableEntity;
 import dev.amblelabs.stargate.client.renderers.layers.GlyphRenderLayer;
+import dev.amblelabs.stargate.common.advancements.PassedThroughTrigger;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.ChevronState;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.impl.ecs.state.LevelState;
+import dev.amblelabs.stargate.common.lib.StargateAdvancementTriggers;
 import dev.amblelabs.stargate.common.lib.StargateSounds;
 import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
@@ -20,6 +22,7 @@ import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -233,6 +236,10 @@ public interface GenericGateBehavior {
 
             entity.setDeltaMovement(newVelocity);
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
+
+            // TODO: post-tp event
+            if (entity instanceof ServerPlayer serverPlayer)
+                StargateAdvancementTriggers.PASSED_THROUGH.get().trigger(serverPlayer);
         }
 
         @Override
