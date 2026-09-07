@@ -23,7 +23,7 @@ public class BuriedStargateStructure extends Structure {
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context) {
-        BlockPos blockPos = new BlockPos(context.chunkPos().getBlockX(9), 90, context.chunkPos().getBlockZ(9));
+        BlockPos blockPos = new BlockPos(context.chunkPos().getBlockX(3), 90, context.chunkPos().getBlockZ(4));
         builder.addPiece(new BuriedStargatePieces.BuriedStargatePiece(blockPos));
     }
 
