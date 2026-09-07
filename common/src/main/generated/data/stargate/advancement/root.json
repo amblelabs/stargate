@@ -15,7 +15,7 @@
     "announce_to_chat": false,
     "background": "stargate:textures/block/raw_naquadah_block.png",
     "description": {
-      "translate": "achievement.stargate.description.root"
+      "translate": "advancement.stargate.root.desc"
     },
     "icon": {
       "count": 1,
@@ -23,7 +23,7 @@
     },
     "show_toast": false,
     "title": {
-      "translate": "achievement.stargate.title.root"
+      "translate": "advancement.stargate.root"
     }
   },
   "requirements": [

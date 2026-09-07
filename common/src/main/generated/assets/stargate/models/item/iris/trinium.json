@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "stargate:item/diamond_iris"
+    "layer0": "stargate:item/iris/trinium"
   }
 }

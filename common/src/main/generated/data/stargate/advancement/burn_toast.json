@@ -14,7 +14,7 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.burn_toast"
+      "translate": "advancement.stargate.burn_toast.desc"
     },
     "frame": "challenge",
     "hidden": true,
@@ -23,7 +23,7 @@
       "id": "stargate:burnt_toast"
     },
     "title": {
-      "translate": "achievement.stargate.title.burn_toast"
+      "translate": "advancement.stargate.burn_toast"
     }
   },
   "requirements": [

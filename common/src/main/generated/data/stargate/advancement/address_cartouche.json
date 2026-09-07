@@ -14,7 +14,7 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.address_cartouche"
+      "translate": "advancement.stargate.address_cartouche.desc"
     },
     "frame": "goal",
     "hidden": true,
@@ -23,7 +23,7 @@
       "id": "stargate:address_cartouche"
     },
     "title": {
-      "translate": "achievement.stargate.title.address_cartouche"
+      "translate": "advancement.stargate.address_cartouche"
     }
   },
   "requirements": [

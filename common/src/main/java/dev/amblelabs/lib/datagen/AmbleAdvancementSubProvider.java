@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "SameParameterValue", "unused"})
+@SuppressWarnings({"SameParameterValue", "unused"})
 public abstract class AmbleAdvancementSubProvider implements AdvancementSubProvider {
 
     protected final String modId;

@@ -3,20 +3,14 @@
     main: "Stargate: Sojourner"
   },
   // TODO
-  "achievement.stargate": {
-    title: {
-      root: "Stargate: Sojourner",
-      raw_naquadah: "(TBD)",
-      address_cartouche: "(TBD)",
-      toaster: "Obtain Toaster",
-      burn_toast: "mmm crispy"
+  "advancement.stargate": {
+    root: {
+      "": "Stargate: Sojourner",
+      desc: "(TBD)"
     },
-    description: {
-      root: "(TBD)",
-      raw_naquadah: "(TBD)",
-      address_cartouche: "(TBD)",
-      toaster: "(TBD)",
-      burn_toast: "(TBD)"
+    toaster: {
+      "": "You're gonna need a new Toaster.",
+      desc: "Acquire a Toaster, the building block of all advanced technology."
     },
   },
   "item.stargate": {

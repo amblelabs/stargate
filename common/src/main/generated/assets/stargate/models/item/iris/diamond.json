@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "stargate:item/music_disc_theme"
+    "layer0": "stargate:item/iris/diamond"
   }
 }

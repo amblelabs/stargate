@@ -14,7 +14,7 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.toaster"
+      "translate": "advancement.stargate.toaster.desc"
     },
     "frame": "goal",
     "hidden": true,
@@ -23,7 +23,7 @@
       "id": "stargate:toaster"
     },
     "title": {
-      "translate": "achievement.stargate.title.toaster"
+      "translate": "advancement.stargate.toaster"
     }
   },
   "requirements": [

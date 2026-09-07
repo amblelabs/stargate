@@ -14,7 +14,7 @@
   },
   "display": {
     "description": {
-      "translate": "achievement.stargate.description.raw_naquadah"
+      "translate": "advancement.stargate.raw_naquadah.desc"
     },
     "frame": "challenge",
     "hidden": true,
@@ -23,7 +23,7 @@
       "id": "stargate:raw_naquadah"
     },
     "title": {
-      "translate": "achievement.stargate.title.raw_naquadah"
+      "translate": "advancement.stargate.raw_naquadah"
     }
   },
   "requirements": [
