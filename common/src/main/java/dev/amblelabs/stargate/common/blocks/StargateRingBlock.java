@@ -74,7 +74,7 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
             return ItemInteractionResult.SUCCESS;
         }
 
-        if (!(stack.getItem() instanceof BlockItem blockItem))
+        if (!(stack.getItem() instanceof BlockItem blockItem) || !blockItem.getBlock().defaultBlockState().isSolid())
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 
         if (hand == InteractionHand.OFF_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()
