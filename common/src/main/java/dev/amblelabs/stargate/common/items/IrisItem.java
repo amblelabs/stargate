@@ -25,7 +25,7 @@ public class IrisItem extends Item {
         public static final Type NAQUADAH = new Type(StargateAPI.modLoc("naquadah"), 1600);
         public static final Type NETHERITE = new Type(StargateAPI.modLoc("netherite"), 800);
         public static final Type DIAMOND = new Type(StargateAPI.modLoc("diamond"), 400);
-        public static final Type GOLD = new Type(StargateAPI.modLoc("gold"), 5);
+        public static final Type GOLD = new Type(StargateAPI.modLoc("gold"), 0);
         public static final Type IRON = new Type(StargateAPI.modLoc("iron"), 200);
 
         public IrisState toState() {

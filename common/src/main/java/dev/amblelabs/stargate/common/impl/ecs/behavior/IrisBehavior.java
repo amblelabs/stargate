@@ -67,6 +67,8 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
         if (itemStack.getItem() instanceof IrisItem iris && !stargate.hasState(IrisState.state)) {
             stargate.addState(iris.toState());
             player.getItemInHand(interactionHand).consume(1, player);
+
+            this.damage(stargate, 0); // force a breakage check for the golden iris advancement
         }
     }
 
