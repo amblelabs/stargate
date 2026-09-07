@@ -121,10 +121,21 @@
     ]
   },
   {
-    "section": "Special Thanks",
+    "section": "Attributions & Special Thanks",
     "disciplines": [
       {
-        "discipline": "",
+        "discipline": "Attributions",
+        "titles": [
+          {
+            "title": "Sounds",
+            "names": [
+              "The Stargate Carter Pack"
+            ]
+          }
+        ]
+      },
+      {
+        "discipline": "Special Thanks to...",
         "titles": [
           {
             "title": "",
