@@ -89,6 +89,9 @@
       hover: "Click here to open the wiki in your browser"
     }
   },
+  "text.amblekit": {
+    unbreakable_confirm: "Break the block again while sneaking to confirm."
+  },
   "text.autoconfig.stargate": {
     title: "SG:S Config",
     category: {

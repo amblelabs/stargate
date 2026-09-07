@@ -28,12 +28,16 @@ public class PreventUnbreakableBlockBreaking {
 
     @Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
     public void playerWillDestroy(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockState") BlockState blockState) {
-        if (blockState.is(AmblekitTags.Blocks.UNBREAKABLE) && !pos.equals(amblekit$lastUnbreakableBreak)) {
-            this.amblekit$lastUnbreakableBreak = pos;
-            if (this.minecraft.player.isCrouching())
-                cir.setReturnValue(false);
+        if (blockState.is(AmblekitTags.Blocks.UNBREAKABLE)) {
+            if (this.minecraft.player.isCrouching() && pos.equals(amblekit$lastUnbreakableBreak)) {
+                this.amblekit$lastUnbreakableBreak = null;
+                return;
+            }
 
-            this.minecraft.player.displayClientMessage(Component.translatable("Break the block again while sneaking to confirm."), true);
+            this.amblekit$lastUnbreakableBreak = pos;
+            this.minecraft.player.displayClientMessage(Component.translatable("text.amblekit.unbreakable_confirm"), true);
+
+            cir.setReturnValue(false);
         }
     }
 }
