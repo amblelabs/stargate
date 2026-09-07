@@ -26,16 +26,6 @@ import java.util.function.Function;
 
 public class StargateDataAccessor implements DataAccessor {
 
-    private static final CustomComponentTagVisitor STRINGIFIER = new CustomComponentTagVisitor("  ") {
-        @Override
-        public Tag onTag(String key, Tag tag) {
-            if (key.equals(Stargate.TAG_ID) && tag.getId() == Tag.TAG_INT_ARRAY)
-                tag = StringTag.valueOf(NbtUtils.loadUUID(tag).toString());
-
-            return tag;
-        }
-    };
-
     public static final SimpleCommandExceptionType NO_STARGATE_FOUND = new SimpleCommandExceptionType(I18n.Commands.Arguments.NOT_FOUND);
 
     public static final Function<String, DataCommands.DataProvider> PROVIDER = (string) -> new DataCommands.DataProvider() {
@@ -100,7 +90,15 @@ public class StargateDataAccessor implements DataAccessor {
     @Override
     public Component getPrintSuccess(Tag nbt) {
         BlockPos pos = this.stargateBlockEntity.getBlockPos();
-        return I18n.Commands.dataQuery(pos, STRINGIFIER.visit(nbt));
+        return I18n.Commands.dataQuery(pos, new CustomComponentTagVisitor("  ") {
+            @Override
+            public Tag onTag(String key, Tag tag) {
+                if (key.equals(Stargate.TAG_ID) && tag.getId() == Tag.TAG_INT_ARRAY)
+                    tag = StringTag.valueOf(NbtUtils.loadUUID(tag).toString());
+
+                return tag;
+            }
+        }.visit(nbt));
     }
 
     @Override
