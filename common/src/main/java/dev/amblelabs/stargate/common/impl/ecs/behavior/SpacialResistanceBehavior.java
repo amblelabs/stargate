@@ -6,6 +6,7 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.lib.StargateAttributes;
 import dev.amblelabs.stargate.common.lib.StargateDamageTypes;
+import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.core.Holder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,9 +18,12 @@ import net.minecraft.world.level.Level;
 
 public class SpacialResistanceBehavior implements TBehavior, StargateTpEvents {
 
+    @Resolve
+    private final GateManagerBehavior manager = behavior();
+
     @Override
     public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, Entity entity) {
-        GateState<?> state = from.state(GateState.state);
+        GateState<?> state = manager.get(from);
 
         Level level = entity.level();
         DamageSource flow = StargateDamageTypes.source(level, StargateDamageTypes.FLOW);

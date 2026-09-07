@@ -28,7 +28,7 @@ public class KawooshBehavior implements TBehavior, StargateBlockEvents.Tick {
     @Override
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (level instanceof ServerLevel serverLevel && serverLevel.getServer().getTickCount() % 2 == 0
-                && this.manager.getCurrent(stargate) instanceof GateState.Opening open && open.timer < GateState.Opening.TICKS_PER_KAWOOSH) {
+                && this.manager.get(stargate) instanceof GateState.Opening open && open.timer < GateState.Opening.TICKS_PER_KAWOOSH) {
             Direction direction = blockState.getValue(StargateBlock.FACING);
             Vector3f offset = direction.step().mul(KAWOOSH_MAX_DISTANCE / 2f);
 

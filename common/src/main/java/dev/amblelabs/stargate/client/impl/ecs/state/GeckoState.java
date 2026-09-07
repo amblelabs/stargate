@@ -153,6 +153,7 @@ public class GeckoState implements NbtState<GeckoState> {
                     if (stargate == null) return;
 
                     int chevrons = 0;
+
                     GateState<?> state = stargate.stateOrNull(GateState.state);
 
                     if (state instanceof GateState.Closed closed) {

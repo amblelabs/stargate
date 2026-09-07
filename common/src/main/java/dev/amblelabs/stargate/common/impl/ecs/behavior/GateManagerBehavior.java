@@ -7,18 +7,27 @@ import dev.drtheo.ecs.behavior.TBehavior;
 
 public class GateManagerBehavior implements TBehavior {
 
-    public GateState<?> getCurrent(Stargate stargate) {
+    private static GateManagerBehavior INSTANCE = new GateManagerBehavior();
+
+    private GateManagerBehavior() { }
+
+    public GateState<?> get(Stargate stargate) {
+        //noinspection removal - this is THE place to use it.
         GateState<?> oldState = stargate.stateOrNull(GateState.state);
         return oldState != null ? oldState : new GateState.Closed();
     }
 
     public void set(Stargate stargate, GateState<?> newState) {
-        GateState<?> oldState = this.getCurrent(stargate);
+        GateState<?> oldState = this.get(stargate);
         stargate.addState(newState);
 
         StargateGateStateEvents.notify(events ->
                 events.stargate$gateState(stargate, oldState, newState));
 
         stargate.setChanged();
+    }
+
+    public static GateManagerBehavior get() {
+        return INSTANCE;
     }
 }

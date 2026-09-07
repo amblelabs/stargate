@@ -57,7 +57,7 @@ public interface GenericGateBehavior {
 
         @Override
         public void tick(Stargate stargate) {
-            if (!(stargate.state(GateState.state) instanceof GateState.Closed closed))
+            if (!(manager.get(stargate) instanceof GateState.Closed closed))
                 return;
 
             if (stargate.isClient()) {
@@ -125,7 +125,7 @@ public interface GenericGateBehavior {
         public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
             controllers.add(new AnimationController<>(blockEntity, "Lock",
                     anim -> {
-                        GateState<?> state = stargate.stateOrNull(GateState.state);
+                        GateState<?> state = manager.get(stargate);
                         if (state instanceof GateState.Closed closed && closed.locking
                                 && closed.timer >= calculateDelay(closed) - GateState.Closed.EXTRA_TICKS_PER_GLYPH)
                             return anim.setAndContinue(LOCK_SYMBOL);
@@ -149,7 +149,7 @@ public interface GenericGateBehavior {
 
         @Override
         public void tick(Stargate stargate) {
-            if (!(stargate.state(GateState.state) instanceof GateState.Opening opening))
+            if (!(manager.get(stargate) instanceof GateState.Opening opening))
                 return;
 
             if (opening.timer++ <= GateState.Opening.TICKS_PER_KAWOOSH) return;
@@ -185,7 +185,7 @@ public interface GenericGateBehavior {
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
-            if (!(stargate.state(GateState.state) instanceof GateState.Open open))
+            if (!(manager.get(stargate) instanceof GateState.Open open))
                 return;
 
             // handle abnormal state
@@ -240,7 +240,7 @@ public interface GenericGateBehavior {
             if (stargate.isClient()) return;
             if (level.getGameTime() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 
-            if (!(stargate.state(GateState.state) instanceof GateState.Open open))
+            if (!(manager.get(stargate) instanceof GateState.Open open))
                 return;
 
             Direction facing = blockState.getValue(StargateBlock.FACING);

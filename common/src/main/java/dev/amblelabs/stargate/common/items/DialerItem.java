@@ -5,6 +5,7 @@ import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import dev.amblelabs.stargate.common.I18n;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.items.component.StargateLinkedComponent;
@@ -58,7 +59,7 @@ public class DialerItem extends Item {
 		Stargate target = getStargate(context.getLevel(), context.getItemInHand());
 		if (target == null) return InteractionResult.FAIL;
 
-        GateState<?> state = stargate.stateOrNull(GateState.state);
+        GateState<?> state = GateManagerBehavior.get().get(stargate);
 
         if (state instanceof GateState.Closed closed) {
             closed.address = target.state(C7State.state).address();

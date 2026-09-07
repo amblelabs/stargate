@@ -65,7 +65,7 @@ public class StargateEcs {
         TBehaviorRegistry.register(C7Behavior::new);
 
         GenericGateBehavior.registerAll();
-        TBehaviorRegistry.register(GateManagerBehavior::new);
+        TBehaviorRegistry.register(GateManagerBehavior::get);
         TBehaviorRegistry.register(SpacialResistanceBehavior::new);
         TBehaviorRegistry.register(KawooshBehavior::new);
     }

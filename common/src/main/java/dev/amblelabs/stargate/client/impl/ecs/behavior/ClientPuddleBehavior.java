@@ -56,7 +56,7 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents.Tick
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
 
-        GateState<?> gateState = this.manager.getCurrent(stargate);
+        GateState<?> gateState = this.manager.get(stargate);
         if (gateState instanceof GateState.Closed)
             return;
 

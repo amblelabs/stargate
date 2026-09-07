@@ -21,9 +21,8 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
     }
 
     /**
-     * @deprecated Use {@link dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior#getCurrent(Stargate)} instead.
+     * @apiNote Use {@link dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior#get(Stargate)} instead.
      */
-    @Deprecated(forRemoval = true)
     Type<GateState<?>> state = new Type<>(StargateAPI.modLoc("generic/holder"), 0) {
 
         @Override
