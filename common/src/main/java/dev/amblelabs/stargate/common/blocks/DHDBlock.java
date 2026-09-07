@@ -39,12 +39,6 @@ public class DHDBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (level instanceof ServerLevel serverLevel && level.getBlockEntity(blockPos) instanceof DHDBlockEntity blockEntity)
-            blockEntity.onPlace(blockState, serverLevel, blockPos, blockState2, bl);
-    }
-
-    @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof DHDBlockEntity dhdBlockEntity)
             dhdBlockEntity.onBlockBreak(serverLevel);
