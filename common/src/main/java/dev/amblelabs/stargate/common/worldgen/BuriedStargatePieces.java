@@ -66,7 +66,7 @@ public class BuriedStargatePieces {
                     }
 
                     mutableBlockPos.below(random.nextIntBetweenInclusive(0, 6));
-                    this.boundingBox = new BoundingBox(mutableBlockPos);
+                    this.boundingBox = new BoundingBox(mutableBlockPos).inflatedBy(6);
 
                     Direction facing = Direction.values()[2 + random.nextInt(4)];
 

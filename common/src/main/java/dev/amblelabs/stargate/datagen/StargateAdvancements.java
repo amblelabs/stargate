@@ -53,17 +53,23 @@ public class StargateAdvancements extends AmbleAdvancementSubProvider {
         AdvancementHolder passedThrough = challenge(root, "passed_through").icon(StargateBlocks.STARGATE)
                 .condition("has_passed_through", PassedThroughTrigger.TriggerInstance.passedThrough()).build(consumer);
 
-        AdvancementHolder diedToIris = goal(passedThrough, "death.iris").icon(StargateItems.NETHERITE_IRIS)
+        AdvancementHolder diedToIris = goal(passedThrough, "death_iris").icon(StargateItems.NETHERITE_IRIS)
                 .condition("died", IrisDamageTrigger.TriggerInstance.dead()).build(consumer);
 
-        AdvancementHolder diedToFlow = goal(passedThrough, "death.flow").icon(Blocks.SKELETON_SKULL)
+        AdvancementHolder diedToFlow = goal(passedThrough, "death_flow").icon(Blocks.SKELETON_SKULL)
                 .condition("died", FlowDamageTrigger.TriggerInstance.dead()).build(consumer);
 
-        AdvancementHolder diedToKawoosh = goal(passedThrough, "death.kawoosh").icon(Blocks.SKELETON_SKULL)
+        AdvancementHolder diedToKawoosh = goal(passedThrough, "death_kawoosh").icon(Blocks.SKELETON_SKULL)
                 .condition("died", KawooshDamageTrigger.TriggerInstance.dead()).build(consumer);
 
         AdvancementHolder goldenIris = challenge(root, "golden_iris").icon(StargateItems.GOLD_IRIS)
                 .condition("was_broken", BreakIrisTrigger.TriggerInstance.broken(IrisItem.Type.GOLD))
                 .build(consumer);
+
+        // defined manually because of datagen being gay
+//        AdvancementHolder findBuriedGate = goal(root, "find_gate").icon(StargateBlocks.STARGATE)
+//                .condition("found", PlayerTrigger.TriggerInstance.located(LocationPredicate.Builder.inStructure(
+//                        provider.lookupOrThrow(Registries.STRUCTURE).get(ResourceKey.create(Registries.STRUCTURE, StargateAPI.modLoc("buried_stargate"))).orElseThrow())))
+//                .build(consumer);
     }
 }

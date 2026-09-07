@@ -16,15 +16,21 @@
       "": "...the building block of all his technology.",
       desc: "Acquire Naquadah, the building block of all advanced technology."
     },
-    death: {
-      kawoosh: {
-        "": "Escape from Hadante.",
-        desc: "Die to the unstable vortex of a forming wormhole. Kawoosh."
-      },
-      iris: {
-        "": "Like bugs on a windshield.",
-        desc: "Die to an iris or shield on the receiving end of a wormhole."
-      }
+    death_kawoosh: {
+      "": "Escape from Hadante.",
+      desc: "Die to the unstable vortex of a forming wormhole. Kawoosh."
+    },
+    death_iris: {
+      "": "Like bugs on a windshield.",
+      desc: "Die to an iris or shield on the receiving end of a wormhole."
+    },
+    find_gate: {
+      "": "It's not \"Door to Heaven\"... It's... Stargate.",
+      desc: "Find a Stargate."
+    },
+    golden_iris: {
+      "": "Did you really think that would work?",
+      desc: "Break a Gold Iris."
     }
   },
   "item.stargate": {

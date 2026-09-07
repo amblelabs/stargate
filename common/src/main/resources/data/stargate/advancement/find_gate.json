@@ -1,0 +1,35 @@
+{
+  "parent": "stargate:root",
+  "display": {
+    "icon": {
+      "id": "stargate:stargate",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancement.stargate.find_gate"
+    },
+    "description": {
+      "translate": "advancement.stargate.find_gate.desc"
+    },
+    "frame": "goal"
+  },
+  "criteria": {
+    "found": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "location": {
+            "structures": [
+              "stargate:buried_stargate"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "found"
+    ]
+  ]
+}
