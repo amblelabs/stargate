@@ -7,7 +7,7 @@ import dev.drtheo.ecs.behavior.TBehavior;
 
 public class GateManagerBehavior implements TBehavior {
 
-    private GateState<?> getCurrent(Stargate stargate) {
+    public GateState<?> getCurrent(Stargate stargate) {
         GateState<?> oldState = stargate.stateOrNull(GateState.state);
         return oldState != null ? oldState : new GateState.Closed();
     }

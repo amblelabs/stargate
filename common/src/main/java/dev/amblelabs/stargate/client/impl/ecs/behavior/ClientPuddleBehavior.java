@@ -5,9 +5,11 @@ import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
+import dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.lib.StargateParticles;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
+import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -54,6 +56,9 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
 
     private static final Minecraft mc = Minecraft.getInstance();
 
+    @Resolve
+    private final GateManagerBehavior manager = behavior();
+
     @Override
     public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) { }
 
@@ -64,7 +69,7 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents {
     public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
 
-        GateState gateState = stargate.state(GateState.state);
+        GateState<?> gateState = this.manager.getCurrent(stargate);
         if (gateState instanceof GateState.Closed)
             return;
 
