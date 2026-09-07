@@ -99,14 +99,6 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
             profiler.pop();
         }
-
-        // FIXME: should be rendered in an event, like the puddle particles
-        if (!StargateConfig.client().renderPuddleBackground())
-            return;
-
-        profiler.push("background");
-        this.renderBackground(poseStack, blockEntity, bufferSource);
-        profiler.pop();
     }
 
     @Override
@@ -119,6 +111,14 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
 
         profiler.push("render");
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+        profiler.pop();
+
+        // FIXME: should be rendered in an event, like the puddle particles
+        if (isReRender || !StargateConfig.client().renderPuddleBackground())
+            return;
+
+        profiler.push("background");
+        this.renderBackground(poseStack, animatable, bufferSource);
         profiler.pop();
     }
 
