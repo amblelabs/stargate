@@ -88,9 +88,6 @@ public class StargateRingBlock extends BaseEntityBlock implements SimpleWaterlog
     }
 
     @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) { }
-
-    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
