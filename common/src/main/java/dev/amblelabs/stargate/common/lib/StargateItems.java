@@ -79,8 +79,9 @@ public class StargateItems {
     public static final Lazy<Item> NAQUADAH_INGOT = make("naquadah_ingot");
     public static final Lazy<Item> NAQUADAH_NUGGET = make("naquadah_nugget");
     public static final Lazy<Item> RAW_NAQUADAH = make("raw_naquadah");
-
     public static final Lazy<Item> CRYSTAL_INGOT = make("crystal_ingot");
+
+    public static final Lazy<Item> GDO = make("gdo");
 
     @SuppressWarnings("DataFlowIssue")
     public static final Lazy<Item> ADDRESS_CARTOUCHE = make("address_cartouche", () ->
