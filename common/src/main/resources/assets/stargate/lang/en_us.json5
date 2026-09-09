@@ -164,8 +164,9 @@
       player: "%s tried to go against the flow, pushed to their demise by %s"
     },
     iris: {
-      "": "%s was shredded by the iris",
-      player: "%s was shredded by the iris, pushed to their demise by %s"
+      "": "%s slammed into the iris",
+      player: "%s slammed into the iris, pushed to their demise by %s",
+      "gdo": "%s forgot to send their IDC"
     },
     kawoosh: {
       "": "%s was disintegrated by an Unstable Vortex",

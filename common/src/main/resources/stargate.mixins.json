@@ -13,6 +13,7 @@
   ],
   "mixins": [
     "data_command.DataCommandsMixin",
+    "eastereggs.FunnyDeath",
     "stargate_manager.ServerLevelMixin",
     "tp.LivingEntityMixin"
   ],
