@@ -1,6 +1,5 @@
 package dev.amblelabs.stargate.fabric.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import dev.amblelabs.lib.api.mod.AmblekitTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -15,6 +14,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 // TODO: move to amblekit common
 @Mixin(MultiPlayerGameMode.class)
@@ -24,18 +24,26 @@ public class PreventUnbreakableBlockBreaking {
     @Final
     private Minecraft minecraft;
 
-    @Shadow
-    private BlockPos destroyBlockPos;
     @Unique
     private BlockPos amblekit$lastUnbreakableBreak;
 
-    @Inject(method = "startDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), cancellable = true)
-    public void startDestroyBlock(BlockPos loc, Direction face, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockState") BlockState blockState) {
+    @Inject(method = "startDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void startDestroyBlock1(BlockPos loc, Direction face, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
         this.handle(loc, blockState, cir);
     }
 
-    @Inject(method = "continueDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), cancellable = true)
-    public void continueDestroyBlock(BlockPos posBlock, Direction directionFacing, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockState") BlockState blockState) {
+    @Inject(method = "startDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void startDestroyBlock2(BlockPos loc, Direction face, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
+        this.handle(loc, blockState, cir);
+    }
+
+    @Inject(method = "continueDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void continueDestroyBlock1(BlockPos posBlock, Direction directionFacing, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
+        this.handle(posBlock, blockState, cir);
+    }
+
+    @Inject(method = "continueDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void continueDestroyBlock2(BlockPos posBlock, Direction directionFacing, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
         this.handle(posBlock, blockState, cir);
     }
 
