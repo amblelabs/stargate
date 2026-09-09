@@ -2,7 +2,7 @@ package dev.amblelabs.stargate.datagen;
 
 import dev.amblelabs.lib.datagen.AmbleAdvancementSubProvider;
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.common.advancements.*;
+import dev.amblelabs.stargate.api.advancements.*;
 import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.amblelabs.stargate.common.lib.StargateBlocks;
 import dev.amblelabs.stargate.common.lib.StargateItems;
@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class StargateAdvancements extends AmbleAdvancementSubProvider {
 
     public StargateAdvancements() {

@@ -2,7 +2,6 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
-import dev.amblelabs.stargate.common.advancements.KawooshDamageTrigger;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;

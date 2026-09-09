@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.common.advancements;
+package dev.amblelabs.stargate.api.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

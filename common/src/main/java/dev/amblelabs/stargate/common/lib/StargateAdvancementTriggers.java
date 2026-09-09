@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.common.lib;
 
-import dev.amblelabs.stargate.common.advancements.*;
+import dev.amblelabs.stargate.api.advancements.*;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
 import dev.amblelabs.stargate.xplat.XplatRegister;
 import net.minecraft.advancements.CriterionTrigger;

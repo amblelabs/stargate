@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.common.advancements;
+package dev.amblelabs.stargate.api.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
 
-public class KawooshDamageTrigger extends SimpleCriterionTrigger<KawooshDamageTrigger.TriggerInstance> {
+public class PassedThroughTrigger extends SimpleCriterionTrigger<PassedThroughTrigger.TriggerInstance> {
 
     @Override
     public Codec<TriggerInstance> codec() {
@@ -19,21 +19,20 @@ public class KawooshDamageTrigger extends SimpleCriterionTrigger<KawooshDamageTr
     }
 
     public void trigger(ServerPlayer player) {
-        super.trigger(player, instance -> instance.died != player.isAlive());
+        super.trigger(player, instance -> true);
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, boolean died) implements SimpleInstance {
+    public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 inst -> inst.group(
-                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-                                Codec.BOOL.optionalFieldOf("died", false).forGetter(TriggerInstance::died)
+                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player)
                         )
                         .apply(inst, TriggerInstance::new)
         );
 
-        public static Criterion<?> dead() {
-            return StargateAdvancementTriggers.KAWOOSH_DAMAGE.get().createCriterion(new TriggerInstance(Optional.empty(), true));
+        public static Criterion<?> passedThrough() {
+            return StargateAdvancementTriggers.PASSED_THROUGH.get().createCriterion(new TriggerInstance(Optional.empty()));
         }
     }
 }

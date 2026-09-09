@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.common.advancements;
+package dev.amblelabs.stargate.api.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
 
-public class PassedThroughTrigger extends SimpleCriterionTrigger<PassedThroughTrigger.TriggerInstance> {
+public class IrisDamageTrigger extends SimpleCriterionTrigger<IrisDamageTrigger.TriggerInstance> {
 
     @Override
     public Codec<TriggerInstance> codec() {
@@ -19,20 +19,21 @@ public class PassedThroughTrigger extends SimpleCriterionTrigger<PassedThroughTr
     }
 
     public void trigger(ServerPlayer player) {
-        super.trigger(player, instance -> true);
+        super.trigger(player, instance -> instance.died != player.isAlive());
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<ContextAwarePredicate> player, boolean died) implements SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 inst -> inst.group(
-                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player)
+                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+                                Codec.BOOL.optionalFieldOf("died", false).forGetter(TriggerInstance::died)
                         )
                         .apply(inst, TriggerInstance::new)
         );
 
-        public static Criterion<?> passedThrough() {
-            return StargateAdvancementTriggers.PASSED_THROUGH.get().createCriterion(new TriggerInstance(Optional.empty()));
+        public static Criterion<?> dead() {
+            return StargateAdvancementTriggers.IRIS_DAMAGE.get().createCriterion(new TriggerInstance(Optional.empty(), true));
         }
     }
 }
