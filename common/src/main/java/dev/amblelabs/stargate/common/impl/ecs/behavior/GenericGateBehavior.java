@@ -20,6 +20,7 @@ import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -225,7 +226,7 @@ public interface GenericGateBehavior {
             if (result == StargateTpEvent.Result.DENY) return;
 
             BlockPos pos = stargate.resolveState(LevelState.state).pos();
-            Vec3 offset = entity.position().subtract(pos.getCenter().subtract(0, 0.5, 0));
+            Vec3 offset = entity.position().subtract(pos.getCenter());
 
             StargateUtil.playSound(stargate, StargateSounds.GATE_TELEPORT);
             StargateUtil.playSound(target, StargateSounds.GATE_TELEPORT);
@@ -239,9 +240,13 @@ public interface GenericGateBehavior {
             Vec3 targetPos = targetPhys.pos().getCenter().add(offset);
 
             entity.teleportTo(targetPhys.level(), targetPos.x, targetPos.y, targetPos.z,
-                    Set.of(), entity.getYRot() + targetPhys.getBlockState().getValue(StargateBlock.FACING).toYRot(), entity.getXRot());
+                    Set.of(), entity.getYRot(), entity.getXRot());
 
             entity.setDeltaMovement(newVelocity);
+
+            if (entity instanceof ServerPlayer serverPlayer)
+                serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity));
+
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
 
             // TODO: post-tp event
