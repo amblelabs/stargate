@@ -20,7 +20,6 @@ import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +27,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,7 +41,6 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface GenericGateBehavior {
 
@@ -231,21 +230,10 @@ public interface GenericGateBehavior {
             StargateUtil.playSound(stargate, StargateSounds.GATE_TELEPORT);
             StargateUtil.playSound(target, StargateSounds.GATE_TELEPORT);
 
-            // Retain entity velocity but reorient it towards the target stargate
-            Vec3 velocity = entity.getDeltaMovement();
-            Vec3 direction = targetPhys.pos().getCenter().subtract(pos.getCenter()).normalize();
-
-            double speed = velocity.length();
-            Vec3 newVelocity = direction.multiply(speed, speed, speed);
             Vec3 targetPos = targetPhys.pos().getCenter().add(offset);
 
             entity.teleportTo(targetPhys.level(), targetPos.x, targetPos.y, targetPos.z,
-                    Set.of(), entity.getYRot(), entity.getXRot());
-
-            entity.setDeltaMovement(newVelocity);
-
-            if (entity instanceof ServerPlayer serverPlayer)
-                serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity));
+                    RelativeMovement.ALL, entity.getYRot(), entity.getXRot());
 
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
 
