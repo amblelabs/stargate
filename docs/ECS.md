@@ -182,6 +182,8 @@ class SomeBehavior implements TBehavior, EntityEvents {
 
 To subscribe to an event group, you just need to implement the event group's interface in the behaviour, which will serve as the subscriber.
 
+By the convention, events must be handled as results (observations) of state cgange (use cases which include allowing/denying an action, collecting modifiers, e.g. energy consumption are all acceptable as well).
+
 ## Serialization
 
 Serialization is part of the extended API provided by the MC implementation. 
