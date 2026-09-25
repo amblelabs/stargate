@@ -74,7 +74,7 @@ public interface TState<Self extends TState<Self>> {
         public CompoundTag update(int version, CompoundTag tag) {
             if (version < this.version) {
                 for (Fix fix : fixes) {
-                    if (version <= fix.version) {
+                    if (version < fix.version) {
                         tag = fix.fixer().update(tag);
                     }
                 }
