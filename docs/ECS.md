@@ -93,6 +93,11 @@ class SomeState implements TState {
   // this being public static and being named state is
   //  actually a convention, the idea is that this will look similar to using ".class" on a type!
   public static final Type<SomeState> state = new Type<>(ResourceLocation.fromNamespaceAndPath("modid", "some"));
+
+  @Overridd
+  public Type<SomeState> type() {
+    return state;
+  }
 }
 
 // registration here
@@ -176,4 +181,53 @@ class SomeBehavior implements TBehavior, EntityEvents {
 ```
 
 To subscribe to an event group, you just need to implement the event group's interface in the behaviour, which will serve as the subscriber.
+
+## Serialization
+
+Serialization is part of the extended API provided by the MC implementation. 
+
+If you want a state to be serializable (a common-side state), then you must use `NbtState` and `NbtState.Type`:
+```java
+class IrisState implements NbtState<IrisState> {
+
+  public static final Type<IrisState> type = new Type<>(modLoc("iris"), 0) {
+    @Override
+    public IrisState fromNbt(CompoundTag nbt, NbtDeserializer.Context ctx) {
+      return new IrisState(nbt.getString("type"));
+    }
+  };
+
+  public String type;
+
+  IrisState(String type) {
+    this.type = type;
+  }
+
+  @Overrise
+  public void toNbt(CompoundTag nbt, NbtSerializer.Context ctx) {
+    nbt.putString("type", type);
+  }
+
+  @Overrids
+  public Type<IrisState> type() {
+    return type;
+  }
+}
+```
+
+When creating an nbt state type, you provide multiple arguments:
+1. The resource location (as always)
+2. The version (`0`)
+3. Varargs fixes (empty here, since there were no fixes)
+
+You also must implement the `#fromNbt` method.
+
+Fixes allow to implement changes in the structure, allowing to "fix" the data to a new format.
+
+```java
+private static final Fix TYPE_TO_LOC_FIX = new Fix(1, tag -> {
+    String type = tag.getString("type");
+    tag.putString(StargateAPI.MOD_ID + ":" + type);
+  }); // this will apply when updating to v1
+```
 
