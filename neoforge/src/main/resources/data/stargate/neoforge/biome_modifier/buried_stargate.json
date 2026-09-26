@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": "stargate:buried_stargate",
+  "step": "vegetal_decoration"
+}

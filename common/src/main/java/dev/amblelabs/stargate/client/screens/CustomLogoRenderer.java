@@ -1,6 +1,7 @@
 package dev.amblelabs.stargate.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.I18n;
 import dev.amblelabs.stargate.mixin.title.LogoRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -9,9 +10,12 @@ import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetTooltipHolder;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 public class CustomLogoRenderer extends LogoRenderer {
+
+    private static final ResourceLocation LOGO = StargateAPI.modLoc("textures/gui/title/stargate.png");
 
     private static final Tooltip TOOLTIP = Tooltip.create(I18n.LOGO_TOOLTIP);
 
@@ -54,7 +58,7 @@ public class CustomLogoRenderer extends LogoRenderer {
         RenderSystem.enableBlend();
 
         int x = (screenWidth - LOGO_WIDTH) / 2;
-        guiGraphics.blit(MINECRAFT_LOGO, x, height, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
+        guiGraphics.blit(LOGO, x, height, 0, 0, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_HEIGHT);
 
         guiGraphics.setColor(1, 1, 1, 1);
         RenderSystem.disableBlend();

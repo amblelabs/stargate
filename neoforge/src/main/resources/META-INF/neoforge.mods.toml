@@ -11,7 +11,8 @@ authors = "AmbleLabs"
 description = '''
 
 '''
-#logoFile = ""
+
+logoFile = "assets/stargate/icon.png"
 
 [[dependencies.stargate]]
 modId = "neoforge"
@@ -29,3 +30,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "stargate.mixins.json"
+
+[[mixins]]
+config = "stargate-neoforge.mixins.json"

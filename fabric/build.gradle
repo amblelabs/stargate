@@ -59,17 +59,8 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-
-sourcesJar {
-    from project(":common").sourceSets.main.allJava
-}
-
 sourceSets {
     main.resources.srcDirs += [
             'src/main/generated',
-//            '../common/src/main/generated'
     ]
 }

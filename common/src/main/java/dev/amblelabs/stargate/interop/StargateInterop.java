@@ -5,12 +5,9 @@ import dev.amblelabs.stargate.xplat.XplatAbstractions;
 
 public class StargateInterop {
 
-    public static void earlyInit() {
+    public static void init() {
         XplatAbstractions xplat = XplatAbstractions.INSTANCE;
         xplat.initPlatformSpecific();
-    }
-
-    public static void init() {
     }
 
     public static void clientInit() {

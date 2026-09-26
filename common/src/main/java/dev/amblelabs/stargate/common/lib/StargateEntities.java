@@ -3,7 +3,7 @@ package dev.amblelabs.stargate.common.lib;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.entities.DHDControlEntity;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,10 +14,10 @@ import java.util.function.UnaryOperator;
 
 public class StargateEntities {
 
-    private static final XplatRegister<EntityType<?>> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ENTITY_TYPE);
+    private static final XplatRegistrar<EntityType<?>> REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ENTITY_TYPE);
 
     public static void register() {
-        REGISTER.registerAll();
+        REGISTRAR.registerAll();
     }
 
     public static final Supplier<EntityType<DHDControlEntity>> DHD_CONTROL = type("dhd_control", DHDControlEntity::new, MobCategory.MISC,
@@ -29,6 +29,6 @@ public class StargateEntities {
     }
 
     private static <T extends Entity> Supplier<EntityType<T>> type(String id, Supplier<EntityType<T>> type) {
-        return REGISTER.register(StargateAPI.modLoc(id), type);
+        return REGISTRAR.register(StargateAPI.modLoc(id), type);
     }
 }

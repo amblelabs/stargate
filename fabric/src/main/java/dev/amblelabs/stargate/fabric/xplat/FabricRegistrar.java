@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.fabric.xplat;
 
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -9,16 +9,16 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
-public class FabricRegister<B> implements XplatRegister<B> {
+public class FabricRegistrar<B> implements XplatRegistrar<B> {
 
     private final Registry<B> registry;
 
-    public FabricRegister(Registry<B> registry) {
+    public FabricRegistrar(Registry<B> registry) {
         this.registry = registry;
     }
 
     @SuppressWarnings("unchecked")
-    public FabricRegister(ResourceKey<Registry<B>> registryKey) {
+    public FabricRegistrar(ResourceKey<Registry<B>> registryKey) {
         this((Registry<B>) BuiltInRegistries.REGISTRY.get(registryKey.location()));
     }
 

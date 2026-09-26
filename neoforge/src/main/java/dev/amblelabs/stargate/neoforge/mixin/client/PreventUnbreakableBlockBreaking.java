@@ -1,4 +1,4 @@
-package dev.amblelabs.stargate.fabric.mixin.client;
+package dev.amblelabs.stargate.neoforge.mixin.client;
 
 import dev.amblelabs.lib.api.mod.AmblekitTags;
 import net.minecraft.client.Minecraft;
@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,8 +34,8 @@ public class PreventUnbreakableBlockBreaking {
     }
 
     @Inject(method = "startDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void startDestroyBlock2(BlockPos loc, Direction face, CallbackInfoReturnable<Boolean> cir, BlockState blockState) {
-        this.stargate$handle(loc, blockState, cir);
+    public void startDestroyBlock2(BlockPos loc, Direction face, CallbackInfoReturnable<Boolean> cir, PlayerInteractEvent.LeftClickBlock event, BlockState blockstate) {
+        this.stargate$handle(loc, blockstate, cir);
     }
 
     @Inject(method = "continueDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)

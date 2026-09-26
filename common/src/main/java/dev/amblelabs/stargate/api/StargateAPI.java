@@ -21,6 +21,8 @@ public interface StargateAPI {
         }
     });
 
+    ResourceLocation PACK_MENU = StargateAPI.modLoc("menu");
+
     static StargateAPI instance() {
         return INSTANCE.get();
     }

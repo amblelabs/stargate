@@ -27,11 +27,7 @@ import java.util.stream.Collectors;
 public interface ClientXplatAbstractions {
     void sendPacketToServer(CustomPacketPayload packet);
 
-    void setRenderLayer(Block block, RenderType type);
-
-    default void setRenderLayer(Supplier<Block> block, RenderType type) {
-        setRenderLayer(block.get(), type);
-    }
+    void setRenderLayer(Supplier<Block> block, RenderType type);
 
     @SuppressWarnings("unchecked")
     void setRenderLayer(RenderType type, Supplier<? extends Block>... blocks);

@@ -3,7 +3,7 @@ package dev.amblelabs.stargate.common.lib;
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.common.recipe.ToastingRecipe;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -13,21 +13,21 @@ import java.util.function.Supplier;
 
 public class StargateRecipes {
 
-    private static final XplatRegister<RecipeSerializer<?>> REGISTER_SERIALIZERS = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_SERIALIZER);
-    private static final XplatRegister<RecipeType<?>> REGISTER_TYPES = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_TYPE);
+    private static final XplatRegistrar<RecipeSerializer<?>> SERIALIZERS_REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_SERIALIZER);
+    private static final XplatRegistrar<RecipeType<?>> TYPES_REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.RECIPE_TYPE);
 
     public static void register() {
-        REGISTER_SERIALIZERS.registerAll();
-        REGISTER_TYPES.registerAll();
+        SERIALIZERS_REGISTRAR.registerAll();
+        TYPES_REGISTRAR.registerAll();
     }
 
     public static final Supplier<RecipeType<ToastingRecipe>> TOASTING = recipe("toasting", ToastingRecipe.SERIALIZER);
 
     @SuppressWarnings("SameParameterValue")
     private static <T extends Recipe<?>> Supplier<RecipeType<T>> recipe(String name, RecipeSerializer<T> serializer) {
-        REGISTER_SERIALIZERS.register(name, () -> serializer);
+        SERIALIZERS_REGISTRAR.register(name, () -> serializer);
 
-        return REGISTER_TYPES.register(name, () -> new RecipeType<>() {
+        return TYPES_REGISTRAR.register(name, () -> new RecipeType<>() {
 
             @Override
             public String toString() {

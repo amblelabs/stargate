@@ -24,7 +24,6 @@ public class FabricPacketHandler {
 
     }
 
-    @SuppressWarnings("EmptyMethod")
     @Environment(EnvType.CLIENT)
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(MsgStargateSyncS2C.TYPE, makeClientBoundHandler(MsgStargateSyncS2C::handle));

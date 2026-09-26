@@ -28,7 +28,7 @@ public class FabricStargateClientInit implements ClientModInitializer {
         FabricPacketHandler.initClient();
 
         FabricLoader.getInstance().getModContainer(StargateAPI.MOD_ID).ifPresent(container ->
-                ResourceManagerHelper.registerBuiltinResourcePack(StargateAPI.modLoc("menu"), container, ResourcePackActivationType.DEFAULT_ENABLED));
+                ResourceManagerHelper.registerBuiltinResourcePack(StargateAPI.PACK_MENU, container, ResourcePackActivationType.DEFAULT_ENABLED));
 
         WorldRenderEvents.START.register(context -> RenderDeduper.clear());
         HudRenderCallback.EVENT.register(StargateAdditionalRenderers::overlayGui);

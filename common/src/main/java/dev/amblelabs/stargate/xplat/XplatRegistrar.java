@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
-public interface XplatRegister<B> {
+public interface XplatRegistrar<B> {
 
     default <T extends B> Supplier<T> register(String id, Supplier<T> provider) {
         return register(StargateAPI.modLoc(id), provider);

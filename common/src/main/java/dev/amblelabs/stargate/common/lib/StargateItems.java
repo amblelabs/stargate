@@ -6,7 +6,7 @@ import dev.amblelabs.stargate.common.items.DialerItem;
 import dev.amblelabs.stargate.common.items.IrisItem;
 import dev.amblelabs.stargate.common.items.StargateBlockItem;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,11 +23,11 @@ import static dev.amblelabs.stargate.api.StargateAPI.modLoc;
 @SuppressWarnings("unused")
 public class StargateItems {
 
-    private static final XplatRegister<Item> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ITEM);
+    private static final XplatRegistrar<Item> REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ITEM);
     private static final Map<ResourceKey<CreativeModeTab>, List<TabEntry>> ITEM_TABS = new LinkedHashMap<>();
 
     public static void register() {
-        REGISTER.registerAll();
+        REGISTRAR.registerAll();
     }
 
     public static Collection<ResourceKey<CreativeModeTab>> getCreativeTabs() {
@@ -103,7 +103,7 @@ public class StargateItems {
     }
 
     private static <T extends Item> Lazy<T> make(ResourceLocation id, Supplier<T> supplier, @Nullable ResourceKey<CreativeModeTab> tabKey) {
-        Supplier<T> finalSupplier = REGISTER.register(id, supplier);
+        Supplier<T> finalSupplier = REGISTRAR.register(id, supplier);
 
         if (tabKey != null)
             ITEM_TABS.computeIfAbsent(tabKey, t -> new ArrayList<>())

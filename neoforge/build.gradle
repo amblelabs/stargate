@@ -10,7 +10,7 @@ configurations {
     }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
 }
 
 repositories {
@@ -27,25 +27,17 @@ dependencies {
     common(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-
-sourcesJar {
-    from project(":common").sourceSets.main.allJava
-}
-
-sourceSets {
-    main.resources.srcDirs += [
-            'src/generated/resources',
-//            '../common/src/main/generated'
-    ]
-}
-
 processResources {
+    from project(":common").sourceSets.main.resources
     inputs.property 'version', project.version
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand version: project.version
     }
+}
+
+sourceSets {
+    main.resources.srcDirs += [
+            'src/main/generated',
+    ]
 }

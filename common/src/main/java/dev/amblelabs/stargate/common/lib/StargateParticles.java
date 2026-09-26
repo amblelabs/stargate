@@ -4,7 +4,7 @@ import dev.amblelabs.stargate.client.particles.KawooshParticle;
 import dev.amblelabs.stargate.client.particles.PuddleParticle;
 import dev.amblelabs.stargate.common.particles.PuddleParticleOptions;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import it.unimi.dsi.fastutil.booleans.Boolean2ObjectFunction;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -18,10 +18,10 @@ import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public class StargateParticles {
 
-    private static final XplatRegister<ParticleType<?>> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.PARTICLE_TYPE);
+    private static final XplatRegistrar<ParticleType<?>> REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.PARTICLE_TYPE);
 
     public static void register() {
-        REGISTER.registerAll();
+        REGISTRAR.registerAll();
     }
 
     public static final Supplier<ParticleType<PuddleParticleOptions>> PUDDLE = type(
@@ -35,7 +35,7 @@ public class StargateParticles {
     }
 
     private static <T extends ParticleOptions> Supplier<ParticleType<T>> type(String id, Supplier<ParticleType<T>> type) {
-        return REGISTER.register(id, type);
+        return REGISTRAR.register(id, type);
     }
 
     public static class FactoryHandler {

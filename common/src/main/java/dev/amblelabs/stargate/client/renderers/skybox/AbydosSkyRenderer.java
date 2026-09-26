@@ -40,6 +40,7 @@ public class AbydosSkyRenderer implements ClientXplatAbstractions.SkyRenderer {
     private static final float[] MOON_SCALES = {1, 0.5f, 0.75f};
 
     private final Minecraft minecraft = Minecraft.getInstance();
+
     @Nullable
     private VertexBuffer starBuffer;
     @Nullable

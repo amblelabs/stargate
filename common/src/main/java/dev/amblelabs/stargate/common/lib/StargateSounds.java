@@ -2,17 +2,17 @@ package dev.amblelabs.stargate.common.lib;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
 public class StargateSounds {
 
-    private static final XplatRegister<SoundEvent> REGISTER = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.SOUND_EVENT);
+    private static final XplatRegistrar<SoundEvent> REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.SOUND_EVENT);
 
     public static void register() {
-        REGISTER.registerAll();
+        REGISTRAR.registerAll();
     }
 
     public static final Holder<SoundEvent> STARGATE_THEME = sound("music.theme");
@@ -35,6 +35,6 @@ public class StargateSounds {
     public static final Holder<SoundEvent> CHEVRON_LOCK = sound("block.stargate.chevron");
 
     private static Holder<SoundEvent> sound(String name) {
-        return REGISTER.registerHolder(name, () -> SoundEvent.createVariableRangeEvent(StargateAPI.modLoc(name)));
+        return REGISTRAR.registerHolder(name, () -> SoundEvent.createVariableRangeEvent(StargateAPI.modLoc(name)));
     }
 }

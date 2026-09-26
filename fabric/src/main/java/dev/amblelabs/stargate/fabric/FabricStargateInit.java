@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -39,13 +38,12 @@ public final class FabricStargateInit implements ModInitializer {
 
         this.initListeners();
 
-        StargateInterop.earlyInit();
+        StargateInterop.init();
         this.initRegistries();
 
         StargateComposting.setup();
         StargateStrippable.init();
 
-        StargateInterop.init();
         StargateEcs.init();
     }
 
@@ -89,7 +87,6 @@ public final class FabricStargateInit implements ModInitializer {
                 MapDecorationTypes.RED_X, 1, 10)
         ));
 
-        StargateFeatures.register();
         StargatePlacementModifiers.register();
         StargateStructureTypes.register();
         StargateStructurePieces.register();
@@ -100,13 +97,5 @@ public final class FabricStargateInit implements ModInitializer {
         //noinspection DataFlowIssue - no issue, actually.
         FabricDefaultAttributeRegistry.register(EntityType.PLAYER,
                 Player.createAttributes().add(StargateAttributes.SPACIAL_RESISTANCE));
-
-        this.dieInAFire();
-
-//        AitStatistics.register();
-    }
-
-    private void dieInAFire() {
-        FlammableBlockRegistry.getDefaultInstance();
     }
 }

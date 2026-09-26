@@ -4,8 +4,6 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.Prototype;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -44,16 +42,13 @@ public interface XplatAbstractions {
 
     void sendPacketTracking(Entity entity, CustomPacketPayload packet);
 
-    // https://github.com/VazkiiMods/Botania/blob/13b7bcd9cbb6b1a418b0afe455662d29b46f1a7f/Xplat/src/main/java/vazkii/botania/xplat/IXplatAbstractions.java#L157
-    Packet<ClientCommonPacketListener> toVanilla(CustomPacketPayload message);
-
     <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func,
                                                                      Block... blocks);
 
     Registry<Prototype> getPrototypeRegistry();
 
-    <B> XplatRegister<B> createRegister(ResourceKey<Registry<B>> registryKey);
-    <B> XplatRegister<B> createRegister(Registry<B> registry);
+    <B> XplatRegistrar<B> createRegister(ResourceKey<Registry<B>> registryKey);
+    <B> XplatRegistrar<B> createRegister(Registry<B> registry);
 
     XplatAbstractions INSTANCE = find();
 

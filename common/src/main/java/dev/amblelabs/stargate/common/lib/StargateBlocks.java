@@ -5,7 +5,7 @@ import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateRingBlock;
 import dev.amblelabs.stargate.common.blocks.ToasterBlock;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
-import dev.amblelabs.stargate.xplat.XplatRegister;
+import dev.amblelabs.stargate.xplat.XplatRegistrar;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
@@ -23,13 +23,13 @@ import static net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class StargateBlocks {
 
-    private static final XplatRegister<Block> REGISTER_BLOCKS = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.BLOCK);
-    private static final XplatRegister<Item> REGISTER_BLOCK_ITEMS = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ITEM);
+    private static final XplatRegistrar<Block> BLOCKS_REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.BLOCK);
+    private static final XplatRegistrar<Item> BLOCK_ITEMS_REGISTRAR = XplatAbstractions.INSTANCE.createRegister(BuiltInRegistries.ITEM);
     private static final Map<ResourceKey<CreativeModeTab>, List<Supplier<Block>>> BLOCK_TABS = new LinkedHashMap<>();
 
     public static void register() {
-        REGISTER_BLOCKS.registerAll();
-        REGISTER_BLOCK_ITEMS.registerAll();
+        BLOCKS_REGISTRAR.registerAll();
+        BLOCK_ITEMS_REGISTRAR.registerAll();
     }
 
     public static Collection<ResourceKey<CreativeModeTab>> getCreativeTabs() {
@@ -76,7 +76,7 @@ public class StargateBlocks {
     }
 
     private static <T extends Block> Lazy<T> blockNoItem(String name, Supplier<T> supplier) {
-        supplier = REGISTER_BLOCKS.register(name, supplier);
+        supplier = BLOCKS_REGISTRAR.register(name, supplier);
         return supplier::get;
     }
 
@@ -94,7 +94,7 @@ public class StargateBlocks {
 
     private static <T extends Block> Lazy<T> blockItem(String name, Supplier<T> block, Item.Properties props, @Nullable ResourceKey<CreativeModeTab> tabKey) {
         Lazy<T> finalSupplier = blockNoItem(name, block);
-        REGISTER_BLOCK_ITEMS.register(name, () -> new BlockItem(finalSupplier.get(), props));
+        BLOCK_ITEMS_REGISTRAR.register(name, () -> new BlockItem(finalSupplier.get(), props));
 
         if (tabKey != null)
             BLOCK_TABS.computeIfAbsent(tabKey, t -> new ArrayList<>())

@@ -9,7 +9,6 @@
   ],
   "mixins": [
     "FabricAxeItemMixin",
-    "FabricPlayerMixin",
     "modmenu.DescriptionListWidgetMixin"
   ],
   "injectors": {
