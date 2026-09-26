@@ -35,6 +35,8 @@ public class TBehaviorRegistry {
 
         handlers.add(behavior);
         buildEvents(behavior);
+
+        behavior.initialize();
     }
 
     /**
@@ -87,10 +89,10 @@ public class TBehaviorRegistry {
 
     private static void buildEvents(TBehavior handler) {
         for (TEvents.BaseType<?> holder : TEventsRegistry.registered()) {
-            if (!holder.isApplicable(handler))
+            if (!holder.isApplicable(handler) || !(holder instanceof TEvents.Type<?> type))
                 continue;
 
-            holder.subscribe(handler);
+            type.subscribe(handler);
         }
     }
 }

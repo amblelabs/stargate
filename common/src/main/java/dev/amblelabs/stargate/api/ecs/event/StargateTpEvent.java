@@ -6,7 +6,14 @@ import dev.drtheo.ecs.event.TEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-public class StargateTpEvent implements TEvent.Result<StargateTpEvents, StargateTpEvent.Result> {
+public class StargateTpEvent implements TEvent.Result<StargateTpEvent.Callback, StargateTpEvent.Result> {
+
+    public static final TEvents.Type<Callback> event = new TEvents.Type<>(Callback.class);
+
+    @FunctionalInterface
+    public interface Callback extends TEvents {
+        StargateTpEvent.Result onGateTp(Stargate from, Stargate to, Entity living);
+    }
 
     private final Stargate from;
     private final Stargate to;
@@ -21,8 +28,8 @@ public class StargateTpEvent implements TEvent.Result<StargateTpEvents, Stargate
     }
 
     @Override
-    public TEvents.Type<StargateTpEvents> type() {
-        return StargateTpEvents.type;
+    public TEvents.BaseType<Callback> type() {
+        return event;
     }
 
     @Override
@@ -31,8 +38,8 @@ public class StargateTpEvent implements TEvent.Result<StargateTpEvents, Stargate
     }
 
     @Override
-    public void handleAll(Iterable<StargateTpEvents> subscribed) {
-        for (StargateTpEvents e : subscribed) {
+    public void handleAll(Iterable<Callback> subscribed) {
+        for (Callback e : subscribed) {
             Result newRes = TEvent.handleSilent(this, e, () -> this.handle(e), Result.PASS);
 
             if (newRes == Result.PASS) continue;
@@ -42,7 +49,7 @@ public class StargateTpEvent implements TEvent.Result<StargateTpEvents, Stargate
         }
     }
 
-    public Result handle(StargateTpEvents handler) {
+    public Result handle(Callback handler) {
         return handler.onGateTp(from, to, living);
     }
 

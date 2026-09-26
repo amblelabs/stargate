@@ -3,7 +3,6 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
-import dev.amblelabs.stargate.api.ecs.event.StargateTpEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.SoundUtil;
 import dev.amblelabs.stargate.api.util.StargateUtil;
@@ -32,10 +31,15 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 
-public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, StargateBlockEvents, StargateTpEvents {
+public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, StargateBlockEvents {
 
     public static final RawAnimation IRIS_OPEN = RawAnimation.begin().thenPlay("IRIS_OPEN");
     public static final RawAnimation IRIS_CLOSE = RawAnimation.begin().thenPlay("IRIS_CLOSE");
+
+    @Override
+    public void initialize() {
+        subscribe(StargateTpEvent.event, this::onGateTp);
+    }
 
     public void damage(Stargate stargate, int amount) {
         IrisState iris = stargate.state(IrisState.state);
@@ -93,7 +97,6 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
                 }));
     }
 
-    @Override
     public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, Entity entity) {
         IrisState iris = to.state(IrisState.state);
 

@@ -27,6 +27,12 @@ public interface TBehavior {
         return null;
     }
 
+    default void initialize() { }
+
+    default <T extends TEvents> void subscribe(TEvents.Type<T> type, T handler) {
+        type.subscribe(handler);
+    }
+
     /**
      * Redirects to {@link TEvents#handle(TEvent)}.
      */

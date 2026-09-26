@@ -56,15 +56,15 @@ public interface TEvents {
          */
         @Contract(pure = true)
         @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-        boolean isApplicable(TBehavior behavior);
+        boolean isApplicable(Object behavior);
 
         /**
          * Subscribes the {@link TBehavior} to the event.
          *
-         * @param behavior the behavior to subscribe.
+         * @param handler the handler to subscribe.
          */
         @Contract(pure = true)
-        void subscribe(TBehavior behavior);
+        void subscribe(T handler);
 
         /**
          * Handles the provided event instance.
@@ -93,14 +93,19 @@ public interface TEvents {
             this(clazz, new ArrayDeque<>());
         }
 
-        @Override
         @Contract(pure = true)
         @SuppressWarnings("unchecked")
         public void subscribe(TBehavior behavior) {
             if (!this.isApplicable(behavior))
                 throw new IllegalArgumentException("you're crazy");
 
-            handlers.add((T) behavior);
+            this.subscribe((T) behavior);
+        }
+
+        @Override
+        @Contract(pure = true)
+        public void subscribe(T handler) {
+            handlers.add(handler);
         }
 
         @Override
@@ -110,7 +115,7 @@ public interface TEvents {
 
         @Override
         @Contract(pure = true)
-        public boolean isApplicable(TBehavior behavior) {
+        public boolean isApplicable(Object behavior) {
             return clazz.isInstance(behavior);
         }
     }
