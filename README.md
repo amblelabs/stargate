@@ -1,7 +1,7 @@
 <div align="center">
 
 ### **Presented by [AmbleLabs](https://amblelabs.dev)**
-<img src="promo/stargatelogo.png" alt="Stargate Logo" width="700" />
+<img src="promo/stargatelogo.png" alt="Stargate: Sojourner Logo" width="700" />
 
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/stargate-sojourner?link=https%3A%2F%2Fmodrinth.com%2Fmod%2Fait%2Fversions)
 
@@ -13,7 +13,7 @@
        width="25"
        height="25"
        style="vertical-align: middle; margin-right: 8px;">
-   REWORK UPDATE COMING SOON!
+   REWORK IN PROGRESS
     <img src="https://cdn.modrinth.com/data/cached_images/8ad66df4dbb9eb7105e700a110a8350e691277cb.png"
        alt="Warning"
        width="25"
@@ -25,8 +25,6 @@
 [<img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">](https://modrinth.com/mod/amble-stargate) <!-- SVG version -->
 [<img alt="fabric" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/fabric_vector.svg">](https://fabricmc.net/) <!-- SVG version -->
 [<img alt="neforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/neoforge_vector.svg">](https://neoforged.net/) <!-- SVG version -->
-
- 
 
 ---------------
 <h2>
@@ -82,7 +80,6 @@ This mod adds the well known Stargate from the popular shows with the same name,
   <span style="display: inline-block; margin: 0 4px;">•</span>
   <a href="https://discord.com/invite/WjKhRjavCj" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Discord</a>
   <span style="display: inline-block; margin: 0 4px;">•</span>
-   <a href="https://amblelabs.github.io/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Website</a>
+   <a href="https://amblelabs.dev/" style="text-decoration: none; color: inherit; display: inline-block; margin: 0 8px;">Website</a>
 </div>
-
 </div>
