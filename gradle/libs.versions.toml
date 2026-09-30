@@ -1,0 +1,53 @@
+[versions]
+# Common
+minecraft = "1.21.1"
+modonomicon = "1.120.1" # optional, no range
+
+parchment = "2024.11.17"
+annotations = "26.1.0"
+
+geckolib = "4.8.4"
+
+# Fabric
+fabric = "0.19.1"
+fabric-api = "0.116.10+1.21.1"
+
+cloth = "15.0.140"
+modmenu = "11.0.3"
+
+# Neoforge
+neoforge = "21.1.226"
+
+# Plugins
+plugin-loom = "1.17-SNAPSHOT"
+plugin-json-processor = "0.1.0"
+plugin-architectury = "3.5-SNAPSHOT"
+
+[libraries]
+# Common
+minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
+geckolib-common = { group = "software.bernie.geckolib", name = "geckolib-common-1.21.1", version.ref = "geckolib" }
+modonomicon-common = { group = "com.klikli_dev", name = "modonomicon-1.21.1-common", version.ref = "modonomicon" }
+
+parchment = { group = "org.parchmentmc.data", name = "parchment-1.21.1", version.ref = "parchment" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+
+# Fabric
+fabric = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fabric" }
+fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fabric-api" }
+
+modmenu = { group = "com.terraformersmc", name = "modmenu", version.ref = "modmenu" }
+cloth = { group = "me.shedaniel.cloth", name = "cloth-config-fabric", version.ref = "cloth" }
+
+geckolib-fabric = { group = "software.bernie.geckolib", name = "geckolib-fabric-1.21.1", version.ref = "geckolib" }
+modonomicon-fabric = { group = "com.klikli_dev", name = "modonomicon-1.21.1-fabric", version.ref = "modonomicon" }
+
+# NeoForge
+neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge" }
+geckolib-neoforge = { group = "software.bernie.geckolib", name = "geckolib-neoforge-1.21.1", version.ref = "geckolib" }
+
+[plugins]
+# Platform
+loom = { id = "dev.architectury.loom", version.ref = "plugin-loom" }
+architectury = { id = "architectury-plugin", version.ref = "plugin-architectury" }
+json-processor = { id = "coffee.cypher.json-processor", version.ref = "plugin-json-processor" }

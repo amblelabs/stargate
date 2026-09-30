@@ -21,9 +21,9 @@ repositories {
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    neoForge(libs.neoforge)
 
-    modImplementation "software.bernie.geckolib:geckolib-neoforge-$minecraft_version:$geckolib_version"
+    modImplementation(libs.geckolib.neoforge)
     common(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
 }
 
@@ -32,10 +32,11 @@ tasks.withType(Jar).configureEach {
 }
 
 processResources {
-    inputs.property 'version', project.version
+    def modVersion = project.version
+    inputs.property 'version', modVersion
 
     filesMatching('META-INF/neoforge.mods.toml') {
-        expand version: project.version
+        expand version: modVersion
     }
 }
 

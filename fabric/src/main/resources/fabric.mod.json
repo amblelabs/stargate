@@ -59,5 +59,7 @@
     "cloth-config": "*"
   },
   "recommends": {
+    "modonomicon": "*",
+    "modmenu": "*"
   }
 }

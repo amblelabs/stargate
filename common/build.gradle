@@ -1,5 +1,5 @@
 plugins {
-    id "coffee.cypher.json-processor" version "0.1.0"
+    alias(libs.plugins.json.processor)
 }
 
 architectury {
@@ -10,10 +10,10 @@ dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
-    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
-    modImplementation "software.bernie.geckolib:geckolib-common-$minecraft_version:$geckolib_version"
+    modImplementation(libs.fabric)
 
-    modImplementation("com.klikli_dev:modonomicon-${minecraft_version}-common:${modonomicon_version}") { transitive false }
+    modImplementation(libs.geckolib.common)
+    modImplementation(libs.modonomicon.common)
 }
 
 processResources {
