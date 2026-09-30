@@ -49,9 +49,11 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
 }
 
-processResources {
-    from project(":common").sourceSets.main.resources
+tasks.withType(Jar).configureEach {
+    from project(":common").sourceSets.main.output
+}
 
+processResources {
     inputs.property 'version', project.version
 
     filesMatching('fabric.mod.json') {

@@ -27,8 +27,11 @@ dependencies {
     common(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
 }
 
+tasks.withType(Jar).configureEach {
+    from project(":common").sourceSets.main.output
+}
+
 processResources {
-    from project(":common").sourceSets.main.resources
     inputs.property 'version', project.version
 
     filesMatching('META-INF/neoforge.mods.toml') {
