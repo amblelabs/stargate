@@ -37,7 +37,7 @@ jobs:
           cache: 'gradle'
 
       - name: Build
-        run: ./gradlew build --no-daemon
+        run: ./gradlew :fabric:build :neoforge:build --no-daemon
 
       - name: Publish artifacts
         uses: drtheodor/discord-webhook-upload-action@v0.4
