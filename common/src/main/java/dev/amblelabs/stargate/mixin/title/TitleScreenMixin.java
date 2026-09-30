@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.mixin.title;
 
 import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.client.screens.CustomLogoRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.screens.Screen;
@@ -38,7 +39,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "added", at = @At("TAIL"))
     public void added(CallbackInfo ci) {
-        if (Objects.requireNonNull(this.minecraft).getResourcePackRepository().getSelectedIds().contains(StargateAPI.PACK_MENU.toString()))
+        if (Minecraft.getInstance().getResourcePackRepository().getSelectedIds().contains(StargateAPI.PACK_MENU.toString()))
             this.logoRenderer = CustomLogoRenderer.fromVanilla(this.logoRenderer);
         else this.logoRenderer = this.stargate$vanillaLogoRenderer;
     }
