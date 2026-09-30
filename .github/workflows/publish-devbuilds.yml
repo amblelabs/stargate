@@ -37,7 +37,7 @@ jobs:
           cache: 'gradle'
 
       - name: Build
-        run: ./gradlew :fabric:build
+        run: ./gradlew build --no-daemon
 
       - name: Publish artifacts
         uses: drtheodor/discord-webhook-upload-action@v0.4
@@ -53,8 +53,8 @@ jobs:
           file: |
             fabric/build/libs/*.jar
             !fabric/build/libs/*-sources.jar
-            forge/build/libs/*.jar
-            !forge/build/libs/*-sources.jar
+            neoforge/build/libs/*.jar
+            !neoforge/build/libs/*-sources.jar
 
       - name: Send failure notice
         if: failure()
