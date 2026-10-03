@@ -32,16 +32,12 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci) {
-        this.stargate$vanillaLogoRenderer = this.logoRenderer;
-    }
-
     @Inject(method = "added", at = @At("TAIL"))
     public void added(CallbackInfo ci) {
-        if (Minecraft.getInstance().getResourcePackRepository().getSelectedIds().contains(StargateAPI.PACK_MENU.toString()))
+        if (Minecraft.getInstance().getResourcePackRepository().getSelectedIds().contains(StargateAPI.PACK_MENU.toString())) {
+            this.stargate$vanillaLogoRenderer = this.logoRenderer;
             this.logoRenderer = CustomLogoRenderer.fromVanilla(this.logoRenderer);
-        else this.logoRenderer = this.stargate$vanillaLogoRenderer;
+        } else if (this.stargate$vanillaLogoRenderer != null) this.logoRenderer = this.stargate$vanillaLogoRenderer;
     }
 
     @Inject(method = "mouseClicked", at = @At("RETURN"), cancellable = true)
