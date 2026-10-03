@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -232,8 +233,38 @@ public interface GenericGateBehavior {
 
             Vec3 targetPos = targetPhys.pos().getCenter().add(offset);
 
+            // gets source gate rotation - addie
+            BlockState sourceState = stargate.resolveState(LevelState.state).getBlockState();
+            Direction.Axis sourceAxis = sourceState.getValue(StargateBlock.FACING).getAxis();
+
+            // gets target gate rotation - addie
+            BlockState targetState = target.resolveState(LevelState.state).getBlockState();
+            Direction.Axis targetAxis = targetState.getValue(StargateBlock.FACING).getAxis();
+            Direction targetFacing = targetState.getValue(StargateBlock.FACING);
+
+            float yRot = entity.getYRot();
+            float xRot = entity.getXRot();
+
+            boolean axisMismatched = sourceAxis.isHorizontal()
+                    && targetAxis.isHorizontal()
+                    && sourceAxis != targetAxis;
+
+            if (axisMismatched){
+                yRot += 90.0F;
+            }
+
+            // flips N and S cus it was flipped before (i blame loqor :3) - addie
+            if (targetFacing.getAxis() == Direction.Axis.Z) {
+                yRot += 180.0F;
+            }
+
             entity.teleportTo(targetPhys.level(), targetPos.x, targetPos.y, targetPos.z,
-                    RelativeMovement.ALL, entity.getYRot(), entity.getXRot());
+                    RelativeMovement.ALL, yRot, xRot);
+
+            if (axisMismatched){
+                Vec3 motion = entity.getDeltaMovement();
+                entity.setDeltaMovement(motion.z, motion.y, motion.x);
+            }
 
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
 
