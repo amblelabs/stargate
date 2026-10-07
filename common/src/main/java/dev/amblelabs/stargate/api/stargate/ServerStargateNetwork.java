@@ -4,7 +4,7 @@ import dev.amblelabs.stargate.api.StargateAPI;
 import dev.amblelabs.stargate.api.ecs.NbtDeserializer;
 import dev.amblelabs.stargate.api.ecs.NbtSerializer;
 import dev.amblelabs.stargate.api.ecs.Prototype;
-import dev.amblelabs.stargate.api.ecs.event.StargateLifecycleEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.common.impl.ecs.state.C7State;
 import dev.amblelabs.stargate.common.network.MsgStargateSyncS2C;
 import dev.amblelabs.stargate.xplat.XplatAbstractions;
@@ -65,8 +65,8 @@ public class ServerStargateNetwork extends StargateNetwork {
         this.lookup.put(result.getId(), result);
         GLOBAL.put(result.getId(), result);
 
-        StargateLifecycleEvents.type.notify(events
-                -> events.stargate$instantiate(result, NbtDeserializer.Context.forCreate(level).get()));
+        StargateEvents.Instantiate.event.invoker()
+                .onInstantiated(result, NbtDeserializer.Context.forCreate(level).get());
 
         C7.put(result.state(C7State.type).address(), result);
 
@@ -102,8 +102,8 @@ public class ServerStargateNetwork extends StargateNetwork {
                 ServerStargateNetwork.this.lookup.put(stargate.getId(), stargate);
                 GLOBAL.put(stargate.getId(), stargate);
 
-                StargateLifecycleEvents.type.notify(events
-                        -> events.stargate$instantiate(stargate, ctx));
+                StargateEvents.Instantiate.event
+                        .invoker().onInstantiated(stargate, ctx);
 
                 C7.put(stargate.state(C7State.type).address(), stargate);
             }

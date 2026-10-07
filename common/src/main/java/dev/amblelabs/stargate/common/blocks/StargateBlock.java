@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.lib.StargateBlockEntities;
@@ -135,7 +136,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
         // always ServerLevel, actually.
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
-            StargateBlockEvents.Break.event.invoker().stargate$break(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston);
+            StargateEvents.Break.event.invoker().onBreak(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston);
             ServerStargateNetwork.get(level).remove(stargate.getId()); // TODO: make a behavior do this maybe
 
             blockEntity.setStargate(null);

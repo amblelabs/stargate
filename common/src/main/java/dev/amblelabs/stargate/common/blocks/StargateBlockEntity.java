@@ -1,7 +1,7 @@
 package dev.amblelabs.stargate.common.blocks;
 
 import dev.amblelabs.stargate.api.StargateAPI;
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.stargate.StargateNetwork;
 import dev.amblelabs.stargate.api.util.BlockEntityHelper;
@@ -100,7 +100,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         Stargate stargate = this.stargate();
         if (stargate == null) return;
 
-        StargateBlockEvents.Animate.event.invoker().stargate$registerControllers(stargate, this, controllers);
+        StargateEvents.Animate.event.invoker().onRegisterAnimations(stargate, this, controllers);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
         Stargate stargate = this.stargate();
         if (stargate == null) return;
 
-        StargateBlockEvents.Tick.event.invoker().stargate$tick(stargate, this, level, blockPos, blockState);
+        StargateEvents.BlockTick.event.invoker().blockTick(stargate, this, level, blockPos, blockState);
     }
 
     public void setBlockSet(@Nullable BlockState state) {

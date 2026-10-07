@@ -2,6 +2,7 @@ package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
 import dev.amblelabs.stargate.api.ecs.event.IrisEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.api.util.SoundUtil;
@@ -40,7 +41,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
     @Override
     public void initialize() {
         subscribe(StargateTpEvent.type, this::onGateTp);
-        subscribe(StargateBlockEvents.Animate.event, this::registerAnimations);
+        subscribe(StargateEvents.Animate.event, this::registerAnimations);
     }
 
     public void damage(Stargate stargate, int amount) {
@@ -48,7 +49,7 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents {
         boolean broken = (iris.durability -= amount) <= 0;
 
         if (broken) {
-            handle(new IrisEvents.Broken(stargate, iris));
+            IrisEvents.Break.event.invoker().iris$onBroken(stargate, iris);
             stargate.removeState(IrisState.type);
         }
 

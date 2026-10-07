@@ -2,7 +2,7 @@ package dev.amblelabs.stargate.common.worldgen;
 
 import dev.amblelabs.lib.api.util.MutableBlockPos;
 import dev.amblelabs.stargate.api.ecs.Prototype;
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
@@ -81,7 +81,7 @@ public class BuriedStargatePieces {
 
                     blockEntity.setStargate(stargate);
 
-                    StargateBlockEvents.Place.event.invoker().stargate$place(stargate, blockEntity, placedState, level, mutableBlockPos);
+                    StargateEvents.Place.event.invoker().onPlace(stargate, blockEntity, placedState, level, mutableBlockPos);
 
                     stargate.setChanged(); // force sync
                     return;

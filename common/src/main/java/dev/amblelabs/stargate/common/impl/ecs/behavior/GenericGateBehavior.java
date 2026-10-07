@@ -51,14 +51,18 @@ public interface GenericGateBehavior {
         TBehaviorRegistry.register(Open::new);
     }
 
-    class Closed implements TBehavior, StargateTickEvents, StargateBlockEvents.Animate {
+    class Closed implements TBehavior {
 
         public static final RawAnimation LOCK_SYMBOL = RawAnimation.begin().thenPlay("LOCK_SYMBOL");
 
         @Resolve
         private final GateManagerBehavior manager = behavior();
 
-        @Override
+        public Closed() {
+            subscribe(StargateEvents.Tick.event, this::tick);
+            subscribe(StargateEvents.Animate.event, this::onRegisterAnimations);
+        }
+
         public void tick(Stargate stargate) {
             if (!(manager.get(stargate) instanceof GateState.Closed closed))
                 return;
@@ -132,8 +136,7 @@ public interface GenericGateBehavior {
             manager.set(stargate, new GateState.Closed());
         }
 
-        @Override
-        public void stargate$registerControllers(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
+        public void onRegisterAnimations(Stargate stargate, StargateBlockEntity blockEntity, AnimatableManager.ControllerRegistrar controllers) {
             controllers.add(new AnimationController<>(blockEntity, "Lock",
                     anim -> {
                         GateState<?> state = manager.get(stargate);
@@ -147,10 +150,14 @@ public interface GenericGateBehavior {
         }
     }
 
-    class Opening implements TBehavior, StargateGateStateEvents, StargateTickEvents {
+    class Opening implements TBehavior, StargateGateStateEvents {
 
         @Resolve
         private final GateManagerBehavior manager = behavior();
+
+        public Opening() {
+            subscribe(StargateEvents.Tick.event, this::tick);
+        }
 
         @Override
         public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
@@ -159,7 +166,6 @@ public interface GenericGateBehavior {
             }
         }
 
-        @Override
         public void tick(Stargate stargate) {
             if (!(manager.get(stargate) instanceof GateState.Opening opening))
                 return;
@@ -179,13 +185,18 @@ public interface GenericGateBehavior {
         }
     }
 
-    class Open implements TBehavior, StargateTickEvents, StargateBlockEvents.Tick, StargateBlockEvents, StargateGateStateEvents {
+    class Open implements TBehavior, StargateBlockEvents, StargateGateStateEvents {
 
         public static final AABB NS_DEFAULT = new AABB(-1, 0, 0, 1, 3, 0);
         public static final AABB WE_DEFAULT = new AABB(0, 0, -1, 0, 3, 1);
 
         @Resolve
         private final GateManagerBehavior manager = behavior();
+
+        public Open() {
+            subscribe(StargateEvents.Tick.event, this::tick);
+            subscribe(StargateEvents.BlockTick.event, this::blockTick);
+        }
 
         public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
             if (oldState instanceof GateState.Open
@@ -194,7 +205,6 @@ public interface GenericGateBehavior {
             }
         }
 
-        @Override
         public void tick(Stargate stargate) {
             if (stargate.isClient()) return;
 
@@ -275,8 +285,7 @@ public interface GenericGateBehavior {
                 StargateAdvancementTriggers.PASSED_THROUGH.get().trigger(serverPlayer);
         }
 
-        @Override
-        public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
+        public void blockTick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
             if (stargate.isClient()) return;
             if (level.getGameTime() % GateState.Open.TELEPORT_FREQUENCY != 0) return;
 

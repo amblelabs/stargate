@@ -40,24 +40,6 @@ public class StargateEcs {
         States.register(IrisState.type);
     }
 
-    public static void initEvents() {
-        TEventsRegistry.register(StargateLifecycleEvents.type);
-
-        TEventsRegistry.register(StargateBlockEvents.type);
-        TEventsRegistry.register(StargateBlockEvents.Tick.event);
-        TEventsRegistry.register(StargateBlockEvents.Break.event);
-        TEventsRegistry.register(StargateBlockEvents.Place.event);
-        TEventsRegistry.register(StargateBlockEvents.Animate.event);
-
-        TEventsRegistry.register(IrisEvents.type);
-        TEventsRegistry.register(DHDBlockEvents.type);
-
-        TEventsRegistry.register(AddressResolveEvents.type);
-        TEventsRegistry.register(StargateGateStateEvents.type);
-        TEventsRegistry.register(StargateTickEvents.type);
-        TEventsRegistry.register(StargateTpEvent.type);
-    }
-
     public static void initBehavior() {
         TBehaviorRegistry.register(IrisBehavior::new);
         TBehaviorRegistry.register(PrototypeBehavior::new);

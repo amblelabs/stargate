@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import software.bernie.geckolib.animation.AnimatableManager;
 
-// TODO: use EventSingle
 public interface DHDBlockEvents extends TEvents {
 
     EventGroup<DHDBlockEvents> type = new EventGroup<>(DHDBlockEvents.class);

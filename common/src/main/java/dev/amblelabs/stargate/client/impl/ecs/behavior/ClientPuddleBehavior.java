@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.client.impl.ecs.behavior;
 
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.mod.StargateConfig;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import software.bernie.geckolib.util.Color;
 
-public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents.Tick {
+public class ClientPuddleBehavior implements TBehavior {
 
     private static final float MAX_RADIUS = KawooshBehavior.MAX_RADIUS;
     private static final float INNER_WHITE_RADIUS = 0.8f;
@@ -52,8 +52,11 @@ public class ClientPuddleBehavior implements TBehavior, StargateBlockEvents.Tick
     @Resolve
     private final GateManagerBehavior manager = behavior();
 
-    @Override
-    public void stargate$tick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
+    public ClientPuddleBehavior() {
+        subscribe(StargateEvents.BlockTick.event, this::onBlockTick);
+    }
+
+    public void onBlockTick(Stargate stargate, StargateBlockEntity blockEntity, Level level, BlockPos blockPos, BlockState blockState) {
         if (!level.isClientSide() || mc.player == null) return;
 
         GateState<?> gateState = this.manager.get(stargate);

@@ -89,8 +89,12 @@ public class TBehaviorRegistry {
 
     private static void buildEvents(TBehavior handler) {
         for (TEvents.Type<?> holder : TEventsRegistry.registered()) {
-            if (!holder.isApplicable(handler) || !(holder instanceof TEvents.EventGroup<?> type))
+            if (!holder.isApplicable(handler))
                 continue;
+
+            if (!(holder instanceof TEvents.EventGroup<?> type)) {
+                throw new RuntimeException(new IllegalAccessException("Can't use event group auto-subscription on single events"));
+            }
 
             type.subscribe(handler);
         }

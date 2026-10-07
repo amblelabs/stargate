@@ -1,6 +1,6 @@
 package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
 import dev.amblelabs.stargate.common.blocks.StargateBlockEntity;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ShapeBehavior implements TBehavior, StargateBlockEvents.Break, StargateBlockEvents.Place {
+public class ShapeBehavior implements TBehavior {
 
     private static final String SHAPE = """
 				_________
@@ -40,6 +40,9 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents.Break, Star
 
     public ShapeBehavior() {
         INSTANCE = this;
+
+        subscribe(StargateEvents.Place.event, this::onPlaced);
+        subscribe(StargateEvents.Break.event, this::onBroken);
     }
 
     private static Stream<BlockPos> forEachPos(Direction direction, BlockPos origin) {
@@ -70,8 +73,7 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents.Break, Star
                 .allMatch(BlockBehaviour.BlockStateBase::canBeReplaced);
     }
 
-    @Override
-    public void stargate$place(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) {
+    public void onPlaced(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevelAccessor level, BlockPos pos) {
         Direction direction = state.getValue(StargateBlock.FACING);
 
         forEachPos(direction, pos).forEach(ringPos -> {
@@ -83,8 +85,7 @@ public class ShapeBehavior implements TBehavior, StargateBlockEvents.Break, Star
         });
     }
 
-    @Override
-    public void stargate$break(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onBroken(Stargate stargate, StargateBlockEntity blockEntity, BlockState state, ServerLevel level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         Direction direction = state.getValue(StargateBlock.FACING);
 
         forEachPos(direction, pos).forEach(ringPos -> level.removeBlock(ringPos, false));

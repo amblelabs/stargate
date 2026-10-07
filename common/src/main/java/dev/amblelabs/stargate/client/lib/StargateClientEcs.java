@@ -14,13 +14,10 @@ public class StargateClientEcs {
 
     public static void registerAll() {
         StargateEcs.initState();
-
         initState();
+
         States.freeze();
         StaticStates.freeze();
-
-        StargateEcs.initEvents();
-        initEvents();
         TEventsRegistry.freeze();
 
         StargateEcs.initBehavior();
@@ -33,10 +30,6 @@ public class StargateClientEcs {
         StaticStates.add(GeckoState.Default.type);
 
         StaticStates.register(GlyphsState.type);
-    }
-
-    @SuppressWarnings("EmptyMethod")
-    public static void initEvents() {
     }
 
     @SuppressWarnings("EmptyMethod")

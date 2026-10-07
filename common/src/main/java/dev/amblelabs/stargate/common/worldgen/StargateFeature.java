@@ -3,7 +3,7 @@ package dev.amblelabs.stargate.common.worldgen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.amblelabs.stargate.api.ecs.Prototype;
-import dev.amblelabs.stargate.api.ecs.event.StargateBlockEvents;
+import dev.amblelabs.stargate.api.ecs.event.StargateEvents;
 import dev.amblelabs.stargate.api.stargate.ServerStargateNetwork;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.blocks.StargateBlock;
@@ -55,7 +55,7 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
 
         blockEntity.setStargate(stargate);
 
-        StargateBlockEvents.Place.event.invoker().stargate$place(stargate, blockEntity, level.getBlockState(pos), level, pos);
+        StargateEvents.Place.event.invoker().onPlace(stargate, blockEntity, level.getBlockState(pos), level, pos);
 
         stargate.setChanged(); // force sync
         return true;

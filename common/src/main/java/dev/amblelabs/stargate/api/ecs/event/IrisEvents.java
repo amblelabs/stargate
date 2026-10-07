@@ -2,27 +2,14 @@ package dev.amblelabs.stargate.api.ecs.event;
 
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.impl.ecs.state.IrisState;
-import dev.drtheo.ecs.event.TEvent;
 import dev.drtheo.ecs.event.TEvents;
-import dev.drtheo.ecs.state.StateResolveError;
 
-// TODO: use EventSingle
-public interface IrisEvents extends TEvents {
+public interface IrisEvents {
 
-    EventGroup<IrisEvents> type = new EventGroup<>(IrisEvents.class);
+    @FunctionalInterface
+    interface Break extends TEvents {
+        EventSingle<Break> event = new EventSingle<>(Break.class);
 
-    void iris$onBroken(Stargate stargate, IrisState state);
-
-    record Broken(Stargate stargate, IrisState state) implements TEvent.Notify<IrisEvents> {
-
-        @Override
-        public void handle(IrisEvents handler) throws StateResolveError {
-            handler.iris$onBroken(stargate, state);
-        }
-
-        @Override
-        public EventGroup<IrisEvents> type() {
-            return type;
-        }
+        void iris$onBroken(Stargate stargate, IrisState state);
     }
 }
