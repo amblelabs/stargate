@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public record GlyphsState(int amount, float radius, @Nullable ResourceLocation font) implements NbtState<GlyphsState> {
 
-    public static final Type<GlyphsState> state = new Type<>(StargateAPI.modLoc("glyphs"), 0) {
+    public static final Type<GlyphsState> type = new Type<>(StargateAPI.modLoc("glyphs"), 0) {
         @Override
         public GlyphsState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             return new GlyphsState(NbtUtil.getInt(nbt, "amount", 36),
@@ -26,6 +26,6 @@ public record GlyphsState(int amount, float radius, @Nullable ResourceLocation f
 
     @Override
     public TState.Type<GlyphsState> type() {
-        return state;
+        return type;
     }
 }

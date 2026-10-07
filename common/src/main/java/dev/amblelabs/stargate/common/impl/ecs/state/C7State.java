@@ -12,7 +12,7 @@ import java.util.Random;
 
 public record C7State(String address) implements NbtState<C7State> {
 
-    public static final Type<C7State> state = new Type<>(StargateAPI.modLoc("c7"), 0) {
+    public static final Type<C7State> type = new Type<>(StargateAPI.modLoc("c7"), 0) {
         @Override
         public C7State fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             StringBuilder address = new StringBuilder(nbt.getString("address"));
@@ -35,6 +35,6 @@ public record C7State(String address) implements NbtState<C7State> {
 
     @Override
     public TState.Type<C7State> type() {
-        return state;
+        return type;
     }
 }

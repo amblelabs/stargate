@@ -12,7 +12,7 @@ public class GateManagerBehavior implements TBehavior {
     private GateManagerBehavior() { }
 
     public GateState<?> get(Stargate stargate) {
-        GateState<?> oldState = stargate.stateOrNull(GateState.state);
+        GateState<?> oldState = stargate.stateOrNull(GateState.type);
         return oldState != null ? oldState : new GateState.Closed();
     }
 
@@ -20,7 +20,7 @@ public class GateManagerBehavior implements TBehavior {
         GateState<?> oldState = this.get(stargate);
         boolean _ = stargate.addState(newState);
 
-        StargateGateStateEvents.notify(events ->
+        StargateGateStateEvents.type.notify(events ->
                 events.stargate$gateState(stargate, oldState, newState));
 
         stargate.setChanged(); // force update, because addState is not guaranteed to be successful

@@ -19,10 +19,9 @@ public class StargateEcs {
 
     public static void registerAll() {
         initState();
+
         States.freeze();
         StaticStates.freeze();
-
-        initEvents();
         TEventsRegistry.freeze();
 
         initBehavior();
@@ -30,24 +29,25 @@ public class StargateEcs {
     }
 
     public static void initState() {
-        States.register(PrototypeIdentityState.state);
+        States.register(PrototypeIdentityState.type);
         GateState.register(States);
 
-        States.register(ShapeState.state);
-        States.register(ChevronState.state);
-        States.register(LevelState.state);
+        States.register(ShapeState.type);
+        States.register(ChevronState.type);
+        States.register(LevelState.type);
 
-        States.register(C7State.state);
-        States.register(IrisState.state);
+        States.register(C7State.type);
+        States.register(IrisState.type);
     }
 
     public static void initEvents() {
         TEventsRegistry.register(StargateLifecycleEvents.type);
 
         TEventsRegistry.register(StargateBlockEvents.type);
-        TEventsRegistry.register(StargateBlockEvents.Tick.type);
-        TEventsRegistry.register(StargateBlockEvents.Lifecycle.type);
-        TEventsRegistry.register(StargateBlockEvents.Animate.type);
+        TEventsRegistry.register(StargateBlockEvents.Tick.event);
+        TEventsRegistry.register(StargateBlockEvents.Break.event);
+        TEventsRegistry.register(StargateBlockEvents.Place.event);
+        TEventsRegistry.register(StargateBlockEvents.Animate.event);
 
         TEventsRegistry.register(IrisEvents.type);
         TEventsRegistry.register(DHDBlockEvents.type);
@@ -55,7 +55,7 @@ public class StargateEcs {
         TEventsRegistry.register(AddressResolveEvents.type);
         TEventsRegistry.register(StargateGateStateEvents.type);
         TEventsRegistry.register(StargateTickEvents.type);
-        TEventsRegistry.register(StargateTpEvents.type);
+        TEventsRegistry.register(StargateTpEvent.type);
     }
 
     public static void initBehavior() {

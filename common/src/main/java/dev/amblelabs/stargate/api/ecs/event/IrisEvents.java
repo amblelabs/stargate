@@ -6,9 +6,10 @@ import dev.drtheo.ecs.event.TEvent;
 import dev.drtheo.ecs.event.TEvents;
 import dev.drtheo.ecs.state.StateResolveError;
 
+// TODO: use EventSingle
 public interface IrisEvents extends TEvents {
 
-    Type<IrisEvents> type = new Type<>(IrisEvents.class);
+    EventGroup<IrisEvents> type = new EventGroup<>(IrisEvents.class);
 
     void iris$onBroken(Stargate stargate, IrisState state);
 
@@ -20,7 +21,7 @@ public interface IrisEvents extends TEvents {
         }
 
         @Override
-        public BaseType<IrisEvents> type() {
+        public EventGroup<IrisEvents> type() {
             return type;
         }
     }

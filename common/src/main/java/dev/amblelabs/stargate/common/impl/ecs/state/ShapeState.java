@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public class ShapeState implements NbtState<ShapeState> {
 
-    public static final Type<ShapeState> state = new Type<>(StargateAPI.modLoc("shape"), 0) {
+    public static final Type<ShapeState> type = new Type<>(StargateAPI.modLoc("shape"), 0) {
         @Override
         public ShapeState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             return new ShapeState();
@@ -22,6 +22,6 @@ public class ShapeState implements NbtState<ShapeState> {
 
     @Override
     public TState.Type<ShapeState> type() {
-        return state;
+        return type;
     }
 }

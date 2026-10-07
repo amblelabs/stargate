@@ -14,6 +14,7 @@ public class StargateClientEcs {
 
     public static void registerAll() {
         StargateEcs.initState();
+
         initState();
         States.freeze();
         StaticStates.freeze();
@@ -28,10 +29,10 @@ public class StargateClientEcs {
     }
 
     public static void initState() {
-        StaticStates.register(GeckoState.state);
-        StaticStates.add(GeckoState.Default.state);
+        StaticStates.register(GeckoState.type);
+        StaticStates.add(GeckoState.Default.type);
 
-        StaticStates.register(GlyphsState.state);
+        StaticStates.register(GlyphsState.type);
     }
 
     @SuppressWarnings("EmptyMethod")

@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public record PrototypeIdentityState(ResourceLocation key, Prototype prototype) implements NbtState<PrototypeIdentityState> {
 
-    public static final Type<PrototypeIdentityState> state = new Type<>(StargateAPI.modLoc("identity"), 0) {
+    public static final Type<PrototypeIdentityState> type = new Type<>(StargateAPI.modLoc("identity"), 0) {
         @Override
         public PrototypeIdentityState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             ResourceLocation loc = Objects.requireNonNull(NbtUtil.getLoc(nbt, "prototype"));
@@ -26,7 +26,7 @@ public record PrototypeIdentityState(ResourceLocation key, Prototype prototype) 
 
     @Override
     public Type<PrototypeIdentityState> type() {
-        return state;
+        return type;
     }
 
     @Override

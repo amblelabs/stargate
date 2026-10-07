@@ -11,9 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import software.bernie.geckolib.animation.AnimatableManager;
 
+// TODO: use EventSingle
 public interface DHDBlockEvents extends TEvents {
 
-    Type<DHDBlockEvents> type = new Type<>(DHDBlockEvents.class);
+    EventGroup<DHDBlockEvents> type = new EventGroup<>(DHDBlockEvents.class);
 
     void stargate$useItem(DHDBlockEntity dhd, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult);
 
@@ -22,7 +23,7 @@ public interface DHDBlockEvents extends TEvents {
     record UseItem(DHDBlockEntity dhd, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) implements TEvent.Notify<DHDBlockEvents> {
 
         @Override
-        public BaseType<DHDBlockEvents> type() {
+        public EventGroup<DHDBlockEvents> type() {
             return type;
         }
 
@@ -40,7 +41,7 @@ public interface DHDBlockEvents extends TEvents {
         }
 
         @Override
-        public BaseType<DHDBlockEvents> type() {
+        public EventGroup<DHDBlockEvents> type() {
             return type;
         }
     }

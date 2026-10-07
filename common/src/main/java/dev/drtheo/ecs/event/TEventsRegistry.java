@@ -20,7 +20,7 @@ public class TEventsRegistry {
     public static final Logger LOGGER = LoggerFactory.getLogger(TEventsRegistry.class);
 
     private static boolean frozen;
-    private static final Set<TEvents.BaseType<?>> holders = Collections.newSetFromMap(new IdentityHashMap<>());
+    private static final Set<TEvents.Type<?>> holders = Collections.newSetFromMap(new IdentityHashMap<>());
 
     /**
      * Registers the provided event group type.
@@ -28,7 +28,7 @@ public class TEventsRegistry {
      * @param events the event group type.
      * @throws IllegalStateException if the registry is already frozen.
      */
-    public static void register(TEvents.BaseType<?> events) {
+    public static void register(TEvents.Type<?> events) {
         if (frozen)
             throw new IllegalStateException("Registry already frozen!");
 
@@ -38,9 +38,9 @@ public class TEventsRegistry {
     /**
      * Returns a collection of all the registered event group types (cached).
      *
-     * @return a collection of all the registered {@link TEvents.BaseType}s.
+     * @return a collection of all the registered {@link TEvents.Type}s.
      */
-    public static Collection<TEvents.BaseType<?>> registered() {
+    public static Collection<TEvents.Type<?>> registered() {
         return holders;
     }
 

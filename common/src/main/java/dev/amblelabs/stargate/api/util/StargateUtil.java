@@ -20,7 +20,7 @@ public class StargateUtil {
 
     @Contract(pure = true)
     public static @Nullable BlockState getBlockState(Stargate stargate) {
-        LevelState state = stargate.stateOrNull(LevelState.state);
+        LevelState state = stargate.stateOrNull(LevelState.type);
         if (state == null) return null;
 
         return getBlockState(state);
@@ -32,7 +32,7 @@ public class StargateUtil {
 
     @CheckReturnValue
     public static boolean playSound(Stargate stargate, Holder<SoundEvent> sound) {
-        LevelState state = stargate.stateOrNull(LevelState.state);
+        LevelState state = stargate.stateOrNull(LevelState.type);
         if (state == null) return false;
 
         playSound(state, sound);
@@ -45,7 +45,7 @@ public class StargateUtil {
 
     @CheckReturnValue
     public static boolean playSound(Stargate stargate, SoundEvent sound) {
-        LevelState state = stargate.stateOrNull(LevelState.state);
+        LevelState state = stargate.stateOrNull(LevelState.type);
         if (state == null) return false;
 
         playSound(state, sound);
@@ -57,7 +57,7 @@ public class StargateUtil {
     }
 
     public static Collection<Player> getPlayersNearby(Stargate stargate, int radius) {
-        LevelState globalPos = stargate.stateOrNull(LevelState.state);
+        LevelState globalPos = stargate.stateOrNull(LevelState.type);
         if (globalPos == null) return List.of();
 
         AABB aabb = AABB.ofSize(globalPos.pos().getCenter(), radius, radius, radius);

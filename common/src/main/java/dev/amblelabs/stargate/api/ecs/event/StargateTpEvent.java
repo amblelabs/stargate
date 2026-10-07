@@ -1,61 +1,27 @@
 package dev.amblelabs.stargate.api.ecs.event;
 
 import dev.amblelabs.stargate.api.stargate.Stargate;
-import dev.drtheo.ecs.event.TEvent;
 import dev.drtheo.ecs.event.TEvents;
+import dev.drtheo.ecs.event.TResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 
-public class StargateTpEvent implements TEvent.Result<StargateTpEvent.Callback, StargateTpEvent.Result> {
+@FunctionalInterface
+public interface StargateTpEvent extends TEvents {
 
-    public static final TEvents.Type<Callback> event = new TEvents.Type<>(Callback.class);
+    EventSingle<StargateTpEvent> type = new EventSingle<>(StargateTpEvent.class, callbacks
+            -> (from, to, living) -> {
+        TResult result = TResult.ALLOW;
+        for (StargateTpEvent cb : callbacks) {
+            TResult newRes = cb.stargate$tp(from, to, living);
 
-    @FunctionalInterface
-    public interface Callback extends TEvents {
-        StargateTpEvent.Result onGateTp(Stargate from, Stargate to, Entity living);
-    }
+            if (newRes == TResult.PASS)
+                continue;
 
-    private final Stargate from;
-    private final Stargate to;
-    private final Entity living;
-
-    protected Result result = Result.PASS;
-
-    public StargateTpEvent(Stargate from, Stargate to, LivingEntity living) {
-        this.from = from;
-        this.to = to;
-        this.living = living;
-    }
-
-    @Override
-    public TEvents.BaseType<Callback> type() {
-        return event;
-    }
-
-    @Override
-    public Result result() {
-        return result;
-    }
-
-    @Override
-    public void handleAll(Iterable<Callback> subscribed) {
-        for (Callback e : subscribed) {
-            Result newRes = TEvent.handleSilent(this, e, () -> this.handle(e), Result.PASS);
-
-            if (newRes == Result.PASS) continue;
-
-            this.result = newRes;
-            break;
+            result = newRes;
         }
-    }
 
-    public Result handle(Callback handler) {
-        return handler.onGateTp(from, to, living);
-    }
+        return result;
+    });
 
-    public enum Result {
-        DENY,
-        PASS,
-        ALLOW
-    }
+    TResult stargate$tp(Stargate from, Stargate to, Entity living);
 }

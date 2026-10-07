@@ -55,7 +55,7 @@ public class StargateFeature extends Feature<StargateFeature.Configuration> {
 
         blockEntity.setStargate(stargate);
 
-        StargateBlockEvents.Lifecycle.place(stargate, blockEntity, level.getBlockState(pos), level, pos);
+        StargateBlockEvents.Place.event.invoker().stargate$place(stargate, blockEntity, level.getBlockState(pos), level, pos);
 
         stargate.setChanged(); // force sync
         return true;

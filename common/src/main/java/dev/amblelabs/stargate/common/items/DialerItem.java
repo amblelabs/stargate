@@ -63,7 +63,7 @@ public class DialerItem extends Item {
         GateState<?> state = GateManagerBehavior.get().get(stargate);
 
         if (state instanceof GateState.Closed closed) {
-            closed.address = target.state(C7State.state).address();
+            closed.address = target.state(C7State.type).address();
 			stargate.setChanged();
         } else if (context.getPlayer() != null) {
 			context.getPlayer().sendSystemMessage(I18n.Items.DIALER_FAIL);

@@ -46,7 +46,7 @@ public class GlyphRenderLayer<T extends StargateBlockEntity> extends GeoRenderLa
         Stargate stargate = animatable.stargate();
         if (stargate == null) return;
 
-        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.state);
+        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.type);
         if (glyphs == null) return;
 
         final float radius = glyphs.radius();

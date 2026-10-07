@@ -81,7 +81,7 @@ public class BuriedStargatePieces {
 
                     blockEntity.setStargate(stargate);
 
-                    StargateBlockEvents.Lifecycle.place(stargate, blockEntity, placedState, level, mutableBlockPos);
+                    StargateBlockEvents.Place.event.invoker().stargate$place(stargate, blockEntity, placedState, level, mutableBlockPos);
 
                     stargate.setChanged(); // force sync
                     return;

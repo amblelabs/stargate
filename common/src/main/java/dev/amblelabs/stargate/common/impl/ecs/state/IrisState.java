@@ -12,14 +12,14 @@ import java.util.Objects;
 
 public class IrisState implements NbtState<IrisState> {
 
-    public static final Type<IrisState> state = new Type<>(StargateAPI.modLoc("iris"), 0) {
+    public static final Type<IrisState> type = new Type<>(StargateAPI.modLoc("iris"), 0) {
         @Override
         public IrisState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             return new IrisState(Objects.requireNonNull(NbtUtil.getLoc(nbt, "type")), nbt.getInt("durability"), nbt.getBoolean("closed"));
         }
     };
 
-    public final ResourceLocation type;
+    public final ResourceLocation irisType;
 
     /**
      * Goes from positive number to 0
@@ -34,7 +34,7 @@ public class IrisState implements NbtState<IrisState> {
     public boolean busy;
 
     public IrisState(ResourceLocation type, int durability, boolean closed) {
-        this.type = type;
+        this.irisType = type;
         this.durability = durability;
         this.closed = closed;
     }
@@ -52,6 +52,6 @@ public class IrisState implements NbtState<IrisState> {
 
     @Override
     public Type<IrisState> type() {
-        return state;
+        return type;
     }
 }

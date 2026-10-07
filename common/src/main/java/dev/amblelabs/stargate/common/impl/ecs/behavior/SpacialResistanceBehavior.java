@@ -1,7 +1,6 @@
 package dev.amblelabs.stargate.common.impl.ecs.behavior;
 
 import dev.amblelabs.stargate.api.ecs.event.StargateTpEvent;
-import dev.amblelabs.stargate.api.ecs.event.StargateTpEvents;
 import dev.amblelabs.stargate.api.stargate.Stargate;
 import dev.amblelabs.stargate.common.impl.ecs.state.GateState;
 import dev.amblelabs.stargate.common.lib.StargateAdvancementTriggers;
@@ -9,6 +8,7 @@ import dev.amblelabs.stargate.common.lib.StargateAttributes;
 import dev.amblelabs.stargate.common.lib.StargateDamageTypes;
 import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
+import dev.drtheo.ecs.event.TResult;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -18,20 +18,20 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.level.Level;
 
-public class SpacialResistanceBehavior implements TBehavior, StargateTpEvents {
+public class SpacialResistanceBehavior implements TBehavior, StargateTpEvent {
 
     @Resolve
     private final GateManagerBehavior manager = behavior();
 
     @Override
-    public StargateTpEvent.Result onGateTp(Stargate from, Stargate to, Entity entity) {
+    public TResult stargate$tp(Stargate from, Stargate to, Entity entity) {
         GateState<?> state = manager.get(from);
 
         Level level = entity.level();
         DamageSource flow = StargateDamageTypes.source(level, StargateDamageTypes.FLOW);
 
         if (!(state instanceof GateState.Open open) || open.caller || entity.isInvulnerableTo(flow))
-            return StargateTpEvent.Result.PASS;
+            return TResult.PASS;
 
         if (entity instanceof LivingEntity living) {
             Holder<Attribute> attribute = StargateAttributes.SPACIAL_RESISTANCE;
@@ -52,8 +52,8 @@ public class SpacialResistanceBehavior implements TBehavior, StargateTpEvents {
 
         // TODO: add energy conversion
         if (!entity.isAlive())
-            return StargateTpEvent.Result.DENY;
+            return TResult.DENY;
 
-        return StargateTpEvent.Result.PASS;
+        return TResult.PASS;
     }
 }

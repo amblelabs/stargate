@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public record ChevronState(int chevrons) implements NbtState<ChevronState> {
 
-    public static final Type<ChevronState> state = new Type<>(StargateAPI.modLoc("chevrons"), 0) {
+    public static final Type<ChevronState> type = new Type<>(StargateAPI.modLoc("chevrons"), 0) {
         @Override
         public ChevronState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             return new ChevronState(nbt.getInt("chevrons"));
@@ -21,6 +21,6 @@ public record ChevronState(int chevrons) implements NbtState<ChevronState> {
 
     @Override
     public Type<ChevronState> type() {
-        return state;
+        return type;
     }
 }

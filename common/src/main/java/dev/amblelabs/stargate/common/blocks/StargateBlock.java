@@ -114,7 +114,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
                 return ItemInteractionResult.SUCCESS;
             }
 
-            StargateBlockEvents.notify(events -> events.stargate$useItem(stargate, blockEntity, stack, state, player, hand, hitResult));
+            StargateBlockEvents.type.notify(events -> events.stargate$useItem(stargate, blockEntity, stack, state, player, hand, hitResult));
         }
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -124,7 +124,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
-            StargateBlockEvents.notify(events -> events.stargate$use(stargate, blockEntity, state, level, pos, player, hitResult));
+            StargateBlockEvents.type.notify(events -> events.stargate$use(stargate, blockEntity, state, level, pos, player, hitResult));
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
@@ -135,7 +135,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
         // always ServerLevel, actually.
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null) {
-            StargateBlockEvents.Lifecycle.broken(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston);
+            StargateBlockEvents.Break.event.invoker().stargate$break(stargate, blockEntity, state, serverLevel, pos, newState, movedByPiston);
             ServerStargateNetwork.get(level).remove(stargate.getId()); // TODO: make a behavior do this maybe
 
             blockEntity.setStargate(null);
@@ -148,7 +148,7 @@ public class StargateBlock extends BaseEntityBlock implements SimpleWaterloggedB
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         Stargate stargate;
         if (level.getBlockEntity(pos) instanceof StargateBlockEntity blockEntity && (stargate = blockEntity.stargate()) != null)
-            StargateBlockEvents.notify(events -> events.stargate$randomTick(stargate, state, level, pos, random));
+            StargateBlockEvents.type.notify(events -> events.stargate$randomTick(stargate, state, level, pos, random));
 
         super.randomTick(state, level, pos, random);
     }

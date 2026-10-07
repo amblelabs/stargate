@@ -75,7 +75,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         Stargate stargate = blockEntity.stargate();
         if (stargate == null) return;
 
-        GeckoState gecko = stargate.getStatic().stateOrNull(GeckoState.state);
+        GeckoState gecko = stargate.getStatic().stateOrNull(GeckoState.type);
         if (gecko == null) return;
 
         this.model = gecko.geoModel;
@@ -126,7 +126,7 @@ public class StargateBlockEntityRenderer extends GeoBlockRenderer<StargateBlockE
         Stargate stargate = animatable.stargate();
         if (stargate == null) return;
 
-        GateState<?> gate = stargate.stateOrNull(GateState.state);
+        GateState<?> gate = stargate.stateOrNull(GateState.type);
         if (gate == null || gate instanceof GateState.Closed) return;
 
         if (gate instanceof GateState.Opening opening && opening.timer < ClientPuddleBehavior.KAWOOSH_CONVERGE_TICKS)

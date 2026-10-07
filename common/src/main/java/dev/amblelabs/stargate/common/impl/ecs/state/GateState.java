@@ -14,16 +14,16 @@ import java.util.UUID;
 public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     static void register(TAbstractStateRegistry registry) {
-        registry.register(state);
-        registry.add(Closed.state);
-        registry.add(Opening.state);
-        registry.add(Open.state);
+        registry.register(type);
+        registry.add(Closed.type);
+        registry.add(Opening.type);
+        registry.add(Open.type);
     }
 
     /**
      * @apiNote Use {@link dev.amblelabs.stargate.common.impl.ecs.behavior.GateManagerBehavior#get(Stargate)} instead.
      */
-    Type<GateState<?>> state = new Type<>(StargateAPI.modLoc("generic/holder"), 0) {
+    Type<GateState<?>> type = new Type<>(StargateAPI.modLoc("generic/holder"), 0) {
 
         @Override
         public GateState<?> fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -33,7 +33,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Closed implements GateState<Closed> {
 
-        private static final Type<Closed> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/closed"), 0) {
+        private static final Type<Closed> type = new GroupedType<>(GateState.type, StargateAPI.modLoc("generic/closed"), 0) {
 
             @Override
             public Closed fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -63,7 +63,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
         @Override
         public Type<Closed> type() {
-            return state;
+            return type;
         }
 
         @Override
@@ -82,7 +82,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Opening implements GateState<Opening> {
 
-        private static final Type<Opening> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/opening"), 0) {
+        private static final Type<Opening> type = new GroupedType<>(GateState.type, StargateAPI.modLoc("generic/opening"), 0) {
 
             @Override
             public Opening fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -117,7 +117,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
         @Override
         public Type<Opening> type() {
-            return state;
+            return type;
         }
 
         @Override
@@ -137,7 +137,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
     final class Open implements GateState<Open> {
 
-        private static final Type<Open> state = new GroupedType<>(GateState.state, StargateAPI.modLoc("generic/open"), 0) {
+        private static final Type<Open> type = new GroupedType<>(GateState.type, StargateAPI.modLoc("generic/open"), 0) {
 
             @Override
             public Open fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -164,7 +164,7 @@ public sealed interface GateState<T extends GateState<T>> extends NbtState<T> {
 
         @Override
         public Type<Open> type() {
-            return state;
+            return type;
         }
 
         @Override

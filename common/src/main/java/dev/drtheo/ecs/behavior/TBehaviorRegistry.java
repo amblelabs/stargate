@@ -88,8 +88,8 @@ public class TBehaviorRegistry {
     }
 
     private static void buildEvents(TBehavior handler) {
-        for (TEvents.BaseType<?> holder : TEventsRegistry.registered()) {
-            if (!holder.isApplicable(handler) || !(holder instanceof TEvents.Type<?> type))
+        for (TEvents.Type<?> holder : TEventsRegistry.registered()) {
+            if (!holder.isApplicable(handler) || !(holder instanceof TEvents.EventGroup<?> type))
                 continue;
 
             type.subscribe(handler);

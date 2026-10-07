@@ -20,7 +20,7 @@ public class AddressResolveEvent implements TEvent.Result<AddressResolveEvents, 
     }
 
     @Override
-    public TEvents.Type<AddressResolveEvents> type() {
+    public TEvents.EventGroup<AddressResolveEvents> type() {
         return AddressResolveEvents.type;
     }
 

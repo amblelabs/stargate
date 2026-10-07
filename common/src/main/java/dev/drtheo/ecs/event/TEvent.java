@@ -21,7 +21,7 @@ public interface TEvent<T extends TEvents> {
      * @return the type of the event group.
      */
     @Contract(pure = true)
-    TEvents.BaseType<T> type();
+    TEvents.EventGroup<T> type();
 
     /**
      * A method used to execute all the subscribed behaviors.
@@ -104,7 +104,7 @@ public interface TEvent<T extends TEvents> {
         }
     }
 
-    record Notifier<T extends TEvents>(TEvents.BaseType<T> type, Consumer<T> handler) implements Notify<T> {
+    record Notifier<T extends TEvents>(TEvents.EventGroup<T> type, Consumer<T> handler) implements Notify<T> {
 
         @Override
         public void handle(T handler) throws StateResolveError {

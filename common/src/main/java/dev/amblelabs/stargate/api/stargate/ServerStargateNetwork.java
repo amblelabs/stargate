@@ -65,10 +65,10 @@ public class ServerStargateNetwork extends StargateNetwork {
         this.lookup.put(result.getId(), result);
         GLOBAL.put(result.getId(), result);
 
-        StargateLifecycleEvents.notify(events
+        StargateLifecycleEvents.type.notify(events
                 -> events.stargate$instantiate(result, NbtDeserializer.Context.forCreate(level).get()));
 
-        C7.put(result.state(C7State.state).address(), result);
+        C7.put(result.state(C7State.type).address(), result);
 
         this.persistent.setDirty();
         return result;
@@ -80,7 +80,7 @@ public class ServerStargateNetwork extends StargateNetwork {
 
         super.remove(id);
         GLOBAL.remove(id);
-        C7.remove(stargate.state(C7State.state).address());
+        C7.remove(stargate.state(C7State.type).address());
 
         this.persistent.setDirty();
     }
@@ -102,10 +102,10 @@ public class ServerStargateNetwork extends StargateNetwork {
                 ServerStargateNetwork.this.lookup.put(stargate.getId(), stargate);
                 GLOBAL.put(stargate.getId(), stargate);
 
-                StargateLifecycleEvents.notify(events
+                StargateLifecycleEvents.type.notify(events
                         -> events.stargate$instantiate(stargate, ctx));
 
-                C7.put(stargate.state(C7State.state).address(), stargate);
+                C7.put(stargate.state(C7State.type).address(), stargate);
             }
         }
 
@@ -132,8 +132,9 @@ public class ServerStargateNetwork extends StargateNetwork {
     }
 
     private SavedData.Factory<Persistent> factory() {
+        //noinspection DataFlowIssue - net.fabricmc.fabric.mixin.object.builder.PersistentStateManagerMixin
         return new SavedData.Factory<>(Persistent::new, this::load,
-                null /// {@see net.fabricmc.fabric.mixin.object.builder.PersistentStateManagerMixin}
+                null
         );
     }
 

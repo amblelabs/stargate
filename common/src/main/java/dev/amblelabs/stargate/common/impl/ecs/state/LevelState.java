@@ -7,10 +7,10 @@ import net.minecraft.server.level.ServerLevel;
 
 public record LevelState(ServerLevel level, BlockPos pos) implements TState<LevelState> {
 
-    public static final Type<LevelState> state = new Type<>(StargateAPI.modLoc("level"));
+    public static final Type<LevelState> type = new Type<>(StargateAPI.modLoc("level"));
 
     @Override
     public Type<LevelState> type() {
-        return state;
+        return type;
     }
 }

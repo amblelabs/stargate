@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
@@ -28,7 +29,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecated")
 public class GeckoState implements NbtState<GeckoState> {
 
-    public static final Type<GeckoState> state = new Type<>(StargateAPI.modLoc("gecko"), 0) {
+    public static final Type<GeckoState> type = new Type<>(StargateAPI.modLoc("gecko"), 0) {
         @Override
         public GeckoState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
             if (nbt.contains("path", CompoundTag.TAG_STRING))
@@ -90,7 +91,7 @@ public class GeckoState implements NbtState<GeckoState> {
 
     @Override
     public Type<GeckoState> type() {
-        return state;
+        return type;
     }
 
     @Override
@@ -107,7 +108,7 @@ public class GeckoState implements NbtState<GeckoState> {
 
         private static final ResourceLocation MODEL = StargateAPI.modLoc("block/stargate");
 
-        public static final Type<GeckoState> state = new GroupedType<>(GeckoState.state, StargateAPI.modLoc("gecko/default"), 0) {
+        public static final Type<GeckoState> type = new GroupedType<>(GeckoState.type, StargateAPI.modLoc("gecko/default"), 0) {
 
             @Override
             public GeckoState fromNbt(CompoundTag nbt, NbtDeserializer.Context context) {
@@ -128,7 +129,7 @@ public class GeckoState implements NbtState<GeckoState> {
                 private final ResourceLocation texture = Default.this.texture.withPath(s -> "textures/" + s + ".png");
                 private final ResourceLocation animation = Default.this.animation.withPath(s -> "animations/" + s + ".animation.json");
 
-                private final Supplier<List<GeoBone>> lights = Suppliers.memoize(() ->
+                private final Supplier<@Nullable List<GeoBone>> lights = Suppliers.memoize(() ->
                         this.getAnimationProcessor().getBone("lights").getChildBones()
                                 .stream().sorted(Comparator.comparing(GeoBone::getName)).toList());
 
@@ -154,26 +155,29 @@ public class GeckoState implements NbtState<GeckoState> {
 
                     int chevrons = 0;
 
-                    GateState<?> state = stargate.stateOrNull(GateState.state);
+                    GateState<?> state = stargate.stateOrNull(GateState.type);
 
                     if (state instanceof GateState.Closed closed) {
                         chevrons = closed.locked;
                     } else {
-                        ChevronState chevronState = stargate.stateOrNull(ChevronState.state);
+                        ChevronState chevronState = stargate.stateOrNull(ChevronState.type);
 
                         if (chevronState != null)
                             chevrons = chevronState.chevrons();
                     }
 
                     List<GeoBone> lights = this.lights.get();
-                    for (int j = 0; j < lights.size(); j++) {
-                        lights.get(j).setHidden(j >= chevrons);
+
+                    if (lights != null) {
+                        for (int j = 0; j < lights.size(); j++) {
+                            lights.get(j).setHidden(j >= chevrons);
+                        }
                     }
 
                     if (state instanceof GateState.Closed closed) {
                         if (!closed.locking) return;
 
-                        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.state);
+                        GlyphsState glyphs = stargate.getStatic().stateOrNull(GlyphsState.type);
                         if (glyphs == null) return;
 
                         GeoBone bone = this.getAnimationProcessor().getBone("SymbolRing");
@@ -203,19 +207,19 @@ public class GeckoState implements NbtState<GeckoState> {
                     Stargate stargate = animatable.stargate();
                     if (stargate == null) return false;
 
-                    GateState<?> state = stargate.stateOrNull(GateState.state);
+                    GateState<?> state = stargate.stateOrNull(GateState.type);
 
                     if (state instanceof GateState.Closed closed)
                         return closed.locked > 0;
 
-                    return stargate.hasState(ChevronState.state);
+                    return stargate.hasState(ChevronState.type);
                 }
             };
         }
 
         @Override
         public Type<GeckoState> type() {
-            return state;
+            return type;
         }
     }
 

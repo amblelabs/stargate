@@ -18,6 +18,7 @@ import dev.drtheo.ecs.behavior.Resolve;
 import dev.drtheo.ecs.behavior.TBehavior;
 import dev.drtheo.ecs.behavior.TBehaviorRegistry;
 import dev.drtheo.ecs.event.TEvents;
+import dev.drtheo.ecs.event.TResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -92,7 +93,7 @@ public interface GenericGateBehavior {
 
             if (!(resolved instanceof AddressResolveEvent.Result.Route route)) {
                 // if FAILed *OR* PASSed through all resolvers with no result and the address length >= to max chevrons of this gate, then fail
-                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.state(ChevronState.state).chevrons())
+                if (resolved instanceof AddressResolveEvent.Result.Fail || closed.locked >= stargate.state(ChevronState.type).chevrons())
                     this.fail(stargate);
 
                 return;
@@ -221,11 +222,11 @@ public interface GenericGateBehavior {
             Stargate target = open.target;
             if (target == null) return; // this is most likely false, since we do a check every tick, but just in case...
 
-            LevelState sourcePhys = stargate.resolveState(LevelState.state);
-            LevelState targetPhys = target.resolveState(LevelState.state);
+            LevelState sourcePhys = stargate.resolveState(LevelState.type);
+            LevelState targetPhys = target.resolveState(LevelState.type);
 
-            StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
-            if (result == StargateTpEvent.Result.DENY) return;
+            TResult result = StargateTpEvent.type.invoker().stargate$tp(stargate, target, entity);
+            if (result == TResult.DENY) return;
 
             BlockPos pos = sourcePhys.pos();
             Vec3 offset = entity.position().subtract(pos.getCenter());

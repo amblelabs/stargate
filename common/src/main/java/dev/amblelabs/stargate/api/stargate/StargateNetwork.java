@@ -20,7 +20,7 @@ public class StargateNetwork {
     }
 
     protected void tick(Stargate stargate) {
-        StargateTickEvents.notify(events -> events.tick(stargate));
+        StargateTickEvents.type.notify(events -> events.tick(stargate));
     }
 
     public void remove(UUID id) {

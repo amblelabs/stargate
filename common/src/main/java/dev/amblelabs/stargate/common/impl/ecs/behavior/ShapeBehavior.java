@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ShapeBehavior implements TBehavior, StargateBlockEvents.Lifecycle {
+public class ShapeBehavior implements TBehavior, StargateBlockEvents.Break, StargateBlockEvents.Place {
 
     private static final String SHAPE = """
 				_________
