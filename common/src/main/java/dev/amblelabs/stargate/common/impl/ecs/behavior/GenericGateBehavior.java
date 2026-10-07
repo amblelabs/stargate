@@ -32,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -85,7 +84,7 @@ public interface GenericGateBehavior {
             closed.timer = 0;
             closed.locked++;
 
-            StargateUtil.playSound(stargate, StargateSounds.CHEVRON_LOCK);
+            boolean _ = StargateUtil.playSound(stargate, StargateSounds.CHEVRON_LOCK);
             stargate.setChanged();
 
             // TODO: add energy handling.
@@ -128,7 +127,7 @@ public interface GenericGateBehavior {
         }
 
         public void fail(Stargate stargate) {
-            StargateUtil.playSound(stargate, StargateSounds.GATE_FAIL);
+            boolean _ = StargateUtil.playSound(stargate, StargateSounds.GATE_FAIL);
             manager.set(stargate, new GateState.Closed());
         }
 
@@ -154,8 +153,9 @@ public interface GenericGateBehavior {
 
         @Override
         public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
-            if (newState instanceof GateState.Opening)
-                StargateUtil.playSound(stargate, StargateSounds.GATE_OPEN);
+            if (newState instanceof GateState.Opening) {
+                boolean _ = StargateUtil.playSound(stargate, StargateSounds.GATE_OPEN);
+            }
         }
 
         @Override
@@ -188,8 +188,9 @@ public interface GenericGateBehavior {
 
         public void stargate$gateState(Stargate stargate, GateState<?> oldState, GateState<?> newState) {
             if (oldState instanceof GateState.Open
-                    && newState instanceof GateState.Closed)
-                StargateUtil.playSound(stargate, StargateSounds.GATE_CLOSE);
+                    && newState instanceof GateState.Closed) {
+                boolean _ = StargateUtil.playSound(stargate, StargateSounds.GATE_CLOSE);
+            }
         }
 
         @Override
@@ -220,25 +221,26 @@ public interface GenericGateBehavior {
             Stargate target = open.target;
             if (target == null) return; // this is most likely false, since we do a check every tick, but just in case...
 
+            LevelState sourcePhys = stargate.resolveState(LevelState.state);
             LevelState targetPhys = target.resolveState(LevelState.state);
 
             StargateTpEvent.Result result = TEvents.handle(new StargateTpEvent(stargate, target, entity));
             if (result == StargateTpEvent.Result.DENY) return;
 
-            BlockPos pos = stargate.resolveState(LevelState.state).pos();
+            BlockPos pos = sourcePhys.pos();
             Vec3 offset = entity.position().subtract(pos.getCenter());
 
-            StargateUtil.playSound(stargate, StargateSounds.GATE_TELEPORT);
-            StargateUtil.playSound(target, StargateSounds.GATE_TELEPORT);
+            StargateUtil.playSound(sourcePhys, StargateSounds.GATE_TELEPORT);
+            StargateUtil.playSound(targetPhys, StargateSounds.GATE_TELEPORT);
 
             Vec3 targetPos = targetPhys.pos().getCenter().add(offset);
 
             // gets source gate rotation - addie
-            BlockState sourceState = stargate.resolveState(LevelState.state).getBlockState();
+            BlockState sourceState = StargateUtil.getBlockState(sourcePhys);
             Direction.Axis sourceAxis = sourceState.getValue(StargateBlock.FACING).getAxis();
 
             // gets target gate rotation - addie
-            BlockState targetState = target.resolveState(LevelState.state).getBlockState();
+            BlockState targetState = StargateUtil.getBlockState(targetPhys);
             Direction.Axis targetAxis = targetState.getValue(StargateBlock.FACING).getAxis();
             Direction targetFacing = targetState.getValue(StargateBlock.FACING);
 
@@ -258,13 +260,12 @@ public interface GenericGateBehavior {
                 yRot += 180.0F;
             }
 
+            Vec3 motion = entity.getDeltaMovement();
+
             entity.teleportTo(targetPhys.level(), targetPos.x, targetPos.y, targetPos.z,
                     RelativeMovement.ALL, yRot, xRot);
 
-            if (axisMismatched){
-                Vec3 motion = entity.getDeltaMovement();
-                entity.setDeltaMovement(motion.z, motion.y, motion.x);
-            }
+            entity.setDeltaMovement(motion);
 
             holder.stargate$setTicks(GateState.Open.TELEPORT_DELAY);
 

@@ -1,5 +1,6 @@
 package dev.drtheo.ecs.state;
 
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,6 +85,7 @@ public interface TStateContainer {
      * @return whether adding the state had succeeded.
      */
     @Contract(mutates = "this")
+    @CheckReturnValue
     boolean addState(TState<?> state);
 
     /**
@@ -157,6 +159,7 @@ public interface TStateContainer {
 
         @Override
         @Contract(mutates = "this")
+        @CheckReturnValue
         public boolean addState(TState<?> state) {
             int index = state.type().verifyIndex();
             data[index] = state;
@@ -225,6 +228,7 @@ public interface TStateContainer {
 
         @Override
         @Contract(mutates = "this")
+        @CheckReturnValue
         public boolean addState(TState<?> state) {
             return parent.addState(state);
         }

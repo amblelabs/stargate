@@ -21,7 +21,10 @@ public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContain
 
     public void mark(TStateContainer container) {
         ResourceLocation loc = Objects.requireNonNull(XplatAbstractions.INSTANCE.getPrototypeRegistry().getKey(this));
-        container.addState(new PrototypeIdentityState(loc, this));
+        boolean success = container.addState(new PrototypeIdentityState(loc, this));
+
+        if (!success)
+            StargateAPI.LOGGER.error("Failed to give {} a prototype identity", container);
     }
 
     public void make(ResourceLocation self, TAbstractStateRegistry registry, TStateContainer container, NbtDeserializer.Context context) {
@@ -37,7 +40,7 @@ public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContain
                 continue;
 
             TState<?> state = serializable.decode(entry.getValue(), context);
-            container.addState(state);
+            boolean _ = container.addState(state);
         }
 
         this.extending.ifPresent(prototypeId -> {
@@ -62,7 +65,7 @@ public record Prototype(Map<ResourceLocation, CompoundTag> states, TStateContain
             if (!(type instanceof NbtState.Type<?> serializable))
                 continue;
 
-            container.addState(serializable.fromNbt(entry.getValue(), NbtDeserializer.Context.forLoad().get()));
+            boolean _ = container.addState(serializable.fromNbt(entry.getValue(), NbtDeserializer.Context.forLoad().get()));
         }
 
         return new ImmutableTStateContainer(container);

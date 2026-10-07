@@ -18,12 +18,12 @@ public class GateManagerBehavior implements TBehavior {
 
     public void set(Stargate stargate, GateState<?> newState) {
         GateState<?> oldState = this.get(stargate);
-        stargate.addState(newState);
+        boolean _ = stargate.addState(newState);
 
         StargateGateStateEvents.notify(events ->
                 events.stargate$gateState(stargate, oldState, newState));
 
-        stargate.setChanged();
+        stargate.setChanged(); // force update, because addState is not guaranteed to be successful
     }
 
     public static GateManagerBehavior get() {

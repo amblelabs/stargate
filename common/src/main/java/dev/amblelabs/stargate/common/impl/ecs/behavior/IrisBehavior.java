@@ -53,11 +53,11 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
         stargate.setChanged();
 
         if (broken) {
-            LevelState globalPos = stargate.state(LevelState.state);
-            globalPos.level().playSound(null, globalPos.pos(), SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
+            boolean _ = StargateUtil.playSound(stargate, SoundEvents.CHAIN_BREAK);
 
             // TODO: iris break event
             for (Player nearbyPlayer : StargateUtil.getPlayersNearby(stargate, 16)) {
+                // TODO: award stat
                 StargateAdvancementTriggers.BREAK_IRIS.get().trigger((ServerPlayer) nearbyPlayer, iris);
             }
         }
@@ -65,12 +65,14 @@ public class IrisBehavior implements TBehavior, StargateBlockEvents.Animate, Sta
 
     @Override
     public void stargate$useItem(Stargate stargate, StargateBlockEntity blockEntity, ItemStack itemStack, BlockState blockState, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (itemStack.getItem() instanceof IrisItem iris && !stargate.hasState(IrisState.state)) {
-            stargate.addState(iris.toState());
-            player.getItemInHand(interactionHand).consume(1, player);
+        if (!(itemStack.getItem() instanceof IrisItem iris) || stargate.hasState(IrisState.state)) return;
 
-            this.damage(stargate, 0); // force a breakage check for the golden iris advancement
-        }
+        // failed to give the iris state
+        if (!stargate.addState(iris.toState())) return;
+
+        player.getItemInHand(interactionHand).consume(1, player);
+
+        this.damage(stargate, 0); // force break check just in case
     }
 
     @Override

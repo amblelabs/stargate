@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
 
     private final UUID id;
     private final boolean isClient;
+
     private final Set<UpdateSubscriber> subscribers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static Stargate createFromNbt(CompoundTag tag, NbtDeserializer.Context ctx) {
@@ -129,7 +131,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
         }
 
         try {
-            this.addState(type.decode(tag, context));
+            boolean _ = this.addState(type.decode(tag, context));
         } catch (Exception e) {
             StargateAPI.LOGGER.error("Failed to decode {}", type, e);
         }
@@ -141,6 +143,7 @@ public class Stargate extends TStateContainer.Delegate implements NbtSerializer,
     }
 
     @Override
+    @CheckReturnValue
     public boolean addState(TState<?> state) {
         if (state instanceof NbtState<?> nbtState)
             this.updateState(nbtState);

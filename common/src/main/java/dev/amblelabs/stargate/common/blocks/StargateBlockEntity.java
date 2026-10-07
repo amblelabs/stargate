@@ -60,8 +60,9 @@ public class StargateBlockEntity extends BlockEntity implements GeoBlockEntity, 
 
         stargate.onUpdate(this);
 
-        if (this.level != null && this.level instanceof ServerLevel serverLevel)
-            stargate.addState(new LevelState(serverLevel, this.getBlockPos()));
+        if (this.level instanceof ServerLevel serverLevel) {
+            boolean _ = stargate.addState(new LevelState(serverLevel, this.getBlockPos()));
+        }
 
         this.stargateId = stargate.getId();
         this.setChanged();
